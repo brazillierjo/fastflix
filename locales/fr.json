@@ -6,7 +6,7 @@
     "searchButton": "Générer",
     "searching": "Recherche...",
     "generating": "Génération...",
-    "options": "Options",
+    "options": "Options :",
     "noDescription": "Aucune description disponible"
   },
   "movies": {
@@ -23,7 +23,8 @@
     "numberOfRecommendations": "Nombre de recommandations",
     "language": "Langue",
     "movies": "Films",
-    "tvShows": "Séries"
+    "tvShows": "Séries",
+    "movieType": "Type de contenu :"
   },
   "errors": {
     "title": "Erreur",

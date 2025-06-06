@@ -1,5 +1,24 @@
+/**
+ * Application State Management Hook
+ *
+ * This file provides a centralized state management solution for the "What Movie Tonight" application.
+ * It manages all the core application state including user queries, movie recommendations, UI states,
+ * and user preferences. This hook serves as the main state container that coordinates between
+ * different components and ensures consistent data flow throughout the application.
+ *
+ * Key responsibilities:
+ * - Managing search queries and movie recommendation results
+ * - Controlling UI navigation states (welcome screen, results screen, loading states)
+ * - Storing user preferences (number of recommendations, content type filters)
+ * - Handling streaming provider data and movie credits information
+ * - Providing state update functions and action handlers for components
+ *
+ * The hook follows React's state management patterns and provides a clean API for components
+ * to interact with the application state without prop drilling or complex state lifting.
+ */
+
 import { useState } from 'react';
-import { Movie, StreamingProvider, Cast } from './useMovieSearch';
+import { Cast, Movie, StreamingProvider } from './useMovieSearch';
 
 export interface AppState {
   query: string;
@@ -26,7 +45,7 @@ export const useAppState = () => {
   }>({});
   const [showWelcome, setShowWelcome] = useState(true);
   const [showResults, setShowResults] = useState(false);
-  const [numberOfRecommendations, setNumberOfRecommendations] = useState(5);
+  const [numberOfRecommendations, setNumberOfRecommendations] = useState(10);
   const [includeMovies, setIncludeMovies] = useState(true);
   const [includeTvShows, setIncludeTvShows] = useState(true);
   const [isMenuOpen, setIsMenuOpen] = useState(false);

@@ -1,5 +1,6 @@
 import { useLanguage } from '@/contexts/LanguageContext';
 import { cn } from '@/utils/cn';
+import Slider from '@react-native-community/slider';
 import { MotiText, MotiView } from 'moti';
 import React from 'react';
 import {
@@ -123,16 +124,17 @@ export default function SearchForm({
             type: 'timing',
             duration: 600,
           }}
-          className='mb-6'
+          className='mb-6 rounded-xl bg-light-card p-4 dark:bg-dark-card'
         >
           <Text className='mb-4 text-lg font-semibold text-light-primary dark:text-dark-primary'>
             {t('welcome.options')}
           </Text>
 
           <View className='mb-5 flex-row items-center justify-between'>
-            <Text className='text-base text-light-primary dark:text-dark-primary'>
+            <Text className='text-base text-light-primary font-semibold dark:text-dark-primary'>
               {t('settings.numberOfRecommendations')}
             </Text>
+
             <View className='flex-row items-center'>
               <View className='min-w-[40px] items-center rounded-[20px] bg-light-primary px-3 py-1 dark:bg-dark-primary'>
                 <Text className='text-base font-semibold text-light-background dark:text-dark-background'>
@@ -142,30 +144,27 @@ export default function SearchForm({
             </View>
           </View>
 
-          <View className='mb-5'>
-            <View
-              {...panResponder.panHandlers}
-              className='h-5 justify-center py-2'
-            >
-              <View className='relative h-1 rounded-sm bg-light-border dark:bg-dark-border'>
-                <View
-                  className='h-1 rounded-sm bg-light-primary dark:bg-dark-primary'
-                  style={{
-                    width: `${((numberOfRecommendations - 1) / 9) * 100}%`,
-                  }}
-                />
-                <View
-                  className='absolute -ml-2 h-4 w-4 rounded-full bg-light-primary dark:bg-dark-primary'
-                  style={{
-                    left: `${((numberOfRecommendations - 1) / 9) * 100}%`,
-                    top: -6,
-                  }}
-                />
-              </View>
-            </View>
+          <View className='-mt-5 mb-4'>
+            <Slider
+              className='w-full'
+              minimumValue={1}
+              maximumValue={20}
+              step={1}
+              value={numberOfRecommendations}
+              onValueChange={value =>
+                setNumberOfRecommendations(Math.round(value))
+              }
+              minimumTrackTintColor='#0ea5e9'
+              maximumTrackTintColor='#e2e8f0'
+              thumbTintColor='#0ea5e9'
+            />
           </View>
 
           <View className='mb-5'>
+          <Text className='text-base mb-4 text-light-primary font-semibold dark:text-dark-primary'>
+              {t('settings.movieType')}
+            </Text>
+
             <TouchableOpacity
               onPress={() => setIncludeMovies(!includeMovies)}
               className={cn(

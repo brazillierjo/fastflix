@@ -6,7 +6,7 @@
     "searchButton": "Generate",
     "searching": "Searching...",
     "generating": "Generating...",
-    "options": "Options",
+    "options": "Options :",
     "noDescription": "No description available"
   },
   "movies": {
@@ -23,7 +23,8 @@
     "numberOfRecommendations": "Number of recommendations",
     "language": "Language",
     "movies": "Movies",
-    "tvShows": "TV Shows"
+    "tvShows": "TV Shows",
+    "movieType": "Content type :"
   },
   "errors": {
     "title": "Error",

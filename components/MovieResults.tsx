@@ -146,7 +146,9 @@ export default function MovieResults({
 
                             <View
                               className={cn(
-                                expanded ? 'gap-1' : 'flex-row flex-wrap gap-1.5'
+                                expanded
+                                  ? 'gap-1'
+                                  : 'flex-row flex-wrap gap-1.5'
                               )}
                             >
                               {streamingProviders[movie.id]
@@ -197,7 +199,9 @@ export default function MovieResults({
                                     key={idx}
                                     className={cn(
                                       'flex-row items-center',
-                                      idx < credits[movie.id].slice(0, 5).length - 1 && 'mb-1.5'
+                                      idx <
+                                        credits[movie.id].slice(0, 5).length -
+                                          1 && 'mb-1.5'
                                     )}
                                   >
                                     <View className='mr-2 h-1.5 w-1.5 rounded-full bg-light-secondary dark:bg-dark-secondary' />
@@ -205,7 +209,7 @@ export default function MovieResults({
                                       <Text className='font-medium'>
                                         {actor.name}
                                       </Text>
-                                      
+
                                       <Text className='text-light-secondary dark:text-dark-secondary'>
                                         {' '}
                                         • {actor.character}
@@ -229,7 +233,7 @@ export default function MovieResults({
                                 )}
                               >
                                 <Text className='text-sm font-semibold text-light-text dark:text-dark-text'>
-                                📅 {t('movies.releaseDate')}
+                                  📅 {t('movies.releaseDate')}
                                 </Text>
 
                                 <Text className='text-sm text-light-text dark:text-dark-text'>
@@ -245,7 +249,7 @@ export default function MovieResults({
                             {movie.vote_average > 0 && (
                               <View className='flex-row items-center gap-2'>
                                 <Text className='text-sm font-semibold text-light-text dark:text-dark-text'>
-                                ⭐ {t('movies.rating')}
+                                  ⭐ {t('movies.rating')}
                                 </Text>
 
                                 <View className='flex-row items-center'>

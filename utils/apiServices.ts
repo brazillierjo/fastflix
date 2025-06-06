@@ -1,3 +1,36 @@
+/**
+ * API Services Module
+ *
+ * This file provides a centralized interface for all external API interactions in the
+ * "What Movie Tonight" application. It abstracts the complexity of working with multiple
+ * third-party services and provides a clean, consistent API for the application to consume.
+ *
+ * The module integrates two primary services:
+ *
+ * 1. Google Gemini AI Service:
+ *    - Generates intelligent movie and TV show recommendations using natural language processing
+ *    - Processes user queries in French and returns contextually relevant suggestions
+ *    - Leverages the latest Gemini 2.0 Flash model for fast and accurate responses
+ *    - Handles content type filtering (movies vs TV shows) based on user preferences
+ *
+ * 2. The Movie Database (TMDB) Service:
+ *    - Provides comprehensive movie and TV show metadata including titles, descriptions, ratings
+ *    - Fetches high-quality poster images and media information
+ *    - Retrieves streaming provider availability specifically for the French market
+ *    - Supplies cast and crew information with localized French content
+ *    - Supports multi-search functionality across different media types
+ *
+ * Key architectural decisions:
+ * - Uses environment variables for secure API key management
+ * - Implements proper error handling and logging for debugging
+ * - Provides French localization for all API responses
+ * - Maintains consistent data structures across different API responses
+ * - Optimizes API calls by limiting results and focusing on relevant data
+ *
+ * The services are designed to be easily testable, maintainable, and extensible
+ * for future API integrations or modifications.
+ */
+
 import axios from 'axios';
 import Constants from 'expo-constants';
 import { GoogleGenerativeAI } from '@google/generative-ai';

@@ -1,3 +1,28 @@
+/**
+ * Movie Search and Recommendation Hook
+ *
+ * This file implements the core search functionality for the "What Movie Tonight" application.
+ * It integrates Google's Gemini AI for intelligent movie recommendations with The Movie Database (TMDB)
+ * API for detailed movie information, streaming providers, and cast details.
+ *
+ * The hook provides a sophisticated search workflow that:
+ * 1. Uses Gemini AI to generate contextual movie/TV show recommendations based on user queries
+ * 2. Searches TMDB for each recommended title to get comprehensive metadata
+ * 3. Fetches additional information including streaming availability and cast details
+ * 4. Filters and validates results to ensure data quality and relevance
+ *
+ * Key features:
+ * - AI-powered recommendation generation using natural language processing
+ * - Multi-source data aggregation (Gemini + TMDB)
+ * - Streaming provider integration for French market (FR region)
+ * - Cast and crew information retrieval
+ * - Robust error handling and data validation
+ * - Support for both movies and TV shows with configurable filtering
+ *
+ * The hook uses React Query's useMutation for efficient API state management,
+ * providing loading states, error handling, and automatic retries.
+ */
+
 import { useMutation } from '@tanstack/react-query';
 import { Alert } from 'react-native';
 import { useLanguage } from '@/contexts/LanguageContext';
