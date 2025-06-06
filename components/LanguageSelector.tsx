@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
-import { Modal, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { Modal, Text, TouchableOpacity, View } from 'react-native';
 import { useLanguage } from '../contexts/LanguageContext';
+import { cn } from '../utils/cn';
 
 interface LanguageSelectorProps {
   style?: any;
@@ -29,14 +30,18 @@ export const LanguageSelector: React.FC<LanguageSelectorProps> = ({
   };
 
   return (
-    <View style={[styles.container, style]}>
+    <View className={cn('relative', style)}>
       <TouchableOpacity
-        style={styles.selector}
+        className='min-w-30 flex-row items-center rounded-xl border border-neutral-300 bg-light-background px-3 py-2 dark:border-neutral-600 dark:bg-dark-surface'
         onPress={() => setIsModalVisible(true)}
       >
-        <Text style={styles.flag}>{getLanguageFlag(language)}</Text>
-        <Text style={styles.languageText}>{t(`languages.${language}`)}</Text>
-        <Text style={styles.arrow}>▼</Text>
+        <Text className='mr-2 text-base'>{getLanguageFlag(language)}</Text>
+        <Text className='text-light-text dark:text-dark-text flex-1 text-sm font-medium'>
+          {t(`languages.${language}`)}
+        </Text>
+        <Text className='ml-1 text-xs text-neutral-400 dark:text-neutral-500'>
+          ▼
+        </Text>
       </TouchableOpacity>
 
       <Modal
@@ -46,32 +51,40 @@ export const LanguageSelector: React.FC<LanguageSelectorProps> = ({
         onRequestClose={() => setIsModalVisible(false)}
       >
         <TouchableOpacity
-          style={styles.modalOverlay}
+          className='flex-1 items-center justify-center bg-black/50'
           activeOpacity={1}
           onPress={() => setIsModalVisible(false)}
         >
-          <View style={styles.modalContent}>
-            <Text style={styles.modalTitle}>{t('settings.language')}</Text>
+          <View className='min-w-50 max-w-75 rounded-2xl bg-light-background p-5 shadow-lg dark:bg-dark-surface'>
+            <Text className='text-light-text dark:text-dark-text mb-4 text-center text-lg font-semibold'>
+              {t('settings.language')}
+            </Text>
 
             {availableLanguages.map(lang => (
               <TouchableOpacity
                 key={lang}
-                style={[
-                  styles.languageOption,
-                  language === lang && styles.selectedLanguageOption,
-                ]}
+                className={cn(
+                  'my-0.5 flex-row items-center rounded-lg px-2 py-3',
+                  language === lang &&
+                    'bg-light-primary/10 dark:bg-dark-primary/10'
+                )}
                 onPress={() => handleLanguageSelect(lang)}
               >
-                <Text style={styles.optionFlag}>{getLanguageFlag(lang)}</Text>
+                <Text className='mr-3 text-lg'>{getLanguageFlag(lang)}</Text>
                 <Text
-                  style={[
-                    styles.optionText,
-                    language === lang && styles.selectedOptionText,
-                  ]}
+                  className={cn(
+                    'text-light-text dark:text-dark-text flex-1 text-base',
+                    language === lang &&
+                      'font-semibold text-light-primary dark:text-dark-primary'
+                  )}
                 >
                   {t(`languages.${lang}`)}
                 </Text>
-                {language === lang && <Text style={styles.checkmark}>✓</Text>}
+                {language === lang && (
+                  <Text className='text-base font-bold text-light-primary dark:text-dark-primary'>
+                    ✓
+                  </Text>
+                )}
               </TouchableOpacity>
             ))}
           </View>
@@ -80,91 +93,3 @@ export const LanguageSelector: React.FC<LanguageSelectorProps> = ({
     </View>
   );
 };
-const styles = StyleSheet.create({
-  container: {
-    position: 'relative',
-  },
-  selector: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    backgroundColor: '#ffffff',
-    borderRadius: 12,
-    borderWidth: 1,
-    borderColor: '#d1d1d6',
-    paddingHorizontal: 12,
-    paddingVertical: 8,
-    minWidth: 120,
-  },
-  flag: {
-    fontSize: 16,
-    marginRight: 8,
-  },
-  languageText: {
-    flex: 1,
-    fontSize: 14,
-    color: '#1d1d1f',
-    fontWeight: '500',
-  },
-  arrow: {
-    fontSize: 10,
-    color: '#86868b',
-    marginLeft: 4,
-  },
-  modalOverlay: {
-    flex: 1,
-    backgroundColor: 'rgba(0, 0, 0, 0.5)',
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  modalContent: {
-    backgroundColor: '#ffffff',
-    borderRadius: 16,
-    padding: 20,
-    minWidth: 200,
-    maxWidth: 300,
-    shadowColor: '#000',
-    shadowOffset: {
-      width: 0,
-      height: 2,
-    },
-    shadowOpacity: 0.25,
-    shadowRadius: 3.84,
-    elevation: 5,
-  },
-  modalTitle: {
-    fontSize: 18,
-    fontWeight: '600',
-    color: '#1d1d1f',
-    textAlign: 'center',
-    marginBottom: 16,
-  },
-  languageOption: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    paddingVertical: 12,
-    paddingHorizontal: 8,
-    borderRadius: 8,
-    marginVertical: 2,
-  },
-  selectedLanguageOption: {
-    backgroundColor: '#007AFF15',
-  },
-  optionFlag: {
-    fontSize: 18,
-    marginRight: 12,
-  },
-  optionText: {
-    flex: 1,
-    fontSize: 16,
-    color: '#1d1d1f',
-  },
-  selectedOptionText: {
-    color: '#007AFF',
-    fontWeight: '600',
-  },
-  checkmark: {
-    fontSize: 16,
-    color: '#007AFF',
-    fontWeight: 'bold',
-  },
-});

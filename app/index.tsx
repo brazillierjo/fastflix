@@ -1,7 +1,9 @@
+import { LanguageSelector } from '@/components/LanguageSelector';
 import LoadingState from '@/components/LoadingState';
 import MovieResults from '@/components/MovieResults';
 import SearchForm from '@/components/SearchForm';
 import { useLanguage } from '@/contexts/LanguageContext';
+import { cn } from '@/utils/cn';
 import { GoogleGenerativeAI } from '@google/generative-ai';
 import axios from 'axios';
 import Constants from 'expo-constants';
@@ -10,6 +12,7 @@ import React, { useState } from 'react';
 import {
   Alert,
   KeyboardAvoidingView,
+  Modal,
   Platform,
   StatusBar,
   Text,
@@ -60,6 +63,7 @@ export default function HomeScreen() {
   const [numberOfRecommendations, setNumberOfRecommendations] = useState(5);
   const [includeMovies, setIncludeMovies] = useState(true);
   const [includeTvShows, setIncludeTvShows] = useState(true);
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
 
   const GOOGLE_API_KEY = Constants.expoConfig?.extra?.GOOGLE_API_KEY;
   const TMDB_API_KEY = Constants.expoConfig?.extra?.TMDB_API_KEY;
@@ -186,24 +190,21 @@ export default function HomeScreen() {
   };
 
   return (
-    <SafeAreaView style={{ flex: 1, backgroundColor: '#ffffff' }}>
+    <SafeAreaView className={cn('flex-1 bg-white')}>
       <StatusBar barStyle='dark-content' backgroundColor='#ffffff' />
+      
       <KeyboardAvoidingView
         behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-        style={{ flex: 1, backgroundColor: '#ffffff' }}
+        className={cn('flex-1 bg-white')}
       >
         <MotiView
           from={{ opacity: 0, translateY: -20 }}
           animate={{ opacity: 1, translateY: 0 }}
           transition={{ type: 'timing', duration: 600 }}
-          style={{
-            flexDirection: 'row',
-            paddingHorizontal: 24,
-            paddingTop: 16,
-            paddingBottom: 24,
-            alignItems: 'center',
-            justifyContent: showResults ? 'flex-start' : 'space-between',
-          }}
+          className={cn(
+            'flex-row px-6 pt-4 pb-6 items-center',
+            showResults ? 'justify-start' : 'justify-between'
+          )}
         >
           {!showResults && (
             <>
@@ -211,28 +212,22 @@ export default function HomeScreen() {
                 from={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 transition={{ delay: 200, type: 'timing', duration: 400 }}
-                style={{
-                  fontSize: 24,
-                  fontWeight: '600',
-                  color: '#000',
-                  textAlign: 'left',
-                }}
+                className={cn('text-2xl font-semibold text-black text-left')}
               >
                 {t('welcome.title')}
               </MotiText>
 
               <TouchableOpacity
-                style={{
-                  padding: 8,
-                }}
+                className={cn('p-2')}
+                onPress={() => setIsMenuOpen(true)}
               >
-                <Text style={{ fontSize: 24, color: '#000' }}>⚙️</Text>
+                <Text className={cn('text-2xl text-black')}>☰</Text>
               </TouchableOpacity>
             </>
           )}
         </MotiView>
 
-        <View style={{ flex: 1, paddingHorizontal: 24 }}>
+        <View className={cn('flex-1 px-6')}>
           {showWelcome && movies.length === 0 && !loading ? (
             <SearchForm
               query={query}
@@ -258,6 +253,43 @@ export default function HomeScreen() {
             )
           )}
         </View>
+        
+        {/* Burger Menu Modal */}
+        <Modal
+          visible={isMenuOpen}
+          animationType="slide"
+          presentationStyle="pageSheet"
+          onRequestClose={() => setIsMenuOpen(false)}
+        >
+          <SafeAreaView className={cn('flex-1 bg-white')}>
+            <View className={cn('flex-row justify-between items-center px-6 py-4 border-b border-gray-200')}>
+              <Text className={cn('text-xl font-semibold text-black')}>
+                {t('settings.language')}
+              </Text>
+              <TouchableOpacity
+                onPress={() => setIsMenuOpen(false)}
+                className={cn('p-2')}
+              >
+                <Text className={cn('text-2xl text-black')}>✕</Text>
+              </TouchableOpacity>
+            </View>
+            
+            <View className={cn('flex-1 px-6 py-8')}>
+              <View className={cn('items-center')}>
+                <Text className={cn('text-lg font-medium text-black mb-6')}>
+                  {t('settings.language')}
+                </Text>
+                
+                <LanguageSelector
+                  style={{
+                    width: '80%',
+                    marginBottom: 20,
+                  }}
+                />
+              </View>
+            </View>
+          </SafeAreaView>
+        </Modal>
       </KeyboardAvoidingView>
     </SafeAreaView>
   );

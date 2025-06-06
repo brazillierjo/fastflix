@@ -1,4 +1,5 @@
 import { useLanguage } from '@/contexts/LanguageContext';
+import { cn } from '@/utils/cn';
 import { MotiView } from 'moti';
 import React from 'react';
 import {
@@ -60,22 +61,14 @@ export default function SearchForm({
           type: 'timing',
           duration: 600,
         }}
-        style={{
-          marginBottom: 24,
-        }}
       >
         <TextInput
+          className='mb-6 min-h-[100px] rounded-xl bg-light-input p-4 text-base text-light-primary dark:bg-dark-input dark:text-dark-primary'
           style={{
-            backgroundColor: '#f5f5f5',
-            borderRadius: 12,
-            padding: 16,
-            fontSize: 16,
-            color: '#000',
-            minHeight: 100,
             textAlignVertical: 'top',
           }}
           placeholder={t('welcome.inputPlaceholder')}
-          placeholderTextColor='#999'
+          placeholderTextColor='#94a3b8'
           value={query}
           onChangeText={setQuery}
           multiline
@@ -91,142 +84,78 @@ export default function SearchForm({
           type: 'timing',
           duration: 600,
         }}
-        style={{
-          marginBottom: 24,
-        }}
+        className='mb-6'
       >
-        <Text
-          style={{
-            fontSize: 18,
-            fontWeight: '600',
-            color: '#000',
-            marginBottom: 16,
-          }}
-        >
+        <Text className='mb-4 text-lg font-semibold text-light-primary dark:text-dark-primary'>
           {t('welcome.options')}
         </Text>
 
-        <View
-          style={{
-            flexDirection: 'row',
-            alignItems: 'center',
-            justifyContent: 'space-between',
-            marginBottom: 20,
-          }}
-        >
-          <Text
-            style={{
-              fontSize: 16,
-              color: '#000',
-            }}
-          >
+        <View className='mb-5 flex-row items-center justify-between'>
+          <Text className='text-base text-light-primary dark:text-dark-primary'>
             {t('settings.numberOfRecommendations')}
           </Text>
-          <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-            <View
-              style={{
-                backgroundColor: '#000',
-                borderRadius: 20,
-                paddingHorizontal: 12,
-                paddingVertical: 4,
-                minWidth: 40,
-                alignItems: 'center',
-              }}
-            >
-              <Text
-                style={{
-                  fontSize: 16,
-                  fontWeight: '600',
-                  color: '#fff',
-                }}
-              >
+          <View className='flex-row items-center'>
+            <View className='min-w-[40px] items-center rounded-[20px] bg-light-primary px-3 py-1 dark:bg-dark-primary'>
+              <Text className='text-base font-semibold text-light-background dark:text-dark-background'>
                 {numberOfRecommendations}
               </Text>
             </View>
           </View>
         </View>
 
-        <View style={{ marginBottom: 20 }}>
+        <View className='mb-5'>
           <View
             {...panResponder.panHandlers}
-            style={{
-              height: 20,
-              justifyContent: 'center',
-              paddingVertical: 8,
-            }}
+            className='h-5 justify-center py-2'
           >
-            <View
-              style={{
-                height: 4,
-                backgroundColor: '#f0f0f0',
-                borderRadius: 2,
-                position: 'relative',
-              }}
-            >
+            <View className='relative h-1 rounded-sm bg-light-border dark:bg-dark-border'>
               <View
+                className='h-1 rounded-sm bg-light-primary dark:bg-dark-primary'
                 style={{
-                  height: 4,
-                  backgroundColor: '#000',
-                  borderRadius: 2,
                   width: `${((numberOfRecommendations - 1) / 9) * 100}%`,
                 }}
               />
               <View
+                className='absolute -ml-2 h-4 w-4 rounded-full bg-light-primary dark:bg-dark-primary'
                 style={{
-                  position: 'absolute',
                   left: `${((numberOfRecommendations - 1) / 9) * 100}%`,
                   top: -6,
-                  width: 16,
-                  height: 16,
-                  backgroundColor: '#000',
-                  borderRadius: 8,
-                  marginLeft: -8,
                 }}
               />
             </View>
           </View>
         </View>
 
-        <View style={{ marginBottom: 20 }}>
+        <View className='mb-5'>
           <TouchableOpacity
             onPress={() => setIncludeMovies(!includeMovies)}
-            style={{
-              flexDirection: 'row',
-              alignItems: 'center',
-              justifyContent: 'space-between',
-              backgroundColor: includeMovies ? '#000' : '#f5f5f5',
-              borderRadius: 12,
-              padding: 16,
-              marginBottom: 12,
-            }}
+            className={cn(
+              'mb-3 flex-row items-center justify-between rounded-xl p-4',
+              includeMovies
+                ? 'bg-light-primary dark:bg-dark-primary'
+                : 'bg-light-input dark:bg-dark-input'
+            )}
           >
             <Text
-              style={{
-                fontSize: 16,
-                fontWeight: '500',
-                color: includeMovies ? '#fff' : '#000',
-              }}
+              className={cn(
+                'text-base font-medium',
+                includeMovies
+                  ? 'text-light-background dark:text-dark-background'
+                  : 'text-light-primary dark:text-dark-primary'
+              )}
             >
               {t('settings.movies')}
             </Text>
             <View
-              style={{
-                width: 24,
-                height: 24,
-                borderRadius: 12,
-                backgroundColor: includeMovies ? '#fff' : '#ddd',
-                alignItems: 'center',
-                justifyContent: 'center',
-              }}
+              className={cn(
+                'h-6 w-6 items-center justify-center rounded-xl',
+                includeMovies
+                  ? 'bg-light-background dark:bg-dark-background'
+                  : 'bg-neutral-300 dark:bg-neutral-600'
+              )}
             >
               {includeMovies && (
-                <Text
-                  style={{
-                    fontSize: 16,
-                    fontWeight: '600',
-                    color: '#000',
-                  }}
-                >
+                <Text className='text-base font-semibold text-light-primary dark:text-dark-primary'>
                   ✓
                 </Text>
               )}
@@ -235,42 +164,33 @@ export default function SearchForm({
 
           <TouchableOpacity
             onPress={() => setIncludeTvShows(!includeTvShows)}
-            style={{
-              flexDirection: 'row',
-              alignItems: 'center',
-              justifyContent: 'space-between',
-              backgroundColor: includeTvShows ? '#000' : '#f5f5f5',
-              borderRadius: 12,
-              padding: 16,
-            }}
+            className={cn(
+              'flex-row items-center justify-between rounded-xl p-4',
+              includeTvShows
+                ? 'bg-light-primary dark:bg-dark-primary'
+                : 'bg-light-input dark:bg-dark-input'
+            )}
           >
             <Text
-              style={{
-                fontSize: 16,
-                fontWeight: '500',
-                color: includeTvShows ? '#fff' : '#000',
-              }}
+              className={cn(
+                'text-base font-medium',
+                includeTvShows
+                  ? 'text-light-background dark:text-dark-background'
+                  : 'text-light-primary dark:text-dark-primary'
+              )}
             >
               {t('settings.tvShows')}
             </Text>
             <View
-              style={{
-                width: 24,
-                height: 24,
-                borderRadius: 12,
-                backgroundColor: includeTvShows ? '#fff' : '#ddd',
-                alignItems: 'center',
-                justifyContent: 'center',
-              }}
+              className={cn(
+                'h-6 w-6 items-center justify-center rounded-xl',
+                includeTvShows
+                  ? 'bg-light-background dark:bg-dark-background'
+                  : 'bg-neutral-300 dark:bg-neutral-600'
+              )}
             >
               {includeTvShows && (
-                <Text
-                  style={{
-                    fontSize: 16,
-                    fontWeight: '600',
-                    color: '#000',
-                  }}
-                >
+                <Text className='text-base font-semibold text-light-primary dark:text-dark-primary'>
                   ✓
                 </Text>
               )}
@@ -291,21 +211,14 @@ export default function SearchForm({
         <TouchableOpacity
           onPress={onSearch}
           disabled={loading}
-          style={{
-            backgroundColor: loading ? '#ccc' : '#000',
-            borderRadius: 12,
-            padding: 16,
-            alignItems: 'center',
-            marginBottom: 24,
-          }}
+          className={cn(
+            'mb-6 items-center rounded-xl p-4',
+            loading
+              ? 'bg-neutral-400 dark:bg-neutral-600'
+              : 'bg-light-primary dark:bg-dark-primary'
+          )}
         >
-          <Text
-            style={{
-              fontSize: 16,
-              fontWeight: '600',
-              color: '#fff',
-            }}
-          >
+          <Text className='text-base font-semibold text-light-background dark:text-dark-background'>
             {loading ? t('welcome.generating') : t('welcome.searchButton')}
           </Text>
         </TouchableOpacity>

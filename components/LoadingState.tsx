@@ -1,4 +1,5 @@
 import { useLanguage } from '@/contexts/LanguageContext';
+import { cn } from '@/utils/cn';
 import { MotiView } from 'moti';
 import React from 'react';
 import { ActivityIndicator, Text, View } from 'react-native';
@@ -11,7 +12,7 @@ export default function LoadingState({ isSearching }: LoadingStateProps) {
   const { t } = useLanguage();
 
   return (
-    <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+    <View className='flex-1 items-center justify-center'>
       {isSearching ? (
         <MotiView
           from={{ opacity: 0, translateY: 20 }}
@@ -20,19 +21,14 @@ export default function LoadingState({ isSearching }: LoadingStateProps) {
             type: 'timing',
             duration: 600,
           }}
-          style={{
-            alignItems: 'center',
-          }}
+          className='items-center'
         >
-          <ActivityIndicator size='large' color='#000' />
-          <Text
-            style={{
-              fontSize: 16,
-              color: '#666',
-              marginTop: 16,
-              textAlign: 'center',
-            }}
-          >
+          <ActivityIndicator
+            size='large'
+            color='#000'
+            className='text-light-primary dark:text-dark-primary'
+          />
+          <Text className='mt-4 text-center text-base text-neutral-500 dark:text-neutral-400'>
             {t('welcome.searching')}
           </Text>
         </MotiView>
@@ -44,19 +40,14 @@ export default function LoadingState({ isSearching }: LoadingStateProps) {
             type: 'timing',
             duration: 600,
           }}
-          style={{
-            alignItems: 'center',
-          }}
+          className='items-center'
         >
-          <ActivityIndicator size='large' color='#000' />
-          <Text
-            style={{
-              fontSize: 16,
-              color: '#666',
-              marginTop: 16,
-              textAlign: 'center',
-            }}
-          >
+          <ActivityIndicator
+            size='large'
+            color='#000'
+            className='text-light-primary dark:text-dark-primary'
+          />
+          <Text className='mt-4 text-center text-base text-neutral-500 dark:text-neutral-400'>
             {t('welcome.generating')}
           </Text>
         </MotiView>
