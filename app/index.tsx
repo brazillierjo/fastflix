@@ -1,7 +1,7 @@
-import { SettingsModal } from '@/components/SettingsModal';
 import LoadingState from '@/components/LoadingState';
 import MovieResults from '@/components/MovieResults';
 import SearchForm from '@/components/SearchForm';
+import { SettingsModal } from '@/components/SettingsModal';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { cn } from '@/utils/cn';
 import { GoogleGenerativeAI } from '@google/generative-ai';
@@ -12,12 +12,11 @@ import React, { useState } from 'react';
 import {
   Alert,
   KeyboardAvoidingView,
-  Modal,
   Platform,
   StatusBar,
   Text,
   TouchableOpacity,
-  View,
+  View
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
@@ -190,12 +189,12 @@ export default function HomeScreen() {
   };
 
   return (
-    <SafeAreaView className={cn('flex-1 bg-white')}>
+    <SafeAreaView className={cn('flex-1 dark:bg-black')}>
       <StatusBar barStyle='dark-content' backgroundColor='#ffffff' />
 
       <KeyboardAvoidingView
         behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-        className={cn('flex-1 bg-white')}
+        className={cn('flex-1 ')}
       >
         <MotiView
           from={{ opacity: 0, translateY: -20 }}

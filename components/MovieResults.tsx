@@ -42,10 +42,11 @@ export default function MovieResults({
         duration: 600,
       }}
     >
-      <View className='flex-row items-center border-b border-neutral-200 bg-light-background px-6 py-4 dark:border-neutral-700 dark:bg-dark-background'>
+      <View className='flex-row items-center border-b border-neutral-200 bg-light-background dark:border-neutral-700 dark:bg-dark-background'>
         <TouchableOpacity onPress={onGoBack} className='mr-4 p-2'>
           <Text className='text-light-text dark:text-dark-text text-lg'>←</Text>
         </TouchableOpacity>
+        
         <Text className='text-light-text dark:text-dark-text mr-10 flex-1 text-center text-lg font-semibold'>
           {t('movies.recommendations')}
         </Text>

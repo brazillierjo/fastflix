@@ -28,7 +28,7 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
       presentationStyle='pageSheet'
       onRequestClose={onClose}
     >
-      <SafeAreaView className={cn('flex-1 bg-white dark:bg-gray-900')}>
+      <SafeAreaView className={cn('flex-1  dark:bg-gray-900')}>
         <View
           className={cn(
             'flex-row items-center justify-between border-b border-gray-200 px-6 py-4 dark:border-gray-700'
