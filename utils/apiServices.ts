@@ -20,7 +20,7 @@ export const geminiService = {
 
     const result = await model.generateContent(prompt);
     const response = await result.response;
-    
+
     return response
       .text()
       .split(',')
@@ -54,10 +54,7 @@ export const tmdbService = {
     }
   },
 
-  async getWatchProviders(
-    itemId: number,
-    mediaType: string
-  ): Promise<any[]> {
+  async getWatchProviders(itemId: number, mediaType: string): Promise<any[]> {
     try {
       const providerResponse = await axios.get(
         `https://api.themoviedb.org/3/${mediaType}/${itemId}/watch/providers?api_key=${TMDB_API_KEY}`
@@ -67,6 +64,23 @@ export const tmdbService = {
     } catch (error) {
       console.error(
         `Error fetching providers for ${mediaType} ${itemId}:`,
+        error
+      );
+      return [];
+    }
+  },
+
+  async getCredits(itemId: number, mediaType: string): Promise<any[]> {
+    try {
+      const creditsResponse = await axios.get(
+        `https://api.themoviedb.org/3/${mediaType}/${itemId}/credits?api_key=${TMDB_API_KEY}&language=fr-FR`
+      );
+
+      // Retourner les 5 premiers acteurs principaux
+      return creditsResponse.data.cast?.slice(0, 5) || [];
+    } catch (error) {
+      console.error(
+        `Error fetching credits for ${mediaType} ${itemId}:`,
         error
       );
       return [];

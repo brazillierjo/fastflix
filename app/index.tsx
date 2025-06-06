@@ -6,12 +6,7 @@ import { useAppState } from '@/hooks/useAppState';
 import { useMovieSearch } from '@/hooks/useMovieSearch';
 import { cn } from '@/utils/cn';
 import React from 'react';
-import {
-  KeyboardAvoidingView,
-  Platform,
-  StatusBar,
-  View,
-} from 'react-native';
+import { KeyboardAvoidingView, Platform, StatusBar, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 export default function HomeScreen() {
@@ -19,6 +14,7 @@ export default function HomeScreen() {
     query,
     movies,
     streamingProviders,
+    credits,
     showWelcome,
     showResults,
     numberOfRecommendations,
@@ -49,7 +45,7 @@ export default function HomeScreen() {
         includeTvShows,
       },
       {
-        onSuccess: (data) => {
+        onSuccess: data => {
           handleSearchSuccess(data);
         },
         onError: () => {
@@ -70,7 +66,9 @@ export default function HomeScreen() {
         className={cn('flex-1')}
       >
         <View className={cn('flex-1')}>
-          {showWelcome && movies.length === 0 && !movieSearchMutation.isPending ? (
+          {showWelcome &&
+          movies.length === 0 &&
+          !movieSearchMutation.isPending ? (
             <SearchForm
               query={query}
               setQuery={setQuery}
@@ -92,6 +90,7 @@ export default function HomeScreen() {
               <MovieResults
                 movies={movies}
                 streamingProviders={streamingProviders}
+                credits={credits}
                 onGoBack={goBackToHome}
               />
             )

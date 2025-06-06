@@ -1,3 +1,4 @@
+import { cn } from '@/utils/cn';
 import { MotiView } from 'moti';
 import React, { useState } from 'react';
 import { Image, ScrollView, Text, TouchableOpacity, View } from 'react-native';
@@ -20,15 +21,24 @@ interface StreamingProvider {
   logo_path: string;
 }
 
+interface Cast {
+  id: number;
+  name: string;
+  character: string;
+  profile_path?: string;
+}
+
 interface MovieResultsProps {
   movies: Movie[];
   streamingProviders: { [key: number]: StreamingProvider[] };
+  credits: { [key: number]: Cast[] };
   onGoBack: () => void;
 }
 
 export default function MovieResults({
   movies,
   streamingProviders,
+  credits,
   onGoBack,
 }: MovieResultsProps) {
   const [expandedCards, setExpandedCards] = useState<Set<number>>(new Set());
@@ -127,26 +137,80 @@ export default function MovieResults({
                       {/* Streaming platforms */}
                       {streamingProviders[movie.id] &&
                         streamingProviders[movie.id].length > 0 && (
-                          <View className='mb-3'>
-                            <View className='flex-row flex-wrap gap-2'>
+                          <View className={cn('mb-3', expanded && 'mt-4')}>
+                            {expanded && (
+                              <Text className='mb-2 text-sm font-semibold text-light-text dark:text-dark-text'>
+                                {t('movies.availableOn')}
+                              </Text>
+                            )}
+
+                            <View
+                              className={cn(
+                                expanded ? 'gap-1' : 'flex-row flex-wrap gap-1.5'
+                              )}
+                            >
                               {streamingProviders[movie.id]
                                 .slice(0, expanded ? undefined : 4)
                                 .map((provider, idx) => (
                                   <View
                                     key={idx}
-                                    className='rounded-lg bg-light-surface p-1 dark:bg-dark-surface'
+                                    className={cn(
+                                      'rounded-md',
+                                      expanded
+                                        ? 'flex-row items-center py-0.5'
+                                        : 'bg-dark-surface dark:bg-light-surface'
+                                    )}
                                   >
                                     <Image
                                       source={{
                                         uri: `https://image.tmdb.org/t/p/w92${provider.logo_path}`,
                                       }}
-                                      style={{
-                                        width: 24,
-                                        height: 24,
-                                        borderRadius: 4,
-                                      }}
+                                      className='h-[30px] w-[30px] rounded-md bg-dark-surface p-1 dark:bg-light-surface'
                                       resizeMode='contain'
                                     />
+
+                                    {expanded && (
+                                      <Text className='ml-2.5 text-sm font-medium text-light-text dark:text-dark-text'>
+                                        {provider.provider_name}
+                                      </Text>
+                                    )}
+                                  </View>
+                                ))}
+                            </View>
+                          </View>
+                        )}
+
+                      {/* Main actors */}
+                      {expanded &&
+                        credits[movie.id] &&
+                        credits[movie.id].length > 0 && (
+                          <View className='my-3'>
+                            <Text className='text-sm font-semibold text-light-text dark:text-dark-text'>
+                              {t('movies.mainActors')}
+                            </Text>
+
+                            <View className='px-3 py-2'>
+                              {credits[movie.id]
+                                .slice(0, 5)
+                                .map((actor, idx) => (
+                                  <View
+                                    key={idx}
+                                    className={cn(
+                                      'flex-row items-center',
+                                      idx < credits[movie.id].slice(0, 5).length - 1 && 'mb-1.5'
+                                    )}
+                                  >
+                                    <View className='mr-2 h-1.5 w-1.5 rounded-full bg-light-secondary dark:bg-dark-secondary' />
+                                    <Text className='flex-1 text-sm text-light-text dark:text-dark-text'>
+                                      <Text className='font-medium'>
+                                        {actor.name}
+                                      </Text>
+                                      
+                                      <Text className='text-light-secondary dark:text-dark-secondary'>
+                                        {' '}
+                                        • {actor.character}
+                                      </Text>
+                                    </Text>
                                   </View>
                                 ))}
                             </View>
@@ -155,34 +219,47 @@ export default function MovieResults({
 
                       {/* Additional information in expanded mode */}
                       {expanded && (
-                        <View className='mb-3 space-y-2'>
-                          {(movie.release_date || movie.first_air_date) && (
-                            <View className='flex-row'>
-                              <Text className='font-medium text-light-text text-sm dark:text-dark-text'>
-                                {t('movies.releaseDate')}:
-                              </Text>
+                        <View className='my-3'>
+                          <View>
+                            {(movie.release_date || movie.first_air_date) && (
+                              <View
+                                className={cn(
+                                  'flex-row items-center gap-2',
+                                  movie.vote_average > 0 && 'mb-1.5'
+                                )}
+                              >
+                                <Text className='text-sm font-semibold text-light-text dark:text-dark-text'>
+                                📅 {t('movies.releaseDate')}
+                                </Text>
 
-                              <Text className='text-light-secondary text-sm dark:text-dark-secondary'>
-                                {new Date(
-                                  movie.release_date ||
-                                    movie.first_air_date ||
-                                    ''
-                                ).toLocaleDateString()}
-                              </Text>
-                            </View>
-                          )}
+                                <Text className='text-sm text-light-text dark:text-dark-text'>
+                                  {new Date(
+                                    movie.release_date ||
+                                      movie.first_air_date ||
+                                      ''
+                                  ).toLocaleDateString()}
+                                </Text>
+                              </View>
+                            )}
 
-                          {movie.vote_average > 0 && (
-                            <View className='flex-row'>
-                              <Text className='font-medium text-sm text-light-text dark:text-dark-text'>
-                                {t('movies.rating')}:
-                              </Text>
+                            {movie.vote_average > 0 && (
+                              <View className='flex-row items-center gap-2'>
+                                <Text className='text-sm font-semibold text-light-text dark:text-dark-text'>
+                                ⭐ {t('movies.rating')}
+                                </Text>
 
-                              <Text className='text-light-secondary text-sm dark:text-dark-secondary'>
-                                {movie.vote_average.toFixed(1)}/10
-                              </Text>
-                            </View>
-                          )}
+                                <View className='flex-row items-center'>
+                                  <Text className='text-sm text-light-text dark:text-dark-text'>
+                                    {movie.vote_average.toFixed(1)}
+                                  </Text>
+
+                                  <Text className='text-sm text-light-text dark:text-dark-text'>
+                                    /10
+                                  </Text>
+                                </View>
+                              </View>
+                            )}
+                          </View>
                         </View>
                       )}
 

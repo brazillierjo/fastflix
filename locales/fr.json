@@ -14,9 +14,10 @@
     "noRecommendations": "Aucune recommandation trouvée. Essayez d'ajuster vos critères de recherche.",
     "seeMore": "Voir plus",
     "seeLess": "Voir moins",
-    "releaseDate": "Date de sortie",
-    "rating": "Note",
-    "availableOn": "Disponible sur"
+    "releaseDate": "Date de sortie :",
+    "rating": "Note :",
+    "availableOn": "Disponible sur :",
+    "mainActors": "Acteurs principaux :"
   },
   "settings": {
     "numberOfRecommendations": "Nombre de recommandations",
