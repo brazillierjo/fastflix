@@ -11,7 +11,12 @@
   },
   "movies": {
     "recommendations": "Recommandations",
-    "noRecommendations": "Aucune recommandation trouvée. Essayez d'ajuster vos critères de recherche."
+    "noRecommendations": "Aucune recommandation trouvée. Essayez d'ajuster vos critères de recherche.",
+    "seeMore": "Voir plus",
+    "seeLess": "Voir moins",
+    "releaseDate": "Date de sortie",
+    "rating": "Note",
+    "availableOn": "Disponible sur"
   },
   "settings": {
     "numberOfRecommendations": "Nombre de recommandations",

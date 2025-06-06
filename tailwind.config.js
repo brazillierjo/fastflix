@@ -5,7 +5,7 @@ module.exports = {
   theme: {
     extend: {
       colors: {
-        // Palette principale
+        // Main palette
         primary: {
           50: '#f0f9ff',
           100: '#e0f2fe',
@@ -19,7 +19,7 @@ module.exports = {
           900: '#0c4a6e',
           950: '#082f49',
         },
-        // Couleurs neutres pour les thèmes
+        // Neutral colors for themes
         neutral: {
           50: '#fafafa',
           100: '#f5f5f5',
@@ -33,7 +33,7 @@ module.exports = {
           900: '#171717',
           950: '#0a0a0a',
         },
-        // Couleurs sémantiques
+        // Semantic colors
         success: {
           50: '#f0fdf4',
           100: '#dcfce7',
@@ -73,7 +73,7 @@ module.exports = {
           900: '#7f1d1d',
           950: '#450a0a',
         },
-        // Thème Light
+        // Light theme
         light: {
           background: '#ffffff',
           surface: '#f8fafc',
@@ -88,11 +88,11 @@ module.exports = {
           text: '#0f172a',
           'text-muted': '#64748b',
         },
-        // Thème Dark
+        // Dark theme
         dark: {
-          background: '#0f172a',
+          background: '#000',
           surface: '#1e293b',
-          card: '#334155',
+          card: '#1e293b',
           border: '#475569',
           input: '#374151',
           primary: '#f8fafc',

@@ -53,7 +53,7 @@ export default function SearchForm({
 
   return (
     <>
-      {/* Message convivial en haut */}
+      {/* Friendly message at the top */}
       <MotiView
         from={{ opacity: 0, translateY: 20 }}
         animate={{ opacity: 1, translateY: 0 }}
@@ -69,7 +69,7 @@ export default function SearchForm({
         </Text>
       </MotiView>
 
-      {/* Conteneur pour tout pousser en bas */}
+      {/* Container to push everything to the bottom */}
       <View className='mt-auto'>
         {/* Options */}
         <MotiView
@@ -147,7 +147,7 @@ export default function SearchForm({
                   'h-6 w-6 items-center justify-center rounded-xl',
                   includeMovies
                     ? 'bg-light-background dark:bg-dark-background'
-                    : 'bg-neutral-300 dark:bg-neutral-600'
+                    : 'bg-light-muted dark:bg-dark-muted'
                 )}
               >
                 {includeMovies && (
@@ -182,7 +182,7 @@ export default function SearchForm({
                   'h-6 w-6 items-center justify-center rounded-xl',
                   includeTvShows
                     ? 'bg-light-background dark:bg-dark-background'
-                    : 'bg-neutral-300 dark:bg-neutral-600'
+                    : 'bg-light-muted dark:bg-dark-muted'
                 )}
               >
                 {includeTvShows && (
@@ -195,7 +195,7 @@ export default function SearchForm({
           </View>
         </MotiView>
 
-        {/* Input de description */}
+        {/* Description input */}
         <MotiView
           from={{ opacity: 0, translateY: 20 }}
           animate={{ opacity: 1, translateY: 0 }}
@@ -220,7 +220,7 @@ export default function SearchForm({
           />
         </MotiView>
 
-        {/* Bouton générer en bas */}
+        {/* Generate button at the bottom */}
         <MotiView
           from={{ opacity: 0, translateY: 20 }}
           animate={{ opacity: 1, translateY: 0 }}
@@ -236,7 +236,7 @@ export default function SearchForm({
             className={cn(
               'items-center rounded-xl p-4',
               loading
-                ? 'bg-neutral-400 dark:bg-neutral-600'
+                ? 'bg-light-muted dark:bg-dark-muted'
                 : 'bg-light-primary dark:bg-dark-primary'
             )}
           >
