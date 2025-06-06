@@ -1,8 +1,14 @@
-import { cn } from '@/utils/cn';
 import { MotiView } from 'moti';
-import React, { useState } from 'react';
+import React, { useState, useMemo } from 'react';
 import { Image, ScrollView, Text, TouchableOpacity, View } from 'react-native';
 import { useLanguage } from '../contexts/LanguageContext';
+import { cn } from '../utils/cn';
+
+type SortOption = 'release_date' | 'vote_average';
+type FilterState = {
+  sortBy: SortOption;
+  selectedProviders: Set<string>;
+};
 
 interface Movie {
   id: number;
@@ -42,8 +48,53 @@ export default function MovieResults({
   onGoBack,
 }: MovieResultsProps) {
   const [expandedCards, setExpandedCards] = useState<Set<number>>(new Set());
+  const [filters, setFilters] = useState<FilterState>({
+    sortBy: 'vote_average',
+    selectedProviders: new Set(),
+  });
+  const [showSortDropdown, setShowSortDropdown] = useState(false);
+  const [showProviderDropdown, setShowProviderDropdown] = useState(false);
 
   const { t } = useLanguage();
+
+  // Extract all available providers from the results
+  const availableProviders = useMemo(() => {
+    const providers = new Set<string>();
+    Object.values(streamingProviders).forEach(providerList => {
+      providerList.forEach(provider => {
+        providers.add(provider.provider_name);
+      });
+    });
+    return Array.from(providers).sort();
+  }, [streamingProviders]);
+
+  // Filter and sort movies based on current filters
+  const filteredAndSortedMovies = useMemo(() => {
+    let filtered = [...movies];
+
+    // Filter by selected providers
+    if (filters.selectedProviders.size > 0) {
+      filtered = filtered.filter(movie => {
+        const movieProviders = streamingProviders[movie.id] || [];
+        return movieProviders.some(provider => 
+          filters.selectedProviders.has(provider.provider_name)
+        );
+      });
+    }
+
+    // Sort movies
+    filtered.sort((a, b) => {
+      if (filters.sortBy === 'release_date') {
+        const dateA = new Date(a.release_date || a.first_air_date || '1900-01-01');
+        const dateB = new Date(b.release_date || b.first_air_date || '1900-01-01');
+        return dateB.getTime() - dateA.getTime(); // Most recent first
+      } else {
+        return b.vote_average - a.vote_average; // Highest rating first
+      }
+    });
+
+    return filtered;
+  }, [movies, filters, streamingProviders]);
 
   const toggleCardExpansion = (movieId: number) => {
     setExpandedCards(prev => {
@@ -56,6 +107,32 @@ export default function MovieResults({
   };
 
   const isExpanded = (movieId: number) => expandedCards.has(movieId);
+
+  const handleSortChange = (sortOption: SortOption) => {
+    setFilters(prev => ({ ...prev, sortBy: sortOption }));
+    setShowSortDropdown(false);
+  };
+
+  const toggleProvider = (providerName: string) => {
+    setFilters(prev => {
+      const newProviders = new Set(prev.selectedProviders);
+      if (newProviders.has(providerName)) {
+        newProviders.delete(providerName);
+      } else {
+        newProviders.add(providerName);
+      }
+      return { ...prev, selectedProviders: newProviders };
+    });
+  };
+
+  const clearProviderFilters = () => {
+    setFilters(prev => ({ ...prev, selectedProviders: new Set() }));
+  };
+
+  const closeDropdowns = () => {
+    setShowSortDropdown(false);
+    setShowProviderDropdown(false);
+  };
 
   return (
     <MotiView
@@ -76,9 +153,107 @@ export default function MovieResults({
         </Text>
       </View>
 
-      <ScrollView>
+      {/* Filters Section */}
+      <View className='border-b border-light-border bg-light-background px-4 py-3 dark:border-dark-border dark:bg-dark-background'>
+        <View className='flex-row gap-3'>
+          {/* Sort Filter */}
+          <View className='flex-1'>
+            <TouchableOpacity
+              onPress={() => setShowSortDropdown(!showSortDropdown)}
+              className='flex-row items-center justify-between rounded-lg border border-light-border bg-light-surface px-3 py-2 dark:border-dark-border dark:bg-dark-surface'
+            >
+              <Text className='text-sm text-light-text dark:text-dark-text'>
+                {filters.sortBy === 'release_date' ? '📅 Date de sortie' : '⭐ Note'}
+              </Text>
+              <Text className='text-light-secondary dark:text-dark-secondary'>
+                {showSortDropdown ? '▲' : '▼'}
+              </Text>
+            </TouchableOpacity>
+
+            {showSortDropdown && (
+              <View className='absolute top-12 z-10 w-full rounded-lg border border-light-border bg-light-background shadow-lg dark:border-dark-border dark:bg-dark-background'>
+                <TouchableOpacity
+                  onPress={() => handleSortChange('vote_average')}
+                  className={cn(
+                    'px-3 py-2 border-b border-light-border dark:border-dark-border',
+                    filters.sortBy === 'vote_average' && 'bg-light-accent/10 dark:bg-dark-accent/10'
+                  )}
+                >
+                  <Text className='text-sm text-light-text dark:text-dark-text'>⭐ Note</Text>
+                </TouchableOpacity>
+                <TouchableOpacity
+                  onPress={() => handleSortChange('release_date')}
+                  className={cn(
+                    'px-3 py-2',
+                    filters.sortBy === 'release_date' && 'bg-light-accent/10 dark:bg-dark-accent/10'
+                  )}
+                >
+                  <Text className='text-sm text-light-text dark:text-dark-text'>📅 Date de sortie</Text>
+                </TouchableOpacity>
+              </View>
+            )}
+          </View>
+
+          {/* Provider Filter */}
+          <View className='flex-1'>
+            <TouchableOpacity
+              onPress={() => setShowProviderDropdown(!showProviderDropdown)}
+              className='flex-row items-center justify-between rounded-lg border border-light-border bg-light-surface px-3 py-2 dark:border-dark-border dark:bg-dark-surface'
+            >
+              <Text className='text-sm text-light-text dark:text-dark-text'>
+                {filters.selectedProviders.size > 0 
+                  ? `${filters.selectedProviders.size} plateforme${filters.selectedProviders.size > 1 ? 's' : ''}` 
+                  : 'Toutes les plateformes'
+                }
+              </Text>
+              <Text className='text-light-secondary dark:text-dark-secondary'>
+                {showProviderDropdown ? '▲' : '▼'}
+              </Text>
+            </TouchableOpacity>
+
+            {showProviderDropdown && (
+              <View className='absolute top-12 z-10 w-full max-h-48 rounded-lg border border-light-border bg-light-background shadow-lg dark:border-dark-border dark:bg-dark-background'>
+                <ScrollView className='max-h-48'>
+                  {filters.selectedProviders.size > 0 && (
+                    <TouchableOpacity
+                      onPress={clearProviderFilters}
+                      className='border-b border-light-border px-3 py-2 dark:border-dark-border'
+                    >
+                      <Text className='text-sm font-medium text-light-accent dark:text-dark-accent'>Effacer les filtres</Text>
+                    </TouchableOpacity>
+                  )}
+                  {availableProviders.map((provider) => (
+                    <TouchableOpacity
+                      key={provider}
+                      onPress={() => toggleProvider(provider)}
+                      className={cn(
+                        'flex-row items-center px-3 py-2 border-b border-light-border dark:border-dark-border',
+                        filters.selectedProviders.has(provider) && 'bg-light-accent/10 dark:bg-dark-accent/10'
+                      )}
+                    >
+                      <View className={cn(
+                        'w-4 h-4 rounded border mr-2',
+                        filters.selectedProviders.has(provider)
+                          ? 'bg-light-accent border-light-accent dark:bg-dark-accent dark:border-dark-accent'
+                          : 'border-light-border dark:border-dark-border'
+                      )}>
+                        {filters.selectedProviders.has(provider) && (
+                          <Text className='text-xs text-white text-center leading-4'>✓</Text>
+                        )}
+                      </View>
+                      <Text className='text-sm text-light-text dark:text-dark-text'>{provider}</Text>
+                    </TouchableOpacity>
+                  ))}
+                </ScrollView>
+              </View>
+            )}
+          </View>
+        </View>
+      </View>
+
+      <ScrollView onTouchStart={closeDropdowns}>
         <View className='pt-4'>
-          {movies.length === 0 ? (
+          {filteredAndSortedMovies.length === 0 ? (
             <MotiView
               className='py-15 items-center justify-center'
               from={{ opacity: 0, translateY: 20 }}
@@ -90,11 +265,11 @@ export default function MovieResults({
               }}
             >
               <Text className='text-center text-lg font-medium leading-6 text-light-text-muted dark:text-dark-text-muted'>
-                {t('movies.noRecommendations')}
+                {movies.length === 0 ? t('movies.noRecommendations') : 'Aucun film ne correspond aux filtres sélectionnés'}
               </Text>
             </MotiView>
           ) : (
-            movies.map((movie, index) => {
+            filteredAndSortedMovies.map((movie, index) => {
               // Security check
               if (!movie || !movie.id || (!movie.title && !movie.name))
                 return null;
