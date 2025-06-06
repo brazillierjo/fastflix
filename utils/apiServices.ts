@@ -31,10 +31,10 @@
  * for future API integrations or modifications.
  */
 
+import { TMDBSearchItem } from '@/hooks/useMovieSearch';
+import { GoogleGenerativeAI } from '@google/generative-ai';
 import axios from 'axios';
 import Constants from 'expo-constants';
-import { GoogleGenerativeAI } from '@google/generative-ai';
-import { TMDBSearchItem } from '@/hooks/useMovieSearch';
 
 const GOOGLE_API_KEY = Constants.expoConfig?.extra?.GOOGLE_API_KEY;
 const TMDB_API_KEY = Constants.expoConfig?.extra?.TMDB_API_KEY;
@@ -58,6 +58,68 @@ export const geminiService = {
       .text()
       .split(',')
       .map(title => title.trim());
+  },
+
+  async generateConversationalResponse(
+    query: string,
+    numberOfRecommendations: number,
+    contentTypes: string[]
+  ): Promise<string> {
+    const genAI = new GoogleGenerativeAI(GOOGLE_API_KEY);
+    const model = genAI.getGenerativeModel({ model: 'gemini-2.0-flash' });
+
+    const contentTypeText = contentTypes.join(' et ');
+    const prompt = `Tu es un assistant IA spécialisé dans les recommandations de films et séries. Un utilisateur te demande: "${query}". 
+
+Réponds de manière conversationnelle et amicale dans la même langue que la demande de l'utilisateur. Donne un message général d'encouragement ou de contexte en lien avec sa demande, sans mentionner les résultats spécifiques qui seront affichés. Sois enthousiaste et personnalisé dans ta réponse, comme si tu parlais à un ami. Adapte ton ton selon le contexte (humoristique, sérieux, etc.). Limite ta réponse à 2-3 phrases maximum.`;
+
+    const result = await model.generateContent(prompt);
+    const response = await result.response;
+
+    return response.text().trim();
+  },
+
+  async generateRecommendationsWithResponse(
+    query: string,
+    numberOfRecommendations: number,
+    contentTypes: string[]
+  ): Promise<{ recommendations: string[]; conversationalResponse: string }> {
+    const genAI = new GoogleGenerativeAI(GOOGLE_API_KEY);
+    const model = genAI.getGenerativeModel({ model: 'gemini-2.0-flash' });
+
+    const contentTypeText = contentTypes.join(' et ');
+    const prompt = `Tu es un assistant IA spécialisé dans les recommandations de films et séries. Un utilisateur te demande: "${query}".
+
+Tu dois fournir deux choses dans ta réponse :
+
+1. RECOMMANDATIONS: ${numberOfRecommendations} ${contentTypeText} basés sur cette demande. Liste uniquement les titres séparés par des virgules.
+
+2. MESSAGE: Un message conversationnel et amical dans la même langue que la demande. Donne un message général d'encouragement ou de contexte en lien avec sa demande, sans mentionner les résultats spécifiques. Sois enthousiaste et personnalisé, comme si tu parlais à un ami. Limite à 2-3 phrases maximum.
+
+Formate ta réponse exactement comme ceci :
+RECOMMANDATIONS: [liste des titres séparés par des virgules]
+MESSAGE: [ton message conversationnel]`;
+
+    const result = await model.generateContent(prompt);
+    const response = await result.response;
+    const text = response.text().trim();
+
+    // Parse the response
+    const recommendationsMatch = text.match(/RECOMMANDATIONS:\s*(.+?)(?=\nMESSAGE:|$)/s);
+    const messageMatch = text.match(/MESSAGE:\s*(.+)$/s);
+
+    const recommendations = recommendationsMatch 
+      ? recommendationsMatch[1].split(',').map(title => title.trim())
+      : [];
+    
+    const conversationalResponse = messageMatch 
+      ? messageMatch[1].trim()
+      : "Voici mes recommandations pour vous !";
+
+    return {
+      recommendations,
+      conversationalResponse
+    };
   },
 };
 

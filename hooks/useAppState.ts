@@ -25,6 +25,7 @@ export interface AppState {
   movies: Movie[];
   streamingProviders: { [key: number]: StreamingProvider[] };
   credits: { [key: number]: Cast[] };
+  geminiResponse: string;
   showWelcome: boolean;
   showResults: boolean;
   numberOfRecommendations: number;
@@ -43,6 +44,7 @@ export const useAppState = () => {
   const [credits, setCredits] = useState<{
     [key: number]: Cast[];
   }>({});
+  const [geminiResponse, setGeminiResponse] = useState('');
   const [showWelcome, setShowWelcome] = useState(true);
   const [showResults, setShowResults] = useState(false);
   const [numberOfRecommendations, setNumberOfRecommendations] = useState(10);
@@ -58,16 +60,19 @@ export const useAppState = () => {
     setQuery('');
     setStreamingProviders({});
     setCredits({});
+    setGeminiResponse('');
   };
 
   const handleSearchSuccess = (data: {
     movies: Movie[];
     streamingProviders: { [key: number]: StreamingProvider[] };
     credits: { [key: number]: Cast[] };
+    geminiResponse: string;
   }) => {
     setMovies(data.movies);
     setStreamingProviders(data.streamingProviders);
     setCredits(data.credits);
+    setGeminiResponse(data.geminiResponse);
     setIsSearching(false);
     setShowResults(true);
   };
@@ -88,6 +93,7 @@ export const useAppState = () => {
     movies,
     streamingProviders,
     credits,
+    geminiResponse,
     showWelcome,
     showResults,
     numberOfRecommendations,
@@ -101,6 +107,7 @@ export const useAppState = () => {
     setMovies,
     setStreamingProviders,
     setCredits,
+    setGeminiResponse,
     setShowWelcome,
     setShowResults,
     setNumberOfRecommendations,

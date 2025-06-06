@@ -15,6 +15,7 @@ export default function HomeScreen() {
     movies,
     streamingProviders,
     credits,
+    geminiResponse,
     showWelcome,
     showResults,
     numberOfRecommendations,
@@ -91,6 +92,7 @@ export default function HomeScreen() {
                 movies={movies}
                 streamingProviders={streamingProviders}
                 credits={credits}
+                geminiResponse={geminiResponse}
                 onGoBack={goBackToHome}
               />
             )

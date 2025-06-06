@@ -131,7 +131,7 @@ export default function SearchForm({
           </Text>
 
           <View className='mb-5 flex-row items-center justify-between'>
-            <Text className='text-base text-light-primary font-semibold dark:text-dark-primary'>
+            <Text className='text-base font-semibold text-light-primary dark:text-dark-primary'>
               {t('settings.numberOfRecommendations')}
             </Text>
 
@@ -161,7 +161,7 @@ export default function SearchForm({
           </View>
 
           <View className='mb-5'>
-          <Text className='text-base mb-4 text-light-primary font-semibold dark:text-dark-primary'>
+            <Text className='mb-4 text-base font-semibold text-light-primary dark:text-dark-primary'>
               {t('settings.movieType')}
             </Text>
 

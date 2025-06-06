@@ -38,6 +38,7 @@ interface MovieResultsProps {
   movies: Movie[];
   streamingProviders: { [key: number]: StreamingProvider[] };
   credits: { [key: number]: Cast[] };
+  geminiResponse: string;
   onGoBack: () => void;
 }
 
@@ -45,6 +46,7 @@ export default function MovieResults({
   movies,
   streamingProviders,
   credits,
+  geminiResponse,
   onGoBack,
 }: MovieResultsProps) {
   const [expandedCards, setExpandedCards] = useState<Set<number>>(new Set());
@@ -76,7 +78,7 @@ export default function MovieResults({
     if (filters.selectedProviders.size > 0) {
       filtered = filtered.filter(movie => {
         const movieProviders = streamingProviders[movie.id] || [];
-        return movieProviders.some(provider => 
+        return movieProviders.some(provider =>
           filters.selectedProviders.has(provider.provider_name)
         );
       });
@@ -85,8 +87,12 @@ export default function MovieResults({
     // Sort movies
     filtered.sort((a, b) => {
       if (filters.sortBy === 'release_date') {
-        const dateA = new Date(a.release_date || a.first_air_date || '1900-01-01');
-        const dateB = new Date(b.release_date || b.first_air_date || '1900-01-01');
+        const dateA = new Date(
+          a.release_date || a.first_air_date || '1900-01-01'
+        );
+        const dateB = new Date(
+          b.release_date || b.first_air_date || '1900-01-01'
+        );
         return dateB.getTime() - dateA.getTime(); // Most recent first
       } else {
         return b.vote_average - a.vote_average; // Highest rating first
@@ -164,7 +170,9 @@ export default function MovieResults({
               className='flex-row items-center justify-between rounded-lg border border-light-border bg-light-surface px-3 py-2 dark:border-dark-border dark:bg-dark-surface'
             >
               <Text className='text-sm text-light-text dark:text-dark-text'>
-                {filters.sortBy === 'release_date' ? '📅 Date de sortie' : '⭐ Note'}
+                {filters.sortBy === 'release_date'
+                  ? '📅 Date de sortie'
+                  : '⭐ Note'}
               </Text>
               <Text className='text-light-secondary dark:text-dark-secondary'>
                 {showSortDropdown ? '▲' : '▼'}
@@ -176,20 +184,26 @@ export default function MovieResults({
                 <TouchableOpacity
                   onPress={() => handleSortChange('vote_average')}
                   className={cn(
-                    'px-3 py-2 border-b border-light-border dark:border-dark-border',
-                    filters.sortBy === 'vote_average' && 'bg-light-accent/10 dark:bg-dark-accent/10'
+                    'border-b border-light-border px-3 py-2 dark:border-dark-border',
+                    filters.sortBy === 'vote_average' &&
+                      'bg-light-accent/10 dark:bg-dark-accent/10'
                   )}
                 >
-                  <Text className='text-sm text-light-text dark:text-dark-text'>⭐ Note</Text>
+                  <Text className='text-sm text-light-text dark:text-dark-text'>
+                    ⭐ Note
+                  </Text>
                 </TouchableOpacity>
                 <TouchableOpacity
                   onPress={() => handleSortChange('release_date')}
                   className={cn(
                     'px-3 py-2',
-                    filters.sortBy === 'release_date' && 'bg-light-accent/10 dark:bg-dark-accent/10'
+                    filters.sortBy === 'release_date' &&
+                      'bg-light-accent/10 dark:bg-dark-accent/10'
                   )}
                 >
-                  <Text className='text-sm text-light-text dark:text-dark-text'>📅 Date de sortie</Text>
+                  <Text className='text-sm text-light-text dark:text-dark-text'>
+                    📅 Date de sortie
+                  </Text>
                 </TouchableOpacity>
               </View>
             )}
@@ -202,10 +216,9 @@ export default function MovieResults({
               className='flex-row items-center justify-between rounded-lg border border-light-border bg-light-surface px-3 py-2 dark:border-dark-border dark:bg-dark-surface'
             >
               <Text className='text-sm text-light-text dark:text-dark-text'>
-                {filters.selectedProviders.size > 0 
-                  ? `${filters.selectedProviders.size} plateforme${filters.selectedProviders.size > 1 ? 's' : ''}` 
-                  : 'Toutes les plateformes'
-                }
+                {filters.selectedProviders.size > 0
+                  ? `${filters.selectedProviders.size} plateforme${filters.selectedProviders.size > 1 ? 's' : ''}`
+                  : 'Toutes les plateformes'}
               </Text>
               <Text className='text-light-secondary dark:text-dark-secondary'>
                 {showProviderDropdown ? '▲' : '▼'}
@@ -213,36 +226,45 @@ export default function MovieResults({
             </TouchableOpacity>
 
             {showProviderDropdown && (
-              <View className='absolute top-12 z-10 w-full max-h-48 rounded-lg border border-light-border bg-light-background shadow-lg dark:border-dark-border dark:bg-dark-background'>
+              <View className='absolute top-12 z-10 max-h-48 w-full rounded-lg border border-light-border bg-light-background shadow-lg dark:border-dark-border dark:bg-dark-background'>
                 <ScrollView className='max-h-48'>
                   {filters.selectedProviders.size > 0 && (
                     <TouchableOpacity
                       onPress={clearProviderFilters}
                       className='border-b border-light-border px-3 py-2 dark:border-dark-border'
                     >
-                      <Text className='text-sm font-medium text-light-accent dark:text-dark-accent'>Effacer les filtres</Text>
+                      <Text className='text-sm font-medium text-light-accent dark:text-dark-accent'>
+                        Effacer les filtres
+                      </Text>
                     </TouchableOpacity>
                   )}
-                  {availableProviders.map((provider) => (
+                  {availableProviders.map(provider => (
                     <TouchableOpacity
                       key={provider}
                       onPress={() => toggleProvider(provider)}
                       className={cn(
-                        'flex-row items-center px-3 py-2 border-b border-light-border dark:border-dark-border',
-                        filters.selectedProviders.has(provider) && 'bg-light-accent/10 dark:bg-dark-accent/10'
+                        'flex-row items-center border-b border-light-border px-3 py-2 dark:border-dark-border',
+                        filters.selectedProviders.has(provider) &&
+                          'bg-light-accent/10 dark:bg-dark-accent/10'
                       )}
                     >
-                      <View className={cn(
-                        'w-4 h-4 rounded border mr-2',
-                        filters.selectedProviders.has(provider)
-                          ? 'bg-light-accent border-light-accent dark:bg-dark-accent dark:border-dark-accent'
-                          : 'border-light-border dark:border-dark-border'
-                      )}>
+                      <View
+                        className={cn(
+                          'mr-2 h-4 w-4 rounded border',
+                          filters.selectedProviders.has(provider)
+                            ? 'border-light-accent bg-light-accent dark:border-dark-accent dark:bg-dark-accent'
+                            : 'border-light-border dark:border-dark-border'
+                        )}
+                      >
                         {filters.selectedProviders.has(provider) && (
-                          <Text className='text-xs text-white text-center leading-4'>✓</Text>
+                          <Text className='text-center text-xs leading-4 text-white'>
+                            ✓
+                          </Text>
                         )}
                       </View>
-                      <Text className='text-sm text-light-text dark:text-dark-text'>{provider}</Text>
+                      <Text className='text-sm text-light-text dark:text-dark-text'>
+                        {provider}
+                      </Text>
                     </TouchableOpacity>
                   ))}
                 </ScrollView>
@@ -253,6 +275,22 @@ export default function MovieResults({
       </View>
 
       <ScrollView onTouchStart={closeDropdowns}>
+        {/* Gemini Response Section */}
+        {geminiResponse && (
+          <View className='mb-4 rounded-xl bg-light-accent/10 p-4 dark:bg-dark-accent/10'>
+            <View className='mb-2 flex-row items-center'>
+              <Text className='text-lg'>🤖</Text>
+              <Text className='ml-2 text-sm font-medium text-light-accent dark:text-dark-accent'>
+                Assistant IA
+              </Text>
+            </View>
+
+            <Text className='text-sm leading-5 text-light-text dark:text-dark-text'>
+              {geminiResponse}
+            </Text>
+          </View>
+        )}
+
         <View className='pt-4'>
           {filteredAndSortedMovies.length === 0 ? (
             <MotiView
@@ -266,7 +304,9 @@ export default function MovieResults({
               }}
             >
               <Text className='text-center text-lg font-medium leading-6 text-light-text-muted dark:text-dark-text-muted'>
-                {movies.length === 0 ? t('movies.noRecommendations') : 'Aucun film ne correspond aux filtres sélectionnés'}
+                {movies.length === 0
+                  ? t('movies.noRecommendations')
+                  : 'Aucun film ne correspond aux filtres sélectionnés'}
               </Text>
             </MotiView>
           ) : (
@@ -291,7 +331,7 @@ export default function MovieResults({
                     type: 'timing',
                     duration: 500,
                   }}
-                  className='mb-4 rounded-xl bg-white shadow-sm dark:bg-dark-card'
+                  className='mb-4 rounded-xl bg-light-card dark:bg-dark-card'
                 >
                   <View className='flex-row justify-between gap-4 p-4'>
                     {/* Left content */}

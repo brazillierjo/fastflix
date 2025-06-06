@@ -75,6 +75,7 @@ export interface SearchResult {
   movies: Movie[];
   streamingProviders: { [key: number]: StreamingProvider[] };
   credits: { [key: number]: Cast[] };
+  geminiResponse: string;
 }
 
 const searchMoviesWithGemini = async (
@@ -97,7 +98,8 @@ const searchMoviesWithGemini = async (
     if (includeMovies) contentTypes.push('films');
     if (includeTvShows) contentTypes.push('séries');
 
-    const movieTitles = await geminiService.generateRecommendations(
+    // Generate recommendations and conversational response in a single API call
+    const { recommendations: movieTitles, conversationalResponse } = await geminiService.generateRecommendationsWithResponse(
       query,
       numberOfRecommendations,
       contentTypes
@@ -161,6 +163,7 @@ const searchMoviesWithGemini = async (
       movies: validContent,
       streamingProviders: providersMap,
       credits: creditsMap,
+      geminiResponse: conversationalResponse,
     };
   } catch (error) {
     console.error('Search error:', error);

@@ -55,11 +55,7 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
           </TouchableOpacity>
         </View>
 
-        <View
-          className={cn(
-            'flex-1 px-6 py-8'
-          )}
-        >
+        <View className={cn('flex-1 px-6 py-8')}>
           <LanguageSelector />
         </View>
       </SafeAreaView>
