@@ -192,7 +192,7 @@ export default function HomeScreen() {
   return (
     <SafeAreaView className={cn('flex-1 bg-white')}>
       <StatusBar barStyle='dark-content' backgroundColor='#ffffff' />
-      
+
       <KeyboardAvoidingView
         behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
         className={cn('flex-1 bg-white')}
@@ -202,7 +202,7 @@ export default function HomeScreen() {
           animate={{ opacity: 1, translateY: 0 }}
           transition={{ type: 'timing', duration: 600 }}
           className={cn(
-            'flex-row px-6 pt-4 pb-6 items-center',
+            'flex-row items-center px-6 pb-6 pt-4',
             showResults ? 'justify-start' : 'justify-between'
           )}
         >
@@ -212,7 +212,7 @@ export default function HomeScreen() {
                 from={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 transition={{ delay: 200, type: 'timing', duration: 400 }}
-                className={cn('text-2xl font-semibold text-black text-left')}
+                className={cn('text-left text-2xl font-semibold text-black')}
               >
                 {t('welcome.title')}
               </MotiText>
@@ -253,16 +253,20 @@ export default function HomeScreen() {
             )
           )}
         </View>
-        
+
         {/* Burger Menu Modal */}
         <Modal
           visible={isMenuOpen}
-          animationType="slide"
-          presentationStyle="pageSheet"
+          animationType='slide'
+          presentationStyle='pageSheet'
           onRequestClose={() => setIsMenuOpen(false)}
         >
           <SafeAreaView className={cn('flex-1 bg-white')}>
-            <View className={cn('flex-row justify-between items-center px-6 py-4 border-b border-gray-200')}>
+            <View
+              className={cn(
+                'flex-row items-center justify-between border-b border-gray-200 px-6 py-4'
+              )}
+            >
               <Text className={cn('text-xl font-semibold text-black')}>
                 {t('settings.language')}
               </Text>
@@ -273,13 +277,13 @@ export default function HomeScreen() {
                 <Text className={cn('text-2xl text-black')}>✕</Text>
               </TouchableOpacity>
             </View>
-            
+
             <View className={cn('flex-1 px-6 py-8')}>
               <View className={cn('items-center')}>
-                <Text className={cn('text-lg font-medium text-black mb-6')}>
+                <Text className={cn('mb-6 text-lg font-medium text-black')}>
                   {t('settings.language')}
                 </Text>
-                
+
                 <LanguageSelector
                   style={{
                     width: '80%',

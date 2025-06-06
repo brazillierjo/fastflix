@@ -1,5 +1,4 @@
 import { useLanguage } from '@/contexts/LanguageContext';
-import { cn } from '@/utils/cn';
 import { MotiView } from 'moti';
 import React from 'react';
 import { ActivityIndicator, Text, View } from 'react-native';
