@@ -9,7 +9,8 @@
     "noDescription": "Aucune description disponible"
   },
   "movies": {
-    "recommendations": "Recommandations"
+    "recommendations": "Recommandations",
+    "noRecommendations": "Aucune recommandation trouvée. Essayez d'ajuster vos critères de recherche."
   },
   "settings": {
     "numberOfRecommendations": "Nombre de recommandations",
@@ -21,7 +22,8 @@
     "title": "Erreur",
     "enterRequest": "Veuillez entrer une demande",
     "selectContentType": "Veuillez sélectionner au moins un type de contenu (films ou séries)",
-    "searchError": "Une erreur est survenue lors de la recherche"
+    "searchError": "Une erreur est survenue lors de la recherche",
+    "searchMovieError": "Erreur lors de la recherche de"
   },
   "languages": {
     "fr": "Français",
