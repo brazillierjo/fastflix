@@ -106,7 +106,7 @@ export default function SearchForm({
           type: 'timing',
           duration: 600,
         }}
-        className='mb-8 px-6'
+        className='mb-8 px-4'
       >
         <Text className='text-center text-lg leading-relaxed text-light-primary dark:text-dark-primary'>
           {t('welcome.friendlyMessage')}

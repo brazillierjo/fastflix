@@ -1,9 +1,9 @@
 {
   "welcome": {
-    "title": "Que regarder ?",
-    "friendlyMessage": "🎬 Salut ! Décris-moi ce que tu aimerais regarder et je te trouverai les meilleures recommandations !",
+    "title": "Que regarder ? 🍿",
+    "friendlyMessage": "Salut ! Décris-moi ce que tu aimerais regarder et je te trouverai les meilleures recommandations !",
     "inputPlaceholder": "Décrivez ce que vous voulez regarder",
-    "searchButton": "Générer",
+    "searchButton": "Générer ✨",
     "searching": "Recherche...",
     "generating": "Génération...",
     "options": "Options :",

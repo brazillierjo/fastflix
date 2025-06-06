@@ -77,7 +77,7 @@ module.exports = {
         light: {
           background: '#ffffff',
           surface: '#f8fafc',
-          card: '#ffffff',
+          card: '#f8fafc',
           border: '#e2e8f0',
           input: '#f1f5f9',
           primary: '#0f172a',

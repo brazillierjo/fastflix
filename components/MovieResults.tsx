@@ -1,5 +1,5 @@
 import { MotiView } from 'moti';
-import React, { useState, useMemo } from 'react';
+import React, { useMemo, useState } from 'react';
 import { Image, ScrollView, Text, TouchableOpacity, View } from 'react-native';
 import { useLanguage } from '../contexts/LanguageContext';
 import { cn } from '../utils/cn';
@@ -142,6 +142,7 @@ export default function MovieResults({
         type: 'timing',
         duration: 600,
       }}
+      className='px-4'
     >
       <View className='relative flex-row items-center justify-center border-b border-light-border bg-light-background pb-4 dark:border-dark-border dark:bg-dark-background'>
         <TouchableOpacity onPress={onGoBack} className='absolute left-4 z-10'>
@@ -154,7 +155,7 @@ export default function MovieResults({
       </View>
 
       {/* Filters Section */}
-      <View className='border-b border-light-border bg-light-background px-4 py-3 dark:border-dark-border dark:bg-dark-background'>
+      <View className='bg-light-background py-3 dark:border-dark-border dark:bg-dark-background'>
         <View className='flex-row gap-3'>
           {/* Sort Filter */}
           <View className='flex-1'>

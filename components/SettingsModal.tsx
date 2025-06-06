@@ -29,7 +29,7 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
       onRequestClose={onClose}
     >
       <SafeAreaView
-        className={cn('flex-1 bg-light-background dark:bg-dark-background')}
+        className={cn('flex-1 bg-light-surface dark:bg-dark-surface')}
       >
         <View
           className={cn(
@@ -57,7 +57,7 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
 
         <View
           className={cn(
-            'flex-1 bg-light-surface px-6 py-8 dark:bg-dark-surface'
+            'flex-1 px-6 py-8'
           )}
         >
           <LanguageSelector />
