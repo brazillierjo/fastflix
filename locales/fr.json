@@ -1,0 +1,30 @@
+{
+  "welcome": {
+    "title": "Que regarder ?",
+    "inputPlaceholder": "Décrivez ce que vous voulez regarder",
+    "searchButton": "Générer",
+    "searching": "Recherche...",
+    "generating": "Génération...",
+    "options": "Options",
+    "noDescription": "Aucune description disponible"
+  },
+  "movies": {
+    "recommendations": "Recommandations"
+  },
+  "settings": {
+    "numberOfRecommendations": "Nombre de recommandations",
+    "language": "Langue",
+    "movies": "Films",
+    "tvShows": "Séries"
+  },
+  "errors": {
+    "title": "Erreur",
+    "enterRequest": "Veuillez entrer une demande",
+    "selectContentType": "Veuillez sélectionner au moins un type de contenu (films ou séries)",
+    "searchError": "Une erreur est survenue lors de la recherche"
+  },
+  "languages": {
+    "fr": "Français",
+    "en": "English"
+  }
+}

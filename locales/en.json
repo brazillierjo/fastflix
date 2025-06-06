@@ -1,0 +1,30 @@
+{
+  "welcome": {
+    "title": "What to watch?",
+    "inputPlaceholder": "Describe what you want to watch",
+    "searchButton": "Generate",
+    "searching": "Searching...",
+    "generating": "Generating...",
+    "options": "Options",
+    "noDescription": "No description available"
+  },
+  "movies": {
+    "recommendations": "Recommendations"
+  },
+  "settings": {
+    "numberOfRecommendations": "Number of recommendations",
+    "language": "Language",
+    "movies": "Movies",
+    "tvShows": "TV Shows"
+  },
+  "errors": {
+    "title": "Error",
+    "enterRequest": "Please enter a request",
+    "selectContentType": "Please select at least one content type (movies or TV shows)",
+    "searchError": "An error occurred during the search"
+  },
+  "languages": {
+    "fr": "Français",
+    "en": "English"
+  }
+}
