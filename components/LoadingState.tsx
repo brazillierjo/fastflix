@@ -24,10 +24,10 @@ export default function LoadingState({ isSearching }: LoadingStateProps) {
         >
           <ActivityIndicator
             size='large'
-            color='#000'
+            color='#0f172a'
             className='text-light-primary dark:text-dark-primary'
           />
-          <Text className='mt-4 text-center text-base text-neutral-500 dark:text-neutral-400'>
+          <Text className='mt-4 text-center text-base text-light-muted dark:text-dark-muted'>
             {t('welcome.searching')}
           </Text>
         </MotiView>
@@ -43,10 +43,10 @@ export default function LoadingState({ isSearching }: LoadingStateProps) {
         >
           <ActivityIndicator
             size='large'
-            color='#000'
+            color='#0f172a'
             className='text-light-primary dark:text-dark-primary'
           />
-          <Text className='mt-4 text-center text-base text-neutral-500 dark:text-neutral-400'>
+          <Text className='mt-4 text-center text-base text-light-muted dark:text-dark-muted'>
             {t('welcome.generating')}
           </Text>
         </MotiView>

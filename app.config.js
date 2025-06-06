@@ -2,32 +2,34 @@ import 'dotenv/config';
 
 export default {
   expo: {
-    name: 'what-movie-tonight',
+    name: 'What Movie Tonight',
     slug: 'what-movie-tonight',
     version: '1.0.0',
     orientation: 'portrait',
-    icon: './assets/images/icon.png',
+    icon: './assets/app-images/icon-1024-1024.png',
     scheme: 'myapp',
     userInterfaceStyle: 'automatic',
     splash: {
-      image: './assets/images/splash-icon.png',
+      image: './assets/app-images/splash-4096-4096.png',
       resizeMode: 'contain',
       backgroundColor: '#ffffff',
     },
     assetBundlePatterns: ['**/*'],
     ios: {
       supportsTablet: true,
+      bundleIdentifier: 'com.whatmovietonight.app',
     },
     android: {
       adaptiveIcon: {
-        foregroundImage: './assets/images/adaptive-icon.png',
+        foregroundImage: './assets/app-images/icon-1024-1024.png',
         backgroundColor: '#ffffff',
       },
+      package: 'com.whatmovietonight.app',
     },
     web: {
       bundler: 'metro',
       output: 'static',
-      favicon: './assets/images/favicon.png',
+      favicon: './assets/app-images/icon-1024-1024.png',
     },
     plugins: ['expo-router'],
     experiments: {

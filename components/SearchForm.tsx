@@ -64,7 +64,7 @@ export default function SearchForm({
         }}
         className='mb-8'
       >
-        <Text className='text-center text-lg text-light-primary dark:text-dark-primary leading-relaxed'>
+        <Text className='text-center text-lg leading-relaxed text-light-primary dark:text-dark-primary'>
           {t('welcome.friendlyMessage')}
         </Text>
       </MotiView>

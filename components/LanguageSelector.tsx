@@ -26,7 +26,7 @@ export const LanguageSelector: React.FC<LanguageSelectorProps> = ({
 
   return (
     <View className={cn('relative w-full', style)}>
-      <Text className='text-center text-lg font-medium text-black dark:text-white'>
+      <Text className='text-center text-lg font-medium text-light-primary dark:text-dark-primary'>
         {t('settings.language')}
       </Text>
 

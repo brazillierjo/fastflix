@@ -85,6 +85,8 @@ module.exports = {
           muted: '#94a3b8',
           accent: '#0ea5e9',
           destructive: '#ef4444',
+          text: '#0f172a',
+          'text-muted': '#64748b',
         },
         // Thème Dark
         dark: {
@@ -98,6 +100,8 @@ module.exports = {
           muted: '#64748b',
           accent: '#38bdf8',
           destructive: '#f87171',
+          text: '#f8fafc',
+          'text-muted': '#94a3b8',
         },
       },
     },

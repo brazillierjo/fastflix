@@ -28,24 +28,38 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
       presentationStyle='pageSheet'
       onRequestClose={onClose}
     >
-      <SafeAreaView className={cn('flex-1  dark:bg-gray-900')}>
+      <SafeAreaView
+        className={cn('flex-1 bg-light-background dark:bg-dark-background')}
+      >
         <View
           className={cn(
-            'flex-row items-center justify-between border-b border-gray-200 px-6 py-4 dark:border-gray-700'
+            'flex-row items-center justify-between border-b border-light-border px-6 py-4 dark:border-dark-border'
           )}
         >
           <Text
-            className={cn('text-xl font-semibold text-black dark:text-white')}
+            className={cn(
+              'text-xl font-semibold text-light-primary dark:text-dark-primary'
+            )}
           >
             {t('modal.title')}
           </Text>
 
           <TouchableOpacity onPress={onClose} className={cn('p-2')}>
-            <Text className={cn('text-2xl text-black dark:text-white')}>✕</Text>
+            <Text
+              className={cn(
+                'text-2xl text-light-primary dark:text-dark-primary'
+              )}
+            >
+              ✕
+            </Text>
           </TouchableOpacity>
         </View>
 
-        <View className={cn('flex-1 px-6 py-8')}>
+        <View
+          className={cn(
+            'flex-1 bg-light-surface px-6 py-8 dark:bg-dark-surface'
+          )}
+        >
           <LanguageSelector />
         </View>
       </SafeAreaView>

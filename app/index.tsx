@@ -16,7 +16,7 @@ import {
   StatusBar,
   Text,
   TouchableOpacity,
-  View
+  View,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
@@ -189,12 +189,14 @@ export default function HomeScreen() {
   };
 
   return (
-    <SafeAreaView className={cn('flex-1 dark:bg-black')}>
+    <SafeAreaView
+      className={cn('flex-1 bg-light-background dark:bg-dark-background')}
+    >
       <StatusBar barStyle='dark-content' backgroundColor='#ffffff' />
 
       <KeyboardAvoidingView
         behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-        className={cn('flex-1 ')}
+        className={cn('flex-1')}
       >
         <MotiView
           from={{ opacity: 0, translateY: -20 }}
@@ -211,7 +213,9 @@ export default function HomeScreen() {
                 from={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 transition={{ delay: 200, type: 'timing', duration: 400 }}
-                className={cn('text-left text-2xl font-semibold text-black')}
+                className={cn(
+                  'text-left text-2xl font-semibold text-light-primary dark:text-dark-primary'
+                )}
               >
                 {t('welcome.title')}
               </MotiText>
@@ -220,7 +224,13 @@ export default function HomeScreen() {
                 className={cn('p-2')}
                 onPress={() => setIsMenuOpen(true)}
               >
-                <Text className={cn('text-2xl text-black')}>☰</Text>
+                <Text
+                  className={cn(
+                    'text-2xl text-light-primary dark:text-dark-primary'
+                  )}
+                >
+                  ☰
+                </Text>
               </TouchableOpacity>
             </>
           )}
