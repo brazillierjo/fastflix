@@ -1,6 +1,7 @@
 {
   "welcome": {
     "title": "Que regarder ?",
+    "friendlyMessage": "🎬 Salut ! Décris-moi ce que tu aimerais regarder et je te trouverai les meilleures recommandations !",
     "inputPlaceholder": "Décrivez ce que vous voulez regarder",
     "searchButton": "Générer",
     "searching": "Recherche...",
@@ -28,5 +29,8 @@
   "languages": {
     "fr": "Français",
     "en": "English"
+  },
+  "modal": {
+    "title": "Profil utilisateur"
   }
 }

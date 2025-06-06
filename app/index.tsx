@@ -1,4 +1,4 @@
-import { LanguageSelector } from '@/components/LanguageSelector';
+import { SettingsModal } from '@/components/SettingsModal';
 import LoadingState from '@/components/LoadingState';
 import MovieResults from '@/components/MovieResults';
 import SearchForm from '@/components/SearchForm';
@@ -254,46 +254,10 @@ export default function HomeScreen() {
           )}
         </View>
 
-        {/* Burger Menu Modal */}
-        <Modal
-          visible={isMenuOpen}
-          animationType='slide'
-          presentationStyle='pageSheet'
-          onRequestClose={() => setIsMenuOpen(false)}
-        >
-          <SafeAreaView className={cn('flex-1 bg-white')}>
-            <View
-              className={cn(
-                'flex-row items-center justify-between border-b border-gray-200 px-6 py-4'
-              )}
-            >
-              <Text className={cn('text-xl font-semibold text-black')}>
-                {t('settings.language')}
-              </Text>
-              <TouchableOpacity
-                onPress={() => setIsMenuOpen(false)}
-                className={cn('p-2')}
-              >
-                <Text className={cn('text-2xl text-black')}>✕</Text>
-              </TouchableOpacity>
-            </View>
-
-            <View className={cn('flex-1 px-6 py-8')}>
-              <View className={cn('items-center')}>
-                <Text className={cn('mb-6 text-lg font-medium text-black')}>
-                  {t('settings.language')}
-                </Text>
-
-                <LanguageSelector
-                  style={{
-                    width: '80%',
-                    marginBottom: 20,
-                  }}
-                />
-              </View>
-            </View>
-          </SafeAreaView>
-        </Modal>
+        <SettingsModal
+          isVisible={isMenuOpen}
+          onClose={() => setIsMenuOpen(false)}
+        />
       </KeyboardAvoidingView>
     </SafeAreaView>
   );
