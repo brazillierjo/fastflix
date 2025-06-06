@@ -6,6 +6,7 @@ import { StatusBar } from 'expo-status-bar';
 import 'react-native-reanimated';
 
 import { LanguageProvider } from '@/contexts/LanguageContext';
+import { QueryProvider } from '@/providers/QueryProvider';
 
 export default function RootLayout() {
   const [loaded] = useFonts({
@@ -15,12 +16,14 @@ export default function RootLayout() {
   if (!loaded) return null;
 
   return (
-    <LanguageProvider>
-      <Stack>
-        <Stack.Screen name='index' options={{ headerShown: false }} />
-        <Stack.Screen name='+not-found' />
-      </Stack>
-      <StatusBar style='auto' />
-    </LanguageProvider>
+    <QueryProvider>
+      <LanguageProvider>
+        <Stack>
+          <Stack.Screen name='index' options={{ headerShown: false }} />
+          <Stack.Screen name='+not-found' />
+        </Stack>
+        <StatusBar style='auto' />
+      </LanguageProvider>
+    </QueryProvider>
   );
 }

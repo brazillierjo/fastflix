@@ -158,10 +158,11 @@ export default function MovieResults({
                         <View className='mb-3 space-y-2'>
                           {(movie.release_date || movie.first_air_date) && (
                             <View className='flex-row'>
-                              <Text className='font-medium text-light-text dark:text-dark-text'>
+                              <Text className='font-medium text-light-text text-sm dark:text-dark-text'>
                                 {t('movies.releaseDate')}:
                               </Text>
-                              <Text className='text-light-secondary dark:text-dark-secondary'>
+
+                              <Text className='text-light-secondary text-sm dark:text-dark-secondary'>
                                 {new Date(
                                   movie.release_date ||
                                     movie.first_air_date ||
@@ -170,12 +171,14 @@ export default function MovieResults({
                               </Text>
                             </View>
                           )}
+
                           {movie.vote_average > 0 && (
                             <View className='flex-row'>
-                              <Text className='font-medium text-light-text dark:text-dark-text'>
+                              <Text className='font-medium text-sm text-light-text dark:text-dark-text'>
                                 {t('movies.rating')}:
                               </Text>
-                              <Text className='text-light-secondary dark:text-dark-secondary'>
+
+                              <Text className='text-light-secondary text-sm dark:text-dark-secondary'>
                                 {movie.vote_average.toFixed(1)}/10
                               </Text>
                             </View>
