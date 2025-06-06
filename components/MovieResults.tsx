@@ -1,7 +1,7 @@
-import { useLanguage } from '@/contexts/LanguageContext';
 import { MotiView } from 'moti';
 import React from 'react';
 import { Image, ScrollView, Text, TouchableOpacity, View } from 'react-native';
+import { useLanguage } from '../contexts/LanguageContext';
 
 interface Movie {
   id: number;

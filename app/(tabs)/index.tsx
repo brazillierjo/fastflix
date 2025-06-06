@@ -1,7 +1,7 @@
-import { useLanguage } from '@/contexts/LanguageContext';
 import LoadingState from '@/components/LoadingState';
 import MovieResults from '@/components/MovieResults';
 import SearchForm from '@/components/SearchForm';
+import { useLanguage } from '@/contexts/LanguageContext';
 import { GoogleGenerativeAI } from '@google/generative-ai';
 import axios from 'axios';
 import Constants from 'expo-constants';
@@ -90,7 +90,7 @@ export default function HomeScreen() {
     try {
       // Initialize AI
       const genAI = new GoogleGenerativeAI(GOOGLE_API_KEY);
-      const model = genAI.getGenerativeModel({ model: 'gemini-1.5-flash' });
+      const model = genAI.getGenerativeModel({ model: 'gemini-2.0-flash' });
 
       // AI prompt
       let contentTypes = [];
