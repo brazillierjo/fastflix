@@ -198,45 +198,7 @@ export default function HomeScreen() {
         behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
         className={cn('flex-1')}
       >
-        <MotiView
-          from={{ opacity: 0, translateY: -20 }}
-          animate={{ opacity: 1, translateY: 0 }}
-          transition={{ type: 'timing', duration: 600 }}
-          className={cn(
-            'flex-row items-center px-6 pb-6 pt-4',
-            showResults ? 'justify-start' : 'justify-between'
-          )}
-        >
-          {!showResults && (
-            <>
-              <MotiText
-                from={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                transition={{ delay: 200, type: 'timing', duration: 400 }}
-                className={cn(
-                  'text-left text-2xl font-semibold text-light-primary dark:text-dark-primary'
-                )}
-              >
-                {t('welcome.title')}
-              </MotiText>
-
-              <TouchableOpacity
-                className={cn('p-2')}
-                onPress={() => setIsMenuOpen(true)}
-              >
-                <Text
-                  className={cn(
-                    'text-2xl text-light-primary dark:text-dark-primary'
-                  )}
-                >
-                  ☰
-                </Text>
-              </TouchableOpacity>
-            </>
-          )}
-        </MotiView>
-
-        <View className={cn('flex-1 px-6')}>
+        <View className={cn('flex-1')}>
           {showWelcome && movies.length === 0 && !loading ? (
             <SearchForm
               query={query}
@@ -249,6 +211,8 @@ export default function HomeScreen() {
               setIncludeTvShows={setIncludeTvShows}
               onSearch={searchMoviesWithGemini}
               loading={loading}
+              showResults={showResults}
+              setIsMenuOpen={setIsMenuOpen}
             />
           ) : loading ? (
             <LoadingState isSearching={isSearching} />

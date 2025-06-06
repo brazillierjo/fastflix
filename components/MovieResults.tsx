@@ -107,9 +107,9 @@ export default function MovieResults({
                   }}
                   className='mb-4 rounded-xl bg-white shadow-sm dark:bg-dark-card'
                 >
-                  <View className='flex-row p-4'>
+                  <View className='flex-row justify-between gap-4 p-4'>
                     {/* Left content */}
-                    <View className='flex-1'>
+                    <View className='w-9/12'>
                       <Text className='mb-2 text-lg font-semibold text-light-text dark:text-dark-text'>
                         {movie.title || movie.name}
                       </Text>
@@ -196,7 +196,7 @@ export default function MovieResults({
 
                     {/* Image on the right */}
                     {movie.poster_path && (
-                      <View className='ml-3 w-20'>
+                      <View className='w-3/12'>
                         <Image
                           source={{
                             uri: `https://image.tmdb.org/t/p/w300${movie.poster_path}`,

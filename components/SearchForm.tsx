@@ -1,6 +1,6 @@
 import { useLanguage } from '@/contexts/LanguageContext';
 import { cn } from '@/utils/cn';
-import { MotiView } from 'moti';
+import { MotiText, MotiView } from 'moti';
 import React from 'react';
 import {
   Dimensions,
@@ -22,6 +22,8 @@ interface SearchFormProps {
   setIncludeTvShows: (include: boolean) => void;
   onSearch: () => void;
   loading: boolean;
+  showResults: boolean;
+  setIsMenuOpen: (open: boolean) => void;
 }
 
 export default function SearchForm({
@@ -35,6 +37,8 @@ export default function SearchForm({
   setIncludeTvShows,
   onSearch,
   loading,
+  showResults,
+  setIsMenuOpen,
 }: SearchFormProps) {
   const { t } = useLanguage();
   const screenWidth = Dimensions.get('window').width;
@@ -53,6 +57,45 @@ export default function SearchForm({
 
   return (
     <>
+      {/* Header with title and menu */}
+      <MotiView
+        from={{ opacity: 0, translateY: -20 }}
+        animate={{ opacity: 1, translateY: 0 }}
+        transition={{ type: 'timing', duration: 600 }}
+        className={cn(
+          'flex-row items-center px-6 pb-6 pt-4',
+          showResults ? 'justify-start' : 'justify-between'
+        )}
+      >
+        {!showResults && (
+          <>
+            <MotiText
+              from={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ delay: 200, type: 'timing', duration: 400 }}
+              className={cn(
+                'text-left text-2xl font-semibold text-light-primary dark:text-dark-primary'
+              )}
+            >
+              {t('welcome.title')}
+            </MotiText>
+
+            <TouchableOpacity
+              className={cn('p-2')}
+              onPress={() => setIsMenuOpen(true)}
+            >
+              <Text
+                className={cn(
+                  'text-2xl text-light-primary dark:text-dark-primary'
+                )}
+              >
+                ☰
+              </Text>
+            </TouchableOpacity>
+          </>
+        )}
+      </MotiView>
+
       {/* Friendly message at the top */}
       <MotiView
         from={{ opacity: 0, translateY: 20 }}
@@ -62,7 +105,7 @@ export default function SearchForm({
           type: 'timing',
           duration: 600,
         }}
-        className='mb-8'
+        className='mb-8 px-6'
       >
         <Text className='text-center text-lg leading-relaxed text-light-primary dark:text-dark-primary'>
           {t('welcome.friendlyMessage')}
@@ -70,7 +113,7 @@ export default function SearchForm({
       </MotiView>
 
       {/* Container to push everything to the bottom */}
-      <View className='mt-auto'>
+      <View className='mt-auto px-6'>
         {/* Options */}
         <MotiView
           from={{ opacity: 0, translateY: 20 }}
