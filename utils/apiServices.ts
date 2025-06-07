@@ -151,13 +151,13 @@ export const tmdbService = {
     }
   },
 
-  async getWatchProviders(itemId: number, mediaType: string): Promise<any[]> {
+  async getWatchProviders(itemId: number, mediaType: string, countryCode: string = 'FR'): Promise<any[]> {
     try {
       const providerResponse = await axios.get(
         `https://api.themoviedb.org/3/${mediaType}/${itemId}/watch/providers?api_key=${TMDB_API_KEY}`
       );
 
-      return providerResponse.data.results?.FR?.flatrate || [];
+      return providerResponse.data.results?.[countryCode]?.flatrate || [];
     } catch (error) {
       console.error(
         `Error fetching providers for ${mediaType} ${itemId}:`,

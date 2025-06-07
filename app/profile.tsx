@@ -1,4 +1,5 @@
-import { SupportedLanguage, useLanguage } from '@/contexts/LanguageContext';
+import { useLanguage } from '@/contexts/LanguageContext';
+import type { SupportedLanguage, SupportedCountry, Country } from '@/contexts/LanguageContext';
 import { MotiView } from 'moti';
 import React from 'react';
 import {
@@ -13,7 +14,7 @@ import {
 } from 'react-native';
 
 export default function ProfileScreen() {
-  const { language, setLanguage, t } = useLanguage();
+  const { language, setLanguage, country, setCountry, t, availableCountries } = useLanguage();
 
   const languages: Array<{
     code: SupportedLanguage;
@@ -121,12 +122,83 @@ export default function ProfileScreen() {
           </View>
         </MotiView>
 
+        {/* Country Section */}
+        <MotiView
+          from={{ opacity: 0, translateY: 20 }}
+          animate={{ opacity: 1, translateY: 0 }}
+          transition={{
+            delay: 300,
+            type: 'timing',
+            duration: 600,
+          }}
+          className='mb-6'
+        >
+          <View className='rounded-xl bg-light-card p-6 dark:bg-dark-card'>
+            <Text className='mb-4 text-lg font-semibold text-light-text dark:text-dark-text'>
+              🌍 {t('settings.country')}
+            </Text>
+
+            <TouchableOpacity
+              onPress={() => {
+                if (Platform.OS === 'ios') {
+                  ActionSheetIOS.showActionSheetWithOptions(
+                    {
+                      options: [
+                        language === 'fr' ? 'Annuler' : 'Cancel',
+                        ...availableCountries.map(country => `${country.flag} ${country.name}`),
+                      ],
+                      cancelButtonIndex: 0,
+                      title:
+                        language === 'fr'
+                          ? 'Choisir un pays'
+                          : 'Choose a country',
+                    },
+                    buttonIndex => {
+                      if (buttonIndex > 0) {
+                        const selectedCountry = availableCountries[buttonIndex - 1];
+                        setCountry(selectedCountry.code);
+                      }
+                    }
+                  );
+                } else {
+                  // Pour Android, utiliser Alert avec des boutons
+                  Alert.alert(
+                    language === 'fr'
+                      ? 'Choisir un pays'
+                      : 'Choose a country',
+                    '',
+                    [
+                      {
+                        text: language === 'fr' ? 'Annuler' : 'Cancel',
+                        style: 'cancel',
+                      },
+                      ...availableCountries.map(countryItem => ({
+                        text: `${countryItem.flag} ${countryItem.name}`,
+                        onPress: () => setCountry(countryItem.code),
+                      })),
+                    ]
+                  );
+                }
+              }}
+              className='rounded-lg border border-light-border bg-light-background p-4 dark:border-dark-border dark:bg-dark-background'
+            >
+              <View className='flex-row items-center justify-between'>
+                <Text className='text-base text-light-text dark:text-dark-text'>
+                  {availableCountries.find(c => c.code === country)?.flag}{' '}
+                  {availableCountries.find(c => c.code === country)?.name}
+                </Text>
+                <Text className='text-light-muted dark:text-dark-muted'>▼</Text>
+              </View>
+            </TouchableOpacity>
+          </View>
+        </MotiView>
+
         {/* App Info Section */}
         <MotiView
           from={{ opacity: 0, translateY: 20 }}
           animate={{ opacity: 1, translateY: 0 }}
           transition={{
-            delay: 400,
+            delay: 500,
             type: 'timing',
             duration: 600,
           }}

@@ -43,6 +43,7 @@
   "settings": {
     "numberOfRecommendations": "Number of recommendations",
     "language": "Language",
+    "country": "Country",
     "movies": "Movies",
     "tvShows": "TV Shows",
     "movieType": "Content type :"

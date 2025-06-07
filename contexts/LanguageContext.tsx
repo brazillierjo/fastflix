@@ -13,6 +13,7 @@ import fr from '../locales/fr.json';
 import en from '../locales/en.json';
 
 export type SupportedLanguage = 'fr' | 'en';
+export type SupportedCountry = 'FR' | 'US' | 'CA' | 'GB' | 'DE' | 'ES' | 'IT';
 
 type Translations = {
   [key in SupportedLanguage]: typeof fr;
@@ -23,11 +24,30 @@ const translations: Translations = {
   en,
 };
 
+export interface Country {
+  code: SupportedCountry;
+  name: string;
+  flag: string;
+}
+
+export const availableCountries: Country[] = [
+  { code: 'FR', name: 'France', flag: '🇫🇷' },
+  { code: 'US', name: 'United States', flag: '🇺🇸' },
+  { code: 'CA', name: 'Canada', flag: '🇨🇦' },
+  { code: 'GB', name: 'United Kingdom', flag: '🇬🇧' },
+  { code: 'DE', name: 'Germany', flag: '🇩🇪' },
+  { code: 'ES', name: 'Spain', flag: '🇪🇸' },
+  { code: 'IT', name: 'Italy', flag: '🇮🇹' },
+];
+
 interface LanguageContextType {
   language: SupportedLanguage;
   setLanguage: (lang: SupportedLanguage) => void;
+  country: SupportedCountry;
+  setCountry: (country: SupportedCountry) => void;
   t: (key: string) => string;
   availableLanguages: SupportedLanguage[];
+  availableCountries: Country[];
 }
 
 const LanguageContext = createContext<LanguageContextType | undefined>(
@@ -35,11 +55,13 @@ const LanguageContext = createContext<LanguageContextType | undefined>(
 );
 
 const LANGUAGE_STORAGE_KEY = '@app_language';
+const COUNTRY_STORAGE_KEY = '@app_country';
 
 export const LanguageProvider: React.FC<{ children: ReactNode }> = ({
   children,
 }) => {
   const [language, setLanguageState] = useState<SupportedLanguage>('en');
+  const [country, setCountryState] = useState<SupportedCountry>('FR');
 
   // Get nested value from object using dot notation
   const getNestedValue = (obj: any, path: string): string => {
@@ -63,46 +85,76 @@ export const LanguageProvider: React.FC<{ children: ReactNode }> = ({
     }
   };
 
-  // Initialize language on app start
-  useEffect(() => {
-    const initializeLanguage = async () => {
-      try {
-        // First, try to get saved language preference
-        const savedLanguage = await AsyncStorage.getItem(LANGUAGE_STORAGE_KEY);
+  // Set country and save to storage
+  const setCountry = async (countryCode: SupportedCountry) => {
+    setCountryState(countryCode);
+    try {
+      await AsyncStorage.setItem(COUNTRY_STORAGE_KEY, countryCode);
+    } catch (error) {
+      console.error('Error saving country preference:', error);
+    }
+  };
 
+  // Initialize language and country on app start
+  useEffect(() => {
+    const initializePreferences = async () => {
+      try {
+        // Initialize language
+        const savedLanguage = await AsyncStorage.getItem(LANGUAGE_STORAGE_KEY);
         if (
           savedLanguage &&
           (savedLanguage === 'fr' || savedLanguage === 'en')
         ) {
           setLanguageState(savedLanguage as SupportedLanguage);
-          return;
+        } else {
+          // If no saved preference, detect device language
+          const deviceLocales = getLocales();
+          const deviceLanguage = deviceLocales[0]?.languageCode;
+          
+          if (deviceLanguage === 'fr') {
+            setLanguageState('fr');
+          } else {
+            setLanguageState('en');
+          }
         }
 
-        // If no saved preference, detect device language
-        const deviceLocales = getLocales();
-        const deviceLanguage = deviceLocales[0]?.languageCode;
-
-        // Check if device language is supported
-        if (deviceLanguage === 'fr') {
-          setLanguageState('fr');
+        // Initialize country
+        const savedCountry = await AsyncStorage.getItem(COUNTRY_STORAGE_KEY);
+        const supportedCountryCodes = availableCountries.map(c => c.code);
+        
+        if (savedCountry && supportedCountryCodes.includes(savedCountry as SupportedCountry)) {
+          setCountryState(savedCountry as SupportedCountry);
         } else {
-          // Default to English for any other language
-          setLanguageState('en');
+          // If no saved preference, detect device region
+          const deviceLocales = getLocales();
+          const deviceRegion = deviceLocales[0]?.regionCode;
+          
+          if (deviceRegion && supportedCountryCodes.includes(deviceRegion as SupportedCountry)) {
+            setCountryState(deviceRegion as SupportedCountry);
+          } else {
+            // Default based on language preference
+            const defaultCountry = savedLanguage === 'fr' || deviceLocales[0]?.languageCode === 'fr' ? 'FR' : 'US';
+            setCountryState(defaultCountry);
+          }
         }
       } catch (error) {
-        console.error('Error initializing language:', error);
-        setLanguageState('en'); // Fallback to English
+        console.error('Error initializing preferences:', error);
+        setLanguageState('en');
+        setCountryState('FR');
       }
     };
 
-    initializeLanguage();
+    initializePreferences();
   }, []);
 
   const value: LanguageContextType = {
     language,
     setLanguage,
+    country,
+    setCountry,
     t,
     availableLanguages: ['fr', 'en'],
+    availableCountries,
   };
 
   return (

@@ -25,8 +25,8 @@
 
 import { useMutation } from '@tanstack/react-query';
 import { Alert } from 'react-native';
-import { useLanguage } from '@/contexts/LanguageContext';
-import { geminiService, tmdbService } from '@/utils/apiServices';
+import { useLanguage } from '../contexts/LanguageContext';
+import { geminiService, tmdbService } from '../utils/apiServices';
 
 export interface Movie {
   id: number;
@@ -90,7 +90,8 @@ export interface SearchResult {
 }
 
 const searchMoviesWithGemini = async (
-  params: SearchParams
+  params: SearchParams,
+  countryCode: string = 'FR'
 ): Promise<SearchResult> => {
   const { query, numberOfRecommendations, includeMovies, includeTvShows } =
     params;
@@ -151,7 +152,7 @@ const searchMoviesWithGemini = async (
     const dataPromises = validContent.map(async item => {
       const mediaType = item.media_type || 'movie';
       const [providers, credits, detailedInfo] = await Promise.all([
-        tmdbService.getWatchProviders(item.id, mediaType),
+        tmdbService.getWatchProviders(item.id, mediaType, countryCode),
         tmdbService.getCredits(item.id, mediaType),
         tmdbService.getDetailedInfo(item.id, mediaType),
       ]);
@@ -189,10 +190,10 @@ const searchMoviesWithGemini = async (
 };
 
 export const useMovieSearch = () => {
-  const { t } = useLanguage();
+  const { t, country } = useLanguage();
 
   return useMutation({
-    mutationFn: searchMoviesWithGemini,
+    mutationFn: (params: SearchParams) => searchMoviesWithGemini(params, country),
     onError: (error: Error) => {
       Alert.alert(t('errors.title'), t(`errors.${error.message}`));
     },
