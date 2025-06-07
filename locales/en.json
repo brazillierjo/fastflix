@@ -2,7 +2,8 @@
   "welcome": {
     "title": "What to watch? 🍿",
     "subtitle": "Hey there! Tell me what you'd like to watch and I'll find you the best recommendations!",
-    "placeholder": "Describe what you want to watch",
+    "description": "Be as vague or specific as you want! Mention actors, genres, time periods, moods... Our artificial intelligence will analyze your request to suggest personalized content just for you.",
+    "placeholder": "Ex: A movie or TV show with Jennifer Aniston as the lead actress, late 90s",
     "searchButton": "Generate ✨",
     "searching": "Searching...",
     "generating": "Generating...",

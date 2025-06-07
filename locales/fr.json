@@ -1,8 +1,9 @@
 {
   "welcome": {
     "title": "Que regarder ? 🍿",
-    "subtitle": "Salut ! Décris-moi ce que tu aimerais regarder et je te trouverai les meilleures recommandations !",
-    "placeholder": "Décrivez ce que vous voulez regarder",
+    "subtitle": "Décrivez-moi ce que vous aimeriez regarder et je vous trouverai les meilleures recommandations !",
+    "description": "Soyez aussi vague ou précis que vous le souhaitez ! Mentionnez des acteurs, un genre, une époque, une ambiance... Notre intelligence artificielle analysera votre demande pour vous proposer du contenu personnalisé.",
+    "placeholder": "Ex: Un film ou une série avec Jennifer Aniston comme actrice principale, fin des années 90",
     "searchButton": "Générer ✨",
     "searching": "Recherche...",
     "generating": "Génération...",
