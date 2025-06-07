@@ -2,10 +2,13 @@ import { useLanguage } from '@/contexts/LanguageContext';
 import { cn } from '@/utils/cn';
 import Slider from '@react-native-community/slider';
 import { MotiText, MotiView } from 'moti';
-import React from 'react';
+import React, { useRef } from 'react';
 import {
   Dimensions,
+  KeyboardAvoidingView,
   PanResponder,
+  Platform,
+  ScrollView,
   Text,
   TextInput,
   TouchableOpacity,
@@ -44,6 +47,8 @@ export default function SearchForm({
   const { t } = useLanguage();
   const screenWidth = Dimensions.get('window').width;
   const sliderWidth = screenWidth - 48;
+  const scrollViewRef = useRef<ScrollView>(null);
+  const textInputRef = useRef<TextInput>(null);
 
   const panResponder = PanResponder.create({
     onStartShouldSetPanResponder: () => true,
@@ -57,7 +62,18 @@ export default function SearchForm({
   });
 
   return (
-    <>
+    <KeyboardAvoidingView
+      behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+      className="flex-1"
+      keyboardVerticalOffset={Platform.OS === 'ios' ? 100 : 0}
+    >
+      <ScrollView
+        ref={scrollViewRef}
+        className="flex-1"
+        contentContainerStyle={{ flexGrow: 1 }}
+        keyboardShouldPersistTaps="handled"
+        showsVerticalScrollIndicator={false}
+      >
       {/* Header with title and menu */}
       <MotiView
         from={{ opacity: 0, translateY: -20 }}
@@ -249,6 +265,7 @@ export default function SearchForm({
           className='mb-6'
         >
           <TextInput
+            ref={textInputRef}
             className='min-h-[100px] rounded-xl bg-light-input p-4 text-base text-light-primary dark:bg-dark-input dark:text-dark-primary'
             style={{
               textAlignVertical: 'top',
@@ -259,6 +276,13 @@ export default function SearchForm({
             onChangeText={setQuery}
             multiline
             maxLength={200}
+            returnKeyType="done"
+            blurOnSubmit={true}
+            onFocus={() => {
+              setTimeout(() => {
+                scrollViewRef.current?.scrollToEnd({ animated: true });
+              }, 100);
+            }}
           />
         </MotiView>
 
@@ -288,6 +312,7 @@ export default function SearchForm({
           </TouchableOpacity>
         </MotiView>
       </View>
-    </>
+      </ScrollView>
+    </KeyboardAvoidingView>
   );
 }
