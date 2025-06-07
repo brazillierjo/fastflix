@@ -1,5 +1,9 @@
 import { useLanguage } from '@/contexts/LanguageContext';
-import type { SupportedLanguage, SupportedCountry, Country } from '@/contexts/LanguageContext';
+import type {
+  SupportedLanguage,
+  SupportedCountry,
+  Country,
+} from '@/contexts/LanguageContext';
 import { MotiView } from 'moti';
 import React from 'react';
 import {
@@ -14,7 +18,8 @@ import {
 } from 'react-native';
 
 export default function ProfileScreen() {
-  const { language, setLanguage, country, setCountry, t, availableCountries } = useLanguage();
+  const { language, setLanguage, country, setCountry, t, availableCountries } =
+    useLanguage();
 
   const languages: Array<{
     code: SupportedLanguage;
@@ -145,7 +150,9 @@ export default function ProfileScreen() {
                     {
                       options: [
                         language === 'fr' ? 'Annuler' : 'Cancel',
-                        ...availableCountries.map(country => `${country.flag} ${country.name}`),
+                        ...availableCountries.map(
+                          country => `${country.flag} ${country.name}`
+                        ),
                       ],
                       cancelButtonIndex: 0,
                       title:
@@ -155,7 +162,8 @@ export default function ProfileScreen() {
                     },
                     buttonIndex => {
                       if (buttonIndex > 0) {
-                        const selectedCountry = availableCountries[buttonIndex - 1];
+                        const selectedCountry =
+                          availableCountries[buttonIndex - 1];
                         setCountry(selectedCountry.code);
                       }
                     }
@@ -163,9 +171,7 @@ export default function ProfileScreen() {
                 } else {
                   // Pour Android, utiliser Alert avec des boutons
                   Alert.alert(
-                    language === 'fr'
-                      ? 'Choisir un pays'
-                      : 'Choose a country',
+                    language === 'fr' ? 'Choisir un pays' : 'Choose a country',
                     '',
                     [
                       {

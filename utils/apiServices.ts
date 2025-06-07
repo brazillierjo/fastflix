@@ -49,7 +49,17 @@ export const geminiService = {
     const model = genAI.getGenerativeModel({ model: 'gemini-2.0-flash' });
 
     const contentTypeText = contentTypes.join(' et ');
-    const prompt = `Basé sur cette demande: "${query}", recommande-moi ${numberOfRecommendations} ${contentTypeText}. Réponds uniquement avec les titres séparés par des virgules, sans numérotation ni explication supplémentaire.`;
+    const prompt = `Tu es un assistant IA expert en cinéma et télévision. Basé sur cette demande: "${query}", recommande-moi ${numberOfRecommendations} ${contentTypeText}.
+
+IMPORTANT: Sois très précis dans tes recommandations :
+- Si un nom d'acteur est mentionné, recommande uniquement des œuvres où cet acteur joue réellement
+- Si un réalisateur est mentionné, recommande uniquement ses œuvres
+- Si un genre est mentionné, respecte strictement ce genre
+- Si une époque est mentionnée, respecte cette période
+- Privilégie les œuvres les plus connues et populaires
+- Vérifie mentalement que chaque recommandation correspond exactement à la demande
+
+Réponds uniquement avec les titres qui correspondent EXACTEMENT à la demande, séparés par des virgules, sans numérotation ni explication supplémentaire.`;
 
     const result = await model.generateContent(prompt);
     const response = await result.response;
@@ -60,18 +70,17 @@ export const geminiService = {
       .map(title => title.trim());
   },
 
-  async generateConversationalResponse(
-    query: string,
-    numberOfRecommendations: number,
-    contentTypes: string[]
-  ): Promise<string> {
+  async generateConversationalResponse(query: string): Promise<string> {
     const genAI = new GoogleGenerativeAI(GOOGLE_API_KEY);
     const model = genAI.getGenerativeModel({ model: 'gemini-2.0-flash' });
 
-    const contentTypeText = contentTypes.join(' et ');
     const prompt = `Tu es un assistant IA spécialisé dans les recommandations de films et séries. Un utilisateur te demande: "${query}". 
 
-Réponds de manière conversationnelle et amicale dans la même langue que la demande de l'utilisateur. Donne un message général d'encouragement ou de contexte en lien avec sa demande, sans mentionner les résultats spécifiques qui seront affichés. Sois enthousiaste et personnalisé dans ta réponse, comme si tu parlais à un ami. Adapte ton ton selon le contexte (humoristique, sérieux, etc.). Limite ta réponse à 2-3 phrases maximum.`;
+Réponds de manière conversationnelle et amicale dans la même langue que la demande de l'utilisateur. Donne un message général d'encouragement ou de contexte en lien avec sa demande, sans mentionner les résultats spécifiques qui seront affichés. Sois enthousiaste et personnalisé dans ta réponse, comme si tu parlais à un ami. Adapte ton ton selon le contexte (humoristique, sérieux, etc.). 
+
+Ajoute également une phrase courte expliquant brièvement pourquoi tu as choisi ces recommandations (par exemple: "J'ai sélectionné des œuvres qui correspondent à ton style" ou "J'ai privilégié des films récents et bien notés" ou "J'ai choisi des classiques incontournables", etc.). 
+
+Limite ta réponse à 3-4 phrases maximum.`;
 
     const result = await model.generateContent(prompt);
     const response = await result.response;
@@ -88,11 +97,21 @@ Réponds de manière conversationnelle et amicale dans la même langue que la de
     const model = genAI.getGenerativeModel({ model: 'gemini-2.0-flash' });
 
     const contentTypeText = contentTypes.join(' et ');
-    const prompt = `Tu es un assistant IA spécialisé dans les recommandations de films et séries. Un utilisateur te demande: "${query}".
+    const prompt = `Tu es un assistant IA expert en cinéma et télévision. Un utilisateur te demande: "${query}".
+
+IMPORTANT: Sois très précis dans tes recommandations. Si l'utilisateur mentionne un acteur, réalisateur ou personnalité spécifique, assure-toi que TOUS les ${contentTypeText} recommandés incluent réellement cette personne dans le casting ou l'équipe technique.
+
+Règles strictes :
+- Si un nom d'acteur est mentionné, recommande uniquement des œuvres où cet acteur joue réellement
+- Si un réalisateur est mentionné, recommande uniquement ses œuvres
+- Si un genre est mentionné, respecte strictement ce genre
+- Si une époque est mentionnée, respecte cette période
+- Privilégie les œuvres les plus connues et populaires
+- Vérifie mentalement que chaque recommandation correspond exactement à la demande
 
 Tu dois fournir deux choses dans ta réponse :
 
-1. RECOMMANDATIONS: ${numberOfRecommendations} ${contentTypeText} basés sur cette demande. Liste uniquement les titres séparés par des virgules.
+1. RECOMMANDATIONS: ${numberOfRecommendations} ${contentTypeText} qui correspondent EXACTEMENT à la demande. Liste uniquement les titres séparés par des virgules.
 
 2. MESSAGE: Un message conversationnel et amical dans la même langue que la demande. Donne un message général d'encouragement ou de contexte en lien avec sa demande, sans mentionner les résultats spécifiques. Sois enthousiaste et personnalisé, comme si tu parlais à un ami. Limite à 2-3 phrases maximum.
 
@@ -151,7 +170,11 @@ export const tmdbService = {
     }
   },
 
-  async getWatchProviders(itemId: number, mediaType: string, countryCode: string = 'FR'): Promise<any[]> {
+  async getWatchProviders(
+    itemId: number,
+    mediaType: string,
+    countryCode: string = 'FR'
+  ): Promise<any[]> {
     try {
       const providerResponse = await axios.get(
         `https://api.themoviedb.org/3/${mediaType}/${itemId}/watch/providers?api_key=${TMDB_API_KEY}`

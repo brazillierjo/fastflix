@@ -50,13 +50,13 @@ export default function SearchForm({
   const textInputRef = useRef<TextInput>(null);
 
   const screenWidth = Dimensions.get('window').width;
-  
+
   const handleInputFocus = () => {
     setTimeout(() => {
       scrollViewRef.current?.scrollToEnd({ animated: true });
     }, 300);
   };
-  
+
   const panResponder = PanResponder.create({
     onStartShouldSetPanResponder: () => true,
     onMoveShouldSetPanResponder: () => true,
@@ -96,7 +96,7 @@ export default function SearchForm({
             <Text className='mb-4 text-justify text-base text-light-muted dark:text-dark-muted'>
               {t('welcome.subtitle')}
             </Text>
-            <Text className='text-justify text-base text-light-muted dark:text-dark-muted leading-relaxed'>
+            <Text className='text-justify text-base leading-relaxed text-light-muted dark:text-dark-muted'>
               {t('welcome.description')}
             </Text>
           </MotiView>

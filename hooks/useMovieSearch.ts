@@ -118,8 +118,17 @@ const searchMoviesWithGemini = async (
         contentTypes
       );
 
-    // Search for each title on TMDB
-    const contentPromises = movieTitles.map(title =>
+    // Remove duplicate titles (case-insensitive)
+    const uniqueTitles = movieTitles.filter((title, index, array) => {
+      const normalizedTitle = title.toLowerCase().trim();
+      return (
+        array.findIndex(t => t.toLowerCase().trim() === normalizedTitle) ===
+        index
+      );
+    });
+
+    // Search for each unique title on TMDB
+    const contentPromises = uniqueTitles.map(title =>
       tmdbService.searchMulti(title, includeMovies, includeTvShows)
     );
 
@@ -146,6 +155,11 @@ const searchMoviesWithGemini = async (
           vote_average: item.vote_average || 0,
           media_type: item.media_type,
         })
+      )
+      // Remove duplicates based on TMDB ID
+      .filter(
+        (movie, index, array) =>
+          array.findIndex(m => m.id === movie.id) === index
       );
 
     // Get streaming providers, credits, and detailed info for each movie/show
@@ -162,22 +176,62 @@ const searchMoviesWithGemini = async (
         providers,
         credits,
         detailedInfo,
+        movie: item,
       };
     });
 
     const dataResults = await Promise.all(dataPromises);
+
+    // Filter results based on query relevance (especially for actor searches)
+    const filteredResults = dataResults.filter(result => {
+      // Check if the query contains a person's name
+      const queryLower = query.toLowerCase();
+      const possibleNames = queryLower
+        .split(/[\s,]+/)
+        .filter(word => word.length > 2);
+
+      // If the query seems to be about a specific person, verify they're in the cast
+      const hasPersonKeywords =
+        /\b(acteur|actrice|actor|actress|avec|starring|films? de|movies? by|réalisé par|directed by)\b/i.test(
+          queryLower
+        );
+      const seemsLikeName = possibleNames.some(name =>
+        /^[A-Z][a-z]+$/.test(name.charAt(0).toUpperCase() + name.slice(1))
+      );
+
+      if (hasPersonKeywords || seemsLikeName) {
+        // Check if any of the possible names appear in the cast or crew
+        const castNames = result.credits.map(cast => cast.name.toLowerCase());
+        const hasMatchingPerson = possibleNames.some(name =>
+          castNames.some(
+            castName =>
+              castName.includes(name) ||
+              name.includes(castName.split(' ')[0]) ||
+              name.includes(castName.split(' ').pop() || '')
+          )
+        );
+
+        return hasMatchingPerson;
+      }
+
+      // For non-person queries, keep all results
+      return true;
+    });
+
     const providersMap: { [key: number]: StreamingProvider[] } = {};
     const creditsMap: { [key: number]: Cast[] } = {};
     const detailedInfoMap: { [key: number]: DetailedInfo } = {};
+    const finalMovies: Movie[] = [];
 
-    dataResults.forEach(result => {
+    filteredResults.forEach(result => {
       providersMap[result.movieId] = result.providers;
       creditsMap[result.movieId] = result.credits;
       detailedInfoMap[result.movieId] = result.detailedInfo;
+      finalMovies.push(result.movie);
     });
 
     return {
-      movies: validContent,
+      movies: finalMovies,
       streamingProviders: providersMap,
       credits: creditsMap,
       detailedInfo: detailedInfoMap,
@@ -193,7 +247,8 @@ export const useMovieSearch = () => {
   const { t, country } = useLanguage();
 
   return useMutation({
-    mutationFn: (params: SearchParams) => searchMoviesWithGemini(params, country),
+    mutationFn: (params: SearchParams) =>
+      searchMoviesWithGemini(params, country),
     onError: (error: Error) => {
       Alert.alert(t('errors.title'), t(`errors.${error.message}`));
     },

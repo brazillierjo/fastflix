@@ -110,7 +110,7 @@ export const LanguageProvider: React.FC<{ children: ReactNode }> = ({
           // If no saved preference, detect device language
           const deviceLocales = getLocales();
           const deviceLanguage = deviceLocales[0]?.languageCode;
-          
+
           if (deviceLanguage === 'fr') {
             setLanguageState('fr');
           } else {
@@ -121,19 +121,28 @@ export const LanguageProvider: React.FC<{ children: ReactNode }> = ({
         // Initialize country
         const savedCountry = await AsyncStorage.getItem(COUNTRY_STORAGE_KEY);
         const supportedCountryCodes = availableCountries.map(c => c.code);
-        
-        if (savedCountry && supportedCountryCodes.includes(savedCountry as SupportedCountry)) {
+
+        if (
+          savedCountry &&
+          supportedCountryCodes.includes(savedCountry as SupportedCountry)
+        ) {
           setCountryState(savedCountry as SupportedCountry);
         } else {
           // If no saved preference, detect device region
           const deviceLocales = getLocales();
           const deviceRegion = deviceLocales[0]?.regionCode;
-          
-          if (deviceRegion && supportedCountryCodes.includes(deviceRegion as SupportedCountry)) {
+
+          if (
+            deviceRegion &&
+            supportedCountryCodes.includes(deviceRegion as SupportedCountry)
+          ) {
             setCountryState(deviceRegion as SupportedCountry);
           } else {
             // Default based on language preference
-            const defaultCountry = savedLanguage === 'fr' || deviceLocales[0]?.languageCode === 'fr' ? 'FR' : 'US';
+            const defaultCountry =
+              savedLanguage === 'fr' || deviceLocales[0]?.languageCode === 'fr'
+                ? 'FR'
+                : 'US';
             setCountryState(defaultCountry);
           }
         }
