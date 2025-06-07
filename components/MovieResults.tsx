@@ -316,7 +316,7 @@ export default function MovieResults({
           </View>
         )}
 
-        <View className='pt-4'>
+        <View className='pt-4 pb-20'>
           {filteredAndSortedMovies.length === 0 ? (
             <MotiView
               className='py-15 items-center justify-center'
@@ -358,7 +358,11 @@ export default function MovieResults({
                   }}
                   className='mb-4 rounded-xl bg-light-card dark:bg-dark-card'
                 >
-                  <View className='flex-row justify-between gap-4 p-4'>
+                  <TouchableOpacity 
+                    onPress={() => toggleCardExpansion(movie.id)}
+                    className='flex-row justify-between gap-4 p-4'
+                    activeOpacity={0.7}
+                  >
                     {/* Left content */}
                     <View className='w-9/12'>
                       <Text className='mb-2 text-lg font-semibold text-light-text dark:text-dark-text'>
@@ -625,7 +629,7 @@ export default function MovieResults({
                         />
                       </View>
                     )}
-                  </View>
+                  </TouchableOpacity>
                 </MotiView>
               );
             })
