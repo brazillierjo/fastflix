@@ -99,11 +99,12 @@ const searchMoviesWithGemini = async (
     if (includeTvShows) contentTypes.push('séries');
 
     // Generate recommendations and conversational response in a single API call
-    const { recommendations: movieTitles, conversationalResponse } = await geminiService.generateRecommendationsWithResponse(
-      query,
-      numberOfRecommendations,
-      contentTypes
-    );
+    const { recommendations: movieTitles, conversationalResponse } =
+      await geminiService.generateRecommendationsWithResponse(
+        query,
+        numberOfRecommendations,
+        contentTypes
+      );
 
     // Search for each title on TMDB
     const contentPromises = movieTitles.map(title =>

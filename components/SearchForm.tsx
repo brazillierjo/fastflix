@@ -45,273 +45,261 @@ export default function SearchForm({
   setIsMenuOpen,
 }: SearchFormProps) {
   const { t } = useLanguage();
-  const screenWidth = Dimensions.get('window').width;
-  const sliderWidth = screenWidth - 48;
+
   const scrollViewRef = useRef<ScrollView>(null);
   const textInputRef = useRef<TextInput>(null);
-
-  const panResponder = PanResponder.create({
-    onStartShouldSetPanResponder: () => true,
-    onMoveShouldSetPanResponder: () => true,
-    onPanResponderMove: event => {
-      const { locationX } = event.nativeEvent;
-      const percentage = Math.max(0, Math.min(1, locationX / sliderWidth));
-      const newValue = Math.round(percentage * 9) + 1;
-      setNumberOfRecommendations(newValue);
-    },
-  });
 
   return (
     <KeyboardAvoidingView
       behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-      className="flex-1"
+      className='flex-1'
       keyboardVerticalOffset={Platform.OS === 'ios' ? 100 : 0}
     >
       <ScrollView
         ref={scrollViewRef}
-        className="flex-1"
+        className='flex-1'
         contentContainerStyle={{ flexGrow: 1 }}
-        keyboardShouldPersistTaps="handled"
+        keyboardShouldPersistTaps='handled'
         showsVerticalScrollIndicator={false}
       >
-      {/* Header with title and menu */}
-      <MotiView
-        from={{ opacity: 0, translateY: -20 }}
-        animate={{ opacity: 1, translateY: 0 }}
-        transition={{ type: 'timing', duration: 600 }}
-        className={cn(
-          'flex-row items-center px-6 pb-6 pt-4',
-          showResults ? 'justify-start' : 'justify-between'
-        )}
-      >
-        {!showResults && (
-          <>
-            <MotiText
-              from={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ delay: 200, type: 'timing', duration: 400 }}
-              className={cn(
-                'text-left text-2xl font-semibold text-light-primary dark:text-dark-primary'
-              )}
-            >
-              {t('welcome.title')}
-            </MotiText>
-
-            <TouchableOpacity
-              className={cn('p-2')}
-              onPress={() => setIsMenuOpen(true)}
-            >
-              <Text
+        {/* Header with title and menu */}
+        <MotiView
+          from={{ opacity: 0, translateY: -20 }}
+          animate={{ opacity: 1, translateY: 0 }}
+          transition={{ type: 'timing', duration: 600 }}
+          className={cn(
+            'flex-row items-center px-6 pb-6 pt-4',
+            showResults ? 'justify-start' : 'justify-between'
+          )}
+        >
+          {!showResults && (
+            <>
+              <MotiText
+                from={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ delay: 200, type: 'timing', duration: 400 }}
                 className={cn(
-                  'text-2xl text-light-primary dark:text-dark-primary'
+                  'text-left text-2xl font-semibold text-light-primary dark:text-dark-primary'
                 )}
               >
-                ☰
-              </Text>
-            </TouchableOpacity>
-          </>
-        )}
-      </MotiView>
+                {t('welcome.title')}
+              </MotiText>
 
-      {/* Friendly message at the top */}
-      <MotiView
-        from={{ opacity: 0, translateY: 20 }}
-        animate={{ opacity: 1, translateY: 0 }}
-        transition={{
-          delay: 100,
-          type: 'timing',
-          duration: 600,
-        }}
-        className='mb-8 px-4'
-      >
-        <Text className='text-center text-lg leading-relaxed text-light-primary dark:text-dark-primary'>
-          {t('welcome.friendlyMessage')}
-        </Text>
-      </MotiView>
+              <TouchableOpacity
+                className={cn('p-2')}
+                onPress={() => setIsMenuOpen(true)}
+              >
+                <Text
+                  className={cn(
+                    'text-2xl text-light-primary dark:text-dark-primary'
+                  )}
+                >
+                  ☰
+                </Text>
+              </TouchableOpacity>
+            </>
+          )}
+        </MotiView>
 
-      {/* Container to push everything to the bottom */}
-      <View className='mt-auto px-6'>
-        {/* Options */}
+        {/* Friendly message at the top */}
         <MotiView
           from={{ opacity: 0, translateY: 20 }}
           animate={{ opacity: 1, translateY: 0 }}
           transition={{
-            delay: 200,
+            delay: 100,
             type: 'timing',
             duration: 600,
           }}
-          className='mb-6 rounded-xl bg-light-card p-4 dark:bg-dark-card'
+          className='mb-8 px-4'
         >
-          <Text className='mb-4 text-lg font-semibold text-light-primary dark:text-dark-primary'>
-            {t('welcome.options')}
+          <Text className='text-center text-lg leading-relaxed text-light-primary dark:text-dark-primary'>
+            {t('welcome.friendlyMessage')}
           </Text>
+        </MotiView>
 
-          <View className='mb-5 flex-row items-center justify-between'>
-            <Text className='text-base font-semibold text-light-primary dark:text-dark-primary'>
-              {t('settings.numberOfRecommendations')}
+        {/* Container to push everything to the bottom */}
+        <View className='mt-auto px-6'>
+          {/* Options */}
+          <MotiView
+            from={{ opacity: 0, translateY: 20 }}
+            animate={{ opacity: 1, translateY: 0 }}
+            transition={{
+              delay: 200,
+              type: 'timing',
+              duration: 600,
+            }}
+            className='mb-6 rounded-xl bg-light-card p-4 dark:bg-dark-card'
+          >
+            <Text className='mb-4 text-lg font-semibold text-light-primary dark:text-dark-primary'>
+              {t('welcome.options')}
             </Text>
 
-            <View className='flex-row items-center'>
-              <View className='min-w-[40px] items-center rounded-[20px] bg-light-primary px-3 py-1 dark:bg-dark-primary'>
-                <Text className='text-base font-semibold text-light-background dark:text-dark-background'>
-                  {numberOfRecommendations}
-                </Text>
+            <View className='mb-5 flex-row items-center justify-between'>
+              <Text className='text-base font-semibold text-light-primary dark:text-dark-primary'>
+                {t('settings.numberOfRecommendations')}
+              </Text>
+
+              <View className='flex-row items-center'>
+                <View className='min-w-[40px] items-center rounded-[20px] bg-light-primary px-3 py-1 dark:bg-dark-primary'>
+                  <Text className='text-base font-semibold text-light-background dark:text-dark-background'>
+                    {numberOfRecommendations}
+                  </Text>
+                </View>
               </View>
             </View>
-          </View>
 
-          <View className='-mt-5 mb-4'>
-            <Slider
-              className='w-full'
-              minimumValue={1}
-              maximumValue={20}
-              step={1}
-              value={numberOfRecommendations}
-              onValueChange={value =>
-                setNumberOfRecommendations(Math.round(value))
-              }
-              minimumTrackTintColor='#0ea5e9'
-              maximumTrackTintColor='#e2e8f0'
-              thumbTintColor='#0ea5e9'
-            />
-          </View>
+            <View className='-mt-5 mb-4'>
+              <Slider
+                className='w-full'
+                minimumValue={1}
+                maximumValue={20}
+                step={1}
+                value={numberOfRecommendations}
+                onValueChange={value =>
+                  setNumberOfRecommendations(Math.round(value))
+                }
+                minimumTrackTintColor='#0ea5e9'
+                maximumTrackTintColor='#e2e8f0'
+                thumbTintColor='#0ea5e9'
+              />
+            </View>
 
-          <View className='mb-5'>
-            <Text className='mb-4 text-base font-semibold text-light-primary dark:text-dark-primary'>
-              {t('settings.movieType')}
-            </Text>
-
-            <TouchableOpacity
-              onPress={() => setIncludeMovies(!includeMovies)}
-              className={cn(
-                'mb-3 flex-row items-center justify-between rounded-xl p-4',
-                includeMovies
-                  ? 'bg-light-primary dark:bg-dark-primary'
-                  : 'bg-light-input dark:bg-dark-input'
-              )}
-            >
-              <Text
-                className={cn(
-                  'text-base font-medium',
-                  includeMovies
-                    ? 'text-light-background dark:text-dark-background'
-                    : 'text-light-primary dark:text-dark-primary'
-                )}
-              >
-                {t('settings.movies')}
+            <View className='mb-5'>
+              <Text className='mb-4 text-base font-semibold text-light-primary dark:text-dark-primary'>
+                {t('settings.movieType')}
               </Text>
-              <View
+
+              <TouchableOpacity
+                onPress={() => setIncludeMovies(!includeMovies)}
                 className={cn(
-                  'h-6 w-6 items-center justify-center rounded-xl',
+                  'mb-3 flex-row items-center justify-between rounded-xl p-4',
                   includeMovies
-                    ? 'bg-light-background dark:bg-dark-background'
-                    : 'bg-light-muted dark:bg-dark-muted'
+                    ? 'bg-light-primary dark:bg-dark-primary'
+                    : 'bg-light-input dark:bg-dark-input'
                 )}
               >
-                {includeMovies && (
-                  <Text className='text-base font-semibold text-light-primary dark:text-dark-primary'>
-                    ✓
-                  </Text>
-                )}
-              </View>
-            </TouchableOpacity>
+                <Text
+                  className={cn(
+                    'text-base font-medium',
+                    includeMovies
+                      ? 'text-light-background dark:text-dark-background'
+                      : 'text-light-primary dark:text-dark-primary'
+                  )}
+                >
+                  {t('settings.movies')}
+                </Text>
+                <View
+                  className={cn(
+                    'h-6 w-6 items-center justify-center rounded-xl',
+                    includeMovies
+                      ? 'bg-light-background dark:bg-dark-background'
+                      : 'bg-light-muted dark:bg-dark-muted'
+                  )}
+                >
+                  {includeMovies && (
+                    <Text className='text-base font-semibold text-light-primary dark:text-dark-primary'>
+                      ✓
+                    </Text>
+                  )}
+                </View>
+              </TouchableOpacity>
 
-            <TouchableOpacity
-              onPress={() => setIncludeTvShows(!includeTvShows)}
-              className={cn(
-                'flex-row items-center justify-between rounded-xl p-4',
-                includeTvShows
-                  ? 'bg-light-primary dark:bg-dark-primary'
-                  : 'bg-light-input dark:bg-dark-input'
-              )}
-            >
-              <Text
+              <TouchableOpacity
+                onPress={() => setIncludeTvShows(!includeTvShows)}
                 className={cn(
-                  'text-base font-medium',
+                  'flex-row items-center justify-between rounded-xl p-4',
                   includeTvShows
-                    ? 'text-light-background dark:text-dark-background'
-                    : 'text-light-primary dark:text-dark-primary'
+                    ? 'bg-light-primary dark:bg-dark-primary'
+                    : 'bg-light-input dark:bg-dark-input'
                 )}
               >
-                {t('settings.tvShows')}
-              </Text>
-              <View
-                className={cn(
-                  'h-6 w-6 items-center justify-center rounded-xl',
-                  includeTvShows
-                    ? 'bg-light-background dark:bg-dark-background'
-                    : 'bg-light-muted dark:bg-dark-muted'
-                )}
-              >
-                {includeTvShows && (
-                  <Text className='text-base font-semibold text-light-primary dark:text-dark-primary'>
-                    ✓
-                  </Text>
-                )}
-              </View>
-            </TouchableOpacity>
-          </View>
-        </MotiView>
+                <Text
+                  className={cn(
+                    'text-base font-medium',
+                    includeTvShows
+                      ? 'text-light-background dark:text-dark-background'
+                      : 'text-light-primary dark:text-dark-primary'
+                  )}
+                >
+                  {t('settings.tvShows')}
+                </Text>
+                <View
+                  className={cn(
+                    'h-6 w-6 items-center justify-center rounded-xl',
+                    includeTvShows
+                      ? 'bg-light-background dark:bg-dark-background'
+                      : 'bg-light-muted dark:bg-dark-muted'
+                  )}
+                >
+                  {includeTvShows && (
+                    <Text className='text-base font-semibold text-light-primary dark:text-dark-primary'>
+                      ✓
+                    </Text>
+                  )}
+                </View>
+              </TouchableOpacity>
+            </View>
+          </MotiView>
 
-        {/* Description input */}
-        <MotiView
-          from={{ opacity: 0, translateY: 20 }}
-          animate={{ opacity: 1, translateY: 0 }}
-          transition={{
-            delay: 300,
-            type: 'timing',
-            duration: 600,
-          }}
-          className='mb-6'
-        >
-          <TextInput
-            ref={textInputRef}
-            className='min-h-[100px] rounded-xl bg-light-input p-4 text-base text-light-primary dark:bg-dark-input dark:text-dark-primary'
-            style={{
-              textAlignVertical: 'top',
+          {/* Description input */}
+          <MotiView
+            from={{ opacity: 0, translateY: 20 }}
+            animate={{ opacity: 1, translateY: 0 }}
+            transition={{
+              delay: 300,
+              type: 'timing',
+              duration: 600,
             }}
-            placeholder={t('welcome.inputPlaceholder')}
-            placeholderTextColor='#94a3b8'
-            value={query}
-            onChangeText={setQuery}
-            multiline
-            maxLength={200}
-            returnKeyType="done"
-            blurOnSubmit={true}
-            onFocus={() => {
-              setTimeout(() => {
-                scrollViewRef.current?.scrollToEnd({ animated: true });
-              }, 100);
-            }}
-          />
-        </MotiView>
-
-        {/* Generate button at the bottom */}
-        <MotiView
-          from={{ opacity: 0, translateY: 20 }}
-          animate={{ opacity: 1, translateY: 0 }}
-          transition={{
-            delay: 400,
-            type: 'timing',
-            duration: 600,
-          }}
-        >
-          <TouchableOpacity
-            onPress={onSearch}
-            disabled={loading}
-            className={cn(
-              'items-center rounded-xl p-4',
-              loading
-                ? 'bg-light-muted dark:bg-dark-muted'
-                : 'bg-light-primary dark:bg-dark-primary'
-            )}
+            className='mb-6'
           >
-            <Text className='text-base font-semibold text-light-background dark:text-dark-background'>
-              {loading ? t('welcome.generating') : t('welcome.searchButton')}
-            </Text>
-          </TouchableOpacity>
-        </MotiView>
-      </View>
+            <TextInput
+              ref={textInputRef}
+              className='min-h-[100px] rounded-xl bg-light-input p-4 text-base text-light-primary dark:bg-dark-input dark:text-dark-primary'
+              style={{
+                textAlignVertical: 'top',
+              }}
+              placeholder={t('welcome.inputPlaceholder')}
+              placeholderTextColor='#94a3b8'
+              value={query}
+              onChangeText={setQuery}
+              multiline
+              maxLength={200}
+              returnKeyType='done'
+              blurOnSubmit={true}
+              onFocus={() => {
+                setTimeout(() => {
+                  scrollViewRef.current?.scrollToEnd({ animated: true });
+                }, 100);
+              }}
+            />
+          </MotiView>
+
+          {/* Generate button at the bottom */}
+          <MotiView
+            from={{ opacity: 0, translateY: 20 }}
+            animate={{ opacity: 1, translateY: 0 }}
+            transition={{
+              delay: 400,
+              type: 'timing',
+              duration: 600,
+            }}
+          >
+            <TouchableOpacity
+              onPress={onSearch}
+              disabled={loading}
+              className={cn(
+                'items-center rounded-xl p-4',
+                loading
+                  ? 'bg-light-muted dark:bg-dark-muted'
+                  : 'bg-light-primary dark:bg-dark-primary'
+              )}
+            >
+              <Text className='text-base font-semibold text-light-background dark:text-dark-background'>
+                {loading ? t('welcome.generating') : t('welcome.searchButton')}
+              </Text>
+            </TouchableOpacity>
+          </MotiView>
+        </View>
       </ScrollView>
     </KeyboardAvoidingView>
   );

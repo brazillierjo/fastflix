@@ -105,20 +105,22 @@ MESSAGE: [ton message conversationnel]`;
     const text = response.text().trim();
 
     // Parse the response
-    const recommendationsMatch = text.match(/RECOMMANDATIONS:\s*(.+?)(?=\nMESSAGE:|$)/s);
+    const recommendationsMatch = text.match(
+      /RECOMMANDATIONS:\s*(.+?)(?=\nMESSAGE:|$)/s
+    );
     const messageMatch = text.match(/MESSAGE:\s*(.+)$/s);
 
-    const recommendations = recommendationsMatch 
+    const recommendations = recommendationsMatch
       ? recommendationsMatch[1].split(',').map(title => title.trim())
       : [];
-    
-    const conversationalResponse = messageMatch 
+
+    const conversationalResponse = messageMatch
       ? messageMatch[1].trim()
-      : "Voici mes recommandations pour vous !";
+      : 'Voici mes recommandations pour vous !';
 
     return {
       recommendations,
-      conversationalResponse
+      conversationalResponse,
     };
   },
 };
