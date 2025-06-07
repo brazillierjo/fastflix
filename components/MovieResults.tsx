@@ -319,7 +319,7 @@ export default function MovieResults({
 
               return (
                 <MotiView
-                  key={movie.id}
+                  key={movie.id + index}
                   from={{ opacity: 0, translateY: 30 }}
                   animate={{
                     opacity: 1,
@@ -371,7 +371,7 @@ export default function MovieResults({
                                 .slice(0, expanded ? undefined : 4)
                                 .map((provider, idx) => (
                                   <View
-                                    key={idx}
+                                    key={idx + provider.provider_name}
                                     className={cn(
                                       'rounded-md',
                                       expanded
