@@ -1,11 +1,15 @@
 {
   "welcome": {
     "title": "What to watch? 🍿",
-    "friendlyMessage": "Hey there! Tell me what you'd like to watch and I'll find you the best recommendations!",
-    "inputPlaceholder": "Describe what you want to watch",
+    "subtitle": "Hey there! Tell me what you'd like to watch and I'll find you the best recommendations!",
+    "placeholder": "Describe what you want to watch",
     "searchButton": "Generate ✨",
     "searching": "Searching...",
     "generating": "Generating...",
+    "numberOfRecommendations": "Number of recommendations",
+    "contentType": "Content type",
+    "movies": "Movies",
+    "tvShows": "TV Shows",
     "options": "Options :",
     "noDescription": "No description available"
   },
@@ -17,7 +21,23 @@
     "releaseDate": "Release date :",
     "rating": "Rating :",
     "availableOn": "Available on :",
-    "mainActors": "Main actors :"
+    "mainActors": "Main actors :",
+    "genre": "Genre :",
+    "genres": "Genres :",
+    "duration": "Duration :",
+    "seasons": "Seasons :",
+    "episodes": "Episodes :",
+    "status": "Status :",
+    "movie": "Movie",
+    "tvShow": "TV Show",
+    "minutes": "min",
+    "statusReturning": "Returning",
+    "statusEnded": "Ended",
+    "statusCanceled": "Canceled",
+    "statusInProduction": "In Production",
+    "statusPlanned": "Planned",
+    "statusPilot": "Pilot",
+    "year": "Year :"
   },
   "settings": {
     "numberOfRecommendations": "Number of recommendations",
@@ -25,6 +45,12 @@
     "movies": "Movies",
     "tvShows": "TV Shows",
     "movieType": "Content type :"
+  },
+  "notFound": {
+    "title": "Page Not Found",
+    "subtitle": "Sorry, this page doesn't exist.\nLet's get back to finding movies!",
+    "backButton": "Back to Home",
+    "funMessage": "🍿 Maybe a good movie will cheer you up?"
   },
   "errors": {
     "title": "Error",

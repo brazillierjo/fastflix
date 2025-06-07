@@ -183,4 +183,42 @@ export const tmdbService = {
       return [];
     }
   },
+
+  async getDetailedInfo(itemId: number, mediaType: string): Promise<any> {
+    try {
+      const detailsResponse = await axios.get(
+        `https://api.themoviedb.org/3/${mediaType}/${itemId}?api_key=${TMDB_API_KEY}&language=fr-FR`
+      );
+
+      const data = detailsResponse.data;
+
+      if (mediaType === 'movie') {
+        return {
+          genres: data.genres || [],
+          runtime: data.runtime || null,
+          release_year: data.release_date
+            ? new Date(data.release_date).getFullYear()
+            : null,
+        };
+      } else if (mediaType === 'tv') {
+        return {
+          genres: data.genres || [],
+          number_of_seasons: data.number_of_seasons || null,
+          number_of_episodes: data.number_of_episodes || null,
+          status: data.status || null,
+          first_air_year: data.first_air_date
+            ? new Date(data.first_air_date).getFullYear()
+            : null,
+        };
+      }
+
+      return {};
+    } catch (error) {
+      console.error(
+        `Error fetching detailed info for ${mediaType} ${itemId}:`,
+        error
+      );
+      return {};
+    }
+  },
 };

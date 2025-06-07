@@ -34,10 +34,21 @@ interface Cast {
   profile_path?: string;
 }
 
+interface DetailedInfo {
+  genres?: { id: number; name: string }[];
+  runtime?: number;
+  release_year?: number;
+  number_of_seasons?: number;
+  number_of_episodes?: number;
+  status?: string;
+  first_air_year?: number;
+}
+
 interface MovieResultsProps {
   movies: Movie[];
   streamingProviders: { [key: number]: StreamingProvider[] };
   credits: { [key: number]: Cast[] };
+  detailedInfo: { [key: number]: DetailedInfo };
   geminiResponse: string;
   onGoBack: () => void;
 }
@@ -46,6 +57,7 @@ export default function MovieResults({
   movies,
   streamingProviders,
   credits,
+  detailedInfo,
   geminiResponse,
   onGoBack,
 }: MovieResultsProps) {
@@ -58,6 +70,19 @@ export default function MovieResults({
   const [showProviderDropdown, setShowProviderDropdown] = useState(false);
 
   const { t } = useLanguage();
+
+  // Helper function to format TV show status
+  const formatTvStatus = (status: string) => {
+    const statusMap: { [key: string]: string } = {
+      'Returning Series': t('movies.statusReturning'),
+      Ended: t('movies.statusEnded'),
+      Canceled: t('movies.statusCanceled'),
+      'In Production': t('movies.statusInProduction'),
+      Planned: t('movies.statusPlanned'),
+      Pilot: t('movies.statusPilot'),
+    };
+    return statusMap[status] || status;
+  };
 
   // Extract all available providers from the results
   const availableProviders = useMemo(() => {
@@ -441,27 +466,117 @@ export default function MovieResults({
                       {expanded && (
                         <View className='my-3'>
                           <View>
-                            {(movie.release_date || movie.first_air_date) && (
-                              <View
-                                className={cn(
-                                  'flex-row items-center gap-2',
-                                  movie.vote_average > 0 && 'mb-1.5'
-                                )}
-                              >
-                                <Text className='text-sm font-semibold text-light-text dark:text-dark-text'>
-                                  📅 {t('movies.releaseDate')}
-                                </Text>
-
-                                <Text className='text-sm text-light-text dark:text-dark-text'>
-                                  {new Date(
-                                    movie.release_date ||
-                                      movie.first_air_date ||
-                                      ''
-                                  ).toLocaleDateString()}
+                            {/* Content Type Badge */}
+                            <View className='mb-2 flex-row items-center gap-2'>
+                              <Text className='text-sm font-semibold text-light-text dark:text-dark-text'>
+                                🎬 {t('settings.movieType')}
+                              </Text>
+                              <View className='rounded-full bg-light-accent/20 px-2 py-1 dark:bg-dark-accent/20'>
+                                <Text className='text-xs font-medium text-light-accent dark:text-dark-accent'>
+                                  {movie.media_type === 'tv'
+                                    ? t('movies.tvShow')
+                                    : t('movies.movie')}
                                 </Text>
                               </View>
+                            </View>
+
+                            {/* Genres */}
+                            {detailedInfo[movie.id]?.genres &&
+                              detailedInfo[movie.id].genres!.length > 0 && (
+                                <View className='mb-2 flex-row items-center gap-2'>
+                                  <Text className='text-sm font-semibold text-light-text dark:text-dark-text'>
+                                    🎭{' '}
+                                    {detailedInfo[movie.id].genres!.length > 1
+                                      ? t('movies.genres')
+                                      : t('movies.genre')}
+                                  </Text>
+                                  <Text className='flex-1 text-sm text-light-text dark:text-dark-text'>
+                                    {detailedInfo[movie.id]
+                                      .genres!.map(genre => genre.name)
+                                      .join(', ')}
+                                  </Text>
+                                </View>
+                              )}
+
+                            {/* Movie specific info */}
+                            {movie.media_type === 'movie' && (
+                              <>
+                                {detailedInfo[movie.id]?.runtime && (
+                                  <View className='mb-2 flex-row items-center gap-2'>
+                                    <Text className='text-sm font-semibold text-light-text dark:text-dark-text'>
+                                      ⏱️ {t('movies.duration')}
+                                    </Text>
+                                    <Text className='text-sm text-light-text dark:text-dark-text'>
+                                      {detailedInfo[movie.id].runtime}{' '}
+                                      {t('movies.minutes')}
+                                    </Text>
+                                  </View>
+                                )}
+                                {detailedInfo[movie.id]?.release_year && (
+                                  <View className='mb-2 flex-row items-center gap-2'>
+                                    <Text className='text-sm font-semibold text-light-text dark:text-dark-text'>
+                                      📅 {t('movies.year')}
+                                    </Text>
+                                    <Text className='text-sm text-light-text dark:text-dark-text'>
+                                      {detailedInfo[movie.id].release_year}
+                                    </Text>
+                                  </View>
+                                )}
+                              </>
                             )}
 
+                            {/* TV Show specific info */}
+                            {movie.media_type === 'tv' && (
+                              <>
+                                {detailedInfo[movie.id]?.number_of_seasons && (
+                                  <View className='mb-2 flex-row items-center gap-2'>
+                                    <Text className='text-sm font-semibold text-light-text dark:text-dark-text'>
+                                      📺 {t('movies.seasons')}
+                                    </Text>
+                                    <Text className='text-sm text-light-text dark:text-dark-text'>
+                                      {detailedInfo[movie.id].number_of_seasons}
+                                    </Text>
+                                  </View>
+                                )}
+                                {detailedInfo[movie.id]?.number_of_episodes && (
+                                  <View className='mb-2 flex-row items-center gap-2'>
+                                    <Text className='text-sm font-semibold text-light-text dark:text-dark-text'>
+                                      🎞️ {t('movies.episodes')}
+                                    </Text>
+                                    <Text className='text-sm text-light-text dark:text-dark-text'>
+                                      {
+                                        detailedInfo[movie.id]
+                                          .number_of_episodes
+                                      }
+                                    </Text>
+                                  </View>
+                                )}
+                                {detailedInfo[movie.id]?.status && (
+                                  <View className='mb-2 flex-row items-center gap-2'>
+                                    <Text className='text-sm font-semibold text-light-text dark:text-dark-text'>
+                                      📊 {t('movies.status')}
+                                    </Text>
+                                    <Text className='text-sm text-light-text dark:text-dark-text'>
+                                      {formatTvStatus(
+                                        detailedInfo[movie.id].status!
+                                      )}
+                                    </Text>
+                                  </View>
+                                )}
+                                {detailedInfo[movie.id]?.first_air_year && (
+                                  <View className='mb-2 flex-row items-center gap-2'>
+                                    <Text className='text-sm font-semibold text-light-text dark:text-dark-text'>
+                                      📅 {t('movies.year')}
+                                    </Text>
+                                    <Text className='text-sm text-light-text dark:text-dark-text'>
+                                      {detailedInfo[movie.id].first_air_year}
+                                    </Text>
+                                  </View>
+                                )}
+                              </>
+                            )}
+
+                            {/* Rating */}
                             {movie.vote_average > 0 && (
                               <View className='flex-row items-center gap-2'>
                                 <Text className='text-sm font-semibold text-light-text dark:text-dark-text'>

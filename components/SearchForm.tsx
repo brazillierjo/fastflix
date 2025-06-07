@@ -27,7 +27,6 @@ interface SearchFormProps {
   onSearch: () => void;
   loading: boolean;
   showResults: boolean;
-  setIsMenuOpen: (open: boolean) => void;
 }
 
 export default function SearchForm({
@@ -42,206 +41,77 @@ export default function SearchForm({
   onSearch,
   loading,
   showResults,
-  setIsMenuOpen,
 }: SearchFormProps) {
   const { t } = useLanguage();
 
   const scrollViewRef = useRef<ScrollView>(null);
   const textInputRef = useRef<TextInput>(null);
 
+  const screenWidth = Dimensions.get('window').width;
+  const panResponder = PanResponder.create({
+    onStartShouldSetPanResponder: () => true,
+    onMoveShouldSetPanResponder: () => true,
+    onPanResponderGrant: () => {
+      textInputRef.current?.blur();
+    },
+  });
+
   return (
     <KeyboardAvoidingView
       behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
       className='flex-1'
-      keyboardVerticalOffset={Platform.OS === 'ios' ? 100 : 0}
     >
       <ScrollView
         ref={scrollViewRef}
-        className='flex-1'
+        className='flex-1 bg-light-background dark:bg-dark-background'
         contentContainerStyle={{ flexGrow: 1 }}
         keyboardShouldPersistTaps='handled'
-        showsVerticalScrollIndicator={false}
+        {...panResponder.panHandlers}
       >
-        {/* Header with title and menu */}
-        <MotiView
-          from={{ opacity: 0, translateY: -20 }}
-          animate={{ opacity: 1, translateY: 0 }}
-          transition={{ type: 'timing', duration: 600 }}
-          className={cn(
-            'flex-row items-center px-6 pb-6 pt-4',
-            showResults ? 'justify-start' : 'justify-between'
-          )}
-        >
-          {!showResults && (
-            <>
-              <MotiText
-                from={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                transition={{ delay: 200, type: 'timing', duration: 400 }}
-                className={cn(
-                  'text-left text-2xl font-semibold text-light-primary dark:text-dark-primary'
-                )}
-              >
-                {t('welcome.title')}
-              </MotiText>
-
-              <TouchableOpacity
-                className={cn('p-2')}
-                onPress={() => setIsMenuOpen(true)}
-              >
-                <Text
-                  className={cn(
-                    'text-2xl text-light-primary dark:text-dark-primary'
-                  )}
-                >
-                  ☰
-                </Text>
-              </TouchableOpacity>
-            </>
-          )}
-        </MotiView>
-
-        {/* Friendly message at the top */}
-        <MotiView
-          from={{ opacity: 0, translateY: 20 }}
-          animate={{ opacity: 1, translateY: 0 }}
-          transition={{
-            delay: 100,
-            type: 'timing',
-            duration: 600,
-          }}
-          className='mb-8 px-4'
-        >
-          <Text className='text-center text-lg leading-relaxed text-light-primary dark:text-dark-primary'>
-            {t('welcome.friendlyMessage')}
-          </Text>
-        </MotiView>
-
-        {/* Container to push everything to the bottom */}
-        <View className='mt-auto px-6'>
-          {/* Options */}
+        <View className='flex-1 justify-center px-6 py-8'>
+          {/* Welcome Section */}
           <MotiView
-            from={{ opacity: 0, translateY: 20 }}
+            from={{ opacity: 0, translateY: -20 }}
             animate={{ opacity: 1, translateY: 0 }}
+            transition={{
+              type: 'timing',
+              duration: 800,
+            }}
+            className='mb-8'
+          >
+            <Text className='mb-2 text-center text-3xl font-bold text-light-text dark:text-dark-text'>
+              {t('welcome.title')}
+            </Text>
+            <Text className='text-center text-lg text-light-muted dark:text-dark-muted'>
+              {t('welcome.subtitle')}
+            </Text>
+          </MotiView>
+
+          {/* Search Input */}
+          <MotiView
+            from={{ opacity: 0, scale: 0.9 }}
+            animate={{ opacity: 1, scale: 1 }}
             transition={{
               delay: 200,
               type: 'timing',
               duration: 600,
             }}
-            className='mb-6 rounded-xl bg-light-card p-4 dark:bg-dark-card'
+            className='mb-6'
           >
-            <Text className='mb-4 text-lg font-semibold text-light-primary dark:text-dark-primary'>
-              {t('welcome.options')}
-            </Text>
-
-            <View className='mb-5 flex-row items-center justify-between'>
-              <Text className='text-base font-semibold text-light-primary dark:text-dark-primary'>
-                {t('settings.numberOfRecommendations')}
-              </Text>
-
-              <View className='flex-row items-center'>
-                <View className='min-w-[40px] items-center rounded-[20px] bg-light-primary px-3 py-1 dark:bg-dark-primary'>
-                  <Text className='text-base font-semibold text-light-background dark:text-dark-background'>
-                    {numberOfRecommendations}
-                  </Text>
-                </View>
-              </View>
-            </View>
-
-            <View className='-mt-5 mb-4'>
-              <Slider
-                className='w-full'
-                minimumValue={1}
-                maximumValue={20}
-                step={1}
-                value={numberOfRecommendations}
-                onValueChange={value =>
-                  setNumberOfRecommendations(Math.round(value))
-                }
-                minimumTrackTintColor='#0ea5e9'
-                maximumTrackTintColor='#e2e8f0'
-                thumbTintColor='#0ea5e9'
-              />
-            </View>
-
-            <View className='mb-5'>
-              <Text className='mb-4 text-base font-semibold text-light-primary dark:text-dark-primary'>
-                {t('settings.movieType')}
-              </Text>
-
-              <TouchableOpacity
-                onPress={() => setIncludeMovies(!includeMovies)}
-                className={cn(
-                  'mb-3 flex-row items-center justify-between rounded-xl p-4',
-                  includeMovies
-                    ? 'bg-light-primary dark:bg-dark-primary'
-                    : 'bg-light-input dark:bg-dark-input'
-                )}
-              >
-                <Text
-                  className={cn(
-                    'text-base font-medium',
-                    includeMovies
-                      ? 'text-light-background dark:text-dark-background'
-                      : 'text-light-primary dark:text-dark-primary'
-                  )}
-                >
-                  {t('settings.movies')}
-                </Text>
-                <View
-                  className={cn(
-                    'h-6 w-6 items-center justify-center rounded-xl',
-                    includeMovies
-                      ? 'bg-light-background dark:bg-dark-background'
-                      : 'bg-light-muted dark:bg-dark-muted'
-                  )}
-                >
-                  {includeMovies && (
-                    <Text className='text-base font-semibold text-light-primary dark:text-dark-primary'>
-                      ✓
-                    </Text>
-                  )}
-                </View>
-              </TouchableOpacity>
-
-              <TouchableOpacity
-                onPress={() => setIncludeTvShows(!includeTvShows)}
-                className={cn(
-                  'flex-row items-center justify-between rounded-xl p-4',
-                  includeTvShows
-                    ? 'bg-light-primary dark:bg-dark-primary'
-                    : 'bg-light-input dark:bg-dark-input'
-                )}
-              >
-                <Text
-                  className={cn(
-                    'text-base font-medium',
-                    includeTvShows
-                      ? 'text-light-background dark:text-dark-background'
-                      : 'text-light-primary dark:text-dark-primary'
-                  )}
-                >
-                  {t('settings.tvShows')}
-                </Text>
-                <View
-                  className={cn(
-                    'h-6 w-6 items-center justify-center rounded-xl',
-                    includeTvShows
-                      ? 'bg-light-background dark:bg-dark-background'
-                      : 'bg-light-muted dark:bg-dark-muted'
-                  )}
-                >
-                  {includeTvShows && (
-                    <Text className='text-base font-semibold text-light-primary dark:text-dark-primary'>
-                      ✓
-                    </Text>
-                  )}
-                </View>
-              </TouchableOpacity>
-            </View>
+            <TextInput
+              ref={textInputRef}
+              value={query}
+              onChangeText={setQuery}
+              placeholder={t('welcome.placeholder')}
+              placeholderTextColor='#9CA3AF'
+              className='rounded-xl border border-light-border bg-light-card p-4 text-base text-light-text dark:border-dark-border dark:bg-dark-card dark:text-dark-text'
+              multiline
+              numberOfLines={3}
+              textAlignVertical='top'
+            />
           </MotiView>
 
-          {/* Description input */}
+          {/* Settings Section */}
           <MotiView
             from={{ opacity: 0, translateY: 20 }}
             animate={{ opacity: 1, translateY: 0 }}
@@ -250,34 +120,95 @@ export default function SearchForm({
               type: 'timing',
               duration: 600,
             }}
-            className='mb-6'
+            className='mb-6 rounded-xl bg-light-card p-4 dark:bg-dark-card'
           >
-            <TextInput
-              ref={textInputRef}
-              className='min-h-[100px] rounded-xl bg-light-input p-4 text-base text-light-primary dark:bg-dark-input dark:text-dark-primary'
-              style={{
-                textAlignVertical: 'top',
-              }}
-              placeholder={t('welcome.inputPlaceholder')}
-              placeholderTextColor='#94a3b8'
-              value={query}
-              onChangeText={setQuery}
-              multiline
-              maxLength={200}
-              returnKeyType='done'
-              blurOnSubmit={true}
-              onFocus={() => {
-                setTimeout(() => {
-                  scrollViewRef.current?.scrollToEnd({ animated: true });
-                }, 100);
-              }}
-            />
+            {/* Number of Recommendations */}
+            <View className='mb-4'>
+              <Text className='mb-2 text-base font-semibold text-light-text dark:text-dark-text'>
+                {t('welcome.numberOfRecommendations')}:{' '}
+                {numberOfRecommendations}
+              </Text>
+              <Slider
+                style={{ width: '100%', height: 40 }}
+                minimumValue={1}
+                maximumValue={10}
+                step={1}
+                value={numberOfRecommendations}
+                onValueChange={setNumberOfRecommendations}
+                minimumTrackTintColor='#3B82F6'
+                maximumTrackTintColor='#E5E7EB'
+                thumbTintColor='#3B82F6'
+              />
+            </View>
+
+            {/* Content Type Toggles */}
+            <View className='space-y-3'>
+              <Text className='text-base font-semibold text-light-text dark:text-dark-text'>
+                {t('welcome.contentType')}
+              </Text>
+
+              {/* Movies Toggle */}
+              <TouchableOpacity
+                onPress={() => setIncludeMovies(!includeMovies)}
+                className='flex-row items-center justify-between rounded-lg bg-light-background p-3 dark:bg-dark-background'
+              >
+                <Text className='text-base text-light-text dark:text-dark-text'>
+                  🎬 {t('welcome.movies')}
+                </Text>
+                <View
+                  className={cn(
+                    'h-6 w-11 rounded-full',
+                    includeMovies
+                      ? 'bg-light-primary dark:bg-dark-primary'
+                      : 'bg-light-muted dark:bg-dark-muted'
+                  )}
+                >
+                  <View
+                    className={cn(
+                      'h-5 w-5 rounded-full bg-white transition-transform',
+                      includeMovies ? 'translate-x-5' : 'translate-x-0.5'
+                    )}
+                    style={{
+                      marginTop: 2,
+                    }}
+                  />
+                </View>
+              </TouchableOpacity>
+
+              {/* TV Shows Toggle */}
+              <TouchableOpacity
+                onPress={() => setIncludeTvShows(!includeTvShows)}
+                className='flex-row items-center justify-between rounded-lg bg-light-background p-3 dark:bg-dark-background'
+              >
+                <Text className='text-base text-light-text dark:text-dark-text'>
+                  📺 {t('welcome.tvShows')}
+                </Text>
+                <View
+                  className={cn(
+                    'h-6 w-11 rounded-full',
+                    includeTvShows
+                      ? 'bg-light-primary dark:bg-dark-primary'
+                      : 'bg-light-muted dark:bg-dark-muted'
+                  )}
+                >
+                  <View
+                    className={cn(
+                      'h-5 w-5 rounded-full bg-white transition-transform',
+                      includeTvShows ? 'translate-x-5' : 'translate-x-0.5'
+                    )}
+                    style={{
+                      marginTop: 2,
+                    }}
+                  />
+                </View>
+              </TouchableOpacity>
+            </View>
           </MotiView>
 
-          {/* Generate button at the bottom */}
+          {/* Search Button */}
           <MotiView
-            from={{ opacity: 0, translateY: 20 }}
-            animate={{ opacity: 1, translateY: 0 }}
+            from={{ opacity: 0, scale: 0.9 }}
+            animate={{ opacity: 1, scale: 1 }}
             transition={{
               delay: 400,
               type: 'timing',

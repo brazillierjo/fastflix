@@ -71,10 +71,21 @@ export interface SearchParams {
   includeTvShows: boolean;
 }
 
+export interface DetailedInfo {
+  genres?: { id: number; name: string }[];
+  runtime?: number;
+  release_year?: number;
+  number_of_seasons?: number;
+  number_of_episodes?: number;
+  status?: string;
+  first_air_year?: number;
+}
+
 export interface SearchResult {
   movies: Movie[];
   streamingProviders: { [key: number]: StreamingProvider[] };
   credits: { [key: number]: Cast[] };
+  detailedInfo: { [key: number]: DetailedInfo };
   geminiResponse: string;
 }
 
@@ -136,34 +147,39 @@ const searchMoviesWithGemini = async (
         })
       );
 
-    // Get streaming providers and credits for each movie/show
+    // Get streaming providers, credits, and detailed info for each movie/show
     const dataPromises = validContent.map(async item => {
       const mediaType = item.media_type || 'movie';
-      const [providers, credits] = await Promise.all([
+      const [providers, credits, detailedInfo] = await Promise.all([
         tmdbService.getWatchProviders(item.id, mediaType),
         tmdbService.getCredits(item.id, mediaType),
+        tmdbService.getDetailedInfo(item.id, mediaType),
       ]);
 
       return {
         movieId: item.id,
         providers,
         credits,
+        detailedInfo,
       };
     });
 
     const dataResults = await Promise.all(dataPromises);
     const providersMap: { [key: number]: StreamingProvider[] } = {};
     const creditsMap: { [key: number]: Cast[] } = {};
+    const detailedInfoMap: { [key: number]: DetailedInfo } = {};
 
     dataResults.forEach(result => {
       providersMap[result.movieId] = result.providers;
       creditsMap[result.movieId] = result.credits;
+      detailedInfoMap[result.movieId] = result.detailedInfo;
     });
 
     return {
       movies: validContent,
       streamingProviders: providersMap,
       credits: creditsMap,
+      detailedInfo: detailedInfoMap,
       geminiResponse: conversationalResponse,
     };
   } catch (error) {

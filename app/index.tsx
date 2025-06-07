@@ -1,7 +1,6 @@
 import LoadingState from '@/components/LoadingState';
 import MovieResults from '@/components/MovieResults';
 import SearchForm from '@/components/SearchForm';
-import { SettingsModal } from '@/components/SettingsModal';
 import { useAppState } from '@/hooks/useAppState';
 import { useMovieSearch } from '@/hooks/useMovieSearch';
 import { cn } from '@/utils/cn';
@@ -15,19 +14,18 @@ export default function HomeScreen() {
     movies,
     streamingProviders,
     credits,
+    detailedInfo,
     geminiResponse,
     showWelcome,
     showResults,
     numberOfRecommendations,
     includeMovies,
     includeTvShows,
-    isMenuOpen,
     isSearching,
     setQuery,
     setNumberOfRecommendations,
     setIncludeMovies,
     setIncludeTvShows,
-    setIsMenuOpen,
     goBackToHome,
     handleSearchSuccess,
     handleSearchStart,
@@ -82,7 +80,6 @@ export default function HomeScreen() {
               onSearch={handleSearch}
               loading={movieSearchMutation.isPending}
               showResults={showResults}
-              setIsMenuOpen={setIsMenuOpen}
             />
           ) : movieSearchMutation.isPending ? (
             <LoadingState isSearching={isSearching} />
@@ -92,17 +89,13 @@ export default function HomeScreen() {
                 movies={movies}
                 streamingProviders={streamingProviders}
                 credits={credits}
+                detailedInfo={detailedInfo}
                 geminiResponse={geminiResponse}
                 onGoBack={goBackToHome}
               />
             )
           )}
         </View>
-
-        <SettingsModal
-          isVisible={isMenuOpen}
-          onClose={() => setIsMenuOpen(false)}
-        />
       </KeyboardAvoidingView>
     </SafeAreaView>
   );

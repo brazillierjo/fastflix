@@ -12,7 +12,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import fr from '../locales/fr.json';
 import en from '../locales/en.json';
 
-type SupportedLanguage = 'fr' | 'en';
+export type SupportedLanguage = 'fr' | 'en';
 
 type Translations = {
   [key in SupportedLanguage]: typeof fr;

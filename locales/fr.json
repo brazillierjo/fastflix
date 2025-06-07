@@ -1,11 +1,15 @@
 {
   "welcome": {
     "title": "Que regarder ? 🍿",
-    "friendlyMessage": "Salut ! Décris-moi ce que tu aimerais regarder et je te trouverai les meilleures recommandations !",
-    "inputPlaceholder": "Décrivez ce que vous voulez regarder",
+    "subtitle": "Salut ! Décris-moi ce que tu aimerais regarder et je te trouverai les meilleures recommandations !",
+    "placeholder": "Décrivez ce que vous voulez regarder",
     "searchButton": "Générer ✨",
     "searching": "Recherche...",
     "generating": "Génération...",
+    "numberOfRecommendations": "Nombre de recommandations",
+    "contentType": "Type de contenu",
+    "movies": "Films",
+    "tvShows": "Séries",
     "options": "Options :",
     "noDescription": "Aucune description disponible"
   },
@@ -17,7 +21,23 @@
     "releaseDate": "Date de sortie :",
     "rating": "Note :",
     "availableOn": "Disponible sur :",
-    "mainActors": "Acteurs principaux :"
+    "mainActors": "Acteurs principaux :",
+    "genre": "Genre :",
+    "genres": "Genres :",
+    "duration": "Durée :",
+    "seasons": "Saisons :",
+    "episodes": "Épisodes :",
+    "status": "Statut :",
+    "movie": "Film",
+    "tvShow": "Série",
+    "minutes": "min",
+    "statusReturning": "En cours",
+    "statusEnded": "Terminée",
+    "statusCanceled": "Annulée",
+    "statusInProduction": "En production",
+    "statusPlanned": "Planifiée",
+    "statusPilot": "Pilote",
+    "year": "Année :"
   },
   "settings": {
     "numberOfRecommendations": "Nombre de recommandations",
@@ -25,6 +45,12 @@
     "movies": "Films",
     "tvShows": "Séries",
     "movieType": "Type de contenu :"
+  },
+  "notFound": {
+    "title": "Page introuvable",
+    "subtitle": "Désolé, cette page n'existe pas.\nRetournons à la recherche de films !",
+    "backButton": "Retour à l'accueil",
+    "funMessage": "🍿 Peut-être qu'un bon film vous consolera ?"
   },
   "errors": {
     "title": "Erreur",

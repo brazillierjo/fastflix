@@ -18,20 +18,20 @@
  */
 
 import { useState } from 'react';
-import { Cast, Movie, StreamingProvider } from './useMovieSearch';
+import { Cast, DetailedInfo, Movie, StreamingProvider } from './useMovieSearch';
 
 export interface AppState {
   query: string;
   movies: Movie[];
   streamingProviders: { [key: number]: StreamingProvider[] };
   credits: { [key: number]: Cast[] };
+  detailedInfo: { [key: number]: DetailedInfo };
   geminiResponse: string;
   showWelcome: boolean;
   showResults: boolean;
   numberOfRecommendations: number;
   includeMovies: boolean;
   includeTvShows: boolean;
-  isMenuOpen: boolean;
   isSearching: boolean;
 }
 
@@ -44,13 +44,15 @@ export const useAppState = () => {
   const [credits, setCredits] = useState<{
     [key: number]: Cast[];
   }>({});
+  const [detailedInfo, setDetailedInfo] = useState<{
+    [key: number]: DetailedInfo;
+  }>({});
   const [geminiResponse, setGeminiResponse] = useState('');
   const [showWelcome, setShowWelcome] = useState(true);
   const [showResults, setShowResults] = useState(false);
   const [numberOfRecommendations, setNumberOfRecommendations] = useState(10);
   const [includeMovies, setIncludeMovies] = useState(true);
   const [includeTvShows, setIncludeTvShows] = useState(true);
-  const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isSearching, setIsSearching] = useState(false);
 
   const goBackToHome = () => {
@@ -60,6 +62,7 @@ export const useAppState = () => {
     setQuery('');
     setStreamingProviders({});
     setCredits({});
+    setDetailedInfo({});
     setGeminiResponse('');
   };
 
@@ -67,11 +70,13 @@ export const useAppState = () => {
     movies: Movie[];
     streamingProviders: { [key: number]: StreamingProvider[] };
     credits: { [key: number]: Cast[] };
+    detailedInfo: { [key: number]: DetailedInfo };
     geminiResponse: string;
   }) => {
     setMovies(data.movies);
     setStreamingProviders(data.streamingProviders);
     setCredits(data.credits);
+    setDetailedInfo(data.detailedInfo);
     setGeminiResponse(data.geminiResponse);
     setIsSearching(false);
     setShowResults(true);
@@ -93,13 +98,13 @@ export const useAppState = () => {
     movies,
     streamingProviders,
     credits,
+    detailedInfo,
     geminiResponse,
     showWelcome,
     showResults,
     numberOfRecommendations,
     includeMovies,
     includeTvShows,
-    isMenuOpen,
     isSearching,
 
     // Setters
@@ -107,13 +112,13 @@ export const useAppState = () => {
     setMovies,
     setStreamingProviders,
     setCredits,
+    setDetailedInfo,
     setGeminiResponse,
     setShowWelcome,
     setShowResults,
     setNumberOfRecommendations,
     setIncludeMovies,
     setIncludeTvShows,
-    setIsMenuOpen,
     setIsSearching,
 
     // Actions
