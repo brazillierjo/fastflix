@@ -1,4 +1,4 @@
-# What Movie Tonight? 🎬
+# FastFlix 🎬
 
 A smart movie and TV show recommendation app powered by AI. Simply describe what you're in the mood to watch, and get personalized recommendations with streaming availability information.
 
@@ -18,7 +18,7 @@ A smart movie and TV show recommendation app powered by AI. Simply describe what
 
 ## How It Works
 
-**What Movie Tonight** is an intelligent application that combines Google Gemini AI with the TMDB API to provide personalized movie and TV show recommendations.
+**FastFlix** is an intelligent application that combines Google Gemini AI with the TMDB API to provide personalized movie and TV show recommendations.
 
 ### Detailed Application Flow:
 
@@ -82,7 +82,7 @@ Before running the app, you'll need:
 1. **Clone the repository**
    ```bash
    git clone <repository-url>
-   cd what-movie-tonight
+   cd fastflix
    ```
 
 2. **Install dependencies**
@@ -115,7 +115,7 @@ After starting the development server, you can run the app on:
 ## Project Structure
 
 ```
-what-movie-tonight/
+fastflix/
 ├── app/                    # Code principal de l'application
 │   ├── _layout.tsx        # Layout racine avec providers (QueryProvider, LanguageProvider)
 │   ├── index.tsx          # Écran d'accueil avec recherche et recommandations

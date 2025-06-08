@@ -1,7 +1,7 @@
 /**
  * Application State Management Hook
  *
- * This file provides a centralized state management solution for the "What Movie Tonight" application.
+ * This file provides a centralized state management solution for the "FastFlix" application.
  * It manages all the core application state including user queries, movie recommendations, UI states,
  * and user preferences. This hook serves as the main state container that coordinates between
  * different components and ensures consistent data flow throughout the application.

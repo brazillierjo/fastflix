@@ -1,18 +1,22 @@
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { getLocales } from 'expo-localization';
 import React, {
   createContext,
-  useContext,
-  useState,
-  useEffect,
   ReactNode,
+  useContext,
+  useEffect,
+  useState,
 } from 'react';
-import { getLocales } from 'expo-localization';
-import AsyncStorage from '@react-native-async-storage/async-storage';
 
 // Import translations
-import fr from '../locales/fr.json';
 import en from '../locales/en.json';
+import fr from '../locales/fr.json';
 
-export type SupportedLanguage = 'fr' | 'en';
+// Configuration centralisée des langues supportées
+const SUPPORTED_LANGUAGES = ['fr', 'en'] as const;
+const DEFAULT_LANGUAGE = 'en' as const;
+
+export type SupportedLanguage = (typeof SUPPORTED_LANGUAGES)[number];
 export type SupportedCountry = 'FR' | 'US' | 'CA' | 'GB' | 'DE' | 'ES' | 'IT';
 
 type Translations = {
@@ -22,6 +26,32 @@ type Translations = {
 const translations: Translations = {
   fr,
   en,
+};
+
+// Configuration des langues avec leurs pays par défaut
+const LANGUAGE_COUNTRY_MAP: Record<SupportedLanguage, SupportedCountry> = {
+  fr: 'FR',
+  en: 'US',
+};
+
+// Utilitaires pour la gestion des langues
+const isValidLanguage = (lang: string): lang is SupportedLanguage => {
+  return SUPPORTED_LANGUAGES.includes(lang as SupportedLanguage);
+};
+
+const getDefaultCountryForLanguage = (
+  language: SupportedLanguage
+): SupportedCountry => {
+  return LANGUAGE_COUNTRY_MAP[language] || 'US';
+};
+
+const detectLanguageFromDevice = (
+  deviceLanguage?: string
+): SupportedLanguage => {
+  if (deviceLanguage && isValidLanguage(deviceLanguage)) {
+    return deviceLanguage;
+  }
+  return DEFAULT_LANGUAGE;
 };
 
 export interface Country {
@@ -39,6 +69,10 @@ export const availableCountries: Country[] = [
   { code: 'ES', name: 'Spain', flag: '🇪🇸' },
   { code: 'IT', name: 'Italy', flag: '🇮🇹' },
 ];
+
+export type AvailableCountries = {
+  [key in SupportedCountry]: Country;
+};
 
 interface LanguageContextType {
   language: SupportedLanguage;
@@ -101,21 +135,14 @@ export const LanguageProvider: React.FC<{ children: ReactNode }> = ({
       try {
         // Initialize language
         const savedLanguage = await AsyncStorage.getItem(LANGUAGE_STORAGE_KEY);
-        if (
-          savedLanguage &&
-          (savedLanguage === 'fr' || savedLanguage === 'en')
-        ) {
-          setLanguageState(savedLanguage as SupportedLanguage);
+        if (savedLanguage && isValidLanguage(savedLanguage)) {
+          setLanguageState(savedLanguage);
         } else {
           // If no saved preference, detect device language
           const deviceLocales = getLocales();
-          const deviceLanguage = deviceLocales[0]?.languageCode;
-
-          if (deviceLanguage === 'fr') {
-            setLanguageState('fr');
-          } else {
-            setLanguageState('en');
-          }
+          const deviceLanguage = deviceLocales[0]?.languageCode ?? undefined;
+          const detectedLanguage = detectLanguageFromDevice(deviceLanguage);
+          setLanguageState(detectedLanguage);
         }
 
         // Initialize country
@@ -139,17 +166,21 @@ export const LanguageProvider: React.FC<{ children: ReactNode }> = ({
             setCountryState(deviceRegion as SupportedCountry);
           } else {
             // Default based on language preference
+            const currentLanguage =
+              savedLanguage && isValidLanguage(savedLanguage)
+                ? savedLanguage
+                : detectLanguageFromDevice(
+                    deviceLocales[0]?.languageCode ?? undefined
+                  );
             const defaultCountry =
-              savedLanguage === 'fr' || deviceLocales[0]?.languageCode === 'fr'
-                ? 'FR'
-                : 'US';
+              getDefaultCountryForLanguage(currentLanguage);
             setCountryState(defaultCountry);
           }
         }
       } catch (error) {
         console.error('Error initializing preferences:', error);
-        setLanguageState('en');
-        setCountryState('FR');
+        setLanguageState(DEFAULT_LANGUAGE);
+        setCountryState(getDefaultCountryForLanguage(DEFAULT_LANGUAGE));
       }
     };
 
@@ -162,7 +193,7 @@ export const LanguageProvider: React.FC<{ children: ReactNode }> = ({
     country,
     setCountry,
     t,
-    availableLanguages: ['fr', 'en'],
+    availableLanguages: [...SUPPORTED_LANGUAGES],
     availableCountries,
   };
 

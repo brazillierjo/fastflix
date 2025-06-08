@@ -2,8 +2,8 @@ import 'dotenv/config';
 
 export default {
   expo: {
-    name: 'What Movie Tonight',
-    slug: 'what-movie-tonight',
+    name: 'FastFlix',
+    slug: 'fastflix',
     version: '1.0.0',
     orientation: 'portrait',
     icon: './assets/app-images/icon-1024-1024.png',
@@ -39,6 +39,7 @@ export default {
       GOOGLE_API_KEY: process.env.GOOGLE_API_KEY,
       TMDB_API_KEY: process.env.TMDB_API_KEY,
       TMDB_TOKEN: process.env.TMDB_TOKEN,
+      REVENUECAT_IOS_API_KEY: process.env.REVENUECAT_IOS_API_KEY,
     },
   },
 };

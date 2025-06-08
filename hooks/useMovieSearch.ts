@@ -1,7 +1,7 @@
 /**
  * Movie Search and Recommendation Hook
  *
- * This file implements the core search functionality for the "What Movie Tonight" application.
+ * This file implements the core search functionality for the "FastFlix" application.
  * It integrates Google's Gemini AI for intelligent movie recommendations with The Movie Database (TMDB)
  * API for detailed movie information, streaming providers, and cast details.
  *

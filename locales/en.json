@@ -43,7 +43,7 @@
   "settings": {
     "numberOfRecommendations": "Number of recommendations",
     "language": "Language",
-    "country": "Country",
+    "country": "Search Country",
     "movies": "Movies",
     "tvShows": "TV Shows",
     "movieType": "Content type :"
@@ -67,5 +67,98 @@
   },
   "modal": {
     "title": "User profile"
+  },
+  "subscription": {
+    "title": "Go FastFlix Pro",
+    "loading": "Loading subscription options...",
+    "hero": {
+      "title": "Unlock FastFlix Pro Features",
+      "subtitle": "Get the most out of your movie discovery experience"
+    },
+    "features": {
+      "unlimited": {
+        "title": "Unlimited Recommendations",
+        "description": "Get as many movie recommendations as you want"
+      },
+      "advanced": {
+        "title": "Advanced Filters",
+        "description": "Filter by genre, year, rating and more"
+      },
+      "offline": {
+        "title": "Offline Access",
+        "description": "Save recommendations for offline viewing"
+      },
+      "notifications": {
+        "title": "Smart Notifications",
+        "description": "Get notified about new releases"
+      }
+    },
+    "plans": {
+      "title": "Choose Your Plan"
+    },
+    "popular": "POPULAR",
+    "annual": {
+      "title": "Annual Plan",
+      "description": "Best value - Save 50%",
+      "period": "per year"
+    },
+    "monthly": {
+      "title": "Monthly Plan",
+      "description": "Flexible monthly billing",
+      "period": "per month"
+    },
+    "subscribe": "Subscribe Now",
+    "restore": "Restore Purchases",
+    "terms": "Subscription automatically renews unless cancelled. Terms and conditions apply.",
+    "success": {
+      "title": "Subscription Activated",
+      "message": "Welcome to FastFlix Pro features!"
+    },
+    "error": {
+      "title": "Purchase Failed",
+      "message": "Unable to complete purchase. Please try again."
+    },
+    "restoration": {
+      "success": {
+        "title": "Purchases Restored",
+        "message": "Your subscription has been restored."
+      },
+      "none": {
+        "title": "No Purchases Found",
+        "message": "No active subscriptions found to restore."
+      },
+      "error": {
+        "title": "Restore Failed",
+        "message": "Unable to restore purchases. Please try again."
+      }
+    }
+  },
+  "premium": {
+    "limitReached": "Limit Reached",
+    "upgradeMessage": "Upgrade to FastFlix Pro to continue",
+    "dailyLimit": "Daily limit reached",
+    "remainingUses": "Remaining uses: {{count}}"
+  },
+  "profile": {
+    "subtitle": "Customize your experience",
+    "language": "Application Language",
+    "chooseLanguage": "Choose a language",
+    "chooseCountry": "Choose a country",
+    "premiumSubscription": "FastFlix Pro Subscription",
+    "activeSubscription": "Active subscription",
+    "enjoyPremiumFeatures": "Enjoy all FastFlix Pro features",
+    "unlockPremiumMessage": "Unlock all FastFlix Pro features for the best experience",
+    "viewPlans": "View Plans",
+    "aboutApp": "About the app",
+    "version": "Version",
+    "developedBy": "Developed by",
+    "yourTeam": "Your team"
+  },
+  "common": {
+    "cancel": "Cancel"
+  },
+  "tabs": {
+    "movies": "Movies",
+    "profile": "Profile"
   }
 }

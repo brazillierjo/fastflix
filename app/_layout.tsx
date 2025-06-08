@@ -12,10 +12,11 @@ import 'react-native-reanimated';
 import { Text, useColorScheme } from 'react-native';
 
 import { LanguageProvider, useLanguage } from '@/contexts/LanguageContext';
+import { SubscriptionProvider } from '@/contexts/RevenueCatContext';
 import { QueryProvider } from '@/providers/QueryProvider';
 
 function TabsLayout() {
-  const { language } = useLanguage();
+  const { language, t } = useLanguage();
   const colorScheme = useColorScheme();
   const isDark = colorScheme === 'dark';
 
@@ -35,7 +36,7 @@ function TabsLayout() {
       <Tabs.Screen
         name='index'
         options={{
-          title: language === 'fr' ? 'Films' : 'Movies',
+          title: t('tabs.movies'),
           tabBarIcon: ({ color }) => (
             <Text style={{ color, fontSize: 20 }}>🍿</Text>
           ),
@@ -44,7 +45,7 @@ function TabsLayout() {
       <Tabs.Screen
         name='profile'
         options={{
-          title: language === 'fr' ? 'Profil' : 'Profile',
+          title: t('tabs.profile'),
           tabBarIcon: ({ color }) => (
             <Text style={{ color, fontSize: 20 }}>👤</Text>
           ),
@@ -70,8 +71,10 @@ export default function RootLayout() {
   return (
     <QueryProvider>
       <LanguageProvider>
-        <TabsLayout />
-        <StatusBar style='auto' />
+        <SubscriptionProvider>
+          <TabsLayout />
+          <StatusBar style='auto' />
+        </SubscriptionProvider>
       </LanguageProvider>
     </QueryProvider>
   );

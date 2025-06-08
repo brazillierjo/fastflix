@@ -43,7 +43,7 @@
   "settings": {
     "numberOfRecommendations": "Nombre de recommandations",
     "language": "Langue",
-    "country": "Pays",
+    "country": "Pays de recherche",
     "movies": "Films",
     "tvShows": "Séries",
     "movieType": "Type de contenu :"
@@ -67,5 +67,98 @@
   },
   "modal": {
     "title": "Profil utilisateur"
+  },
+  "subscription": {
+    "title": "Passer FastFlix Pro",
+    "loading": "Chargement des options d'abonnement...",
+    "hero": {
+      "title": "Débloquez les fonctionnalités FastFlix Pro",
+      "subtitle": "Tirez le meilleur parti de votre expérience de découverte de films"
+    },
+    "features": {
+      "unlimited": {
+        "title": "Recommandations illimitées",
+        "description": "Obtenez autant de recommandations de films que vous le souhaitez"
+      },
+      "advanced": {
+        "title": "Filtres avancés",
+        "description": "Filtrez par genre, année, note et plus encore"
+      },
+      "offline": {
+        "title": "Accès hors ligne",
+        "description": "Sauvegardez les recommandations pour les consulter hors ligne"
+      },
+      "notifications": {
+        "title": "Notifications intelligentes",
+        "description": "Soyez notifié des nouvelles sorties"
+      }
+    },
+    "plans": {
+      "title": "Choisissez votre formule"
+    },
+    "popular": "POPULAIRE",
+    "annual": {
+      "title": "Formule Annuelle",
+      "description": "Meilleure valeur - Économisez 50%",
+      "period": "par an"
+    },
+    "monthly": {
+      "title": "Formule Mensuelle",
+      "description": "Facturation mensuelle flexible",
+      "period": "par mois"
+    },
+    "subscribe": "S'abonner maintenant",
+    "restore": "Restaurer les achats",
+    "terms": "L'abonnement se renouvelle automatiquement sauf annulation. Les conditions générales s'appliquent.",
+    "success": {
+      "title": "Abonnement activé",
+      "message": "Bienvenue dans les fonctionnalités FastFlix Pro !"
+    },
+    "error": {
+      "title": "Échec de l'achat",
+      "message": "Impossible de finaliser l'achat. Veuillez réessayer."
+    },
+    "restoration": {
+      "success": {
+        "title": "Achats restaurés",
+        "message": "Votre abonnement a été restauré."
+      },
+      "none": {
+        "title": "Aucun achat trouvé",
+        "message": "Aucun abonnement actif trouvé à restaurer."
+      },
+      "error": {
+        "title": "Échec de la restauration",
+        "message": "Impossible de restaurer les achats. Veuillez réessayer."
+      }
+    }
+  },
+  "premium": {
+    "limitReached": "Limite atteinte",
+    "upgradeMessage": "Passez à FastFlix Pro pour continuer",
+    "dailyLimit": "Limite quotidienne atteinte",
+    "remainingUses": "Utilisations restantes : {{count}}"
+  },
+  "profile": {
+    "subtitle": "Personnalisez votre expérience",
+    "language": "Langue de l'application",
+    "chooseLanguage": "Choisir une langue",
+    "chooseCountry": "Choisir un pays",
+    "premiumSubscription": "Abonnement FastFlix Pro",
+    "activeSubscription": "Abonnement actif",
+    "enjoyPremiumFeatures": "Profitez de toutes les fonctionnalités FastFlix Pro",
+    "unlockPremiumMessage": "Débloquez toutes les fonctionnalités FastFlix Pro pour une expérience optimale",
+    "viewPlans": "Voir les offres",
+    "aboutApp": "À propos de l'application",
+    "version": "Version",
+    "developedBy": "Développé par",
+    "yourTeam": "Votre équipe"
+  },
+  "common": {
+    "cancel": "Annuler"
+  },
+  "tabs": {
+    "movies": "Films",
+    "profile": "Profil"
   }
 }

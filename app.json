@@ -1,7 +1,7 @@
 {
   "expo": {
-    "name": "What Movie Tonight",
-    "slug": "what-movie-tonight",
+    "name": "FastFlix",
+    "slug": "fastflix",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/app-images/icon-1024-1024.png",

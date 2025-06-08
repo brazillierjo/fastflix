@@ -2,7 +2,7 @@
  * API Services Module
  *
  * This file provides a centralized interface for all external API interactions in the
- * "What Movie Tonight" application. It abstracts the complexity of working with multiple
+ * "FastFlix" application. It abstracts the complexity of working with multiple
  * third-party services and provides a clean, consistent API for the application to consume.
  *
  * The module integrates two primary services:

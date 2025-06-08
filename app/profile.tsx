@@ -1,11 +1,9 @@
+import SubscriptionModal from '@/components/SubscriptionModal';
+import type { SupportedLanguage } from '@/contexts/LanguageContext';
 import { useLanguage } from '@/contexts/LanguageContext';
-import type {
-  SupportedLanguage,
-  SupportedCountry,
-  Country,
-} from '@/contexts/LanguageContext';
+import { useSubscription } from '@/contexts/RevenueCatContext';
 import { MotiView } from 'moti';
-import React from 'react';
+import React, { useState } from 'react';
 import {
   ActionSheetIOS,
   Alert,
@@ -20,6 +18,8 @@ import {
 export default function ProfileScreen() {
   const { language, setLanguage, country, setCountry, t, availableCountries } =
     useLanguage();
+  const { isSubscribed } = useSubscription();
+  const [showSubscriptionModal, setShowSubscriptionModal] = useState(false);
 
   const languages: Array<{
     code: SupportedLanguage;
@@ -47,9 +47,7 @@ export default function ProfileScreen() {
             {t('modal.title')}
           </Text>
           <Text className='mt-2 text-base text-light-muted dark:text-dark-muted'>
-            {language === 'fr'
-              ? 'Personnalisez votre expérience'
-              : 'Customize your experience'}
+            {t('profile.subtitle')}
           </Text>
         </MotiView>
 
@@ -66,10 +64,7 @@ export default function ProfileScreen() {
         >
           <View className='rounded-xl bg-light-card p-6 dark:bg-dark-card'>
             <Text className='mb-4 text-lg font-semibold text-light-text dark:text-dark-text'>
-              🌍{' '}
-              {language === 'fr'
-                ? "Langue de l'application"
-                : 'Application Language'}
+              🌍 {t('profile.language')}
             </Text>
 
             <TouchableOpacity
@@ -78,14 +73,11 @@ export default function ProfileScreen() {
                   ActionSheetIOS.showActionSheetWithOptions(
                     {
                       options: [
-                        language === 'fr' ? 'Annuler' : 'Cancel',
+                        t('common.cancel'),
                         ...languages.map(lang => `${lang.flag} ${lang.name}`),
                       ],
                       cancelButtonIndex: 0,
-                      title:
-                        language === 'fr'
-                          ? 'Choisir une langue'
-                          : 'Choose a language',
+                      title: t('profile.chooseLanguage'),
                     },
                     buttonIndex => {
                       if (buttonIndex > 0) {
@@ -96,22 +88,16 @@ export default function ProfileScreen() {
                   );
                 } else {
                   // Pour Android, utiliser Alert avec des boutons
-                  Alert.alert(
-                    language === 'fr'
-                      ? 'Choisir une langue'
-                      : 'Choose a language',
-                    '',
-                    [
-                      {
-                        text: language === 'fr' ? 'Annuler' : 'Cancel',
-                        style: 'cancel',
-                      },
-                      ...languages.map(lang => ({
-                        text: `${lang.flag} ${lang.name}`,
-                        onPress: () => setLanguage(lang.code),
-                      })),
-                    ]
-                  );
+                  Alert.alert(t('profile.chooseLanguage'), '', [
+                    {
+                      text: t('common.cancel'),
+                      style: 'cancel',
+                    },
+                    ...languages.map(lang => ({
+                      text: `${lang.flag} ${lang.name}`,
+                      onPress: () => setLanguage(lang.code),
+                    })),
+                  ]);
                 }
               }}
               className='rounded-lg border border-light-border bg-light-background p-4 dark:border-dark-border dark:bg-dark-background'
@@ -149,16 +135,13 @@ export default function ProfileScreen() {
                   ActionSheetIOS.showActionSheetWithOptions(
                     {
                       options: [
-                        language === 'fr' ? 'Annuler' : 'Cancel',
+                        t('common.cancel'),
                         ...availableCountries.map(
                           country => `${country.flag} ${country.name}`
                         ),
                       ],
                       cancelButtonIndex: 0,
-                      title:
-                        language === 'fr'
-                          ? 'Choisir un pays'
-                          : 'Choose a country',
+                      title: t('profile.chooseCountry'),
                     },
                     buttonIndex => {
                       if (buttonIndex > 0) {
@@ -170,20 +153,16 @@ export default function ProfileScreen() {
                   );
                 } else {
                   // Pour Android, utiliser Alert avec des boutons
-                  Alert.alert(
-                    language === 'fr' ? 'Choisir un pays' : 'Choose a country',
-                    '',
-                    [
-                      {
-                        text: language === 'fr' ? 'Annuler' : 'Cancel',
-                        style: 'cancel',
-                      },
-                      ...availableCountries.map(countryItem => ({
-                        text: `${countryItem.flag} ${countryItem.name}`,
-                        onPress: () => setCountry(countryItem.code),
-                      })),
-                    ]
-                  );
+                  Alert.alert(t('profile.chooseCountry'), '', [
+                    {
+                      text: t('common.cancel'),
+                      style: 'cancel',
+                    },
+                    ...availableCountries.map(countryItem => ({
+                      text: `${countryItem.flag} ${countryItem.name}`,
+                      onPress: () => setCountry(countryItem.code),
+                    })),
+                  ]);
                 }
               }}
               className='rounded-lg border border-light-border bg-light-background p-4 dark:border-dark-border dark:bg-dark-background'
@@ -196,6 +175,52 @@ export default function ProfileScreen() {
                 <Text className='text-light-muted dark:text-dark-muted'>▼</Text>
               </View>
             </TouchableOpacity>
+          </View>
+        </MotiView>
+
+        {/* Subscription Section */}
+        <MotiView
+          from={{ opacity: 0, translateY: 20 }}
+          animate={{ opacity: 1, translateY: 0 }}
+          transition={{
+            delay: 400,
+            type: 'timing',
+            duration: 600,
+          }}
+          className='mb-6'
+        >
+          <View className='rounded-xl bg-light-card p-6 dark:bg-dark-card'>
+            <Text className='mb-4 text-lg font-semibold text-light-text dark:text-dark-text'>
+              ⭐ {t('profile.premiumSubscription')}
+            </Text>
+
+            {isSubscribed ? (
+              <View className='gap-3'>
+                <View className='flex-row items-center'>
+                  <View className='mr-3 h-3 w-3 rounded-full bg-success-500' />
+                  <Text className='font-medium text-light-text dark:text-dark-text'>
+                    {t('profile.activeSubscription')}
+                  </Text>
+                </View>
+                <Text className='text-sm text-light-muted dark:text-dark-muted'>
+                  {t('profile.enjoyPremiumFeatures')}
+                </Text>
+              </View>
+            ) : (
+              <View className='gap-4'>
+                <Text className='text-light-muted dark:text-dark-muted'>
+                  {t('profile.unlockPremiumMessage')}
+                </Text>
+                <TouchableOpacity
+                  onPress={() => setShowSubscriptionModal(true)}
+                  className='rounded-lg bg-primary-500 px-6 py-3'
+                >
+                  <Text className='text-center font-semibold text-white'>
+                    {t('profile.viewPlans')}
+                  </Text>
+                </TouchableOpacity>
+              </View>
+            )}
           </View>
         </MotiView>
 
@@ -212,15 +237,12 @@ export default function ProfileScreen() {
         >
           <View className='rounded-xl bg-light-card p-6 dark:bg-dark-card'>
             <Text className='mb-4 text-lg font-semibold text-light-text dark:text-dark-text'>
-              📱{' '}
-              {language === 'fr'
-                ? "À propos de l'application"
-                : 'About the app'}
+              📱 {t('profile.aboutApp')}
             </Text>
             <View className='space-y-3'>
               <View className='flex-row justify-between'>
                 <Text className='text-light-muted dark:text-dark-muted'>
-                  {language === 'fr' ? 'Version' : 'Version'}
+                  {t('profile.version')}
                 </Text>
                 <Text className='text-light-text dark:text-dark-text'>
                   1.0.0
@@ -228,16 +250,21 @@ export default function ProfileScreen() {
               </View>
               <View className='flex-row justify-between'>
                 <Text className='text-light-muted dark:text-dark-muted'>
-                  {language === 'fr' ? 'Développé par' : 'Developed by'}
+                  {t('profile.developedBy')}
                 </Text>
                 <Text className='text-light-text dark:text-dark-text'>
-                  {language === 'fr' ? 'Votre équipe' : 'Your team'}
+                  {t('profile.yourTeam')}
                 </Text>
               </View>
             </View>
           </View>
         </MotiView>
       </ScrollView>
+
+      <SubscriptionModal
+        visible={showSubscriptionModal}
+        onClose={() => setShowSubscriptionModal(false)}
+      />
     </SafeAreaView>
   );
 }
