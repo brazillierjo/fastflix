@@ -10,7 +10,14 @@
     "userInterfaceStyle": "automatic",
     "newArchEnabled": true,
     "category": "entertainment",
-    "keywords": ["movies", "tv shows", "recommendations", "streaming", "entertainment", "AI"],
+    "keywords": [
+      "movies",
+      "tv shows",
+      "recommendations",
+      "streaming",
+      "entertainment",
+      "AI"
+    ],
     "ios": {
       "supportsTablet": true,
       "bundleIdentifier": "com.fastflix.app",
