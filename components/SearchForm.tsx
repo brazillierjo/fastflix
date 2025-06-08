@@ -78,10 +78,10 @@ export default function SearchForm({
             <Text className='mb-6 text-center text-3xl font-bold text-light-text dark:text-dark-text'>
               {t('welcome.title')}
             </Text>
-            <Text className='mb-4 text-justify text-base text-light-muted dark:text-dark-muted'>
+            <Text className='mb-4 text-justify text-base text-light-text dark:text-dark-text'>
               {t('welcome.subtitle')}
             </Text>
-            <Text className='text-justify text-base leading-relaxed text-light-muted dark:text-dark-muted'>
+            <Text className='text-justify text-base leading-relaxed text-light-text dark:text-dark-text'>
               {t('welcome.description')}
             </Text>
           </MotiView>
@@ -98,14 +98,14 @@ export default function SearchForm({
             className='mb-8 rounded-xl bg-light-card p-4 dark:bg-dark-card'
           >
             {/* Number of Recommendations */}
-            <View className='mb-4'>
+            <View>
               <Text className='mb-2 text-base font-semibold text-light-text dark:text-dark-text'>
                 {t('welcome.numberOfRecommendations')}:{' '}
                 {numberOfRecommendations}
               </Text>
 
               <Slider
-                style={{ width: '100%', height: 40 }}
+                style={{ width: '100%' }}
                 minimumValue={1}
                 maximumValue={20}
                 step={1}

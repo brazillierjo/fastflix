@@ -473,7 +473,7 @@ export default function MovieResults({
                             {/* Content Type Badge */}
                             <View className='mb-2 flex-row items-center gap-2'>
                               <Text className='text-sm font-semibold text-light-text dark:text-dark-text'>
-                                🎬 {t('settings.movieType')}
+                                🎬 {t('movies.contentType')}
                               </Text>
                               <View className='rounded-full bg-light-accent/20 px-2 py-1 dark:bg-dark-accent/20'>
                                 <Text className='text-xs font-medium text-light-accent dark:text-dark-accent'>
