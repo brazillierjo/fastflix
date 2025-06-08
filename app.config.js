@@ -1,6 +1,10 @@
 import 'dotenv/config';
 
-const { version, iosBuildNumber, androidVersionCode } = require('./utils/version');
+const {
+  version,
+  iosBuildNumber,
+  androidVersionCode,
+} = require('./utils/version');
 
 export default {
   expo: {

@@ -17,7 +17,10 @@
     "version:status": "node scripts/version-bump.js status",
     "build:ios": "node scripts/version-bump.js build-ios",
     "build:android": "node scripts/version-bump.js build-android",
-    "build:both": "node scripts/version-bump.js build-both"
+    "build:both": "node scripts/version-bump.js build-both",
+    "typecheck": "tsc --noEmit",
+    "pre-commit": "npm run lint && npm run format:check && npm run typecheck",
+    "prepare": "husky"
   },
   "dependencies": {
     "@expo/vector-icons": "^14.1.0",
@@ -68,6 +71,7 @@
     "@types/react": "~19.0.10",
     "eslint": "^9.25.0",
     "eslint-config-expo": "~9.2.0",
+    "husky": "^9.1.7",
     "prettier": "^3.5.3",
     "prettier-plugin-tailwindcss": "^0.6.12",
     "typescript": "~5.8.3"

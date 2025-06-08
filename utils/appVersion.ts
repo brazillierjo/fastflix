@@ -13,7 +13,10 @@ export const getAppVersion = (): string => {
  * @returns Le numéro de build ou undefined si non disponible
  */
 export const getBuildNumber = (): string | undefined => {
-  return Constants.expoConfig?.ios?.buildNumber || Constants.expoConfig?.android?.versionCode?.toString();
+  return (
+    Constants.expoConfig?.ios?.buildNumber ||
+    Constants.expoConfig?.android?.versionCode?.toString()
+  );
 };
 
 /**
@@ -24,6 +27,8 @@ export const getVersionInfo = () => {
   return {
     version: getAppVersion(),
     buildNumber: getBuildNumber(),
-    fullVersion: getBuildNumber() ? `${getAppVersion()} (${getBuildNumber()})` : getAppVersion(),
+    fullVersion: getBuildNumber()
+      ? `${getAppVersion()} (${getBuildNumber()})`
+      : getAppVersion(),
   };
 };
