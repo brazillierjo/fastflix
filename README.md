@@ -16,6 +16,42 @@ A smart movie and TV show recommendation app powered by AI. Simply describe what
 
 🔍 **Detailed Information**: Get movie/show details, ratings, and streaming provider information
 
+## How It Works
+
+**What Movie Tonight** is an intelligent application that combines Google Gemini AI with the TMDB API to provide personalized movie and TV show recommendations.
+
+### Detailed Application Flow:
+
+1. **Intuitive User Interface**:
+   - Search form with natural language input
+   - Configurable filters (movies, TV shows, or both)
+   - Slider to choose number of recommendations (1-20)
+   - Multi-language support with automatic detection
+
+2. **Advanced AI Processing**:
+   - Uses Gemini 2.0 Flash to analyze user queries
+   - Contextual title generation based on mood, genres, or preferences
+   - Localized processing with region-specific responses
+
+3. **Multi-Source Data Aggregation**:
+   - TMDB search for each recommended title
+   - Complete metadata retrieval (synopsis, ratings, posters)
+   - Cast and crew information collection
+   - Streaming platform availability
+
+4. **Enhanced Presentation**:
+   - Modern interface with smooth animations (Moti)
+   - Detailed cards with high-quality posters
+   - Streaming information with platform logos
+   - Advanced sorting and filtering system
+   - Loading states and error handling
+
+5. **Sophisticated State Management**:
+   - `useAppState` hook for global coordination
+   - `useMovieSearch` hook with React Query for API management
+   - Language context with preference persistence
+   - Smooth navigation between home and profile screens
+
 ## Technology Stack
 
 - **Framework**: [Expo](https://expo.dev) with React Native
@@ -80,21 +116,34 @@ After starting the development server, you can run the app on:
 
 ```
 what-movie-tonight/
-├── app/                    # Main application code
-│   ├── (tabs)/            # Tab-based navigation
-│   │   ├── index.tsx      # Home screen with recommendations
-│   │   ├── profile.tsx    # Profile/settings screen
-│   │   └── _layout.tsx    # Tab layout configuration
-│   ├── _layout.tsx        # Root layout with providers
-│   └── +not-found.tsx     # 404 page
-├── components/            # Reusable UI components
-├── contexts/              # React Context providers
-├── hooks/                 # Custom React hooks
-├── locales/               # Translation files
-│   ├── en.json           # English translations
-│   └── fr.json           # French translations
-├── constants/             # App constants
-└── assets/               # Images, fonts, and other assets
+├── app/                    # Code principal de l'application
+│   ├── _layout.tsx        # Layout racine avec providers (QueryProvider, LanguageProvider)
+│   ├── index.tsx          # Écran d'accueil avec recherche et recommandations
+│   ├── profile.tsx        # Écran de profil/paramètres (langue, pays)
+│   └── +not-found.tsx     # Page 404
+├── components/            # Composants UI réutilisables
+│   ├── SearchForm.tsx     # Formulaire de recherche avec filtres
+│   ├── MovieResults.tsx   # Affichage des résultats avec tri/filtrage
+│   ├── LoadingState.tsx   # États de chargement animés
+│   ├── LanguageSelector.tsx # Sélecteur de langue
+│   ├── SettingsModal.tsx  # Modal de paramètres
+│   └── HapticTab.tsx      # Onglets avec retour haptique
+├── hooks/                 # Hooks React personnalisés
+│   ├── useAppState.ts     # Gestion d'état globale de l'application
+│   └── useMovieSearch.ts  # Logique de recherche avec Gemini + TMDB
+├── contexts/              # Providers React Context
+│   └── LanguageContext.tsx # Gestion multilingue et pays
+├── providers/             # Providers externes
+│   └── QueryProvider.tsx # Configuration React Query
+├── utils/                 # Utilitaires et services
+│   ├── apiServices.ts     # Services API (Gemini, TMDB)
+│   └── cn.ts             # Utilitaire de classes CSS
+├── locales/               # Fichiers de traduction
+│   ├── en.json           # Traductions anglaises
+│   └── fr.json           # Traductions françaises
+├── assets/               # Ressources statiques
+│   ├── app-images/       # Icônes et splash screens
+│   └── fonts/            # Polices personnalisées
 ```
 
 ## Available Scripts
@@ -106,14 +155,6 @@ what-movie-tonight/
 - `npm run lint` - Run ESLint
 - `npm run format` - Format code with Prettier
 - `npm run format:check` - Check code formatting
-
-## How It Works
-
-1. **User Input**: Users describe what they want to watch in natural language
-2. **AI Processing**: The app uses Google's Gemini AI to understand the request and generate relevant movie/TV show titles
-3. **Data Fetching**: Movie details are fetched from TMDB API
-4. **Streaming Info**: The app retrieves streaming provider information
-5. **Results Display**: Recommendations are presented with posters, descriptions, and streaming availability
 
 ## Contributing
 
