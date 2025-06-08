@@ -54,6 +54,7 @@ export interface TMDBSearchItem {
 }
 
 export interface StreamingProvider {
+  provider_id: number;
   provider_name: string;
   logo_path: string;
 }
@@ -107,6 +108,9 @@ const searchMoviesWithGemini = async (
         includeMovies,
         includeTvShows
       );
+
+    // Detect streaming platform mentions in the query
+    const { platform, platformId } = aiService.detectStreamingPlatform(query);
 
     // Generate recommendations using AI with determined content types
     let contentTypes = [];
@@ -181,8 +185,42 @@ const searchMoviesWithGemini = async (
 
     const dataResults = await Promise.all(dataPromises);
 
+    // Filter by streaming platform if specified in the query
+    // This allows users to search for content available on specific platforms
+    // e.g., "je veux voir un film d'action disponible sur Netflix"
+    let platformFilteredResults = dataResults;
+    if (platformId) {
+      console.log(
+        `Filtering results for platform: ${platform} (ID: ${platformId})`
+      );
+      platformFilteredResults = dataResults.filter(result => {
+        // Check if the specified platform is available for this content in the user's country
+        const hasRequestedPlatform = result.providers.some(
+          provider => provider.provider_id === platformId
+        );
+        if (hasRequestedPlatform) {
+          console.log(
+            `Found content "${result.movie.title || result.movie.name}" on ${platform}`
+          );
+        }
+        return hasRequestedPlatform;
+      });
+
+      // If no results found for the specified platform, keep all results but inform the user
+      if (platformFilteredResults.length === 0) {
+        console.log(
+          `No content found for platform: ${platform}. Showing all available results.`
+        );
+        platformFilteredResults = dataResults;
+      } else {
+        console.log(
+          `Found ${platformFilteredResults.length} items available on ${platform}`
+        );
+      }
+    }
+
     // Filter results based on query relevance (especially for actor searches)
-    const filteredResults = dataResults.filter(result => {
+    const filteredResults = platformFilteredResults.filter(result => {
       const queryLower = query.toLowerCase();
 
       // Mots-clés indiquant explicitement une recherche de personne spécifique

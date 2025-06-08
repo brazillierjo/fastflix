@@ -183,6 +183,58 @@ MESSAGE: [ton message conversationnel]`;
   },
 
   /**
+   * Analyzes user query to detect streaming platform mentions
+   * @param query - User's search query
+   * @returns Object with detected streaming platform or null if none found
+   */
+  detectStreamingPlatform(query: string): {
+    platform: string | null;
+    platformId: number | null;
+  } {
+    const queryLower = query.toLowerCase();
+
+    // Map of streaming platforms with their TMDB provider IDs
+    const streamingPlatforms = {
+      netflix: { id: 8, names: ['netflix'] },
+      'amazon prime': {
+        id: 119,
+        names: ['amazon prime', 'prime video', 'amazon'],
+      },
+      'disney+': { id: 337, names: ['disney+', 'disney plus', 'disney'] },
+      hulu: { id: 15, names: ['hulu'] },
+      'hbo max': { id: 384, names: ['hbo max', 'hbo', 'max'] },
+      'apple tv+': { id: 350, names: ['apple tv+', 'apple tv', 'apple'] },
+      'paramount+': {
+        id: 531,
+        names: ['paramount+', 'paramount plus', 'paramount'],
+      },
+      peacock: { id: 387, names: ['peacock'] },
+      crunchyroll: { id: 283, names: ['crunchyroll'] },
+      'canal+': { id: 381, names: ['canal+', 'canal plus', 'canal'] },
+      ocs: { id: 56, names: ['ocs'] },
+      salto: { id: 564, names: ['salto'] },
+      'france tv': {
+        id: 190,
+        names: ['france tv', 'france télévisions', 'francetv'],
+      },
+      youtube: { id: 188, names: ['youtube'] },
+    };
+
+    // Check for platform mentions in the query
+    for (const [platformName, platformData] of Object.entries(
+      streamingPlatforms
+    )) {
+      for (const name of platformData.names) {
+        if (queryLower.includes(name)) {
+          return { platform: platformName, platformId: platformData.id };
+        }
+      }
+    }
+
+    return { platform: null, platformId: null };
+  },
+
+  /**
    * Analyzes user query to determine optimal content types
    * This helps in providing more relevant recommendations based on query context
    * @param query - User's search query
