@@ -47,6 +47,14 @@
     "backButton": "Retour à l'accueil",
     "funMessage": "🍿 Peut-être qu'un bon film vous consolera ?"
   },
+  "prompts": {
+    "limit": {
+      "title": "Limite mensuelle atteinte",
+      "message": "Vous avez utilisé vos 3 prompts gratuits ce mois-ci. Passez à FastFlix Pro pour des recommandations illimitées !",
+      "cancel": "Annuler",
+      "upgrade": "Passer à Pro"
+    }
+  },
   "errors": {
     "title": "Erreur",
     "enterRequest": "Veuillez entrer une demande",

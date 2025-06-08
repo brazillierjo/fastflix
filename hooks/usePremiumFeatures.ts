@@ -7,6 +7,8 @@
  */
 
 import { useSubscription } from '@/contexts/RevenueCatContext';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { useEffect, useState } from 'react';
 
 export interface FastFlixProFeatures {
   // Core features
@@ -27,6 +29,95 @@ export interface FastFlixProFeatures {
 
 export const useFastFlixProFeatures = () => {
   const { isSubscribed, isLoading } = useSubscription();
+  const [monthlyPromptCount, setMonthlyPromptCount] = useState(0);
+  const [promptCountLoading, setPromptCountLoading] = useState(true);
+
+  // Load monthly prompt count on component mount
+  useEffect(() => {
+    loadMonthlyPromptCount();
+  }, []);
+
+  // Load monthly prompt count from storage
+  const loadMonthlyPromptCount = async () => {
+    try {
+      const currentMonth = new Date().toISOString().slice(0, 7); // YYYY-MM format
+      const storedData = await AsyncStorage.getItem('monthlyPromptData');
+
+      if (storedData) {
+        const { month, count } = JSON.parse(storedData);
+
+        // Reset count if it's a new month
+        if (month !== currentMonth) {
+          await AsyncStorage.setItem(
+            'monthlyPromptData',
+            JSON.stringify({ month: currentMonth, count: 0 })
+          );
+          setMonthlyPromptCount(0);
+        } else {
+          setMonthlyPromptCount(count);
+        }
+      } else {
+        // First time, initialize with current month and 0 count
+        await AsyncStorage.setItem(
+          'monthlyPromptData',
+          JSON.stringify({ month: currentMonth, count: 0 })
+        );
+        setMonthlyPromptCount(0);
+      }
+    } catch (error) {
+      console.error('Error loading monthly prompt count:', error);
+      setMonthlyPromptCount(0);
+    } finally {
+      setPromptCountLoading(false);
+    }
+  };
+
+  // Increment monthly prompt count
+  const incrementPromptCount = async () => {
+    try {
+      const currentMonth = new Date().toISOString().slice(0, 7);
+      const newCount = monthlyPromptCount + 1;
+
+      await AsyncStorage.setItem(
+        'monthlyPromptData',
+        JSON.stringify({ month: currentMonth, count: newCount })
+      );
+      setMonthlyPromptCount(newCount);
+
+      return newCount;
+    } catch (error) {
+      console.error('Error incrementing prompt count:', error);
+      return monthlyPromptCount;
+    }
+  };
+
+  // Check if user can make a prompt (3 free per month for non-subscribers)
+  const canMakePrompt = () => {
+    if (isSubscribed) {
+      return { allowed: true, reason: 'fastflix-pro', remaining: Infinity };
+    }
+
+    const freeMonthlyLimit = 3;
+    const remaining = Math.max(0, freeMonthlyLimit - monthlyPromptCount);
+
+    if (monthlyPromptCount >= freeMonthlyLimit) {
+      return {
+        allowed: false,
+        reason: 'monthly_limit_reached',
+        limit: freeMonthlyLimit,
+        used: monthlyPromptCount,
+        remaining: 0,
+      };
+    }
+
+    return {
+      allowed: true,
+      reason: 'within_monthly_limit',
+      limit: freeMonthlyLimit,
+      used: monthlyPromptCount,
+      remaining,
+    };
+  };
 
   // Define which features are available for FastFlix Pro users
   const fastFlixProFeatures: FastFlixProFeatures = {
@@ -101,11 +192,15 @@ export const useFastFlixProFeatures = () => {
 
   return {
     isSubscribed,
-    isLoading,
+    isLoading: isLoading || promptCountLoading,
     features: fastFlixProFeatures,
     hasFeature,
     getFeatureStatus,
     canPerformAction,
+    // New prompt limitation features
+    monthlyPromptCount,
+    canMakePrompt,
+    incrementPromptCount,
   };
 };
 

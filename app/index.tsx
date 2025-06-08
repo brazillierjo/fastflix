@@ -1,11 +1,20 @@
 import LoadingState from '@/components/LoadingState';
 import MovieResults from '@/components/MovieResults';
 import SearchForm from '@/components/SearchForm';
+import SubscriptionModal from '@/components/SubscriptionModal';
+import { useLanguage } from '@/contexts/LanguageContext';
 import { useAppState } from '@/hooks/useAppState';
 import { useMovieSearch } from '@/hooks/useMovieSearch';
+import { useFastFlixProFeatures } from '@/hooks/usePremiumFeatures';
 import { cn } from '@/utils/cn';
-import React from 'react';
-import { KeyboardAvoidingView, Platform, StatusBar, View } from 'react-native';
+import React, { useState } from 'react';
+import {
+  Alert,
+  KeyboardAvoidingView,
+  Platform,
+  StatusBar,
+  View,
+} from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 export default function HomeScreen() {
@@ -27,9 +36,41 @@ export default function HomeScreen() {
   } = useAppState();
 
   const movieSearchMutation = useMovieSearch();
+  const { canMakePrompt, incrementPromptCount } = useFastFlixProFeatures();
+  const { t } = useLanguage();
+  const [showSubscriptionModal, setShowSubscriptionModal] = useState(false);
 
-  const handleSearch = () => {
+  const handleSearch = async () => {
+    // Check if user can make a prompt
+    const promptCheck = canMakePrompt();
+
+    if (!promptCheck.allowed) {
+      // Show subscription modal for users who have reached their limit
+      Alert.alert(
+        t('prompts.limit.title') || 'Monthly Limit Reached',
+        t('prompts.limit.message') ||
+          `You've used all 3 free prompts this month. Upgrade to FastFlix Pro for unlimited recommendations!`,
+        [
+          {
+            text: t('prompts.limit.cancel') || 'Cancel',
+            style: 'cancel',
+          },
+          {
+            text: t('prompts.limit.upgrade') || 'Upgrade to Pro',
+            onPress: () => setShowSubscriptionModal(true),
+          },
+        ]
+      );
+      return;
+    }
+
     handleSearchStart();
+
+    // Increment prompt count for non-subscribers
+    if (promptCheck.reason === 'within_monthly_limit') {
+      await incrementPromptCount();
+    }
+
     movieSearchMutation.mutate(
       {
         query,
@@ -83,6 +124,12 @@ export default function HomeScreen() {
           )}
         </View>
       </KeyboardAvoidingView>
+
+      {/* Subscription Modal */}
+      <SubscriptionModal
+        visible={showSubscriptionModal}
+        onClose={() => setShowSubscriptionModal(false)}
+      />
     </SafeAreaView>
   );
 }
