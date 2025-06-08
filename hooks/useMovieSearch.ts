@@ -26,7 +26,8 @@
 import { useMutation } from '@tanstack/react-query';
 import { Alert } from 'react-native';
 import { useLanguage } from '../contexts/LanguageContext';
-import { geminiService, tmdbService } from '../utils/apiServices';
+import { aiService } from '../utils/aiServices';
+import { tmdbService } from '../utils/apiServices';
 
 export interface Movie {
   id: number;
@@ -100,50 +101,21 @@ const searchMoviesWithGemini = async (
 
   try {
     // Analyze the query to determine content types using AI
-    const queryLower = query.toLowerCase();
-    let aiIncludeMovies = includeMovies;
-    let aiIncludeTvShows = includeTvShows;
+    const { includeMovies: aiIncludeMovies, includeTvShows: aiIncludeTvShows } =
+      aiService.analyzeQueryForContentTypes(
+        query,
+        includeMovies,
+        includeTvShows
+      );
 
-    // Check for specific mentions of movies or TV shows in the query
-    const movieKeywords = ['film', 'movie', 'cinema', 'long métrage'];
-    const tvKeywords = [
-      'série',
-      'series',
-      'tv show',
-      'saison',
-      'season',
-      'épisode',
-      'episode',
-    ];
-
-    const hasMovieKeywords = movieKeywords.some(keyword =>
-      queryLower.includes(keyword)
-    );
-    const hasTvKeywords = tvKeywords.some(keyword =>
-      queryLower.includes(keyword)
-    );
-
-    // If user specifically mentions one type, prioritize that type
-    if (hasMovieKeywords && !hasTvKeywords) {
-      aiIncludeMovies = true;
-      aiIncludeTvShows = false;
-    } else if (hasTvKeywords && !hasMovieKeywords) {
-      aiIncludeMovies = false;
-      aiIncludeTvShows = true;
-    }
-    // If neither or both are mentioned, include both types (default behavior)
-
-    // Generate recommendations using Gemini with AI-determined content types
+    // Generate recommendations using AI with determined content types
     let contentTypes = [];
     if (aiIncludeMovies) contentTypes.push('films');
     if (aiIncludeTvShows) contentTypes.push('séries');
 
     // Generate recommendations and conversational response in a single API call
     const { recommendations: movieTitles, conversationalResponse } =
-      await geminiService.generateRecommendationsWithResponse(
-        query,
-        contentTypes
-      );
+      await aiService.generateRecommendationsWithResponse(query, contentTypes);
 
     // Remove duplicate titles (case-insensitive)
     const uniqueTitles = movieTitles.filter((title, index, array) => {
