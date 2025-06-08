@@ -62,6 +62,7 @@ A smart movie and TV show recommendation app powered by AI. Simply describe what
 - **Navigation**: Expo Router with file-based routing
 - **State Management**: React Context API
 - **Internationalization**: Custom translation system
+- **Code Quality**: Husky for Git hooks, ESLint, Prettier, TypeScript
 
 ## Prerequisites
 
@@ -111,6 +112,23 @@ After starting the development server, you can run the app on:
 - **Android Emulator**: Press `a` in the terminal or scan the QR code with the Expo Go app
 - **Web Browser**: Press `w` in the terminal
 - **Physical Device**: Install [Expo Go](https://expo.dev/go) and scan the QR code
+
+## Code Quality & Git Hooks
+
+The project uses **Husky** to enforce code quality standards before commits. Pre-commit hooks automatically run:
+
+- **ESLint**: Code linting and style checking
+- **Prettier**: Code formatting verification
+- **TypeScript**: Type checking with `tsc --noEmit`
+
+If any check fails, the commit will be blocked until issues are resolved. You can manually run these checks:
+
+```bash
+npm run lint          # Run ESLint
+npm run format:check  # Check code formatting
+npm run typecheck     # Run TypeScript checks
+npm run pre-commit    # Run all checks together
+```
 
 ## Project Structure
 
