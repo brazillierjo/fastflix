@@ -38,33 +38,71 @@ export const tmdbService = {
     includeTvShows: boolean
   ): Promise<TMDBSearchItem | null> {
     try {
-      // Essayer d'abord en français
-      let searchResponse = await axios.get(
-        `https://api.themoviedb.org/3/search/multi?api_key=${TMDB_API_KEY}&query=${encodeURIComponent(title)}&language=fr-FR`
-      );
+      // Nettoyer le titre pour améliorer la recherche
+      const cleanTitle = title.trim();
 
-      let results = searchResponse.data.results.filter(
-        (item: TMDBSearchItem) => {
-          if (item.media_type === 'movie' && includeMovies) return true;
-          if (item.media_type === 'tv' && includeTvShows) return true;
-          return false;
-        }
-      );
-
-      // Si aucun résultat en français, essayer en anglais
-      if (!results.length) {
-        searchResponse = await axios.get(
-          `https://api.themoviedb.org/3/search/multi?api_key=${TMDB_API_KEY}&query=${encodeURIComponent(title)}&language=en-US`
+      // Fonction pour effectuer une recherche avec un terme donné
+      const performSearch = async (searchTerm: string, language: string) => {
+        const response = await axios.get(
+          `https://api.themoviedb.org/3/search/multi?api_key=${TMDB_API_KEY}&query=${encodeURIComponent(searchTerm)}&language=${language}`
         );
 
-        results = searchResponse.data.results.filter((item: TMDBSearchItem) => {
+        return response.data.results.filter((item: TMDBSearchItem) => {
           if (item.media_type === 'movie' && includeMovies) return true;
           if (item.media_type === 'tv' && includeTvShows) return true;
           return false;
         });
+      };
+
+      // Stratégie de recherche progressive
+      const searchStrategies = [
+        // 1. Recherche exacte en français
+        { term: cleanTitle, language: 'fr-FR' },
+        // 2. Recherche exacte en anglais
+        { term: cleanTitle, language: 'en-US' },
+        // 3. Recherche sans articles (le, la, les, the, a, an)
+        {
+          term: cleanTitle.replace(/^(le|la|les|the|a|an)\s+/i, ''),
+          language: 'fr-FR',
+        },
+        {
+          term: cleanTitle.replace(/^(le|la|les|the|a|an)\s+/i, ''),
+          language: 'en-US',
+        },
+        // 4. Recherche avec des variantes communes
+        { term: cleanTitle.replace(/\s+/g, ' '), language: 'fr-FR' },
+        { term: cleanTitle.replace(/\s+/g, ' '), language: 'en-US' },
+      ];
+
+      // Essayer chaque stratégie jusqu'à trouver un résultat
+      for (const strategy of searchStrategies) {
+        if (strategy.term.length < 2) continue; // Éviter les recherches trop courtes
+
+        try {
+          const results = await performSearch(strategy.term, strategy.language);
+          if (results.length > 0) {
+            // Prioriser les résultats avec un score de pertinence élevé
+            const sortedResults = results.sort(
+              (a: TMDBSearchItem, b: TMDBSearchItem) => {
+                const scoreA =
+                  (a.vote_average || 0) * ((a as any).vote_count || 1);
+                const scoreB =
+                  (b.vote_average || 0) * ((b as any).vote_count || 1);
+                return scoreB - scoreA;
+              }
+            );
+            return sortedResults[0];
+          }
+        } catch (searchError) {
+          console.warn(
+            `Search failed for "${strategy.term}" in ${strategy.language}:`,
+            searchError
+          );
+          continue;
+        }
       }
 
-      return results[0] || null;
+      return null;
     } catch (error) {
       console.error(`Error searching for ${title}:`, error);
       return null;

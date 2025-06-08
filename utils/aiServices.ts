@@ -48,16 +48,25 @@ export const aiService = {
     const model = genAI.getGenerativeModel({ model: 'gemini-2.0-flash' });
 
     const contentTypeText = contentTypes.join(' et ');
-    const prompt = `Tu es un assistant IA expert en cinéma et télévision. Basé sur cette demande: "${query}", recommande-moi jusqu'à 20 ${contentTypeText}.
+    const prompt = `Tu es un assistant IA expert en cinéma et télévision avec une connaissance encyclopédique des films et séries du monde entier. Basé sur cette demande: "${query}", recommande-moi jusqu'à 25 ${contentTypeText}.
 
-IMPORTANT: 
-- Pour les descriptions conceptuelles (ex: "voitures qui se transforment", "super-héros", "space opera", "robots"), inclus les franchises et films populaires qui correspondent au concept
-- Si un nom d'acteur/réalisateur est mentionné spécifiquement, recommande ses œuvres
-- Si un genre est mentionné, respecte ce genre
-- Si une époque est mentionnée, respecte cette période
-- Privilégie les œuvres connues et populaires
-- Sois créatif et inclusif pour les requêtes conceptuelles
-- Inclus les franchises célèbres même si le titre exact n'est pas mentionné
+STRATÉGIE DE RECHERCHE CRÉATIVE:
+
+Pour les requêtes conceptuelles (ex: "monstre japonais dans l'eau", "voitures qui se transforment", "robots géants") :
+- PENSE AUX FRANCHISES ICONIQUES : Godzilla, Kaiju, mecha, Transformers, etc.
+- INCLUS LES VARIATIONS : titres originaux, suites, remakes, adaptations
+- EXPLORE LES SYNONYMES : "monstre marin" = Godzilla, Kaiju, créatures aquatiques
+- CONSIDÈRE LES ORIGINES : films japonais, américains, coréens pour les monstres
+- INCLUS LES CLASSIQUES ET MODERNES : des années 50 à aujourd'hui
+
+Règles d'expansion créative :
+- Si "monstre" → pense Godzilla, King Kong, Cloverfield, Pacific Rim, Rampage
+- Si "eau/océan" → pense créatures marines, sous-marins, îles mystérieuses  
+- Si "japonais" → pense kaiju, anime, J-horror, samurai, yakuza
+- Si "robot" → pense mecha, IA, cyborgs, transformers, terminators
+- COMBINE les concepts : "monstre japonais eau" = Godzilla ET ses variations
+
+IMPORTANT : Sois TRÈS généreux dans tes recommandations. Mieux vaut inclure trop de résultats pertinents que pas assez. Inclus les franchises célèbres même si le titre exact n'est pas mentionné.
 
 Réponds uniquement avec les titres qui correspondent à la demande, séparés par des virgules, sans numérotation ni explication supplémentaire.`;
 
@@ -108,28 +117,40 @@ Limite ta réponse à 3-4 phrases maximum.`;
     const model = genAI.getGenerativeModel({ model: 'gemini-2.0-flash' });
 
     const contentTypeText = contentTypes.join(' et ');
-    const prompt = `Tu es un assistant IA expert en cinéma et télévision. Un utilisateur te demande: "${query}".
+    const prompt = `Tu es un assistant IA expert en cinéma et télévision avec une connaissance encyclopédique des films et séries du monde entier. Un utilisateur te demande: "${query}".
 
-IMPORTANT: Adapte tes recommandations selon le type de demande :
+STRATÉGIE DE RECHERCHE CRÉATIVE:
 
-Pour les requêtes conceptuelles (ex: "voitures qui se transforment", "super-héros", "space opera", "robots", "magie") :
-- Inclus les franchises et films populaires qui correspondent au concept
-- Sois créatif et inclusif
-- Privilégie les œuvres connues même si le titre exact n'est pas mentionné
+Pour les requêtes conceptuelles (ex: "monstre japonais dans l'eau", "voitures qui se transforment", "robots géants", "magie", "space opera") :
+- PENSE AUX FRANCHISES ICONIQUES : Godzilla, Kaiju, mecha, Transformers, etc.
+- INCLUS LES VARIATIONS : titres originaux, suites, remakes, adaptations
+- EXPLORE LES SYNONYMES : "monstre marin" = Godzilla, Kaiju, créatures aquatiques
+- CONSIDÈRE LES ORIGINES : films japonais, américains, coréens pour les monstres
+- INCLUS LES CLASSIQUES ET MODERNES : des années 50 à aujourd'hui
+- PENSE AUX SOUS-GENRES : horror, action, science-fiction, animation
 
-Pour les requêtes spécifiques (acteur/réalisateur nommé) :
-- Si un nom d'acteur est mentionné, recommande ses œuvres
-- Si un réalisateur est mentionné, recommande ses films
-- Assure-toi de la correspondance avec la personne mentionnée
+Pour les requêtes géographiques/culturelles :
+- "japonais" = inclus films de Toho, Studio Ghibli, anime, J-horror
+- "coréen" = K-movies, thrillers, drames
+- "français" = cinéma d'auteur, comédies, drames
 
-Règles générales :
-- Si un genre est mentionné, respecte ce genre
-- Si une époque est mentionnée, respecte cette période
-- Privilégie les œuvres les plus connues et populaires
+Pour les requêtes spécifiques (acteur/réalisateur) :
+- Recommande TOUTE leur filmographie pertinente
+- Inclus collaborations fréquentes
+- Considère différentes périodes de carrière
+
+Règles d'expansion créative :
+- Si "monstre" → pense Godzilla, King Kong, Cloverfield, Pacific Rim, Rampage
+- Si "eau/océan" → pense créatures marines, sous-marins, îles mystérieuses
+- Si "japonais" → pense kaiju, anime, J-horror, samurai, yakuza
+- Si "robot" → pense mecha, IA, cyborgs, transformers, terminators
+- COMBINE les concepts : "monstre japonais eau" = Godzilla ET ses variations
+
+IMPORTANT : Sois TRÈS généreux dans tes recommandations. Mieux vaut inclure trop de résultats pertinents que pas assez. L'utilisateur pourra filtrer.
 
 Tu dois fournir deux choses dans ta réponse :
 
-1. RECOMMANDATIONS: Jusqu'à 20 ${contentTypeText} qui correspondent EXACTEMENT à la demande. Liste uniquement les titres séparés par des virgules.
+1. RECOMMANDATIONS: Jusqu'à 25 ${contentTypeText} qui correspondent à la demande (sois généreux et créatif). Inclus les titres exacts, variations, franchises, et œuvres similaires. Liste uniquement les titres séparés par des virgules.
 
 2. MESSAGE: Un message conversationnel et amical dans la même langue que la demande. Donne un message général d'encouragement ou de contexte en lien avec sa demande, sans mentionner les résultats spécifiques. Sois enthousiaste et personnalisé, comme si tu parlais à un ami. Limite à 2-3 phrases maximum.
 
