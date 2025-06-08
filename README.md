@@ -173,6 +173,21 @@ fastflix/
 - `npm run lint` - Run ESLint
 - `npm run format` - Format code with Prettier
 - `npm run format:check` - Check code formatting
+- `npm run version:patch` - Increment patch version (0.0.1 → 0.0.2)
+- `npm run version:minor` - Increment minor version (0.0.1 → 0.1.0)
+- `npm run version:major` - Increment major version (0.0.1 → 1.0.0)
+
+## Version Management
+
+FastFlix uses a centralized versioning system that manages app versions, iOS build numbers, and Android version codes from a single source. The project follows semantic versioning (MAJOR.MINOR.PATCH) and includes custom scripts for automated version management.
+
+### Key Features:
+- **Centralized Configuration**: Single source of truth in `package.json`
+- **Automated Build Numbers**: Environment-based iOS and Android build management
+- **Custom Scripts**: Easy version incrementing with `npm run version:*` commands
+- **Store Compatibility**: Full compatibility with App Store Connect and Google Play Console
+
+For detailed information about the versioning system, implementation details, best practices, and migration guides, see [VERSIONING.md](VERSIONING.md).
 
 ## Contributing
 
