@@ -11,10 +11,13 @@ export default {
     name: 'FastFlix',
     slug: 'fastflix',
     version,
+    description: 'AI-powered movie and TV show recommendations. Discover what to watch tonight with personalized suggestions based on your mood and preferences.',
     orientation: 'portrait',
     icon: './assets/app-images/icon-1024-1024.png',
-    scheme: 'myapp',
+    scheme: 'fastflix',
     userInterfaceStyle: 'automatic',
+    category: 'entertainment',
+    keywords: ['movies', 'tv shows', 'recommendations', 'streaming', 'entertainment', 'AI'],
     splash: {
       image: './assets/app-images/splash-4096-4096.png',
       resizeMode: 'contain',
@@ -23,7 +26,7 @@ export default {
     assetBundlePatterns: ['**/*'],
     ios: {
       supportsTablet: true,
-      bundleIdentifier: 'com.whatmovietonight.app',
+      bundleIdentifier: 'com.fastflix.app',
       buildNumber: iosBuildNumber,
     },
     android: {
@@ -31,7 +34,7 @@ export default {
         foregroundImage: './assets/app-images/icon-1024-1024.png',
         backgroundColor: '#ffffff',
       },
-      package: 'com.whatmovietonight.app',
+      package: 'com.fastflix.app',
       versionCode: androidVersionCode,
     },
     web: {
