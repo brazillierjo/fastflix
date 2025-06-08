@@ -5,12 +5,12 @@
     "version": "0.0.1",
     "orientation": "portrait",
     "icon": "./assets/app-images/icon-1024-1024.png",
-    "scheme": "whatmovietonight",
+    "scheme": "fastflix",
     "userInterfaceStyle": "automatic",
     "newArchEnabled": true,
     "ios": {
       "supportsTablet": true,
-      "bundleIdentifier": "com.whatmovietonight.app",
+      "bundleIdentifier": "com.fastflix.app",
       "buildNumber": "1"
     },
     "android": {
@@ -19,7 +19,7 @@
         "backgroundColor": "#000000"
       },
       "edgeToEdgeEnabled": true,
-      "package": "com.whatmovietonight.app",
+      "package": "com.fastflix.app",
       "versionCode": 1
     },
     "web": {

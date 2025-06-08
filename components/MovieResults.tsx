@@ -344,7 +344,7 @@ export default function MovieResults({
 
               return (
                 <MotiView
-                  key={movie.id + index}
+                  key={`movie-${movie.id}-${index}`}
                   from={{ opacity: 0, translateY: 30 }}
                   animate={{
                     opacity: 1,
@@ -400,7 +400,7 @@ export default function MovieResults({
                                 .slice(0, expanded ? undefined : 4)
                                 .map((provider, idx) => (
                                   <View
-                                    key={idx + provider.provider_name}
+                                    key={`provider-${movie.id}-${idx}-${provider.provider_name}`}
                                     className={cn(
                                       'rounded-md',
                                       expanded
@@ -415,7 +415,6 @@ export default function MovieResults({
                                       className='h-[30px] w-[30px] rounded-md bg-dark-surface p-1 dark:bg-light-surface'
                                       resizeMode='contain'
                                     />
-
                                     {expanded && (
                                       <Text className='ml-2.5 text-sm font-medium text-light-text dark:text-dark-text'>
                                         {provider.provider_name}
@@ -441,7 +440,7 @@ export default function MovieResults({
                                 .slice(0, 5)
                                 .map((actor, idx) => (
                                   <View
-                                    key={idx}
+                                    key={`actor-${movie.id}-${idx}-${actor.name}`}
                                     className={cn(
                                       'flex-row items-center',
                                       idx <
