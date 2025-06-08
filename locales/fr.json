@@ -1,8 +1,8 @@
 {
   "welcome": {
     "title": "Que regarder ? 🍿",
-    "subtitle": "Décrivez-moi ce que vous aimeriez regarder et je vous trouverai les meilleures recommandations !",
-    "description": "Soyez aussi vague ou précis que vous le souhaitez ! Mentionnez des acteurs, un genre, une époque, une ambiance... Notre intelligence artificielle analysera votre demande pour vous proposer du contenu personnalisé.",
+    "subtitle": "Fini le zapping sans fin ! Décrivez-moi vos envies et obtenez des recommandations triées par note.",
+    "description": "Plus besoin de passer des heures à parcourir les plateformes de streaming sans savoir quoi choisir. Mentionnez des acteurs, un genre, une époque, une ambiance... Notre IA vous propose les meilleures recommandations, classées par note pour vous aider à décider rapidement.",
     "placeholder": "Ex: Un film ou une série avec Jennifer Aniston comme actrice principale, fin des années 90",
     "searchButton": "Générer ✨",
     "searching": "Recherche...",
