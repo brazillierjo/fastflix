@@ -211,37 +211,30 @@ const searchMoviesWithGemini = async (
 
     // Filter results based on query relevance (especially for actor searches)
     const filteredResults = dataResults.filter(result => {
-      // Check if the query contains a person's name
       const queryLower = query.toLowerCase();
-      const possibleNames = queryLower
-        .split(/[\s,]+/)
-        .filter(word => word.length > 2);
-
-      // If the query seems to be about a specific person, verify they're in the cast
-      const hasPersonKeywords =
-        /\b(acteur|actrice|actor|actress|avec|starring|films? de|movies? by|réalisé par|directed by)\b/i.test(
-          queryLower
-        );
-      const seemsLikeName = possibleNames.some(name =>
-        /^[A-Z][a-z]+$/.test(name.charAt(0).toUpperCase() + name.slice(1))
-      );
-
-      if (hasPersonKeywords || seemsLikeName) {
-        // Check if any of the possible names appear in the cast or crew
+      
+      // Mots-clés indiquant explicitement une recherche de personne spécifique
+      const personKeywords = /\b(acteur|actrice|actor|actress|avec|starring|films? de|movies? by|réalisé par|directed by|joue dans|interprété par)\b/i;
+      
+      // Si la requête mentionne explicitement une personne, vérifier le casting
+      if (personKeywords.test(queryLower)) {
+        const possibleNames = queryLower
+          .split(/[\s,]+/)
+          .filter(word => word.length > 2 && !/^(le|la|les|de|du|des|un|une|et|ou|avec|dans|pour|sur|par)$/i.test(word));
+        
         const castNames = result.credits.map(cast => cast.name.toLowerCase());
         const hasMatchingPerson = possibleNames.some(name =>
-          castNames.some(
-            castName =>
-              castName.includes(name) ||
-              name.includes(castName.split(' ')[0]) ||
-              name.includes(castName.split(' ').pop() || '')
+          castNames.some(castName => 
+            castName.includes(name) || 
+            name.includes(castName.split(' ')[0]) ||
+            name.includes(castName.split(' ').pop() || '')
           )
         );
-
+        
         return hasMatchingPerson;
       }
-
-      // For non-person queries, keep all results
+      
+      // Pour les requêtes conceptuelles (robots, voitures, etc.), garder tous les résultats
       return true;
     });
 

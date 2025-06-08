@@ -50,15 +50,16 @@ export const geminiService = {
     const contentTypeText = contentTypes.join(' et ');
     const prompt = `Tu es un assistant IA expert en cinéma et télévision. Basé sur cette demande: "${query}", recommande-moi jusqu'à 20 ${contentTypeText}.
 
-IMPORTANT: Sois très précis dans tes recommandations :
-- Si un nom d'acteur est mentionné, recommande uniquement des œuvres où cet acteur joue réellement
-- Si un réalisateur est mentionné, recommande uniquement ses œuvres
-- Si un genre est mentionné, respecte strictement ce genre
+IMPORTANT: 
+- Pour les descriptions conceptuelles (ex: "voitures qui se transforment", "super-héros", "space opera", "robots"), inclus les franchises et films populaires qui correspondent au concept
+- Si un nom d'acteur/réalisateur est mentionné spécifiquement, recommande ses œuvres
+- Si un genre est mentionné, respecte ce genre
 - Si une époque est mentionnée, respecte cette période
-- Privilégie les œuvres les plus connues et populaires
-- Vérifie mentalement que chaque recommandation correspond exactement à la demande
+- Privilégie les œuvres connues et populaires
+- Sois créatif et inclusif pour les requêtes conceptuelles
+- Inclus les franchises célèbres même si le titre exact n'est pas mentionné
 
-Réponds uniquement avec les titres qui correspondent EXACTEMENT à la demande, séparés par des virgules, sans numérotation ni explication supplémentaire.`;
+Réponds uniquement avec les titres qui correspondent à la demande, séparés par des virgules, sans numérotation ni explication supplémentaire.`;
 
     const result = await model.generateContent(prompt);
     const response = await result.response;
@@ -97,15 +98,22 @@ Limite ta réponse à 3-4 phrases maximum.`;
     const contentTypeText = contentTypes.join(' et ');
     const prompt = `Tu es un assistant IA expert en cinéma et télévision. Un utilisateur te demande: "${query}".
 
-IMPORTANT: Sois très précis dans tes recommandations. Si l'utilisateur mentionne un acteur, réalisateur ou personnalité spécifique, assure-toi que TOUS les ${contentTypeText} recommandés incluent réellement cette personne dans le casting ou l'équipe technique.
+IMPORTANT: Adapte tes recommandations selon le type de demande :
 
-Règles strictes :
-- Si un nom d'acteur est mentionné, recommande uniquement des œuvres où cet acteur joue réellement
-- Si un réalisateur est mentionné, recommande uniquement ses œuvres
-- Si un genre est mentionné, respecte strictement ce genre
+Pour les requêtes conceptuelles (ex: "voitures qui se transforment", "super-héros", "space opera", "robots", "magie") :
+- Inclus les franchises et films populaires qui correspondent au concept
+- Sois créatif et inclusif
+- Privilégie les œuvres connues même si le titre exact n'est pas mentionné
+
+Pour les requêtes spécifiques (acteur/réalisateur nommé) :
+- Si un nom d'acteur est mentionné, recommande ses œuvres
+- Si un réalisateur est mentionné, recommande ses films
+- Assure-toi de la correspondance avec la personne mentionnée
+
+Règles générales :
+- Si un genre est mentionné, respecte ce genre
 - Si une époque est mentionnée, respecte cette période
 - Privilégie les œuvres les plus connues et populaires
-- Vérifie mentalement que chaque recommandation correspond exactement à la demande
 
 Tu dois fournir deux choses dans ta réponse :
 
@@ -149,17 +157,33 @@ export const tmdbService = {
     includeTvShows: boolean
   ): Promise<TMDBSearchItem | null> {
     try {
-      const searchResponse = await axios.get(
+      // Essayer d'abord en français
+      let searchResponse = await axios.get(
         `https://api.themoviedb.org/3/search/multi?api_key=${TMDB_API_KEY}&query=${encodeURIComponent(title)}&language=fr-FR`
       );
-
-      const results = searchResponse.data.results.filter(
+      
+      let results = searchResponse.data.results.filter(
         (item: TMDBSearchItem) => {
           if (item.media_type === 'movie' && includeMovies) return true;
           if (item.media_type === 'tv' && includeTvShows) return true;
           return false;
         }
       );
+      
+      // Si aucun résultat en français, essayer en anglais
+      if (!results.length) {
+        searchResponse = await axios.get(
+          `https://api.themoviedb.org/3/search/multi?api_key=${TMDB_API_KEY}&query=${encodeURIComponent(title)}&language=en-US`
+        );
+        
+        results = searchResponse.data.results.filter(
+          (item: TMDBSearchItem) => {
+            if (item.media_type === 'movie' && includeMovies) return true;
+            if (item.media_type === 'tv' && includeTvShows) return true;
+            return false;
+          }
+        );
+      }
 
       return results[0] || null;
     } catch (error) {
