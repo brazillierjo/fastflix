@@ -1,22 +1,17 @@
 import '@/global.css';
 
-import {
-  DarkTheme,
-  DefaultTheme,
-  ThemeProvider,
-} from '@react-navigation/native';
 import { useFonts } from 'expo-font';
 import { Tabs } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
-import 'react-native-reanimated';
 import { Text, useColorScheme } from 'react-native';
+import 'react-native-reanimated';
 
 import { LanguageProvider, useLanguage } from '@/contexts/LanguageContext';
 import { SubscriptionProvider } from '@/contexts/RevenueCatContext';
 import { QueryProvider } from '@/providers/QueryProvider';
 
 function TabsLayout() {
-  const { language, t } = useLanguage();
+  const { t } = useLanguage();
   const colorScheme = useColorScheme();
   const isDark = colorScheme === 'dark';
 
@@ -27,7 +22,7 @@ function TabsLayout() {
         tabBarStyle: {
           backgroundColor: isDark ? '#1F2937' : '#FFFFFF',
           borderTopColor: isDark ? '#374151' : '#E5E7EB',
-          borderTopWidth: 1,
+          borderTopWidth: 2,
         },
         tabBarActiveTintColor: '#3B82F6',
         tabBarInactiveTintColor: isDark ? '#9CA3AF' : '#6B7280',

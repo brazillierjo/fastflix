@@ -5,7 +5,6 @@ import { MotiView } from 'moti';
 import React, { useRef } from 'react';
 import {
   Dimensions,
-  Keyboard,
   KeyboardAvoidingView,
   PanResponder,
   Platform,
@@ -79,7 +78,7 @@ export default function SearchForm({
         showsVerticalScrollIndicator={false}
         {...panResponder.panHandlers}
       >
-        <View className='flex-1 justify-center px-6 py-8'>
+        <View className='flex-1 justify-center px-6'>
           {/* Welcome Section */}
           <MotiView
             from={{ opacity: 0, translateY: -20 }}

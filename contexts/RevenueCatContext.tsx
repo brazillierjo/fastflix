@@ -135,7 +135,8 @@ export const SubscriptionProvider: React.FC<SubscriptionProviderProps> = ({
       if (isActive) {
         Alert.alert(
           t('subscription.success.title') || 'Subscription Activated',
-          t('subscription.success.message') || 'Welcome to FastFlix Pro features!'
+          t('subscription.success.message') ||
+            'Welcome to FastFlix Pro features!'
         );
       }
     } catch (error: any) {
