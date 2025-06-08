@@ -5,7 +5,7 @@
     "version": "0.1.2",
     "description": "AI-powered movie and TV show recommendations. Discover what to watch tonight with personalized suggestions based on your mood and preferences.",
     "orientation": "portrait",
-    "icon": "./assets/app-images/icon-1024-1024.png",
+    "icon": "./assets/app-images/icon.png",
     "scheme": "fastflix",
     "userInterfaceStyle": "automatic",
     "newArchEnabled": true,
@@ -25,7 +25,8 @@
     },
     "android": {
       "adaptiveIcon": {
-        "foregroundImage": "./assets/app-images/icon-1024-1024.png",
+        "foregroundImage": "./assets/app-images/adaptive-icon/foreground.png",
+        "backgroundImage": "./assets/app-images/adaptive-icon/background.png",
         "backgroundColor": "#000000"
       },
       "edgeToEdgeEnabled": true,
@@ -35,14 +36,14 @@
     "web": {
       "bundler": "metro",
       "output": "static",
-      "favicon": "./assets/app-images/icon-1024-1024.png"
+      "favicon": "./assets/app-images/favicon.png"
     },
     "plugins": [
       "expo-router",
       [
         "expo-splash-screen",
         {
-          "image": "./assets/app-images/splash-4096-4096.png",
+          "image": "./assets/app-images/splash.png",
           "imageWidth": 200,
           "resizeMode": "contain",
           "backgroundColor": "#ffffff"

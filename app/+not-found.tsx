@@ -2,6 +2,7 @@ import { Link, Stack } from 'expo-router';
 import { View, Text, TouchableOpacity } from 'react-native';
 import { MotiView, MotiText } from 'moti';
 import { useLanguage } from '@/contexts/LanguageContext';
+import AppIcon from '@/components/AppIcon';
 
 export default function NotFoundScreen() {
   const { t } = useLanguage();
@@ -32,7 +33,7 @@ export default function NotFoundScreen() {
             className='mb-8'
           >
             <View className='h-24 w-24 items-center justify-center rounded-full bg-primary-500 shadow-lg'>
-              <Text className='text-4xl'>🎬</Text>
+              <AppIcon size={48} style={{ borderRadius: 24 }} />
             </View>
           </MotiView>
 

@@ -11,6 +11,7 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
+import AppIcon from './AppIcon';
 
 interface SubscriptionModalProps {
   visible: boolean;
@@ -71,7 +72,7 @@ export default function SubscriptionModal({
 
   const features = [
     {
-      icon: '🎬',
+      icon: <AppIcon size={24} />,
       title:
         t('subscription.features.unlimited.title') ||
         'Unlimited Recommendations',
@@ -151,7 +152,7 @@ export default function SubscriptionModal({
                 className='mb-6 flex-row items-center'
               >
                 <View className='mr-4 h-12 w-12 items-center justify-center rounded-full bg-primary-100 dark:bg-primary-900/30'>
-                  <Text className='text-2xl'>{feature.icon}</Text>
+                  <Text className='text-2xl'>🎬</Text>
                 </View>
                 <View className='flex-1'>
                   <Text className='mb-1 font-semibold text-light-text dark:text-dark-text'>

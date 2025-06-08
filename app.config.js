@@ -14,7 +14,7 @@ export default {
     description:
       'AI-powered movie and TV show recommendations. Discover what to watch tonight with personalized suggestions based on your mood and preferences.',
     orientation: 'portrait',
-    icon: './assets/app-images/icon-1024-1024.png',
+    icon: './assets/app-images/icon.png',
     scheme: 'fastflix',
     userInterfaceStyle: 'automatic',
     category: 'entertainment',
@@ -27,7 +27,7 @@ export default {
       'AI',
     ],
     splash: {
-      image: './assets/app-images/splash-4096-4096.png',
+      image: './assets/app-images/splash.png',
       resizeMode: 'contain',
       backgroundColor: '#ffffff',
     },
@@ -39,7 +39,8 @@ export default {
     },
     android: {
       adaptiveIcon: {
-        foregroundImage: './assets/app-images/icon-1024-1024.png',
+        foregroundImage: './assets/app-images/adaptive-icon/foreground.png',
+        backgroundImage: './assets/app-images/adaptive-icon/background.png',
         backgroundColor: '#ffffff',
       },
       package: 'com.fastflix.app',
@@ -48,7 +49,7 @@ export default {
     web: {
       bundler: 'metro',
       output: 'static',
-      favicon: './assets/app-images/icon-1024-1024.png',
+      favicon: './assets/app-images/favicon.png',
     },
     plugins: ['expo-router'],
     experiments: {
