@@ -4,7 +4,7 @@ import { MotiView, MotiText } from 'moti';
 import { useLanguage } from '@/contexts/LanguageContext';
 
 export default function NotFoundScreen() {
-  const { language, t } = useLanguage();
+  const { t } = useLanguage();
 
   return (
     <>

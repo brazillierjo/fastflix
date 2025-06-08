@@ -161,7 +161,7 @@ export const tmdbService = {
       let searchResponse = await axios.get(
         `https://api.themoviedb.org/3/search/multi?api_key=${TMDB_API_KEY}&query=${encodeURIComponent(title)}&language=fr-FR`
       );
-      
+
       let results = searchResponse.data.results.filter(
         (item: TMDBSearchItem) => {
           if (item.media_type === 'movie' && includeMovies) return true;
@@ -169,20 +169,18 @@ export const tmdbService = {
           return false;
         }
       );
-      
+
       // Si aucun résultat en français, essayer en anglais
       if (!results.length) {
         searchResponse = await axios.get(
           `https://api.themoviedb.org/3/search/multi?api_key=${TMDB_API_KEY}&query=${encodeURIComponent(title)}&language=en-US`
         );
-        
-        results = searchResponse.data.results.filter(
-          (item: TMDBSearchItem) => {
-            if (item.media_type === 'movie' && includeMovies) return true;
-            if (item.media_type === 'tv' && includeTvShows) return true;
-            return false;
-          }
-        );
+
+        results = searchResponse.data.results.filter((item: TMDBSearchItem) => {
+          if (item.media_type === 'movie' && includeMovies) return true;
+          if (item.media_type === 'tv' && includeTvShows) return true;
+          return false;
+        });
       }
 
       return results[0] || null;

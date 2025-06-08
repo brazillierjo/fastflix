@@ -24,11 +24,11 @@ export default function ProfileScreen() {
   const [showSubscriptionModal, setShowSubscriptionModal] = useState(false);
   const [restoring, setRestoring] = useState(false);
 
-  const languages: Array<{
+  const languages: {
     code: SupportedLanguage;
     name: string;
     flag: string;
-  }> = [
+  }[] = [
     { code: 'fr', name: 'Français', flag: '🇫🇷' },
     { code: 'en', name: 'English', flag: '🇺🇸' },
   ];

@@ -212,28 +212,36 @@ const searchMoviesWithGemini = async (
     // Filter results based on query relevance (especially for actor searches)
     const filteredResults = dataResults.filter(result => {
       const queryLower = query.toLowerCase();
-      
+
       // Mots-clés indiquant explicitement une recherche de personne spécifique
-      const personKeywords = /\b(acteur|actrice|actor|actress|avec|starring|films? de|movies? by|réalisé par|directed by|joue dans|interprété par)\b/i;
-      
+      const personKeywords =
+        /\b(acteur|actrice|actor|actress|avec|starring|films? de|movies? by|réalisé par|directed by|joue dans|interprété par)\b/i;
+
       // Si la requête mentionne explicitement une personne, vérifier le casting
       if (personKeywords.test(queryLower)) {
         const possibleNames = queryLower
           .split(/[\s,]+/)
-          .filter(word => word.length > 2 && !/^(le|la|les|de|du|des|un|une|et|ou|avec|dans|pour|sur|par)$/i.test(word));
-        
+          .filter(
+            word =>
+              word.length > 2 &&
+              !/^(le|la|les|de|du|des|un|une|et|ou|avec|dans|pour|sur|par)$/i.test(
+                word
+              )
+          );
+
         const castNames = result.credits.map(cast => cast.name.toLowerCase());
         const hasMatchingPerson = possibleNames.some(name =>
-          castNames.some(castName => 
-            castName.includes(name) || 
-            name.includes(castName.split(' ')[0]) ||
-            name.includes(castName.split(' ').pop() || '')
+          castNames.some(
+            castName =>
+              castName.includes(name) ||
+              name.includes(castName.split(' ')[0]) ||
+              name.includes(castName.split(' ').pop() || '')
           )
         );
-        
+
         return hasMatchingPerson;
       }
-      
+
       // Pour les requêtes conceptuelles (robots, voitures, etc.), garder tous les résultats
       return true;
     });
