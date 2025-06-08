@@ -30,8 +30,6 @@ export interface AppState {
   showWelcome: boolean;
   showResults: boolean;
   numberOfRecommendations: number;
-  includeMovies: boolean;
-  includeTvShows: boolean;
   isSearching: boolean;
 }
 
@@ -51,8 +49,6 @@ export const useAppState = () => {
   const [showWelcome, setShowWelcome] = useState(true);
   const [showResults, setShowResults] = useState(false);
   const [numberOfRecommendations, setNumberOfRecommendations] = useState(10);
-  const [includeMovies, setIncludeMovies] = useState(true);
-  const [includeTvShows, setIncludeTvShows] = useState(true);
   const [isSearching, setIsSearching] = useState(false);
 
   const goBackToHome = () => {
@@ -103,8 +99,6 @@ export const useAppState = () => {
     showWelcome,
     showResults,
     numberOfRecommendations,
-    includeMovies,
-    includeTvShows,
     isSearching,
 
     // Setters
@@ -117,8 +111,6 @@ export const useAppState = () => {
     setShowWelcome,
     setShowResults,
     setNumberOfRecommendations,
-    setIncludeMovies,
-    setIncludeTvShows,
     setIsSearching,
 
     // Actions

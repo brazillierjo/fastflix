@@ -8,9 +8,6 @@
     "searching": "Searching...",
     "generating": "Generating...",
     "numberOfRecommendations": "Number of recommendations",
-    "contentType": "Content type",
-    "movies": "Movies",
-    "tvShows": "TV Shows",
     "options": "Options :",
     "noDescription": "No description available"
   },
@@ -43,10 +40,7 @@
   "settings": {
     "numberOfRecommendations": "Number of recommendations",
     "language": "Language",
-    "country": "Search Country",
-    "movies": "Movies",
-    "tvShows": "TV Shows",
-    "movieType": "Content type :"
+    "country": "Search Country"
   },
   "notFound": {
     "title": "Page Not Found",

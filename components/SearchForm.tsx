@@ -4,12 +4,10 @@ import Slider from '@react-native-community/slider';
 import { MotiView } from 'moti';
 import React, { useRef } from 'react';
 import {
-  Dimensions,
   KeyboardAvoidingView,
   PanResponder,
   Platform,
   ScrollView,
-  Switch,
   Text,
   TextInput,
   TouchableOpacity,
@@ -21,13 +19,8 @@ interface SearchFormProps {
   setQuery: (query: string) => void;
   numberOfRecommendations: number;
   setNumberOfRecommendations: (count: number) => void;
-  includeMovies: boolean;
-  setIncludeMovies: (include: boolean) => void;
-  includeTvShows: boolean;
-  setIncludeTvShows: (include: boolean) => void;
   onSearch: () => void;
   loading: boolean;
-  showResults: boolean;
 }
 
 export default function SearchForm({
@@ -35,20 +28,13 @@ export default function SearchForm({
   setQuery,
   numberOfRecommendations,
   setNumberOfRecommendations,
-  includeMovies,
-  setIncludeMovies,
-  includeTvShows,
-  setIncludeTvShows,
   onSearch,
   loading,
-  showResults,
 }: SearchFormProps) {
   const { t } = useLanguage();
 
   const scrollViewRef = useRef<ScrollView>(null);
   const textInputRef = useRef<TextInput>(null);
-
-  const screenWidth = Dimensions.get('window').width;
 
   const handleInputFocus = () => {
     setTimeout(() => {
@@ -129,40 +115,6 @@ export default function SearchForm({
                 maximumTrackTintColor='#E5E7EB'
                 thumbTintColor='#3B82F6'
               />
-            </View>
-
-            {/* Content Type Toggles */}
-            <View className='gap-3'>
-              <Text className='text-base font-semibold text-light-text dark:text-dark-text'>
-                {t('welcome.contentType')}
-              </Text>
-
-              {/* Movies Toggle */}
-              <View className='flex-row items-center justify-between rounded-lg bg-light-background p-3 dark:bg-dark-background'>
-                <Text className='text-base text-light-text dark:text-dark-text'>
-                  🎬 {t('welcome.movies')}
-                </Text>
-
-                <Switch
-                  value={includeMovies}
-                  onValueChange={setIncludeMovies}
-                  trackColor={{ false: '#9CA3AF', true: '#3B82F6' }}
-                  thumbColor={includeMovies ? '#FFFFFF' : '#F3F4F6'}
-                />
-              </View>
-
-              {/* TV Shows Toggle */}
-              <View className='flex-row items-center justify-between rounded-lg bg-light-background p-3 dark:bg-dark-background'>
-                <Text className='text-base text-light-text dark:text-dark-text'>
-                  📺 {t('welcome.tvShows')}
-                </Text>
-                <Switch
-                  value={includeTvShows}
-                  onValueChange={setIncludeTvShows}
-                  trackColor={{ false: '#9CA3AF', true: '#3B82F6' }}
-                  thumbColor={includeTvShows ? '#FFFFFF' : '#F3F4F6'}
-                />
-              </View>
             </View>
           </MotiView>
 

@@ -100,15 +100,45 @@ const searchMoviesWithGemini = async (
     throw new Error('enterRequest');
   }
 
-  if (!includeMovies && !includeTvShows) {
-    throw new Error('selectContentType');
-  }
-
   try {
-    // Generate recommendations using Gemini
+    // Analyze the query to determine content types using AI
+    const queryLower = query.toLowerCase();
+    let aiIncludeMovies = includeMovies;
+    let aiIncludeTvShows = includeTvShows;
+
+    // Check for specific mentions of movies or TV shows in the query
+    const movieKeywords = ['film', 'movie', 'cinema', 'long métrage'];
+    const tvKeywords = [
+      'série',
+      'series',
+      'tv show',
+      'saison',
+      'season',
+      'épisode',
+      'episode',
+    ];
+
+    const hasMovieKeywords = movieKeywords.some(keyword =>
+      queryLower.includes(keyword)
+    );
+    const hasTvKeywords = tvKeywords.some(keyword =>
+      queryLower.includes(keyword)
+    );
+
+    // If user specifically mentions one type, prioritize that type
+    if (hasMovieKeywords && !hasTvKeywords) {
+      aiIncludeMovies = true;
+      aiIncludeTvShows = false;
+    } else if (hasTvKeywords && !hasMovieKeywords) {
+      aiIncludeMovies = false;
+      aiIncludeTvShows = true;
+    }
+    // If neither or both are mentioned, include both types (default behavior)
+
+    // Generate recommendations using Gemini with AI-determined content types
     let contentTypes = [];
-    if (includeMovies) contentTypes.push('films');
-    if (includeTvShows) contentTypes.push('séries');
+    if (aiIncludeMovies) contentTypes.push('films');
+    if (aiIncludeTvShows) contentTypes.push('séries');
 
     // Generate recommendations and conversational response in a single API call
     const { recommendations: movieTitles, conversationalResponse } =
@@ -127,9 +157,9 @@ const searchMoviesWithGemini = async (
       );
     });
 
-    // Search for each unique title on TMDB
+    // Search for each unique title on TMDB using AI-determined content types
     const contentPromises = uniqueTitles.map(title =>
-      tmdbService.searchMulti(title, includeMovies, includeTvShows)
+      tmdbService.searchMulti(title, aiIncludeMovies, aiIncludeTvShows)
     );
 
     const contentResults = await Promise.all(contentPromises);

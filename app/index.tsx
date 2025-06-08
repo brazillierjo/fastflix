@@ -19,13 +19,9 @@ export default function HomeScreen() {
     showWelcome,
     showResults,
     numberOfRecommendations,
-    includeMovies,
-    includeTvShows,
     isSearching,
     setQuery,
     setNumberOfRecommendations,
-    setIncludeMovies,
-    setIncludeTvShows,
     goBackToHome,
     handleSearchSuccess,
     handleSearchStart,
@@ -40,8 +36,8 @@ export default function HomeScreen() {
       {
         query,
         numberOfRecommendations,
-        includeMovies,
-        includeTvShows,
+        includeMovies: true,
+        includeTvShows: true,
       },
       {
         onSuccess: data => {
@@ -73,13 +69,8 @@ export default function HomeScreen() {
               setQuery={setQuery}
               numberOfRecommendations={numberOfRecommendations}
               setNumberOfRecommendations={setNumberOfRecommendations}
-              includeMovies={includeMovies}
-              setIncludeMovies={setIncludeMovies}
-              includeTvShows={includeTvShows}
-              setIncludeTvShows={setIncludeTvShows}
               onSearch={handleSearch}
               loading={movieSearchMutation.isPending}
-              showResults={showResults}
             />
           ) : movieSearchMutation.isPending ? (
             <LoadingState isSearching={isSearching} />

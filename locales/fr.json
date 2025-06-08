@@ -8,9 +8,6 @@
     "searching": "Recherche...",
     "generating": "Génération...",
     "numberOfRecommendations": "Nombre de recommandations",
-    "contentType": "Type de contenu",
-    "movies": "Films",
-    "tvShows": "Séries",
     "options": "Options :",
     "noDescription": "Aucune description disponible"
   },
@@ -43,10 +40,7 @@
   "settings": {
     "numberOfRecommendations": "Nombre de recommandations",
     "language": "Langue",
-    "country": "Pays de recherche",
-    "movies": "Films",
-    "tvShows": "Séries",
-    "movieType": "Type de contenu :"
+    "country": "Pays de recherche"
   },
   "notFound": {
     "title": "Page introuvable",
