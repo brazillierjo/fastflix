@@ -6,6 +6,7 @@ import { MotiView } from 'moti';
 import React, { useState } from 'react';
 import {
   ActionSheetIOS,
+  ActivityIndicator,
   Alert,
   Platform,
   SafeAreaView,
@@ -18,8 +19,9 @@ import {
 export default function ProfileScreen() {
   const { language, setLanguage, country, setCountry, t, availableCountries } =
     useLanguage();
-  const { isSubscribed } = useSubscription();
+  const { isSubscribed, restorePurchases } = useSubscription();
   const [showSubscriptionModal, setShowSubscriptionModal] = useState(false);
+  const [restoring, setRestoring] = useState(false);
 
   const languages: Array<{
     code: SupportedLanguage;
@@ -218,6 +220,28 @@ export default function ProfileScreen() {
                   <Text className='text-center font-semibold text-white'>
                     {t('profile.viewPlans')}
                   </Text>
+                </TouchableOpacity>
+                <TouchableOpacity
+                  onPress={async () => {
+                    try {
+                      setRestoring(true);
+                      await restorePurchases();
+                    } catch (error) {
+                      console.error('Restore error:', error);
+                    } finally {
+                      setRestoring(false);
+                    }
+                  }}
+                  disabled={restoring}
+                  className='py-3'
+                >
+                  {restoring ? (
+                    <ActivityIndicator color='#3B82F6' />
+                  ) : (
+                    <Text className='text-center font-medium text-primary-500'>
+                      {t('subscription.restore') || 'Restore Purchases'}
+                    </Text>
+                  )}
                 </TouchableOpacity>
               </View>
             )}
