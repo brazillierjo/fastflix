@@ -1,10 +1,12 @@
 import 'dotenv/config';
 
+const { version, iosBuildNumber, androidVersionCode } = require('./utils/version');
+
 export default {
   expo: {
     name: 'FastFlix',
     slug: 'fastflix',
-    version: '1.0.0',
+    version,
     orientation: 'portrait',
     icon: './assets/app-images/icon-1024-1024.png',
     scheme: 'myapp',
@@ -18,6 +20,7 @@ export default {
     ios: {
       supportsTablet: true,
       bundleIdentifier: 'com.whatmovietonight.app',
+      buildNumber: iosBuildNumber,
     },
     android: {
       adaptiveIcon: {
@@ -25,6 +28,7 @@ export default {
         backgroundColor: '#ffffff',
       },
       package: 'com.whatmovietonight.app',
+      versionCode: androidVersionCode,
     },
     web: {
       bundler: 'metro',

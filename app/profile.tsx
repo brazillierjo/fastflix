@@ -2,6 +2,7 @@ import SubscriptionModal from '@/components/SubscriptionModal';
 import type { SupportedLanguage } from '@/contexts/LanguageContext';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { useSubscription } from '@/contexts/RevenueCatContext';
+import { getAppVersion } from '@/utils/appVersion';
 import { MotiView } from 'moti';
 import React, { useState } from 'react';
 import {
@@ -269,7 +270,7 @@ export default function ProfileScreen() {
                   {t('profile.version')}
                 </Text>
                 <Text className='text-light-text dark:text-dark-text'>
-                  1.0.0
+                  {getAppVersion()}
                 </Text>
               </View>
               <View className='flex-row justify-between'>
