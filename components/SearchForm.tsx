@@ -1,6 +1,5 @@
 import { useLanguage } from '@/contexts/LanguageContext';
 import { cn } from '@/utils/cn';
-import Slider from '@react-native-community/slider';
 import { MotiView } from 'moti';
 import React, { useRef } from 'react';
 import {
@@ -17,8 +16,7 @@ import {
 interface SearchFormProps {
   query: string;
   setQuery: (query: string) => void;
-  numberOfRecommendations: number;
-  setNumberOfRecommendations: (count: number) => void;
+
   onSearch: () => void;
   loading: boolean;
 }
@@ -26,8 +24,7 @@ interface SearchFormProps {
 export default function SearchForm({
   query,
   setQuery,
-  numberOfRecommendations,
-  setNumberOfRecommendations,
+
   onSearch,
   loading,
 }: SearchFormProps) {
@@ -84,38 +81,6 @@ export default function SearchForm({
             <Text className='text-justify text-base leading-relaxed text-light-text dark:text-dark-text'>
               {t('welcome.description')}
             </Text>
-          </MotiView>
-
-          {/* Settings Section */}
-          <MotiView
-            from={{ opacity: 0, translateY: 20 }}
-            animate={{ opacity: 1, translateY: 0 }}
-            transition={{
-              delay: 200,
-              type: 'timing',
-              duration: 600,
-            }}
-            className='mb-8 rounded-xl bg-light-card p-4 dark:bg-dark-card'
-          >
-            {/* Number of Recommendations */}
-            <View>
-              <Text className='mb-2 text-base font-semibold text-light-text dark:text-dark-text'>
-                {t('welcome.numberOfRecommendations')}:{' '}
-                {numberOfRecommendations}
-              </Text>
-
-              <Slider
-                style={{ width: '100%' }}
-                minimumValue={1}
-                maximumValue={20}
-                step={1}
-                value={numberOfRecommendations}
-                onValueChange={setNumberOfRecommendations}
-                minimumTrackTintColor='#3B82F6'
-                maximumTrackTintColor='#E5E7EB'
-                thumbTintColor='#3B82F6'
-              />
-            </View>
           </MotiView>
 
           {/* Search Input */}

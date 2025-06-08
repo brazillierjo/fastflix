@@ -7,7 +7,6 @@
     "searchButton": "Generate ✨",
     "searching": "Searching...",
     "generating": "Generating...",
-    "numberOfRecommendations": "Number of recommendations",
     "options": "Options :",
     "noDescription": "No description available"
   },
@@ -39,7 +38,6 @@
     "year": "Year :"
   },
   "settings": {
-    "numberOfRecommendations": "Number of recommendations",
     "language": "Language",
     "country": "Search Country"
   },

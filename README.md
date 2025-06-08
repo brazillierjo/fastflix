@@ -25,7 +25,7 @@ A smart movie and TV show recommendation app powered by AI. Simply describe what
 1. **Intuitive User Interface**:
    - Search form with natural language input
    - Configurable filters (movies, TV shows, or both)
-   - Slider to choose number of recommendations (1-20)
+   - Fixed maximum of 20 recommendations
    - Multi-language support with automatic detection
 
 2. **Advanced AI Processing**:

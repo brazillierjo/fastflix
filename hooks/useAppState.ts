@@ -9,7 +9,7 @@
  * Key responsibilities:
  * - Managing search queries and movie recommendation results
  * - Controlling UI navigation states (welcome screen, results screen, loading states)
- * - Storing user preferences (number of recommendations, content type filters)
+ * - Storing user preferences (content type filters)
  * - Handling streaming provider data and movie credits information
  * - Providing state update functions and action handlers for components
  *
@@ -29,7 +29,7 @@ export interface AppState {
   geminiResponse: string;
   showWelcome: boolean;
   showResults: boolean;
-  numberOfRecommendations: number;
+
   isSearching: boolean;
 }
 
@@ -48,7 +48,7 @@ export const useAppState = () => {
   const [geminiResponse, setGeminiResponse] = useState('');
   const [showWelcome, setShowWelcome] = useState(true);
   const [showResults, setShowResults] = useState(false);
-  const [numberOfRecommendations, setNumberOfRecommendations] = useState(10);
+
   const [isSearching, setIsSearching] = useState(false);
 
   const goBackToHome = () => {
@@ -98,7 +98,7 @@ export const useAppState = () => {
     geminiResponse,
     showWelcome,
     showResults,
-    numberOfRecommendations,
+
     isSearching,
 
     // Setters
@@ -110,7 +110,7 @@ export const useAppState = () => {
     setGeminiResponse,
     setShowWelcome,
     setShowResults,
-    setNumberOfRecommendations,
+
     setIsSearching,
 
     // Actions

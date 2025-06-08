@@ -18,10 +18,8 @@ export default function HomeScreen() {
     geminiResponse,
     showWelcome,
     showResults,
-    numberOfRecommendations,
     isSearching,
     setQuery,
-    setNumberOfRecommendations,
     goBackToHome,
     handleSearchSuccess,
     handleSearchStart,
@@ -35,7 +33,6 @@ export default function HomeScreen() {
     movieSearchMutation.mutate(
       {
         query,
-        numberOfRecommendations,
         includeMovies: true,
         includeTvShows: true,
       },
@@ -67,8 +64,6 @@ export default function HomeScreen() {
             <SearchForm
               query={query}
               setQuery={setQuery}
-              numberOfRecommendations={numberOfRecommendations}
-              setNumberOfRecommendations={setNumberOfRecommendations}
               onSearch={handleSearch}
               loading={movieSearchMutation.isPending}
             />

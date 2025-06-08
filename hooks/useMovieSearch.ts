@@ -66,7 +66,6 @@ export interface Cast {
 
 export interface SearchParams {
   query: string;
-  numberOfRecommendations: number;
   includeMovies: boolean;
   includeTvShows: boolean;
 }
@@ -93,8 +92,7 @@ const searchMoviesWithGemini = async (
   params: SearchParams,
   countryCode: string = 'FR'
 ): Promise<SearchResult> => {
-  const { query, numberOfRecommendations, includeMovies, includeTvShows } =
-    params;
+  const { query, includeMovies, includeTvShows } = params;
 
   if (!query.trim()) {
     throw new Error('enterRequest');
@@ -144,7 +142,6 @@ const searchMoviesWithGemini = async (
     const { recommendations: movieTitles, conversationalResponse } =
       await geminiService.generateRecommendationsWithResponse(
         query,
-        numberOfRecommendations,
         contentTypes
       );
 

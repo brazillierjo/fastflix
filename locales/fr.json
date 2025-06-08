@@ -7,7 +7,6 @@
     "searchButton": "Générer ✨",
     "searching": "Recherche...",
     "generating": "Génération...",
-    "numberOfRecommendations": "Nombre de recommandations",
     "options": "Options :",
     "noDescription": "Aucune description disponible"
   },
@@ -39,7 +38,6 @@
     "year": "Année :"
   },
   "settings": {
-    "numberOfRecommendations": "Nombre de recommandations",
     "language": "Langue",
     "country": "Pays de recherche"
   },

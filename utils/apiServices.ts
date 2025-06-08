@@ -42,14 +42,13 @@ const TMDB_API_KEY = Constants.expoConfig?.extra?.TMDB_API_KEY;
 export const geminiService = {
   async generateRecommendations(
     query: string,
-    numberOfRecommendations: number,
     contentTypes: string[]
   ): Promise<string[]> {
     const genAI = new GoogleGenerativeAI(GOOGLE_API_KEY);
     const model = genAI.getGenerativeModel({ model: 'gemini-2.0-flash' });
 
     const contentTypeText = contentTypes.join(' et ');
-    const prompt = `Tu es un assistant IA expert en cinéma et télévision. Basé sur cette demande: "${query}", recommande-moi ${numberOfRecommendations} ${contentTypeText}.
+    const prompt = `Tu es un assistant IA expert en cinéma et télévision. Basé sur cette demande: "${query}", recommande-moi jusqu'à 20 ${contentTypeText}.
 
 IMPORTANT: Sois très précis dans tes recommandations :
 - Si un nom d'acteur est mentionné, recommande uniquement des œuvres où cet acteur joue réellement
@@ -90,7 +89,6 @@ Limite ta réponse à 3-4 phrases maximum.`;
 
   async generateRecommendationsWithResponse(
     query: string,
-    numberOfRecommendations: number,
     contentTypes: string[]
   ): Promise<{ recommendations: string[]; conversationalResponse: string }> {
     const genAI = new GoogleGenerativeAI(GOOGLE_API_KEY);
@@ -111,7 +109,7 @@ Règles strictes :
 
 Tu dois fournir deux choses dans ta réponse :
 
-1. RECOMMANDATIONS: ${numberOfRecommendations} ${contentTypeText} qui correspondent EXACTEMENT à la demande. Liste uniquement les titres séparés par des virgules.
+1. RECOMMANDATIONS: Jusqu'à 20 ${contentTypeText} qui correspondent EXACTEMENT à la demande. Liste uniquement les titres séparés par des virgules.
 
 2. MESSAGE: Un message conversationnel et amical dans la même langue que la demande. Donne un message général d'encouragement ou de contexte en lien avec sa demande, sans mentionner les résultats spécifiques. Sois enthousiaste et personnalisé, comme si tu parlais à un ami. Limite à 2-3 phrases maximum.
 
