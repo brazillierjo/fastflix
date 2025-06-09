@@ -13,6 +13,7 @@
  * - Integration with app state for premium features
  */
 
+import Constants from 'expo-constants';
 import React, {
   createContext,
   ReactNode,
@@ -71,11 +72,11 @@ export const SubscriptionProvider: React.FC<SubscriptionProviderProps> = ({
         Purchases.setLogLevel(LOG_LEVEL.INFO);
 
         const apiKey = Platform.select({
-          ios: process.env.EXPO_PUBLIC_REVENUECAT_IOS_API_KEY,
+          ios: Constants.expoConfig?.extra?.EXPO_PUBLIC_REVENUECAT_IOS_API_KEY,
         });
 
         if (!apiKey) {
-          console.warn('RevenueCat API key not found');
+          console.error('RevenueCat API key not found');
           setIsLoading(false);
           return;
         }
@@ -226,10 +227,12 @@ export const SubscriptionProvider: React.FC<SubscriptionProviderProps> = ({
 
 export const useSubscription = (): SubscriptionContextType => {
   const context = useContext(SubscriptionContext);
+
   if (context === undefined) {
     throw new Error(
       'useSubscription must be used within a SubscriptionProvider'
     );
   }
+
   return context;
 };

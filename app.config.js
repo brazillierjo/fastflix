@@ -61,7 +61,8 @@ export default {
     extra: {
       GOOGLE_API_KEY: process.env.GOOGLE_API_KEY,
       TMDB_API_KEY: process.env.TMDB_API_KEY,
-      REVENUECAT_IOS_API_KEY: process.env.REVENUECAT_IOS_API_KEY,
+      EXPO_PUBLIC_REVENUECAT_IOS_API_KEY:
+        process.env.EXPO_PUBLIC_REVENUECAT_IOS_API_KEY,
       eas: {
         projectId: 'd040206b-f26d-4432-a0fd-847ad637352f',
       },
