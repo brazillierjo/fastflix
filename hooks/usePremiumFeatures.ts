@@ -93,6 +93,11 @@ export const useFastFlixProFeatures = () => {
 
   // Check if user can make a prompt (3 free per month for non-subscribers)
   const canMakePrompt = () => {
+    // In development mode, allow unlimited prompts
+    if (__DEV__) {
+      return { allowed: true, reason: 'development-mode', remaining: Infinity };
+    }
+
     if (isSubscribed) {
       return { allowed: true, reason: 'fastflix-pro', remaining: Infinity };
     }
