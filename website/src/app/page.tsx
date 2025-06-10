@@ -3,7 +3,7 @@ import { Metadata } from 'next';
 
 export const metadata: Metadata = {
   title: 'FastFlix - Pages Légales',
-  description: "Pages légales pour l&apos;application FastFlix",
+  description: 'Pages légales pour l&apos;application FastFlix',
 };
 
 export default function Home() {

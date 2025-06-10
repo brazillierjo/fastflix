@@ -58,6 +58,16 @@ else
   fi
   echo "✅ Website ESLint passed"
   
+  # Check code formatting for website
+  echo "🎨 Checking website code formatting with Prettier..."
+  npm run format:check
+  if [ $? -ne 0 ]; then
+    echo "❌ Website code formatting issues found. Run 'npm run format' in website directory to fix them."
+    cd ..
+    exit 1
+  fi
+  echo "✅ Website Prettier check passed"
+  
   # Run TypeScript type checking for website
   echo "🔧 Running website TypeScript type checking..."
   npx tsc --noEmit
