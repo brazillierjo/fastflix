@@ -16,6 +16,31 @@ A smart movie and TV show recommendation app powered by AI. Simply describe what
 
 🔍 **Detailed Information**: Get movie/show details, ratings, and streaming provider information
 
+## Website
+
+🌐 **FastFlix Online**: Experience FastFlix directly in your browser at [fastflix-nu.vercel.app](https://fastflix-nu.vercel.app)
+
+### Website Features:
+
+- **Instant Access**: No installation required, use FastFlix directly from your browser
+- **Responsive Interface**: Optimized for all devices (desktop, tablet, mobile)
+- **Privacy Guaranteed**: No personal data collected or stored
+- **Real-time Processing**: All recommendations generated instantly without data retention
+- **Complete Anonymity**: No user accounts, registration, or tracking required
+
+### Privacy Policy:
+
+FastFlix respects your privacy with a "zero data" approach:
+
+- ❌ No personal data collection
+- ❌ No search history retained
+- ❌ No user accounts required
+- ✅ Language preferences stored locally only
+- ✅ Queries processed in real-time and immediately deleted
+- ✅ Complete anonymity guaranteed
+
+For more details, see our [privacy policy](https://fastflix-nu.vercel.app/privacy-policy).
+
 ## How It Works
 
 **FastFlix** is an intelligent application that combines Google Gemini AI with the TMDB API to provide personalized movie and TV show recommendations.
