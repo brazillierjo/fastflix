@@ -1,57 +1,41 @@
-# Dependencies
-node_modules/
+# Ignore artifacts:
+build
+dist
+coverage
 
-# Build outputs
-build/
-dist/
-.expo/
-.next/
+# Ignore all HTML files:
+*.html
 
-# Generated files
-*.min.js
-*.min.css
+# Ignore iOS build files
+ios/build
+ios/Pods
 
-# Package files
-package-lock.json
-yarn.lock
+# Ignore node_modules
+node_modules
 
-# Environment files
-.env
-.env.local
-.env.production
+# Ignore .expo
+.expo
 
-# Logs
+# Ignore generated files
 *.log
-npm-debug.log*
-yarn-debug.log*
-yarn-error.log*
+*.tgz
+*.tar.gz
 
-# OS generated files
-.DS_Store
-.DS_Store?
-._*
-.Spotlight-V100
-.Trashes
-ehthumbs.db
-Thumbs.db
+# Ignore package-lock.json
+package-lock.json
 
-# IDE files
-.vscode/
-.idea/
-*.swp
-*.swo
+# Ignore .env files
+.env*
 
-# Assets
-*.png
-*.jpg
-*.jpeg
-*.gif
-*.svg
-*.ico
-*.woff
-*.woff2
-*.ttf
-*.eot
+# Ignore Xcode files
+*.xcworkspace
+*.xcodeproj
 
-# Documentation
-*.md
+# Ignore Android files
+android/
+
+# Ignore Metro cache
+.metro-health-check*
+
+# Ignore website subdirectory (has its own formatting)
+website/

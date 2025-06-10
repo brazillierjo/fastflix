@@ -69,7 +69,7 @@ export const SubscriptionProvider: React.FC<SubscriptionProviderProps> = ({
     const initializeRevenueCat = async () => {
       try {
         // Configure RevenueCat
-        Purchases.setLogLevel(LOG_LEVEL.INFO);
+        Purchases.setLogLevel(LOG_LEVEL.VERBOSE);
 
         const apiKey = Platform.select({
           ios: Constants.expoConfig?.extra?.EXPO_PUBLIC_REVENUECAT_IOS_API_KEY,

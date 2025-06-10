@@ -1,28 +1,77 @@
 echo "🔍 Running pre-commit checks..."
+echo "📁 Current directory: $(pwd)"
+echo "📋 Checking both main project and website subdirectory"
 
-# Run linting
-echo "📝 Checking code style with ESLint..."
+# Main project checks
+echo ""
+echo "🏠 === MAIN PROJECT CHECKS ==="
+echo "📍 Running checks in main project directory"
+
+# Run linting for main project
+echo "📝 Checking main project code style with ESLint..."
 npm run lint
 if [ $? -ne 0 ]; then
-  echo "❌ ESLint failed. Please fix the issues before committing."
+  echo "❌ Main project ESLint failed. Please fix the issues before committing."
   exit 1
 fi
+echo "✅ Main project ESLint passed"
 
-# Check code formatting
-echo "🎨 Checking code formatting with Prettier..."
+# Check code formatting for main project
+echo "🎨 Checking main project code formatting with Prettier..."
 npm run format:check
 if [ $? -ne 0 ]; then
-  echo "❌ Code formatting issues found. Run 'npm run format' to fix them."
+  echo "❌ Main project code formatting issues found. Run 'npm run format' to fix them."
   exit 1
 fi
+echo "✅ Main project Prettier check passed"
 
-# Run TypeScript type checking
-echo "🔧 Running TypeScript type checking..."
+# Run TypeScript type checking for main project
+echo "🔧 Running main project TypeScript type checking..."
 npm run typecheck
 if [ $? -ne 0 ]; then
-  echo "❌ TypeScript type checking failed. Please fix the type errors."
+  echo "❌ Main project TypeScript type checking failed. Please fix the type errors."
   exit 1
 fi
+echo "✅ Main project TypeScript check passed"
 
+# Website subdirectory checks
+echo ""
+echo "🌐 === WEBSITE SUBDIRECTORY CHECKS ==="
+echo "📍 Switching to website directory"
+cd website
+echo "📁 Now in directory: $(pwd)"
+
+# Check if website directory exists and has package.json
+if [ ! -f "package.json" ]; then
+  echo "⚠️  No package.json found in website directory, skipping website checks"
+  cd ..
+else
+  echo "📦 Found package.json in website directory"
+  
+  # Run linting for website
+  echo "📝 Checking website code style with ESLint..."
+  npm run lint
+  if [ $? -ne 0 ]; then
+    echo "❌ Website ESLint failed. Please fix the issues before committing."
+    cd ..
+    exit 1
+  fi
+  echo "✅ Website ESLint passed"
+  
+  # Run TypeScript type checking for website
+  echo "🔧 Running website TypeScript type checking..."
+  npx tsc --noEmit
+  if [ $? -ne 0 ]; then
+    echo "❌ Website TypeScript type checking failed. Please fix the type errors."
+    cd ..
+    exit 1
+  fi
+  echo "✅ Website TypeScript check passed"
+  
+  echo "📍 Returning to main project directory"
+  cd ..
+fi
+
+echo ""
 echo "✅ All pre-commit checks passed!"
 echo "🚀 Ready to commit!"

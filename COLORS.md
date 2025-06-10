@@ -5,10 +5,12 @@ Cette palette de couleurs a été créée pour assurer une cohérence visuelle d
 ## Structure de la Palette
 
 ### Couleurs Principales
+
 - **primary**: Bleu moderne (50-950) - Pour les éléments principaux et CTA
 - **neutral**: Gris équilibrés (50-950) - Pour les textes et arrière-plans neutres
 
 ### Couleurs Sémantiques
+
 - **success**: Vert (50-950) - Pour les messages de succès
 - **warning**: Orange/Jaune (50-950) - Pour les avertissements
 - **error**: Rouge (50-950) - Pour les erreurs
@@ -16,6 +18,7 @@ Cette palette de couleurs a été créée pour assurer une cohérence visuelle d
 ### Thèmes Prédéfinis
 
 #### Thème Light
+
 ```css
 background: light-background (#ffffff)
 surface: light-surface (#f8fafc)
@@ -30,6 +33,7 @@ destructive: light-destructive (#ef4444)
 ```
 
 #### Thème Dark
+
 ```css
 background: dark-background (#0f172a)
 surface: dark-surface (#1e293b)

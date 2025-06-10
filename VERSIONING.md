@@ -7,12 +7,15 @@ This document describes the versioning system implemented for the FastFlix appli
 ## Version Structure
 
 ### Semantic Versioning
+
 We use the `MAJOR.MINOR.PATCH` format:
+
 - **MAJOR**: Breaking changes incompatible with previous versions
 - **MINOR**: New backward-compatible features
 - **PATCH**: Backward-compatible bug fixes
 
 ### Current Version
+
 - **Version**: `0.0.1`
 - **iOS Build**: `1`
 - **Android Version Code**: `1`
@@ -20,10 +23,13 @@ We use the `MAJOR.MINOR.PATCH` format:
 ## Centralized Version Management
 
 ### Single Source of Truth
+
 To avoid maintaining version numbers in multiple files, we recommend using a centralized approach:
 
 #### Option 1: Environment Variables (Recommended)
+
 Create a `.env` file with version information:
+
 ```env
 APP_VERSION=0.0.1
 IOS_BUILD_NUMBER=1
@@ -31,7 +37,9 @@ ANDROID_VERSION_CODE=1
 ```
 
 #### Option 2: Version Configuration File
+
 Create a `version.json` file:
+
 ```json
 {
   "version": "0.0.1",
@@ -41,7 +49,9 @@ Create a `version.json` file:
 ```
 
 #### Option 3: Use package.json as Single Source
+
 Use only `package.json` version and generate others programmatically:
+
 ```javascript
 // In app.config.js
 const packageJson = require('./package.json');
@@ -50,7 +60,7 @@ export default {
   expo: {
     version: packageJson.version,
     // ...
-  }
+  },
 };
 ```
 
@@ -59,6 +69,7 @@ export default {
 ### Current Implementation (Multiple Files)
 
 #### 1. package.json
+
 ```json
 {
   "version": "0.0.1"
@@ -66,6 +77,7 @@ export default {
 ```
 
 #### 2. app.json
+
 ```json
 {
   "expo": {
@@ -81,11 +93,13 @@ export default {
 ```
 
 #### 3. app.config.js
+
 Same configuration as app.json but in JavaScript format.
 
 ### Recommended Implementation (Centralized)
 
 #### 1. Create version.js utility
+
 ```javascript
 // utils/version.js
 const packageJson = require('../package.json');
@@ -98,8 +112,13 @@ module.exports = {
 ```
 
 #### 2. Update app.config.js
+
 ```javascript
-const { version, iosBuildNumber, androidVersionCode } = require('./utils/version');
+const {
+  version,
+  iosBuildNumber,
+  androidVersionCode,
+} = require('./utils/version');
 
 export default {
   expo: {
@@ -129,7 +148,9 @@ import { getAppVersion } from '@/utils/appVersion';
 ## Update Process
 
 ### Current Process (Multiple Files)
+
 1. **Update version** in 3 files:
+
    - `package.json`
    - `app.json`
    - `app.config.js`
@@ -139,6 +160,7 @@ import { getAppVersion } from '@/utils/appVersion';
    - Android: `versionCode` (number)
 
 ### Recommended Process (Centralized)
+
 1. **Update version** in `package.json` only
 2. **Update build numbers** in `.env` file:
    ```env
@@ -153,11 +175,13 @@ import { getAppVersion } from '@/utils/appVersion';
 ## App Store Connect Compatibility
 
 ### iOS
+
 - `version` corresponds to "Version Number" in App Store Connect
 - `buildNumber` corresponds to "Build Number" in App Store Connect
 - Each submission must have a unique `buildNumber`
 
 ### Android
+
 - `version` corresponds to "Version name" in Google Play Console
 - `versionCode` corresponds to "Version code" in Google Play Console
 - Each submission must have a higher `versionCode` than the previous
@@ -178,6 +202,7 @@ import { getAppVersion } from '@/utils/appVersion';
 ## Automation
 
 To automate the process:
+
 - Use npm scripts to increment versions automatically
 - Integrate with CI/CD tools like GitHub Actions
 - Use EAS Build from Expo for automatic build management

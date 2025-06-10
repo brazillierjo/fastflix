@@ -23,23 +23,27 @@ A smart movie and TV show recommendation app powered by AI. Simply describe what
 ### Detailed Application Flow:
 
 1. **Intuitive User Interface**:
+
    - Search form with natural language input
    - Configurable filters (movies, TV shows, or both)
    - Fixed maximum of 20 recommendations
    - Multi-language support with automatic detection
 
 2. **Advanced AI Processing**:
+
    - Uses Gemini 2.0 Flash to analyze user queries
    - Contextual title generation based on mood, genres, or preferences
    - Localized processing with region-specific responses
 
 3. **Multi-Source Data Aggregation**:
+
    - TMDB search for each recommended title
    - Complete metadata retrieval (synopsis, ratings, posters)
    - Cast and crew information collection
    - Streaming platform availability
 
 4. **Enhanced Presentation**:
+
    - Modern interface with smooth animations (Moti)
    - Detailed cards with high-quality posters
    - Streaming information with platform logos
@@ -69,6 +73,7 @@ A smart movie and TV show recommendation app powered by AI. Simply describe what
 Before running the app, you'll need:
 
 1. **API Keys**:
+
    - Google Generative AI API key
    - The Movie Database (TMDB) API key
 
@@ -81,19 +86,22 @@ Before running the app, you'll need:
 ## Setup
 
 1. **Clone the repository**
+
    ```bash
    git clone <repository-url>
    cd fastflix
    ```
 
 2. **Install dependencies**
+
    ```bash
    npm install
    ```
 
 3. **Configure environment variables**
-   
+
    Create a `.env` file in the root directory:
+
    ```env
    GOOGLE_API_KEY=your_gemini_api_key_here
    TMDB_API_KEY=your_tmdb_api_key_here
@@ -182,6 +190,7 @@ fastflix/
 FastFlix uses a centralized versioning system that manages app versions, iOS build numbers, and Android version codes from a single source. The project follows semantic versioning (MAJOR.MINOR.PATCH) and includes custom scripts for automated version management.
 
 ### Key Features:
+
 - **Centralized Configuration**: Single source of truth in `package.json`
 - **Automated Build Numbers**: Environment-based iOS and Android build management
 - **Custom Scripts**: Easy version incrementing with `npm run version:*` commands
