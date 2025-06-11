@@ -43,7 +43,13 @@
     "statusPilot": "Pilot",
     "year": "Year:",
     "externalLinks": "External Links:",
-    "viewOnTMDB": "View on TMDB"
+    "viewOnTMDB": "View on TMDB",
+    "sortByRating": "Rating",
+    "sortByDate": "Release Date",
+    "allPlatforms": "All Platforms",
+    "platformsSelected": "platform",
+    "platformsSelectedPlural": "platforms",
+    "clearFilters": "Clear Filters"
   },
   "settings": {
     "language": "Language",

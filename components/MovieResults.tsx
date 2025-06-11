@@ -203,8 +203,8 @@ export default function MovieResults({
             >
               <Text className='text-sm text-light-text dark:text-dark-text'>
                 {filters.sortBy === 'release_date'
-                  ? '📅 Date de sortie'
-                  : '⭐ Note'}
+                  ? `📅 ${t('movies.sortByDate')}`
+                  : `⭐ ${t('movies.sortByRating')}`}
               </Text>
               <Text className='text-light-secondary dark:text-dark-secondary'>
                 {showSortDropdown ? '▲' : '▼'}
@@ -222,7 +222,7 @@ export default function MovieResults({
                   )}
                 >
                   <Text className='text-sm text-light-text dark:text-dark-text'>
-                    ⭐ Note
+                    ⭐ {t('movies.sortByRating')}
                   </Text>
                 </TouchableOpacity>
                 <TouchableOpacity
@@ -234,7 +234,7 @@ export default function MovieResults({
                   )}
                 >
                   <Text className='text-sm text-light-text dark:text-dark-text'>
-                    📅 Date de sortie
+                    📅 {t('movies.sortByDate')}
                   </Text>
                 </TouchableOpacity>
               </View>
@@ -249,8 +249,8 @@ export default function MovieResults({
             >
               <Text className='text-sm text-light-text dark:text-dark-text'>
                 {filters.selectedProviders.size > 0
-                  ? `${filters.selectedProviders.size} plateforme${filters.selectedProviders.size > 1 ? 's' : ''}`
-                  : 'Toutes les plateformes'}
+                  ? `${filters.selectedProviders.size} ${filters.selectedProviders.size > 1 ? t('movies.platformsSelectedPlural') : t('movies.platformsSelected')}`
+                  : t('movies.allPlatforms')}
               </Text>
               <Text className='text-light-secondary dark:text-dark-secondary'>
                 {showProviderDropdown ? '▲' : '▼'}
@@ -266,7 +266,7 @@ export default function MovieResults({
                       className='border-b border-light-border px-3 py-2 dark:border-dark-border'
                     >
                       <Text className='text-sm font-medium text-light-accent dark:text-dark-accent'>
-                        Effacer les filtres
+                        {t('movies.clearFilters')}
                       </Text>
                     </TouchableOpacity>
                   )}

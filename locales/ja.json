@@ -43,7 +43,13 @@
     "statusPilot": "パイロット",
     "year": "年:",
     "externalLinks": "外部リンク:",
-    "viewOnTMDB": "TMDBで見る"
+    "viewOnTMDB": "TMDBで見る",
+    "sortByRating": "評価",
+    "sortByDate": "公開日",
+    "allPlatforms": "すべてのプラットフォーム",
+    "platformsSelected": "プラットフォーム",
+    "platformsSelectedPlural": "プラットフォーム",
+    "clearFilters": "フィルターをクリア"
   },
   "settings": {
     "language": "言語",
