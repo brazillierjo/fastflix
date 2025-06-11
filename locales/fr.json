@@ -9,7 +9,12 @@
     "searching": "Recherche...",
     "generating": "Génération...",
     "options": "Options :",
-    "noDescription": "Aucune description disponible"
+    "noDescription": "Aucune description disponible",
+    "languageTip": {
+      "title": "Configuration importante",
+      "description": "Pour obtenir les meilleurs résultats adaptés à votre région, pensez à bien configurer la langue de l'application et le pays de recherche sur la",
+      "profileLink": "page profil"
+    }
   },
   "movies": {
     "recommendations": "Recommandations",

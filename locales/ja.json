@@ -9,7 +9,12 @@
     "searching": "検索中...",
     "generating": "生成中...",
     "options": "オプション：",
-    "noDescription": "説明がありません"
+    "noDescription": "説明がありません",
+    "languageTip": {
+      "title": "重要な設定",
+      "description": "お住まいの地域に最適な結果を得るために、",
+      "profileLink": "プロフィールページ"
+    }
   },
   "movies": {
     "recommendations": "レコメンデーション",

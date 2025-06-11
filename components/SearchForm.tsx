@@ -1,5 +1,6 @@
 import { useLanguage } from '@/contexts/LanguageContext';
 import { cn } from '@/utils/cn';
+import { Link } from 'expo-router';
 import { MotiView } from 'moti';
 import React, { useRef, useState, useEffect } from 'react';
 import {
@@ -95,6 +96,32 @@ export default function SearchForm({
             </Text>
           </MotiView>
 
+          {/* Language Configuration Info */}
+          <MotiView
+            from={{ opacity: 0, translateY: 10 }}
+            animate={{ opacity: 1, translateY: 0 }}
+            transition={{
+              delay: 200,
+              type: 'timing',
+              duration: 600,
+            }}
+            className='mb-6'
+          >
+            <View className='rounded-lg border border-light-accent/20 bg-light-accent/5 p-4 dark:border-dark-accent/20 dark:bg-dark-accent/5'>
+              <Text className='mb-2 text-sm font-medium text-light-accent dark:text-dark-accent'>
+                ⚙️ {t('welcome.languageTip.title')}
+              </Text>
+              <Text className='text-xs leading-relaxed text-light-text/80 dark:text-dark-text/80'>
+                {t('welcome.languageTip.description')}{' '}
+                <Link href='/profile' asChild>
+                  <Text className='text-xs font-medium text-light-primary underline dark:text-dark-primary'>
+                    {t('welcome.languageTip.profileLink')}
+                  </Text>
+                </Link>
+              </Text>
+            </View>
+          </MotiView>
+
           {/* Search Input */}
           <MotiView
             from={{ opacity: 0, scale: 0.9 }}
@@ -110,7 +137,13 @@ export default function SearchForm({
             <View className='mb-2 flex-row justify-end'>
               <TouchableOpacity
                 onPress={fillWithRandomExample}
-                className='flex-row items-center rounded-lg bg-light-primary/10 px-3 py-1 dark:bg-dark-primary/10'
+                className='flex-row items-center rounded-lg bg-light-primary/10 px-3 py-1 shadow-sm shadow-light-primary/20 dark:bg-dark-primary/10 dark:shadow-dark-primary/20'
+                style={{
+                  shadowOffset: { width: 0, height: 2 },
+                  shadowOpacity: 0.3,
+                  shadowRadius: 4,
+                  elevation: 3,
+                }}
                 disabled={loading}
               >
                 <Text className='mr-1 text-sm'>💡</Text>

@@ -8,8 +8,13 @@
     "searchButton": "Generate ✨",
     "searching": "Searching...",
     "generating": "Generating...",
-    "options": "Options :",
-    "noDescription": "No description available"
+    "options": "Options:",
+    "noDescription": "No description available",
+    "languageTip": {
+      "title": "Important Configuration",
+      "description": "For the best results tailored to your region, make sure to properly configure the application language and the search country on the",
+      "profileLink": "profile page"
+    }
   },
   "movies": {
     "recommendations": "Recommendations",

@@ -94,7 +94,9 @@ Respond conversationally and friendly, adapting your tone to match the user's st
 
 Also include a brief explanation of why you chose these recommendations (e.g., "I selected works that match your style", "I prioritized recent and well-rated films", "I chose unmissable classics", etc.).
 
-Limit your response to 3-4 sentences maximum. Always respond in English regardless of the user's query language.`;
+IMPORTANT: Automatically detect the language used in the user's query and respond in that same language. If the user wrote in French, respond in French. If they wrote in German, respond in German. If they wrote in Japanese, respond in Japanese. Match their language exactly.
+
+Limit your response to 3-4 sentences maximum.`;
 
     const result = await model.generateContent(prompt);
     const response = await result.response;
@@ -154,7 +156,7 @@ Provide two distinct outputs:
 
 1. RECOMMENDATIONS: Up to 25 ${contentTypeText} matching the request (be generous and inventive). Include exact titles, franchise variations, spiritual successors, and thematically similar works. List only titles separated by commas.
 
-2. MESSAGE: A conversational, engaging message that adapts to the user's tone and style. Provide encouragement and context about their request without mentioning specific results. Be enthusiastic and personalized, matching their energy level (humorous, serious, casual, etc.). Include a brief insight about your selection strategy. Always respond in English. Limit to 3-4 sentences maximum.
+2. MESSAGE: A conversational, engaging message that adapts to the user's tone and style. Provide encouragement and context about their request without mentioning specific results. Be enthusiastic and personalized, matching their energy level (humorous, serious, casual, etc.). Include a brief insight about your selection strategy. IMPORTANT: Automatically detect the language used in the user's query and respond in that same language. If the user wrote in French, respond in French. If they wrote in German, respond in German. If they wrote in Japanese, respond in Japanese. Match their language exactly. Limit to 3-4 sentences maximum.
 
 Format your response exactly like this:
 RECOMMENDATIONS: [comma-separated list of titles]
