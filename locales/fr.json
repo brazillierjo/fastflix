@@ -161,5 +161,10 @@
   "tabs": {
     "movies": "Films",
     "profile": "Profil"
+  },
+  "languages": {
+    "en": "English",
+    "fr": "Français",
+    "ja": "日本語"
   }
 }

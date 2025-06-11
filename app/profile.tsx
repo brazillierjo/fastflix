@@ -31,6 +31,7 @@ export default function ProfileScreen() {
   }[] = [
     { code: 'fr', name: 'Français', flag: '🇫🇷' },
     { code: 'en', name: 'English', flag: '🇺🇸' },
+    { code: 'ja', name: '日本語', flag: '🇯🇵' },
   ];
 
   return (

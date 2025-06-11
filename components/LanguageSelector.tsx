@@ -19,6 +19,8 @@ export const LanguageSelector: React.FC<LanguageSelectorProps> = ({
         return '🇫🇷';
       case 'en':
         return '🇺🇸';
+      case 'ja':
+        return '🇯🇵';
       default:
         return '🌐';
     }
@@ -32,7 +34,9 @@ export const LanguageSelector: React.FC<LanguageSelectorProps> = ({
 
       <Picker
         selectedValue={language}
-        onValueChange={itemValue => setLanguage(itemValue as 'fr' | 'en')}
+        onValueChange={itemValue =>
+          setLanguage(itemValue as 'fr' | 'en' | 'ja')
+        }
       >
         {availableLanguages.map(lang => (
           <Picker.Item

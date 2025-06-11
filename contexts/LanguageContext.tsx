@@ -11,13 +11,22 @@ import React, {
 // Import translations
 import en from '../locales/en.json';
 import fr from '../locales/fr.json';
+import ja from '../locales/ja.json';
 
 // Configuration centralisée des langues supportées
-const SUPPORTED_LANGUAGES = ['fr', 'en'] as const;
+const SUPPORTED_LANGUAGES = ['fr', 'en', 'ja'] as const;
 const DEFAULT_LANGUAGE = 'en' as const;
 
 export type SupportedLanguage = (typeof SUPPORTED_LANGUAGES)[number];
-export type SupportedCountry = 'FR' | 'US' | 'CA' | 'GB' | 'DE' | 'ES' | 'IT';
+export type SupportedCountry =
+  | 'FR'
+  | 'US'
+  | 'CA'
+  | 'GB'
+  | 'DE'
+  | 'ES'
+  | 'IT'
+  | 'JP';
 
 type Translations = {
   [key in SupportedLanguage]: typeof fr;
@@ -26,12 +35,14 @@ type Translations = {
 const translations: Translations = {
   fr,
   en,
+  ja,
 };
 
 // Configuration des langues avec leurs pays par défaut
 const LANGUAGE_COUNTRY_MAP: Record<SupportedLanguage, SupportedCountry> = {
   fr: 'FR',
   en: 'US',
+  ja: 'JP',
 };
 
 // Utilitaires pour la gestion des langues
@@ -68,6 +79,7 @@ export const availableCountries: Country[] = [
   { code: 'DE', name: 'Germany', flag: '🇩🇪' },
   { code: 'ES', name: 'Spain', flag: '🇪🇸' },
   { code: 'IT', name: 'Italy', flag: '🇮🇹' },
+  { code: 'JP', name: 'Japan', flag: '🇯🇵' },
 ];
 
 export type AvailableCountries = {
