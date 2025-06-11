@@ -27,6 +27,9 @@ import {
   type Country,
 } from '../constants/languages';
 
+// Import placeholder examples
+import { getRandomPlaceholder } from '../constants/examples';
+
 type Translations = {
   [key in SupportedLanguage]: typeof fr;
 };
@@ -50,6 +53,7 @@ interface LanguageContextType {
   country: SupportedCountry;
   setCountry: (country: SupportedCountry) => void;
   t: (key: string) => string;
+  getRandomPlaceholder: () => string;
   availableLanguages: SupportedLanguage[];
   availableCountries: Country[];
 }
@@ -77,6 +81,11 @@ export const LanguageProvider: React.FC<{ children: ReactNode }> = ({
   // Translation function
   const t = (key: string): string => {
     return getNestedValue(translations[language], key);
+  };
+
+  // Get random placeholder function
+  const getRandomPlaceholderText = (): string => {
+    return getRandomPlaceholder(language);
   };
 
   // Set language and save to storage
@@ -163,6 +172,7 @@ export const LanguageProvider: React.FC<{ children: ReactNode }> = ({
     country,
     setCountry,
     t,
+    getRandomPlaceholder: getRandomPlaceholderText,
     availableLanguages: [...SUPPORTED_LANGUAGES],
     availableCountries,
   };

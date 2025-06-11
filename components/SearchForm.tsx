@@ -1,7 +1,7 @@
 import { useLanguage } from '@/contexts/LanguageContext';
 import { cn } from '@/utils/cn';
 import { MotiView } from 'moti';
-import React, { useRef } from 'react';
+import React, { useRef, useState, useEffect } from 'react';
 import {
   KeyboardAvoidingView,
   PanResponder,
@@ -28,7 +28,13 @@ export default function SearchForm({
   onSearch,
   loading,
 }: SearchFormProps) {
-  const { t } = useLanguage();
+  const { t, getRandomPlaceholder } = useLanguage();
+  const [placeholder, setPlaceholder] = useState('');
+
+  // Generate a random placeholder when component mounts or language changes
+  useEffect(() => {
+    setPlaceholder(getRandomPlaceholder());
+  }, [getRandomPlaceholder]);
 
   const scrollViewRef = useRef<ScrollView>(null);
   const textInputRef = useRef<TextInput>(null);
@@ -99,7 +105,7 @@ export default function SearchForm({
               value={query}
               onChangeText={setQuery}
               onFocus={handleInputFocus}
-              placeholder={t('welcome.placeholder')}
+              placeholder={'Ex: ' + placeholder}
               placeholderTextColor='#9CA3AF'
               className='rounded-xl border border-light-border bg-light-card p-4 text-base text-light-text dark:border-dark-border dark:bg-dark-card dark:text-dark-text'
               multiline
