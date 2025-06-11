@@ -1,8 +1,5 @@
 import SubscriptionModal from '@/components/SubscriptionModal';
-import {
-  AVAILABLE_LANGUAGES,
-  type SupportedLanguage,
-} from '@/constants/languages';
+import { AVAILABLE_LANGUAGES } from '@/constants/languages';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { useSubscription } from '@/contexts/RevenueCatContext';
 import { getAppVersion } from '@/utils/appVersion';
