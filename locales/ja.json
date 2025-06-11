@@ -157,7 +157,17 @@
     "aboutApp": "アプリについて",
     "version": "バージョン",
     "developedBy": "開発者",
-    "yourTeam": "あなたのチーム"
+    "yourTeam": "あなたのチーム",
+    "freePrompts": {
+      "title": "無料プロンプト",
+      "used": "今月の使用数",
+      "remaining": "残り",
+      "resetInfo": "カウンターは毎月リセットされます",
+      "upgradeButton": "FastFlix Proにアップグレード"
+    },
+    "privacyPolicy": "プライバシーポリシー",
+    "support": "サポートセンター",
+    "website": "ウェブサイト"
   },
   "common": {
     "cancel": "キャンセル"

@@ -159,7 +159,17 @@
     "aboutApp": "À propos de l'application",
     "version": "Version",
     "developedBy": "Développé par",
-    "yourTeam": "Votre équipe"
+    "yourTeam": "Votre équipe",
+    "freePrompts": {
+      "title": "Prompts gratuits",
+      "used": "Utilisés ce mois",
+      "remaining": "Restants",
+      "resetInfo": "Le compteur se remet à zéro chaque mois",
+      "upgradeButton": "Passer à FastFlix Pro"
+    },
+    "privacyPolicy": "Politique de confidentialité",
+    "support": "Centre d'assistance",
+    "website": "Site web"
   },
   "common": {
     "cancel": "Annuler"

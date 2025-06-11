@@ -2,6 +2,7 @@ import SubscriptionModal from '@/components/SubscriptionModal';
 import { AVAILABLE_LANGUAGES } from '@/constants/languages';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { useSubscription } from '@/contexts/RevenueCatContext';
+import { useFastFlixProFeatures } from '@/hooks/usePremiumFeatures';
 import { getAppVersion } from '@/utils/appVersion';
 import { MotiView } from 'moti';
 import React, { useState } from 'react';
@@ -9,6 +10,7 @@ import {
   ActionSheetIOS,
   ActivityIndicator,
   Alert,
+  Linking,
   Platform,
   SafeAreaView,
   ScrollView,
@@ -21,6 +23,7 @@ export default function ProfileScreen() {
   const { language, setLanguage, country, setCountry, t, availableCountries } =
     useLanguage();
   const { isSubscribed, restorePurchases } = useSubscription();
+  const { monthlyPromptCount, canMakePrompt } = useFastFlixProFeatures();
   const [showSubscriptionModal, setShowSubscriptionModal] = useState(false);
   const [restoring, setRestoring] = useState(false);
 
@@ -243,12 +246,84 @@ export default function ProfileScreen() {
           </View>
         </MotiView>
 
+        {/* Free Prompts Section */}
+        {!isSubscribed && (
+          <MotiView
+            from={{ opacity: 0, translateY: 20 }}
+            animate={{ opacity: 1, translateY: 0 }}
+            transition={{
+              delay: 450,
+              type: 'timing',
+              duration: 600,
+            }}
+            className='mb-6'
+          >
+            <View className='rounded-xl bg-light-card p-6 dark:bg-dark-card'>
+              <Text className='mb-4 text-lg font-semibold text-light-text dark:text-dark-text'>
+                🎯 {t('profile.freePrompts.title')}
+              </Text>
+
+              <View className='gap-3'>
+                <View className='flex-row items-center justify-between'>
+                  <Text className='text-light-muted dark:text-dark-muted'>
+                    {t('profile.freePrompts.used')}
+                  </Text>
+                  <Text className='font-medium text-light-text dark:text-dark-text'>
+                    {monthlyPromptCount} / 3
+                  </Text>
+                </View>
+
+                <View className='flex-row items-center justify-between'>
+                  <Text className='text-light-muted dark:text-dark-muted'>
+                    {t('profile.freePrompts.remaining')}
+                  </Text>
+                  <Text
+                    className={`font-medium ${
+                      canMakePrompt().remaining > 0
+                        ? 'text-success-500'
+                        : 'text-error-500'
+                    }`}
+                  >
+                    {canMakePrompt().remaining}
+                  </Text>
+                </View>
+
+                <View className='mt-2 h-2 w-full rounded-full bg-light-border dark:bg-dark-border'>
+                  <View
+                    className={`h-full rounded-full ${
+                      canMakePrompt().remaining > 0
+                        ? 'bg-success-500'
+                        : 'bg-error-500'
+                    }`}
+                    style={{ width: `${(monthlyPromptCount / 3) * 100}%` }}
+                  />
+                </View>
+
+                <Text className='mt-2 text-sm text-light-muted dark:text-dark-muted'>
+                  {t('profile.freePrompts.resetInfo')}
+                </Text>
+
+                {canMakePrompt().remaining === 0 && (
+                  <TouchableOpacity
+                    onPress={() => setShowSubscriptionModal(true)}
+                    className='mt-3 rounded-lg bg-primary-500 px-4 py-3'
+                  >
+                    <Text className='text-center font-semibold text-white'>
+                      {t('profile.freePrompts.upgradeButton')}
+                    </Text>
+                  </TouchableOpacity>
+                )}
+              </View>
+            </View>
+          </MotiView>
+        )}
+
         {/* App Info Section */}
         <MotiView
           from={{ opacity: 0, translateY: 20 }}
           animate={{ opacity: 1, translateY: 0 }}
           transition={{
-            delay: 500,
+            delay: isSubscribed ? 500 : 550,
             type: 'timing',
             duration: 600,
           }}
@@ -267,13 +342,43 @@ export default function ProfileScreen() {
                   {getAppVersion()}
                 </Text>
               </View>
-              <View className='flex-row justify-between'>
-                <Text className='text-light-muted dark:text-dark-muted'>
-                  {t('profile.developedBy')}
-                </Text>
-                <Text className='text-light-text dark:text-dark-text'>
-                  {t('profile.yourTeam')}
-                </Text>
+
+              {/* Legal Links */}
+              <View className='mt-4 space-y-2'>
+                <TouchableOpacity
+                  onPress={() =>
+                    Linking.openURL(
+                      'https://fastflix-nu.vercel.app/privacy-policy'
+                    )
+                  }
+                  className='py-2'
+                >
+                  <Text className='text-primary-500 underline'>
+                    {t('profile.privacyPolicy')}
+                  </Text>
+                </TouchableOpacity>
+
+                <TouchableOpacity
+                  onPress={() =>
+                    Linking.openURL('https://fastflix-nu.vercel.app/support')
+                  }
+                  className='py-2'
+                >
+                  <Text className='text-primary-500 underline'>
+                    {t('profile.support')}
+                  </Text>
+                </TouchableOpacity>
+
+                <TouchableOpacity
+                  onPress={() =>
+                    Linking.openURL('https://fastflix-nu.vercel.app')
+                  }
+                  className='py-2'
+                >
+                  <Text className='text-primary-500 underline'>
+                    {t('profile.website')}
+                  </Text>
+                </TouchableOpacity>
               </View>
             </View>
           </View>

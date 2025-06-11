@@ -158,7 +158,7 @@ export default function SearchForm({
               value={query}
               onChangeText={setQuery}
               onFocus={handleInputFocus}
-              placeholder={placeholder}
+              placeholder={'e.g.: ' + placeholder}
               placeholderTextColor='#9CA3AF'
               className='rounded-xl border border-light-border bg-light-card p-4 text-base text-light-text dark:border-dark-border dark:bg-dark-card dark:text-dark-text'
               multiline
