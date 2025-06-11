@@ -28,6 +28,44 @@ export const LANGUAGE_COUNTRY_MAP: Record<SupportedLanguage, SupportedCountry> =
     ja: 'JP',
   };
 
+// Mapping des codes de langue vers les codes TMDB
+export const TMDB_LANGUAGE_MAP: Record<SupportedLanguage, string> = {
+  fr: 'fr-FR',
+  en: 'en-US',
+  ja: 'ja-JP',
+};
+
+/**
+ * Convertit un code de langue de l'application vers le code de langue TMDB
+ * @param language - Code de langue de l'application (fr, en, ja)
+ * @returns Code de langue TMDB (fr-FR, en-US, ja-JP)
+ */
+export const getLanguageForTMDB = (language: SupportedLanguage): string => {
+  return TMDB_LANGUAGE_MAP[language] || TMDB_LANGUAGE_MAP[DEFAULT_LANGUAGE];
+};
+
+/**
+ * Détermine les langues de fallback pour les recherches TMDB
+ * Retourne un tableau de langues TMDB ordonnées par priorité de recherche
+ * @param primaryLanguage - Langue principale sélectionnée par l'utilisateur
+ * @returns Tableau des codes de langue TMDB pour la stratégie de fallback
+ */
+export const getTMDBFallbackLanguages = (
+  primaryLanguage: SupportedLanguage
+): string[] => {
+  const primaryTMDBLanguage = getLanguageForTMDB(primaryLanguage);
+
+  // Ordre de priorité pour les langues de fallback basé sur la couverture TMDB
+  const fallbackPriority: SupportedLanguage[] = ['en', 'fr', 'ja'];
+
+  // Créer la liste des langues de fallback en excluant la langue principale
+  const fallbackLanguages = fallbackPriority
+    .filter(lang => lang !== primaryLanguage)
+    .map(lang => getLanguageForTMDB(lang));
+
+  return [primaryTMDBLanguage, ...fallbackLanguages];
+};
+
 // Interface pour les pays
 export interface Country {
   code: SupportedCountry;

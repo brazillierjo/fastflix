@@ -24,6 +24,10 @@
  */
 
 import { TMDBSearchItem } from '@/hooks/useMovieSearch';
+import {
+  getTMDBFallbackLanguages,
+  type SupportedLanguage,
+} from '@/constants/languages';
 import axios from 'axios';
 import Constants from 'expo-constants';
 
@@ -35,7 +39,9 @@ export const tmdbService = {
   async searchMulti(
     title: string,
     includeMovies: boolean,
-    includeTvShows: boolean
+    includeTvShows: boolean,
+    language: string = 'fr-FR',
+    userLanguage?: SupportedLanguage
   ): Promise<TMDBSearchItem | null> {
     try {
       // Nettoyer le titre pour améliorer la recherche
@@ -54,25 +60,39 @@ export const tmdbService = {
         });
       };
 
-      // Stratégie de recherche progressive
-      const searchStrategies = [
-        // 1. Recherche exacte en français
-        { term: cleanTitle, language: 'fr-FR' },
-        // 2. Recherche exacte en anglais
-        { term: cleanTitle, language: 'en-US' },
-        // 3. Recherche sans articles (le, la, les, the, a, an)
-        {
-          term: cleanTitle.replace(/^(le|la|les|the|a|an)\s+/i, ''),
-          language: 'fr-FR',
-        },
-        {
-          term: cleanTitle.replace(/^(le|la|les|the|a|an)\s+/i, ''),
-          language: 'en-US',
-        },
-        // 4. Recherche avec des variantes communes
-        { term: cleanTitle.replace(/\s+/g, ' '), language: 'fr-FR' },
-        { term: cleanTitle.replace(/\s+/g, ' '), language: 'en-US' },
-      ];
+      // Stratégie de recherche progressive avec toutes les langues supportées
+      const fallbackLanguages = userLanguage
+        ? getTMDBFallbackLanguages(userLanguage)
+        : [language, 'en-US', 'fr-FR']; // Fallback par défaut si userLanguage n'est pas fourni
+
+      const searchStrategies: { term: string; language: string }[] = [];
+
+      // Pour chaque langue de fallback, créer des stratégies de recherche
+      fallbackLanguages.forEach((lang, index) => {
+        const isFirstLanguage = index === 0;
+
+        // 1. Recherche exacte
+        searchStrategies.push({ term: cleanTitle, language: lang });
+
+        // 2. Recherche sans articles (seulement pour les premières langues pour éviter trop de requêtes)
+        if (index < 2) {
+          searchStrategies.push({
+            term: cleanTitle.replace(
+              /^(le|la|les|the|a|an|の|が|を|に|で|と)\s+/i,
+              ''
+            ),
+            language: lang,
+          });
+        }
+
+        // 3. Recherche avec nettoyage des espaces (seulement pour la langue principale)
+        if (isFirstLanguage) {
+          searchStrategies.push({
+            term: cleanTitle.replace(/\s+/g, ' '),
+            language: lang,
+          });
+        }
+      });
 
       // Essayer chaque stratégie jusqu'à trouver un résultat
       for (const strategy of searchStrategies) {
@@ -129,10 +149,14 @@ export const tmdbService = {
     }
   },
 
-  async getCredits(itemId: number, mediaType: string): Promise<any[]> {
+  async getCredits(
+    itemId: number,
+    mediaType: string,
+    language: string = 'fr-FR'
+  ): Promise<any[]> {
     try {
       const creditsResponse = await axios.get(
-        `https://api.themoviedb.org/3/${mediaType}/${itemId}/credits?api_key=${TMDB_API_KEY}&language=fr-FR`
+        `https://api.themoviedb.org/3/${mediaType}/${itemId}/credits?api_key=${TMDB_API_KEY}&language=${language}`
       );
 
       // Retourner les 5 premiers acteurs principaux
@@ -146,10 +170,14 @@ export const tmdbService = {
     }
   },
 
-  async getDetailedInfo(itemId: number, mediaType: string): Promise<any> {
+  async getDetailedInfo(
+    itemId: number,
+    mediaType: string,
+    language: string = 'fr-FR'
+  ): Promise<any> {
     try {
       const detailsResponse = await axios.get(
-        `https://api.themoviedb.org/3/${mediaType}/${itemId}?api_key=${TMDB_API_KEY}&language=fr-FR`
+        `https://api.themoviedb.org/3/${mediaType}/${itemId}?api_key=${TMDB_API_KEY}&language=${language}`
       );
 
       const data = detailsResponse.data;

@@ -28,6 +28,10 @@ import { Alert } from 'react-native';
 import { useLanguage } from '../contexts/LanguageContext';
 import { aiService } from '../utils/aiServices';
 import { tmdbService } from '../utils/apiServices';
+import {
+  getLanguageForTMDB,
+  type SupportedLanguage,
+} from '../constants/languages';
 
 export interface Movie {
   id: number;
@@ -92,7 +96,9 @@ export interface SearchResult {
 
 const searchMoviesWithGemini = async (
   params: SearchParams,
-  countryCode: string = 'FR'
+  countryCode: string = 'FR',
+  language: string = 'fr-FR',
+  userLanguage?: SupportedLanguage
 ): Promise<SearchResult> => {
   const { query, includeMovies, includeTvShows } = params;
 
@@ -132,7 +138,13 @@ const searchMoviesWithGemini = async (
 
     // Search for each unique title on TMDB using AI-determined content types
     const contentPromises = uniqueTitles.map(title =>
-      tmdbService.searchMulti(title, aiIncludeMovies, aiIncludeTvShows)
+      tmdbService.searchMulti(
+        title,
+        aiIncludeMovies,
+        aiIncludeTvShows,
+        language,
+        userLanguage
+      )
     );
 
     const contentResults = await Promise.all(contentPromises);
@@ -170,8 +182,8 @@ const searchMoviesWithGemini = async (
       const mediaType = item.media_type || 'movie';
       const [providers, credits, detailedInfo] = await Promise.all([
         tmdbService.getWatchProviders(item.id, mediaType, countryCode),
-        tmdbService.getCredits(item.id, mediaType),
-        tmdbService.getDetailedInfo(item.id, mediaType),
+        tmdbService.getCredits(item.id, mediaType, language),
+        tmdbService.getDetailedInfo(item.id, mediaType, language),
       ]);
 
       return {
@@ -282,11 +294,12 @@ const searchMoviesWithGemini = async (
 };
 
 export const useMovieSearch = () => {
-  const { t, country } = useLanguage();
+  const { t, country, language } = useLanguage();
+  const tmdbLanguage = getLanguageForTMDB(language);
 
   return useMutation({
     mutationFn: (params: SearchParams) =>
-      searchMoviesWithGemini(params, country),
+      searchMoviesWithGemini(params, country, tmdbLanguage, language),
     onError: (error: Error) => {
       Alert.alert(t('errors.title'), t(`errors.${error.message}`));
     },
