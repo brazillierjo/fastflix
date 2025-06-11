@@ -1,6 +1,13 @@
 import { MotiView } from 'moti';
 import React, { useMemo, useState } from 'react';
-import { Image, ScrollView, Text, TouchableOpacity, View } from 'react-native';
+import {
+  Image,
+  Linking,
+  ScrollView,
+  Text,
+  TouchableOpacity,
+  View,
+} from 'react-native';
 import { useLanguage } from '../contexts/LanguageContext';
 import { cn } from '../utils/cn';
 
@@ -581,7 +588,7 @@ export default function MovieResults({
 
                             {/* Rating */}
                             {movie.vote_average > 0 && (
-                              <View className='flex-row items-center gap-2'>
+                              <View className='mb-2 flex-row items-center gap-2'>
                                 <Text className='text-sm font-semibold text-light-text dark:text-dark-text'>
                                   ⭐ {t('movies.rating')}
                                 </Text>
@@ -597,6 +604,27 @@ export default function MovieResults({
                                 </View>
                               </View>
                             )}
+
+                            {/* External Links */}
+                            <View className='flex-row items-center gap-2'>
+                              <Text className='text-sm font-semibold text-light-text dark:text-dark-text'>
+                                🔗 {t('movies.externalLinks')}
+                              </Text>
+                              <TouchableOpacity
+                                onPress={() => {
+                                  const tmdbUrl =
+                                    movie.media_type === 'tv'
+                                      ? `https://www.themoviedb.org/tv/${movie.id}`
+                                      : `https://www.themoviedb.org/movie/${movie.id}`;
+                                  Linking.openURL(tmdbUrl);
+                                }}
+                                className='rounded-md bg-light-accent/20 px-2 py-1 dark:bg-dark-accent/20'
+                              >
+                                <Text className='text-xs font-medium text-light-accent dark:text-dark-accent'>
+                                  {t('movies.viewOnTMDB')}
+                                </Text>
+                              </TouchableOpacity>
+                            </View>
                           </View>
                         </View>
                       )}

@@ -41,7 +41,9 @@
     "statusInProduction": "制作中",
     "statusPlanned": "予定",
     "statusPilot": "パイロット",
-    "year": "年："
+    "year": "年:",
+    "externalLinks": "外部リンク:",
+    "viewOnTMDB": "TMDBで見る"
   },
   "settings": {
     "language": "言語",

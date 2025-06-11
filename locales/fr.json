@@ -41,7 +41,9 @@
     "statusInProduction": "En production",
     "statusPlanned": "Planifiée",
     "statusPilot": "Pilote",
-    "year": "Année :"
+    "year": "Année :",
+    "externalLinks": "Liens externes :",
+    "viewOnTMDB": "Voir sur TMDB"
   },
   "settings": {
     "language": "Langue",

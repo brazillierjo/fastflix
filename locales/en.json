@@ -35,13 +35,15 @@
     "movie": "Movie",
     "tvShow": "TV Show",
     "minutes": "min",
-    "statusReturning": "Returning",
+    "statusReturning": "Returning Series",
     "statusEnded": "Ended",
     "statusCanceled": "Canceled",
     "statusInProduction": "In Production",
     "statusPlanned": "Planned",
     "statusPilot": "Pilot",
-    "year": "Year :"
+    "year": "Year:",
+    "externalLinks": "External Links:",
+    "viewOnTMDB": "View on TMDB"
   },
   "settings": {
     "language": "Language",
