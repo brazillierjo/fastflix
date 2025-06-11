@@ -70,10 +70,6 @@
     "searchError": "An error occurred during the search",
     "searchMovieError": "Error while searching for"
   },
-  "languages": {
-    "fr": "Français",
-    "en": "English"
-  },
   "modal": {
     "title": "User profile"
   },
