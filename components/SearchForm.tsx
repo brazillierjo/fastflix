@@ -36,6 +36,12 @@ export default function SearchForm({
     setPlaceholder(getRandomPlaceholder());
   }, [getRandomPlaceholder]);
 
+  // Function to fill input with random example
+  const fillWithRandomExample = () => {
+    const randomExample = getRandomPlaceholder();
+    setQuery(randomExample);
+  };
+
   const scrollViewRef = useRef<ScrollView>(null);
   const textInputRef = useRef<TextInput>(null);
 
@@ -100,12 +106,26 @@ export default function SearchForm({
             }}
             className='mb-6'
           >
+            {/* Example Button */}
+            <View className='mb-2 flex-row justify-end'>
+              <TouchableOpacity
+                onPress={fillWithRandomExample}
+                className='flex-row items-center rounded-lg bg-light-primary/10 px-3 py-1 dark:bg-dark-primary/10'
+                disabled={loading}
+              >
+                <Text className='mr-1 text-sm'>💡</Text>
+                <Text className='text-xs font-medium text-light-primary dark:text-dark-primary'>
+                  {t('welcome.exampleButton') || 'Exemple'}
+                </Text>
+              </TouchableOpacity>
+            </View>
+
             <TextInput
               ref={textInputRef}
               value={query}
               onChangeText={setQuery}
               onFocus={handleInputFocus}
-              placeholder={'Ex: ' + placeholder}
+              placeholder={placeholder}
               placeholderTextColor='#9CA3AF'
               className='rounded-xl border border-light-border bg-light-card p-4 text-base text-light-text dark:border-dark-border dark:bg-dark-card dark:text-dark-text'
               multiline

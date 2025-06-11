@@ -85,6 +85,106 @@ export const PLACEHOLDER_EXAMPLES: PlaceholderExample[] = [
     en: 'Dark and atmospheric Nordic thriller',
     ja: '暗くて雰囲気のある北欧スリラー',
   },
+  {
+    fr: 'Films avec Leonardo DiCaprio dans un rôle dramatique',
+    en: 'Movies with Leonardo DiCaprio in a dramatic role',
+    ja: 'レオナルド・ディカプリオのドラマティックな役の映画',
+  },
+  {
+    fr: 'Comédies musicales récentes sur Disney+',
+    en: 'Recent musicals on Disney+',
+    ja: 'Disney+の最新ミュージカル',
+  },
+  {
+    fr: 'Westerns modernes avec Clint Eastwood',
+    en: 'Modern westerns with Clint Eastwood',
+    ja: 'クリント・イーストウッドの現代西部劇',
+  },
+  {
+    fr: 'Séries de fantasy épique comme Game of Thrones',
+    en: 'Epic fantasy series like Game of Thrones',
+    ja: 'ゲーム・オブ・スローンズのような壮大なファンタジーシリーズ',
+  },
+  {
+    fr: "Films d'espionnage britanniques des années 60",
+    en: 'British spy films from the 60s',
+    ja: '60年代のイギリススパイ映画',
+  },
+  {
+    fr: 'Documentaires culinaires sur Netflix',
+    en: 'Culinary documentaries on Netflix',
+    ja: 'Netflixの料理ドキュメンタリー',
+  },
+  {
+    fr: 'Films de guerre du Vietnam avec des acteurs célèbres',
+    en: 'Vietnam War movies with famous actors',
+    ja: '有名俳優のベトナム戦争映画',
+  },
+  {
+    fr: 'Comédies italiennes classiques des années 70',
+    en: 'Classic Italian comedies from the 70s',
+    ja: '70年代の古典的なイタリアンコメディ',
+  },
+  {
+    fr: 'Séries de zombies post-apocalyptiques',
+    en: 'Post-apocalyptic zombie series',
+    ja: 'ポストアポカリプスゾンビシリーズ',
+  },
+  {
+    fr: "Films d'arts martiaux avec Jackie Chan",
+    en: 'Martial arts movies with Jackie Chan',
+    ja: 'ジャッキー・チェンの武術映画',
+  },
+  {
+    fr: 'Drames familiaux touchants disponibles sur Amazon Prime',
+    en: 'Touching family dramas available on Amazon Prime',
+    ja: 'Amazon Primeで視聴可能な感動的な家族ドラマ',
+  },
+  {
+    fr: 'Films de pirates avec Johnny Depp',
+    en: 'Pirate movies with Johnny Depp',
+    ja: 'ジョニー・デップの海賊映画',
+  },
+  {
+    fr: 'Séries policières scandinaves sombres',
+    en: 'Dark Scandinavian crime series',
+    ja: '暗いスカンジナビアの犯罪シリーズ',
+  },
+  {
+    fr: 'Films de danse contemporaine avec de la musique pop',
+    en: 'Contemporary dance movies with pop music',
+    ja: 'ポップミュージックのコンテンポラリーダンス映画',
+  },
+  {
+    fr: 'Biopics de musiciens célèbres des années 2010',
+    en: 'Biopics of famous musicians from the 2010s',
+    ja: '2010年代の有名ミュージシャンの伝記映画',
+  },
+  {
+    fr: 'Films de catastrophe naturelle avec des effets spéciaux impressionnants',
+    en: 'Natural disaster movies with impressive special effects',
+    ja: '印象的な特殊効果の自然災害映画',
+  },
+  {
+    fr: 'Comédies romantiques avec Sandra Bullock',
+    en: 'Romantic comedies with Sandra Bullock',
+    ja: 'サンドラ・ブロックのロマンティックコメディ',
+  },
+  {
+    fr: "Séries de médecins dramatiques comme Grey's Anatomy",
+    en: "Medical drama series like Grey's Anatomy",
+    ja: 'グレイズ・アナトミーのような医療ドラマシリーズ',
+  },
+  {
+    fr: 'Films de course automobile avec des voitures de sport',
+    en: 'Racing movies with sports cars',
+    ja: 'スポーツカーのレーシング映画',
+  },
+  {
+    fr: 'Thrillers psychologiques avec des retournements de situation',
+    en: 'Psychological thrillers with plot twists',
+    ja: 'どんでん返しのあるサイコロジカルスリラー',
+  },
 ];
 
 /**
