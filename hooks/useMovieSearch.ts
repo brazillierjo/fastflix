@@ -148,6 +148,10 @@ const searchMoviesWithGemini = async (
     );
 
     const contentResults = await Promise.all(contentPromises);
+
+    // Console log for debugging TMDB response
+    console.log('🎭 TMDB Search Results:', contentResults);
+
     const validContent = contentResults
       .filter(
         (item): item is TMDBSearchItem =>

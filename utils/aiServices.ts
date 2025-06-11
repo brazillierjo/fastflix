@@ -48,27 +48,27 @@ export const aiService = {
     const model = genAI.getGenerativeModel({ model: 'gemini-2.0-flash' });
 
     const contentTypeText = contentTypes.join(' et ');
-    const prompt = `Tu es un assistant IA expert en cinéma et télévision avec une connaissance encyclopédique des films et séries du monde entier. Basé sur cette demande: "${query}", recommande-moi jusqu'à 25 ${contentTypeText}.
+    const prompt = `You are an expert AI assistant specializing in cinema and television with encyclopedic knowledge of films and series from around the world. Based on this request: "${query}", recommend up to 25 ${contentTypeText}.
 
-STRATÉGIE DE RECHERCHE CRÉATIVE:
+CREATIVE SEARCH STRATEGY:
 
-Pour les requêtes conceptuelles (ex: "monstre japonais dans l'eau", "voitures qui se transforment", "robots géants") :
-- PENSE AUX FRANCHISES ICONIQUES : Godzilla, Kaiju, mecha, Transformers, etc.
-- INCLUS LES VARIATIONS : titres originaux, suites, remakes, adaptations
-- EXPLORE LES SYNONYMES : "monstre marin" = Godzilla, Kaiju, créatures aquatiques
-- CONSIDÈRE LES ORIGINES : films japonais, américains, coréens pour les monstres
-- INCLUS LES CLASSIQUES ET MODERNES : des années 50 à aujourd'hui
+For conceptual queries (e.g., "Japanese monster in water", "transforming cars", "giant robots"):
+- THINK OF ICONIC FRANCHISES: Godzilla, Kaiju, mecha, Transformers, etc.
+- INCLUDE VARIATIONS: original titles, sequels, remakes, adaptations
+- EXPLORE SYNONYMS: "sea monster" = Godzilla, Kaiju, aquatic creatures
+- CONSIDER ORIGINS: Japanese, American, Korean films for monsters
+- INCLUDE CLASSICS AND MODERN: from the 1950s to today
 
-Règles d'expansion créative :
-- Si "monstre" → pense Godzilla, King Kong, Cloverfield, Pacific Rim, Rampage
-- Si "eau/océan" → pense créatures marines, sous-marins, îles mystérieuses  
-- Si "japonais" → pense kaiju, anime, J-horror, samurai, yakuza
-- Si "robot" → pense mecha, IA, cyborgs, transformers, terminators
-- COMBINE les concepts : "monstre japonais eau" = Godzilla ET ses variations
+Creative expansion rules:
+- If "monster" → think Godzilla, King Kong, Cloverfield, Pacific Rim, Rampage
+- If "water/ocean" → think marine creatures, submarines, mysterious islands
+- If "Japanese" → think kaiju, anime, J-horror, samurai, yakuza
+- If "robot" → think mecha, AI, cyborgs, transformers, terminators
+- COMBINE concepts: "Japanese monster water" = Godzilla AND its variations
 
-IMPORTANT : Sois TRÈS généreux dans tes recommandations. Mieux vaut inclure trop de résultats pertinents que pas assez. Inclus les franchises célèbres même si le titre exact n'est pas mentionné.
+IMPORTANT: Be VERY generous in your recommendations. Better to include too many relevant results than too few. Include famous franchises even if the exact title isn't mentioned.
 
-Réponds uniquement avec les titres qui correspondent à la demande, séparés par des virgules, sans numérotation ni explication supplémentaire.`;
+Respond only with titles that match the request, separated by commas, without numbering or additional explanation.`;
 
     const result = await model.generateContent(prompt);
     const response = await result.response;
@@ -88,13 +88,13 @@ Réponds uniquement avec les titres qui correspondent à la demande, séparés p
     const genAI = new GoogleGenerativeAI(GOOGLE_API_KEY);
     const model = genAI.getGenerativeModel({ model: 'gemini-2.0-flash' });
 
-    const prompt = `Tu es un assistant IA spécialisé dans les recommandations de films et séries. Un utilisateur te demande: "${query}". 
+    const prompt = `You are an AI assistant specialized in movie and TV show recommendations. A user asks you: "${query}".
 
-Réponds de manière conversationnelle et amicale dans la même langue que la demande de l'utilisateur. Donne un message général d'encouragement ou de contexte en lien avec sa demande, sans mentionner les résultats spécifiques qui seront affichés. Sois enthousiaste et personnalisé dans ta réponse, comme si tu parlais à un ami. Adapte ton ton selon le contexte (humoristique, sérieux, etc.). 
+Respond conversationally and friendly, adapting your tone to match the user's style (humorous, serious, casual, etc.). Provide a general message of encouragement or context related to their request, without mentioning specific results that will be displayed. Be enthusiastic and personalized in your response, as if talking to a friend.
 
-Ajoute également une phrase courte expliquant brièvement pourquoi tu as choisi ces recommandations (par exemple: "J'ai sélectionné des œuvres qui correspondent à ton style" ou "J'ai privilégié des films récents et bien notés" ou "J'ai choisi des classiques incontournables", etc.). 
+Also include a brief explanation of why you chose these recommendations (e.g., "I selected works that match your style", "I prioritized recent and well-rated films", "I chose unmissable classics", etc.).
 
-Limite ta réponse à 3-4 phrases maximum.`;
+Limit your response to 3-4 sentences maximum. Always respond in English regardless of the user's query language.`;
 
     const result = await model.generateContent(prompt);
     const response = await result.response;
@@ -116,47 +116,49 @@ Limite ta réponse à 3-4 phrases maximum.`;
     const genAI = new GoogleGenerativeAI(GOOGLE_API_KEY);
     const model = genAI.getGenerativeModel({ model: 'gemini-2.0-flash' });
 
-    const contentTypeText = contentTypes.join(' et ');
-    const prompt = `Tu es un assistant IA expert en cinéma et télévision avec une connaissance encyclopédique des films et séries du monde entier. Un utilisateur te demande: "${query}".
+    const contentTypeText = contentTypes.join(' and ');
+    const prompt = `You are an expert AI assistant specializing in cinema and television with encyclopedic knowledge of films and series from around the world. A user asks you: "${query}".
 
-STRATÉGIE DE RECHERCHE CRÉATIVE:
+ADVANCED SEARCH STRATEGY:
 
-Pour les requêtes conceptuelles (ex: "monstre japonais dans l'eau", "voitures qui se transforment", "robots géants", "magie", "space opera") :
-- PENSE AUX FRANCHISES ICONIQUES : Godzilla, Kaiju, mecha, Transformers, etc.
-- INCLUS LES VARIATIONS : titres originaux, suites, remakes, adaptations
-- EXPLORE LES SYNONYMES : "monstre marin" = Godzilla, Kaiju, créatures aquatiques
-- CONSIDÈRE LES ORIGINES : films japonais, américains, coréens pour les monstres
-- INCLUS LES CLASSIQUES ET MODERNES : des années 50 à aujourd'hui
-- PENSE AUX SOUS-GENRES : horror, action, science-fiction, animation
+For conceptual queries (e.g., "Japanese monster in water", "transforming cars", "giant robots", "magic", "space opera"):
+- THINK OF ICONIC FRANCHISES: Godzilla, Kaiju, mecha, Transformers, Marvel, DC, etc.
+- INCLUDE VARIATIONS: original titles, sequels, prequels, remakes, reboots, adaptations
+- EXPLORE SYNONYMS: "sea monster" = Godzilla, Kaiju, aquatic creatures, Leviathan
+- CONSIDER ORIGINS: Japanese, American, Korean, European productions
+- SPAN DECADES: from classic 1950s to cutting-edge modern releases
+- THINK CROSS-GENRE: horror, action, sci-fi, animation, thriller combinations
 
-Pour les requêtes géographiques/culturelles :
-- "japonais" = inclus films de Toho, Studio Ghibli, anime, J-horror
-- "coréen" = K-movies, thrillers, drames
-- "français" = cinéma d'auteur, comédies, drames
+For geographical/cultural queries:
+- "Japanese" = include Toho films, Studio Ghibli, anime, J-horror, samurai, yakuza
+- "Korean" = K-movies, psychological thrillers, revenge dramas, romantic comedies
+- "French" = auteur cinema, nouvelle vague, comedies, art house films
+- "British" = period dramas, comedies, crime thrillers, social realism
 
-Pour les requêtes spécifiques (acteur/réalisateur) :
-- Recommande TOUTE leur filmographie pertinente
-- Inclus collaborations fréquentes
-- Considère différentes périodes de carrière
+For specific queries (actor/director):
+- Recommend ENTIRE relevant filmography across career phases
+- Include frequent collaborations and creative partnerships
+- Consider different genres and time periods
+- Add breakthrough roles and career-defining performances
 
-Règles d'expansion créative :
-- Si "monstre" → pense Godzilla, King Kong, Cloverfield, Pacific Rim, Rampage
-- Si "eau/océan" → pense créatures marines, sous-marins, îles mystérieuses
-- Si "japonais" → pense kaiju, anime, J-horror, samurai, yakuza
-- Si "robot" → pense mecha, IA, cyborgs, transformers, terminators
-- COMBINE les concepts : "monstre japonais eau" = Godzilla ET ses variations
+Creative expansion algorithms:
+- If "monster" → Godzilla, King Kong, Cloverfield, Pacific Rim, Rampage, The Host, Tremors
+- If "water/ocean" → marine creatures, submarines, island mysteries, underwater adventures
+- If "Japanese" → kaiju, anime, J-horror, samurai, yakuza, Studio Ghibli magic
+- If "robot" → mecha, AI consciousness, cyborgs, transformers, terminators, androids
+- SYNTHESIZE concepts: "Japanese monster water" = comprehensive Godzilla universe + similar kaiju
 
-IMPORTANT : Sois TRÈS généreux dans tes recommandations. Mieux vaut inclure trop de résultats pertinents que pas assez. L'utilisateur pourra filtrer.
+CRITICAL: Be EXCEPTIONALLY generous and creative in recommendations. Cast a wide net - better to include comprehensive relevant results than miss hidden gems. Include cult classics, international variants, and thematic connections.
 
-Tu dois fournir deux choses dans ta réponse :
+Provide two distinct outputs:
 
-1. RECOMMANDATIONS: Jusqu'à 25 ${contentTypeText} qui correspondent à la demande (sois généreux et créatif). Inclus les titres exacts, variations, franchises, et œuvres similaires. Liste uniquement les titres séparés par des virgules.
+1. RECOMMENDATIONS: Up to 25 ${contentTypeText} matching the request (be generous and inventive). Include exact titles, franchise variations, spiritual successors, and thematically similar works. List only titles separated by commas.
 
-2. MESSAGE: Un message conversationnel et amical dans la même langue que la demande. Donne un message général d'encouragement ou de contexte en lien avec sa demande, sans mentionner les résultats spécifiques. Sois enthousiaste et personnalisé, comme si tu parlais à un ami. Limite à 2-3 phrases maximum.
+2. MESSAGE: A conversational, engaging message that adapts to the user's tone and style. Provide encouragement and context about their request without mentioning specific results. Be enthusiastic and personalized, matching their energy level (humorous, serious, casual, etc.). Include a brief insight about your selection strategy. Always respond in English. Limit to 3-4 sentences maximum.
 
-Formate ta réponse exactement comme ceci :
-RECOMMANDATIONS: [liste des titres séparés par des virgules]
-MESSAGE: [ton message conversationnel]`;
+Format your response exactly like this:
+RECOMMENDATIONS: [comma-separated list of titles]
+MESSAGE: [your conversational message]`;
 
     const result = await model.generateContent(prompt);
     const response = await result.response;
@@ -164,7 +166,7 @@ MESSAGE: [ton message conversationnel]`;
 
     // Parse the response
     const recommendationsMatch = text.match(
-      /RECOMMANDATIONS:\s*(.+?)(?=\nMESSAGE:|$)/s
+      /RECOMMENDATIONS:\s*(.+?)(?=\nMESSAGE:|$)/s
     );
     const messageMatch = text.match(/MESSAGE:\s*(.+)$/s);
 
@@ -174,7 +176,7 @@ MESSAGE: [ton message conversationnel]`;
 
     const conversationalResponse = messageMatch
       ? messageMatch[1].trim()
-      : 'Voici mes recommandations pour vous !';
+      : 'Here are my recommendations for you!';
 
     return {
       recommendations,
