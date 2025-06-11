@@ -1,5 +1,8 @@
 import SubscriptionModal from '@/components/SubscriptionModal';
-import type { SupportedLanguage } from '@/contexts/LanguageContext';
+import {
+  AVAILABLE_LANGUAGES,
+  type SupportedLanguage,
+} from '@/constants/languages';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { useSubscription } from '@/contexts/RevenueCatContext';
 import { getAppVersion } from '@/utils/appVersion';
@@ -24,15 +27,8 @@ export default function ProfileScreen() {
   const [showSubscriptionModal, setShowSubscriptionModal] = useState(false);
   const [restoring, setRestoring] = useState(false);
 
-  const languages: {
-    code: SupportedLanguage;
-    name: string;
-    flag: string;
-  }[] = [
-    { code: 'fr', name: 'Français', flag: '🇫🇷' },
-    { code: 'en', name: 'English', flag: '🇺🇸' },
-    { code: 'ja', name: '日本語', flag: '🇯🇵' },
-  ];
+  // Utilisation des constantes centralisées
+  const languages = AVAILABLE_LANGUAGES;
 
   return (
     <SafeAreaView className='flex-1 bg-light-background dark:bg-dark-background'>

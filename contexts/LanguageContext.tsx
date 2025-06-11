@@ -13,20 +13,19 @@ import en from '../locales/en.json';
 import fr from '../locales/fr.json';
 import ja from '../locales/ja.json';
 
-// Configuration centralisée des langues supportées
-const SUPPORTED_LANGUAGES = ['fr', 'en', 'ja'] as const;
-const DEFAULT_LANGUAGE = 'en' as const;
-
-export type SupportedLanguage = (typeof SUPPORTED_LANGUAGES)[number];
-export type SupportedCountry =
-  | 'FR'
-  | 'US'
-  | 'CA'
-  | 'GB'
-  | 'DE'
-  | 'ES'
-  | 'IT'
-  | 'JP';
+// Import centralized constants
+import {
+  SUPPORTED_LANGUAGES,
+  DEFAULT_LANGUAGE,
+  AVAILABLE_COUNTRIES,
+  LANGUAGE_COUNTRY_MAP,
+  isValidLanguage,
+  getDefaultCountryForLanguage,
+  detectLanguageFromDevice,
+  type SupportedLanguage,
+  type SupportedCountry,
+  type Country,
+} from '../constants/languages';
 
 type Translations = {
   [key in SupportedLanguage]: typeof fr;
@@ -38,49 +37,8 @@ const translations: Translations = {
   ja,
 };
 
-// Configuration des langues avec leurs pays par défaut
-const LANGUAGE_COUNTRY_MAP: Record<SupportedLanguage, SupportedCountry> = {
-  fr: 'FR',
-  en: 'US',
-  ja: 'JP',
-};
-
-// Utilitaires pour la gestion des langues
-const isValidLanguage = (lang: string): lang is SupportedLanguage => {
-  return SUPPORTED_LANGUAGES.includes(lang as SupportedLanguage);
-};
-
-const getDefaultCountryForLanguage = (
-  language: SupportedLanguage
-): SupportedCountry => {
-  return LANGUAGE_COUNTRY_MAP[language] || 'US';
-};
-
-const detectLanguageFromDevice = (
-  deviceLanguage?: string
-): SupportedLanguage => {
-  if (deviceLanguage && isValidLanguage(deviceLanguage)) {
-    return deviceLanguage;
-  }
-  return DEFAULT_LANGUAGE;
-};
-
-export interface Country {
-  code: SupportedCountry;
-  name: string;
-  flag: string;
-}
-
-export const availableCountries: Country[] = [
-  { code: 'FR', name: 'France', flag: '🇫🇷' },
-  { code: 'US', name: 'United States', flag: '🇺🇸' },
-  { code: 'CA', name: 'Canada', flag: '🇨🇦' },
-  { code: 'GB', name: 'United Kingdom', flag: '🇬🇧' },
-  { code: 'DE', name: 'Germany', flag: '🇩🇪' },
-  { code: 'ES', name: 'Spain', flag: '🇪🇸' },
-  { code: 'IT', name: 'Italy', flag: '🇮🇹' },
-  { code: 'JP', name: 'Japan', flag: '🇯🇵' },
-];
+// Re-export for backward compatibility
+export const availableCountries = AVAILABLE_COUNTRIES;
 
 export type AvailableCountries = {
   [key in SupportedCountry]: Country;
