@@ -21,7 +21,8 @@
     "ios": {
       "supportsTablet": true,
       "bundleIdentifier": "com.fastflix.app",
-      "buildNumber": "1"
+      "buildNumber": "1",
+      "storeKitConfig": "./ios/Products.storekit"
     },
     "android": {
       "adaptiveIcon": {
