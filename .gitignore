@@ -6,6 +6,9 @@ node_modules/
 .env
 .vscode
 
+/ios
+/android
+
 # Expo
 .expo/
 dist/
