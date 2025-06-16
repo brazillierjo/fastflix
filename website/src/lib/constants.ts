@@ -1,5 +1,5 @@
 // Contact Information
-export const CONTACT_EMAIL = 'j.brasilié@gmail.com';
+export const CONTACT_EMAIL = 'j.brazillier@gmail.com';
 
 // App Store Links
 export const APP_STORE_LINKS = {

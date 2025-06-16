@@ -237,6 +237,12 @@ export default function Home() {
                 {t('privacyPolicy')}
               </Link>
               <Link
+                href='/terms-of-use'
+                className='text-gray-400 transition-colors hover:text-white'
+              >
+                {t('termsOfUse')}
+              </Link>
+              <Link
                 href='/support'
                 className='text-gray-400 transition-colors hover:text-white'
               >

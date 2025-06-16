@@ -9,7 +9,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
-import { Globe, Home, Shield, HelpCircle } from 'lucide-react';
+import { Globe, Home, Shield, HelpCircle, FileText } from 'lucide-react';
 
 export function Navigation() {
   const { language, setLanguage, t } = useLanguage();
@@ -41,6 +41,13 @@ export function Navigation() {
             >
               <Shield className='h-4 w-4' />
               <span>{t('privacyPolicy')}</span>
+            </Link>
+            <Link
+              href='/terms-of-use'
+              className='flex items-center space-x-1 text-gray-600 transition-colors hover:text-gray-900'
+            >
+              <FileText className='h-4 w-4' />
+              <span>{t('termsOfUse')}</span>
             </Link>
             <Link
               href='/support'

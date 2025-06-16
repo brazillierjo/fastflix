@@ -3,6 +3,7 @@ export const translations = {
     // Navigation
     home: 'Home',
     privacyPolicy: 'Privacy Policy',
+    termsOfUse: 'Terms of Use',
     support: 'Support Center',
     language: 'Language',
 
@@ -119,6 +120,53 @@ export const translations = {
     privacyFooter:
       'This privacy policy is effective as of December 2024 and applies to all users of FastFlix.',
 
+    // Terms of Use
+    termsTitle: 'Terms of Use',
+    termsIntro:
+      'These Terms of Use govern your use of the FastFlix mobile application. By using FastFlix, you agree to these terms.',
+    acceptanceOfTerms: 'Acceptance of Terms',
+    acceptanceOfTermsDesc:
+      'By downloading, installing, or using FastFlix, you agree to be bound by these Terms of Use. If you do not agree to these terms, please do not use the application.',
+    useOfService: 'Use of Service',
+    useOfServiceDesc:
+      'FastFlix is designed to provide AI-powered movie and TV show recommendations. You may use the service for personal, non-commercial purposes only.',
+    useOfServiceItems: [
+      'You must be at least 13 years old to use FastFlix',
+      'You agree to use the service only for lawful purposes',
+      'You will not attempt to reverse engineer or modify the application',
+      'You will not use the service to distribute harmful or illegal content',
+    ],
+    subscriptionTerms: 'Subscription Terms',
+    subscriptionTermsDesc:
+      'FastFlix offers subscription-based premium features with the following terms:',
+    subscriptionTermsItems: [
+      'Subscriptions are auto-renewable and charged monthly (€2.99) or yearly (€29.99)',
+      'Payment will be charged to your Apple ID account at confirmation of purchase',
+      'Subscriptions automatically renew unless auto-renew is turned off at least 24 hours before the end of the current period',
+      'You can manage and cancel subscriptions in your Apple ID Account Settings',
+      'No refunds are provided for unused portions of subscription periods',
+    ],
+    intellectualProperty: 'Intellectual Property',
+    intellectualPropertyDesc:
+      'FastFlix and all related content, features, and functionality are owned by us and are protected by copyright, trademark, and other intellectual property laws.',
+    limitationOfLiability: 'Limitation of Liability',
+    limitationOfLiabilityDesc:
+      'FastFlix is provided "as is" without warranties of any kind. We are not liable for any damages arising from your use of the application.',
+    termination: 'Termination',
+    terminationDesc:
+      'We may terminate or suspend your access to FastFlix at any time, without prior notice, for conduct that we believe violates these Terms of Use.',
+    changesToTerms: 'Changes to Terms',
+    changesToTermsDesc:
+      'We reserve the right to modify these terms at any time. Changes will be effective immediately upon posting. Your continued use constitutes acceptance of the modified terms.',
+    governingLaw: 'Governing Law',
+    governingLawDesc:
+      'These Terms of Use are governed by and construed in accordance with the laws of France, without regard to conflict of law principles.',
+    termsContactTitle: 'Questions about our Terms of Use?',
+    termsContactDesc:
+      'If you have any questions about these Terms of Use, please contact us.',
+    termsFooter:
+      'These Terms of Use are effective as of December 2024 and apply to all users of FastFlix.',
+
     // Support
     supportTitle: 'Support Center',
     supportSubtitle: 'How can we help you?',
@@ -187,6 +235,7 @@ export const translations = {
     // Navigation
     home: 'Accueil',
     privacyPolicy: 'Politique de confidentialité',
+    termsOfUse: "Conditions d'utilisation",
     support: "Centre d'assistance",
     language: 'Langue',
 
@@ -305,6 +354,53 @@ export const translations = {
       "Si vous avez des questions ou des préoccupations concernant la façon dont nous traitons vos données, n'hésitez pas à nous contacter.",
     privacyFooter:
       "Cette politique de confidentialité est effective depuis décembre 2024 et s'applique à tous les utilisateurs de FastFlix.",
+
+    // Terms of Use
+    termsTitle: "Conditions d'utilisation",
+    termsIntro:
+      "Ces Conditions d'utilisation régissent votre utilisation de l'application mobile FastFlix. En utilisant FastFlix, vous acceptez ces conditions.",
+    acceptanceOfTerms: 'Acceptation des conditions',
+    acceptanceOfTermsDesc:
+      "En téléchargeant, installant ou utilisant FastFlix, vous acceptez d'être lié par ces Conditions d'utilisation. Si vous n'acceptez pas ces conditions, veuillez ne pas utiliser l'application.",
+    useOfService: 'Utilisation du service',
+    useOfServiceDesc:
+      "FastFlix est conçu pour fournir des recommandations de films et séries TV alimentées par l'IA. Vous ne pouvez utiliser le service qu'à des fins personnelles et non commerciales.",
+    useOfServiceItems: [
+      'Vous devez avoir au moins 13 ans pour utiliser FastFlix',
+      "Vous acceptez d'utiliser le service uniquement à des fins légales",
+      "Vous ne tenterez pas de faire de l'ingénierie inverse ou de modifier l'application",
+      "Vous n'utiliserez pas le service pour distribuer du contenu nuisible ou illégal",
+    ],
+    subscriptionTerms: "Conditions d'abonnement",
+    subscriptionTermsDesc:
+      'FastFlix propose des fonctionnalités premium par abonnement avec les conditions suivantes :',
+    subscriptionTermsItems: [
+      'Les abonnements sont auto-renouvelables et facturés mensuellement (2,99 €) ou annuellement (29,99 €)',
+      "Le paiement sera débité de votre compte Apple ID lors de la confirmation d'achat",
+      'Les abonnements se renouvellent automatiquement sauf si le renouvellement automatique est désactivé au moins 24 heures avant la fin de la période en cours',
+      'Vous pouvez gérer et annuler les abonnements dans les paramètres de votre compte Apple ID',
+      "Aucun remboursement n'est fourni pour les portions inutilisées des périodes d'abonnement",
+    ],
+    intellectualProperty: 'Propriété intellectuelle',
+    intellectualPropertyDesc:
+      "FastFlix et tout le contenu, les fonctionnalités et les fonctionnalités associées nous appartiennent et sont protégés par les lois sur le droit d'auteur, les marques de commerce et autres lois sur la propriété intellectuelle.",
+    limitationOfLiability: 'Limitation de responsabilité',
+    limitationOfLiabilityDesc:
+      "FastFlix est fourni 'tel quel' sans garanties d'aucune sorte. Nous ne sommes pas responsables des dommages résultant de votre utilisation de l'application.",
+    termination: 'Résiliation',
+    terminationDesc:
+      "Nous pouvons résilier ou suspendre votre accès à FastFlix à tout moment, sans préavis, pour une conduite que nous estimons violer ces Conditions d'utilisation.",
+    changesToTerms: 'Modifications des conditions',
+    changesToTermsDesc:
+      'Nous nous réservons le droit de modifier ces conditions à tout moment. Les modifications prendront effet immédiatement après publication. Votre utilisation continue constitue une acceptation des conditions modifiées.',
+    governingLaw: 'Droit applicable',
+    governingLawDesc:
+      "Ces Conditions d'utilisation sont régies et interprétées conformément aux lois de la France, sans égard aux principes de conflit de lois.",
+    termsContactTitle: "Questions sur nos Conditions d'utilisation ?",
+    termsContactDesc:
+      "Si vous avez des questions sur ces Conditions d'utilisation, veuillez nous contacter.",
+    termsFooter:
+      "Ces Conditions d'utilisation sont effectives depuis décembre 2024 et s'appliquent à tous les utilisateurs de FastFlix.",
 
     // Support
     supportTitle: "Centre d'assistance",
