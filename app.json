@@ -2,7 +2,7 @@
   "expo": {
     "name": "FastFlix",
     "slug": "fastflix",
-    "version": "0.1.3",
+    "version": "1.0.1",
     "description": "AI-powered movie and TV show recommendations. Discover what to watch tonight with personalized suggestions based on your mood and preferences.",
     "orientation": "portrait",
     "icon": "./assets/app-images/icon.png",
