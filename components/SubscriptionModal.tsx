@@ -5,6 +5,7 @@ import { MotiView } from 'moti';
 import React, { useState } from 'react';
 import {
   ActivityIndicator,
+  Linking,
   Modal,
   ScrollView,
   Text,
@@ -281,6 +282,29 @@ export default function SubscriptionModal({
             {t('subscription.terms') ||
               'Subscription automatically renews unless cancelled. Terms and conditions apply.'}
           </Text>
+        </View>
+
+        {/* Legal Links */}
+        <View className='my-3 flex-row justify-center gap-6'>
+          <TouchableOpacity
+            onPress={() =>
+              Linking.openURL('https://fastflix-nu.vercel.app/privacy-policy')
+            }
+          >
+            <Text className='text-xs text-light-muted underline dark:text-dark-muted'>
+              {t('profile.privacyPolicy') || 'Privacy Policy'}
+            </Text>
+          </TouchableOpacity>
+
+          <TouchableOpacity
+            onPress={() =>
+              Linking.openURL('https://fastflix-nu.vercel.app/terms-of-use')
+            }
+          >
+            <Text className='text-xs text-light-muted underline dark:text-dark-muted'>
+              {t('profile.termsOfUse') || 'Terms of Use'}
+            </Text>
+          </TouchableOpacity>
         </View>
       </View>
     </Modal>
