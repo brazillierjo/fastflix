@@ -1,6 +1,12 @@
 import { useLanguage } from '@/contexts/LanguageContext';
 import { useSubscription } from '@/contexts/RevenueCatContext';
 import { cn } from '@/utils/cn';
+import {
+  detectCurrencyFromPriceString,
+  extractPriceFromString,
+  formatPriceForCountry,
+  getCurrencyForCountry,
+} from '@/utils/currency';
 import { MotiView } from 'moti';
 import React, { useState } from 'react';
 import {
@@ -23,7 +29,7 @@ export default function SubscriptionModal({
   visible,
   onClose,
 }: SubscriptionModalProps) {
-  const { t } = useLanguage();
+  const { t, country } = useLanguage();
   const {
     isLoading,
     purchasePackage,
@@ -39,6 +45,30 @@ export default function SubscriptionModal({
 
   const monthlyPackage = getMonthlyPackage();
   const annualPackage = getAnnualPackage();
+
+  // Fonction pour formater le prix selon la devise du pays de l'utilisateur
+  const formatPrice = (priceString: string): string => {
+    // Extraire le prix numérique de la chaîne RevenueCat
+    const numericPrice = extractPriceFromString(priceString);
+
+    if (numericPrice === null) {
+      // Si on ne peut pas extraire le prix, retourner la chaîne originale
+      return priceString;
+    }
+
+    // Détecter la devise actuelle du prix
+    const currentCurrency = detectCurrencyFromPriceString(priceString);
+    const targetCurrency = getCurrencyForCountry(country);
+
+    // Si la devise est déjà la bonne, formater selon les conventions locales
+    if (currentCurrency === targetCurrency) {
+      return formatPriceForCountry(numericPrice, country);
+    }
+
+    // Pour l'instant, on garde le prix original si les devises diffèrent
+    // Dans une vraie app, on ferait une conversion avec des taux de change réels
+    return priceString;
+  };
 
   const handlePurchase = async () => {
     const packageToPurchase =
@@ -203,7 +233,7 @@ export default function SubscriptionModal({
                   </View>
                   <View className='items-end'>
                     <Text className='text-xl font-bold text-light-text dark:text-dark-text'>
-                      {annualPackage.product.priceString}
+                      {formatPrice(annualPackage.product.priceString)}
                     </Text>
                     <Text className='text-sm text-light-muted dark:text-dark-muted'>
                       {t('subscription.annual.period') || 'per year'}
@@ -236,7 +266,7 @@ export default function SubscriptionModal({
                   </View>
                   <View className='items-end'>
                     <Text className='text-xl font-bold text-light-text dark:text-dark-text'>
-                      {monthlyPackage.product.priceString}
+                      {formatPrice(monthlyPackage.product.priceString)}
                     </Text>
                     <Text className='text-sm text-light-muted dark:text-dark-muted'>
                       {t('subscription.monthly.period') || 'per month'}
