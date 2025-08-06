@@ -4,8 +4,9 @@ import { useLanguage } from '@/contexts/LanguageContext';
 import { useSubscription } from '@/contexts/RevenueCatContext';
 import { useFastFlixProFeatures } from '@/hooks/usePremiumFeatures';
 import { getAppVersion } from '@/utils/appVersion';
+import { useFocusEffect } from 'expo-router';
 import { MotiView } from 'moti';
-import React, { useState } from 'react';
+import React, { useCallback, useState } from 'react';
 import {
   ActionSheetIOS,
   ActivityIndicator,
@@ -23,9 +24,16 @@ export default function ProfileScreen() {
   const { language, setLanguage, country, setCountry, t, availableCountries } =
     useLanguage();
   const { isSubscribed, restorePurchases } = useSubscription();
-  const { monthlyPromptCount, canMakePrompt } = useFastFlixProFeatures();
+  const { monthlyPromptCount, refreshPromptCount } = useFastFlixProFeatures();
   const [showSubscriptionModal, setShowSubscriptionModal] = useState(false);
   const [restoring, setRestoring] = useState(false);
+
+  // Refresh prompt count when screen comes into focus
+  useFocusEffect(
+    useCallback(() => {
+      refreshPromptCount();
+    }, [refreshPromptCount])
+  );
 
   // Utilisation des constantes centralisées
   const languages = AVAILABLE_LANGUAGES;
@@ -279,23 +287,25 @@ export default function ProfileScreen() {
                   </Text>
                   <Text
                     className={`font-medium ${
-                      canMakePrompt().remaining > 0
+                      isSubscribed || Math.max(0, 3 - monthlyPromptCount) > 0
                         ? 'text-success-500'
                         : 'text-error-500'
                     }`}
                   >
-                    {canMakePrompt().remaining}
+                    {isSubscribed ? '∞' : Math.max(0, 3 - monthlyPromptCount)}
                   </Text>
                 </View>
 
                 <View className='mt-2 h-2 w-full rounded-full bg-light-border dark:bg-dark-border'>
                   <View
                     className={`h-full rounded-full ${
-                      canMakePrompt().remaining > 0
+                      isSubscribed || Math.max(0, 3 - monthlyPromptCount) > 0
                         ? 'bg-success-500'
                         : 'bg-error-500'
                     }`}
-                    style={{ width: `${(monthlyPromptCount / 3) * 100}%` }}
+                    style={{
+                      width: `${Math.min((monthlyPromptCount / 3) * 100, 100)}%`,
+                    }}
                   />
                 </View>
 
@@ -303,7 +313,7 @@ export default function ProfileScreen() {
                   {t('profile.freePrompts.resetInfo')}
                 </Text>
 
-                {canMakePrompt().remaining === 0 && (
+                {!isSubscribed && monthlyPromptCount >= 3 && (
                   <TouchableOpacity
                     onPress={() => setShowSubscriptionModal(true)}
                     className='mt-3 rounded-lg bg-primary-500 px-4 py-3'

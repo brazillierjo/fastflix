@@ -76,12 +76,27 @@ export const useFastFlixProFeatures = () => {
   const incrementPromptCount = async () => {
     try {
       const currentMonth = new Date().toISOString().slice(0, 7);
-      const newCount = monthlyPromptCount + 1;
+
+      // Read current data from storage to ensure we have the latest value
+      const storedData = await AsyncStorage.getItem('monthlyPromptData');
+      let currentCount = 0;
+
+      if (storedData) {
+        const { month, count } = JSON.parse(storedData);
+        // Reset count if it's a new month
+        if (month === currentMonth) {
+          currentCount = count;
+        }
+      }
+
+      const newCount = currentCount + 1;
 
       await AsyncStorage.setItem(
         'monthlyPromptData',
         JSON.stringify({ month: currentMonth, count: newCount })
       );
+
+      // Update state immediately
       setMonthlyPromptCount(newCount);
 
       return newCount;
@@ -206,6 +221,8 @@ export const useFastFlixProFeatures = () => {
     monthlyPromptCount,
     canMakePrompt,
     incrementPromptCount,
+    // Utility function to refresh prompt count from storage
+    refreshPromptCount: loadMonthlyPromptCount,
   };
 };
 
