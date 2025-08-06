@@ -1,0 +1,192 @@
+{
+  "welcome": {
+    "title": "Cosa guardare? 🍿",
+    "subtitle": "Basta zapping senza fine! Descrivi i tuoi desideri e ottieni raccomandazioni ordinate per valutazione.",
+    "description": "Non c'è più bisogno di passare ore a navigare tra le piattaforme di streaming senza sapere cosa scegliere. Menziona attori, un genere, un'epoca, un'atmosfera... La nostra IA ti propone le migliori raccomandazioni, classificate per valutazione per aiutarti a decidere rapidamente.",
+    "placeholder": "Un film o una serie con Jennifer Aniston come attrice principale, fine anni '90, disponibile su Amazon Prime",
+    "exampleButton": "Esempio",
+    "searchButton": "Genera ✨",
+    "searching": "Ricerca...",
+    "generating": "Generazione...",
+    "options": "Opzioni:",
+    "noDescription": "Nessuna descrizione disponibile",
+    "languageTip": {
+      "title": "Configurazione importante",
+      "description": "Per ottenere i migliori risultati adattati alla tua regione, ricorda di configurare correttamente la lingua dell'applicazione e il paese di ricerca nella",
+      "profileLink": "pagina profilo"
+    }
+  },
+  "movies": {
+    "recommendations": "Raccomandazioni",
+    "noRecommendations": "Nessuna raccomandazione trovata. Prova ad aggiustare i tuoi criteri di ricerca.",
+    "seeMore": "Vedi di più",
+    "seeLess": "Vedi meno",
+    "releaseDate": "Data di uscita:",
+    "rating": "Valutazione:",
+    "availableOn": "Disponibile su:",
+    "mainActors": "Attori principali:",
+    "contentType": "Tipo di contenuto:",
+    "genre": "Genere:",
+    "genres": "Generi:",
+    "duration": "Durata:",
+    "seasons": "Stagioni:",
+    "episodes": "Episodi:",
+    "status": "Stato:",
+    "movie": "Film",
+    "tvShow": "Serie TV",
+    "minutes": "min",
+    "statusReturning": "In corso",
+    "statusEnded": "Terminata",
+    "statusCanceled": "Cancellata",
+    "statusInProduction": "In produzione",
+    "statusPlanned": "Pianificata",
+    "statusPilot": "Pilota",
+    "year": "Anno:",
+    "externalLinks": "Collegamenti esterni:",
+    "viewOnTMDB": "Vedi su TMDB",
+    "sortByRating": "Valutazione",
+    "sortByDate": "Data di uscita",
+    "allPlatforms": "Tutte le piattaforme",
+    "platformsSelected": "piattaforma",
+    "platformsSelectedPlural": "piattaforme",
+    "clearFilters": "Cancella filtri"
+  },
+  "settings": {
+    "language": "Lingua",
+    "country": "Paese di ricerca"
+  },
+  "notFound": {
+    "title": "Pagina non trovata",
+    "subtitle": "Spiacenti, questa pagina non esiste.\nTorniamo alla ricerca di film!",
+    "backButton": "Torna alla home",
+    "funMessage": "🍿 Forse un buon film ti consolerà?"
+  },
+  "prompts": {
+    "limit": {
+      "title": "Limite mensile raggiunto",
+      "message": "Hai utilizzato i tuoi 3 prompt gratuiti questo mese. Passa a FastFlix Pro per raccomandazioni illimitate!",
+      "cancel": "Annulla",
+      "upgrade": "Passa a Pro"
+    }
+  },
+  "errors": {
+    "title": "Errore",
+    "enterRequest": "Inserisci una richiesta",
+    "selectContentType": "Seleziona almeno un tipo di contenuto (film o serie TV)",
+    "searchError": "Si è verificato un errore durante la ricerca",
+    "searchMovieError": "Errore durante la ricerca di"
+  },
+  "modal": {
+    "title": "Profilo utente"
+  },
+  "subscription": {
+    "title": "Passa a FastFlix Pro",
+    "loading": "Caricamento opzioni abbonamento...",
+    "hero": {
+      "title": "Sblocca le funzionalità FastFlix Pro",
+      "subtitle": "Ottieni il massimo dalla tua esperienza di scoperta cinematografica"
+    },
+    "features": {
+      "unlimited": {
+        "title": "Raccomandazioni illimitate",
+        "description": "Ottieni tutte le raccomandazioni di film che desideri"
+      },
+      "advanced": {
+        "title": "Filtri avanzati",
+        "description": "Filtra per genere, anno, valutazione e altro ancora"
+      },
+      "offline": {
+        "title": "Accesso offline",
+        "description": "Salva le raccomandazioni per consultarle offline"
+      },
+      "notifications": {
+        "title": "Notifiche intelligenti",
+        "description": "Ricevi notifiche per le nuove uscite"
+      }
+    },
+    "plans": {
+      "title": "Scegli la tua formula"
+    },
+    "popular": "POPOLARE",
+    "annual": {
+      "title": "Formula Annuale",
+      "description": "Miglior valore - Risparmia il 50%",
+      "period": "all'anno"
+    },
+    "monthly": {
+      "title": "Formula Mensile",
+      "description": "Fatturazione mensile flessibile",
+      "period": "al mese"
+    },
+    "subscribe": "Abbonati ora",
+    "restore": "Ripristina acquisti",
+    "terms": "L'abbonamento si rinnova automaticamente salvo cancellazione. Si applicano i termini e condizioni.",
+    "success": {
+      "title": "Abbonamento attivato",
+      "message": "Benvenuto nelle funzionalità FastFlix Pro!"
+    },
+    "error": {
+      "title": "Acquisto fallito",
+      "message": "Impossibile completare l'acquisto. Riprova."
+    },
+    "restoration": {
+      "success": {
+        "title": "Acquisti ripristinati",
+        "message": "Il tuo abbonamento è stato ripristinato."
+      },
+      "none": {
+        "title": "Nessun acquisto trovato",
+        "message": "Nessun abbonamento attivo da ripristinare."
+      },
+      "error": {
+        "title": "Ripristino fallito",
+        "message": "Impossibile ripristinare gli acquisti. Riprova."
+      }
+    }
+  },
+  "premium": {
+    "limitReached": "Limite raggiunto",
+    "upgradeMessage": "Passa a FastFlix Pro per continuare",
+    "dailyLimit": "Limite giornaliero raggiunto",
+    "remainingUses": "Utilizzi rimanenti: {{count}}"
+  },
+  "profile": {
+    "subtitle": "Personalizza la tua esperienza",
+    "language": "Lingua dell'applicazione",
+    "chooseLanguage": "Scegli una lingua",
+    "chooseCountry": "Scegli un paese",
+    "premiumSubscription": "Abbonamento FastFlix Pro",
+    "activeSubscription": "Abbonamento attivo",
+    "enjoyPremiumFeatures": "Goditi tutte le funzionalità FastFlix Pro",
+    "unlockPremiumMessage": "Sblocca tutte le funzionalità FastFlix Pro per un'esperienza ottimale",
+    "viewPlans": "Vedi le offerte",
+    "aboutApp": "Informazioni sull'app",
+    "version": "Versione",
+    "developedBy": "Sviluppato da",
+    "yourTeam": "Il tuo team",
+    "freePrompts": {
+      "title": "Prompt gratuiti",
+      "used": "Utilizzati questo mese",
+      "remaining": "Rimanenti",
+      "resetInfo": "Il contatore si resetta ogni mese",
+      "upgradeButton": "Passa a FastFlix Pro"
+    },
+    "privacyPolicy": "Politica sulla privacy",
+    "termsOfUse": "Termini di utilizzo",
+    "support": "Centro assistenza",
+    "website": "Sito web"
+  },
+  "common": {
+    "cancel": "Annulla"
+  },
+  "tabs": {
+    "movies": "Film",
+    "profile": "Profilo"
+  },
+  "languages": {
+    "en": "English",
+    "fr": "Français",
+    "ja": "日本語",
+    "it": "Italiano"
+  }
+}

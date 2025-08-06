@@ -1,7 +1,7 @@
 // Configuration centralisée des langues et pays supportés
 
 // Langues supportées
-export const SUPPORTED_LANGUAGES = ['fr', 'en', 'ja'] as const;
+export const SUPPORTED_LANGUAGES = ['fr', 'en', 'ja', 'it'] as const;
 export const DEFAULT_LANGUAGE = 'en' as const;
 
 export type SupportedLanguage = (typeof SUPPORTED_LANGUAGES)[number];
@@ -26,6 +26,7 @@ export const LANGUAGE_COUNTRY_MAP: Record<SupportedLanguage, SupportedCountry> =
     fr: 'FR',
     en: 'US',
     ja: 'JP',
+    it: 'IT',
   };
 
 // Mapping des codes de langue vers les codes TMDB
@@ -33,12 +34,13 @@ export const TMDB_LANGUAGE_MAP: Record<SupportedLanguage, string> = {
   fr: 'fr-FR',
   en: 'en-US',
   ja: 'ja-JP',
+  it: 'it-IT',
 };
 
 /**
  * Convertit un code de langue de l'application vers le code de langue TMDB
- * @param language - Code de langue de l'application (fr, en, ja)
- * @returns Code de langue TMDB (fr-FR, en-US, ja-JP)
+ * @param language - Code de langue de l'application (fr, en, ja, it)
+ * @returns Code de langue TMDB (fr-FR, en-US, ja-JP, it-IT)
  */
 export const getLanguageForTMDB = (language: SupportedLanguage): string => {
   return TMDB_LANGUAGE_MAP[language] || TMDB_LANGUAGE_MAP[DEFAULT_LANGUAGE];
@@ -56,7 +58,7 @@ export const getTMDBFallbackLanguages = (
   const primaryTMDBLanguage = getLanguageForTMDB(primaryLanguage);
 
   // Ordre de priorité pour les langues de fallback basé sur la couverture TMDB
-  const fallbackPriority: SupportedLanguage[] = ['en', 'fr', 'ja'];
+  const fallbackPriority: SupportedLanguage[] = ['en', 'fr', 'it', 'ja'];
 
   // Créer la liste des langues de fallback en excluant la langue principale
   const fallbackLanguages = fallbackPriority
@@ -97,6 +99,7 @@ export const AVAILABLE_LANGUAGES: Language[] = [
   { code: 'fr', name: 'Français', flag: '🇫🇷' },
   { code: 'en', name: 'English', flag: '🇺🇸' },
   { code: 'ja', name: '日本語', flag: '🇯🇵' },
+  { code: 'it', name: 'Italiano', flag: '🇮🇹' },
 ];
 
 // Utilitaires pour la gestion des langues

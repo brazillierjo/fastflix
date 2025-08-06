@@ -12,6 +12,7 @@ import React, {
 import en from '../locales/en.json';
 import fr from '../locales/fr.json';
 import ja from '../locales/ja.json';
+import it from '../locales/it.json';
 
 // Import centralized constants
 import {
@@ -38,6 +39,7 @@ const translations: Translations = {
   fr,
   en,
   ja,
+  it,
 };
 
 // Re-export for backward compatibility
