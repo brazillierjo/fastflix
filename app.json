@@ -2,7 +2,7 @@
   "expo": {
     "name": "FastFlix",
     "slug": "fastflix",
-    "version": "1.0.1",
+    "version": "1.1.0",
     "description": "AI-powered movie and TV show recommendations. Discover what to watch tonight with personalized suggestions based on your mood and preferences.",
     "orientation": "portrait",
     "icon": "./assets/app-images/icon.png",
@@ -21,7 +21,7 @@
     "ios": {
       "supportsTablet": true,
       "bundleIdentifier": "com.fastflix.app",
-      "buildNumber": "1",
+      "buildNumber": "2",
       "storeKitConfig": "./ios/Products.storekit"
     },
     "android": {
@@ -45,9 +45,9 @@
         "expo-splash-screen",
         {
           "image": "./assets/app-images/splash.png",
-          "imageWidth": 200,
+          "imageWidth": 120,
           "resizeMode": "contain",
-          "backgroundColor": "#ffffff"
+          "backgroundColor": "transparent"
         }
       ]
     ],
