@@ -26,9 +26,8 @@
     },
     "android": {
       "adaptiveIcon": {
-        "foregroundImage": "./assets/app-images/adaptive-icon/foreground.png",
-        "backgroundImage": "./assets/app-images/adaptive-icon/background.png",
-        "backgroundColor": "#000000"
+        "foregroundImage": "./assets/app-images/adaptive-icon.png",
+        "backgroundColor": "#ffffff"
       },
       "edgeToEdgeEnabled": true,
       "package": "com.fastflix.app",
