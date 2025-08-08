@@ -28,20 +28,27 @@ export interface FastFlixProFeatures {
 }
 
 export const useFastFlixProFeatures = () => {
-  const { isSubscribed, isLoading } = useSubscription();
+  const { isSubscribed, isLoading, customerInfo } = useSubscription();
   const [monthlyPromptCount, setMonthlyPromptCount] = useState(0);
   const [promptCountLoading, setPromptCountLoading] = useState(true);
 
-  // Load monthly prompt count on component mount
+  // Load monthly prompt count on component mount and when customer info changes
   useEffect(() => {
-    loadMonthlyPromptCount();
-  }, []);
+    if (customerInfo) {
+      loadMonthlyPromptCount();
+    }
+  }, [customerInfo]);
 
   // Load monthly prompt count from storage
   const loadMonthlyPromptCount = async () => {
     try {
       const currentMonth = new Date().toISOString().slice(0, 7); // YYYY-MM format
-      const storedData = await AsyncStorage.getItem('monthlyPromptData');
+
+      // Use RevenueCat user ID if available, otherwise fall back to a device-based key
+      const userId = customerInfo?.originalAppUserId || 'anonymous';
+      const storageKey = `monthlyPromptData_${userId}`;
+
+      const storedData = await AsyncStorage.getItem(storageKey);
 
       if (storedData) {
         const { month, count } = JSON.parse(storedData);
@@ -49,8 +56,8 @@ export const useFastFlixProFeatures = () => {
         // Reset count if it's a new month
         if (month !== currentMonth) {
           await AsyncStorage.setItem(
-            'monthlyPromptData',
-            JSON.stringify({ month: currentMonth, count: 0 })
+            storageKey,
+            JSON.stringify({ month: currentMonth, count: 0, userId })
           );
           setMonthlyPromptCount(0);
         } else {
@@ -59,8 +66,8 @@ export const useFastFlixProFeatures = () => {
       } else {
         // First time, initialize with current month and 0 count
         await AsyncStorage.setItem(
-          'monthlyPromptData',
-          JSON.stringify({ month: currentMonth, count: 0 })
+          storageKey,
+          JSON.stringify({ month: currentMonth, count: 0, userId })
         );
         setMonthlyPromptCount(0);
       }
@@ -77,8 +84,12 @@ export const useFastFlixProFeatures = () => {
     try {
       const currentMonth = new Date().toISOString().slice(0, 7);
 
+      // Use RevenueCat user ID if available, otherwise fall back to a device-based key
+      const userId = customerInfo?.originalAppUserId || 'anonymous';
+      const storageKey = `monthlyPromptData_${userId}`;
+
       // Read current data from storage to ensure we have the latest value
-      const storedData = await AsyncStorage.getItem('monthlyPromptData');
+      const storedData = await AsyncStorage.getItem(storageKey);
       let currentCount = 0;
 
       if (storedData) {
@@ -92,8 +103,8 @@ export const useFastFlixProFeatures = () => {
       const newCount = currentCount + 1;
 
       await AsyncStorage.setItem(
-        'monthlyPromptData',
-        JSON.stringify({ month: currentMonth, count: newCount })
+        storageKey,
+        JSON.stringify({ month: currentMonth, count: newCount, userId })
       );
 
       // Update state immediately

@@ -64,6 +64,36 @@ export const SubscriptionProvider: React.FC<SubscriptionProviderProps> = ({
   const [customerInfo, setCustomerInfo] = useState<CustomerInfo | null>(null);
   const [offerings, setOfferings] = useState<PurchasesOffering[] | null>(null);
 
+  // Helper function to check if user has active subscription
+  const checkIfSubscribed = (customerInfo: CustomerInfo): boolean => {
+    const hasActiveEntitlements =
+      Object.keys(customerInfo.entitlements.active).length > 0;
+    const hasActiveSubscriptions = customerInfo.activeSubscriptions.length > 0;
+
+    const activeEntitlements = Object.values(customerInfo.entitlements.active);
+    const hasValidEntitlement = activeEntitlements.some(
+      entitlement => entitlement.isActive && !entitlement.willRenew === false
+    );
+
+    const hasValidPurchases =
+      Object.keys(customerInfo.allPurchaseDates).length > 0 &&
+      customerInfo.activeSubscriptions.some(sub => {
+        const purchaseDate = customerInfo.allPurchaseDates[sub];
+        const expirationDate = customerInfo.allExpirationDates[sub];
+        return (
+          purchaseDate &&
+          (!expirationDate || new Date(expirationDate) > new Date())
+        );
+      });
+
+    return (
+      hasActiveEntitlements ||
+      hasActiveSubscriptions ||
+      hasValidEntitlement ||
+      hasValidPurchases
+    );
+  };
+
   // Initialize RevenueCat
   useEffect(() => {
     const initializeRevenueCat = async () => {
@@ -113,8 +143,9 @@ export const SubscriptionProvider: React.FC<SubscriptionProviderProps> = ({
       const customerInfo = await Purchases.getCustomerInfo();
       setCustomerInfo(customerInfo);
 
-      // Check if user has active subscription
-      const isActive = Object.keys(customerInfo.entitlements.active).length > 0;
+      // Check if user has active subscription using helper function
+      const isActive = checkIfSubscribed(customerInfo);
+
       setIsSubscribed(isActive);
     } catch (error) {
       console.error('Failed to check subscription status:', error);
@@ -130,7 +161,7 @@ export const SubscriptionProvider: React.FC<SubscriptionProviderProps> = ({
         await Purchases.purchasePackage(packageToPurchase);
 
       setCustomerInfo(customerInfo);
-      const isActive = Object.keys(customerInfo.entitlements.active).length > 0;
+      const isActive = checkIfSubscribed(customerInfo);
       setIsSubscribed(isActive);
 
       if (isActive) {
@@ -162,7 +193,7 @@ export const SubscriptionProvider: React.FC<SubscriptionProviderProps> = ({
       const customerInfo = await Purchases.restorePurchases();
 
       setCustomerInfo(customerInfo);
-      const isActive = Object.keys(customerInfo.entitlements.active).length > 0;
+      const isActive = checkIfSubscribed(customerInfo);
       setIsSubscribed(isActive);
 
       if (isActive) {
