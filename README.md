@@ -1,119 +1,89 @@
-# FastFlix 🎬
+# 🎬 FastFlix
 
-A smart movie and TV show recommendation app powered by AI. Simply describe what you're in the mood to watch, and get personalized recommendations with streaming availability information.
+**AI-powered movie and TV show recommendations.** Discover what to watch tonight with personalized suggestions based on your mood and preferences.
 
-## Features
+[![App Store](https://img.shields.io/badge/Download-App%20Store-blue?style=for-the-badge&logo=apple)](https://apps.apple.com/app/fastflix/id6746981485)
+[![Website](https://img.shields.io/badge/Visit-Website-green?style=for-the-badge&logo=vercel)](https://fastflix-nu.vercel.app)
 
-✨ **AI-Powered Recommendations**: Describe your mood or preferences in natural language and get tailored suggestions
+## 🚀 Overview
 
-🎯 **Smart Filtering**: Choose between movies, TV shows, or both
+Stop endless scrolling! FastFlix uses AI to provide intelligent movie and TV show recommendations. Simply tell us what you're in the mood for, and get personalized suggestions ranked by rating to help you decide quickly.
 
-🌍 **Multi-language Support**: Available in English and French
+### ✨ Key Features
 
-📱 **Cross-Platform**: Runs on iOS, Android, and web
+- 🤖 **AI-Powered Recommendations** - Advanced AI analyzes your preferences
+- 🎯 **Personalized Suggestions** - Tailored to your mood and taste
+- ⭐ **Rating-Based Ranking** - Best content first, save time deciding
+- 🌍 **Multi-Language Support** - English, French, Italian, Japanese
+- 📱 **Cross-Platform** - iOS app + responsive web version
+- 🔄 **Real-Time Updates** - Over-the-air updates for instant improvements
 
-🎨 **Modern UI**: Beautiful, responsive interface with smooth animations
+### 💎 FastFlix Pro
 
-🔍 **Detailed Information**: Get movie/show details, ratings, and streaming provider information
+- ♾️ **Unlimited Recommendations** - No monthly limits
+- 🎛️ **Advanced Filters** - Genre, year, rating, and more
+- 📱 **Premium Features** - Enhanced AI, smart notifications
+- ☁️ **Cloud Sync** - Your preferences across devices
 
-## Website
+## 📱 App Structure
 
-🌐 **FastFlix Online**: Experience FastFlix directly in your browser at [fastflix-nu.vercel.app](https://fastflix-nu.vercel.app)
+This is a **monorepo** containing:
 
-### Website Features:
+### 🎯 **Mobile App** (`/`)
 
-- **Instant Access**: No installation required, use FastFlix directly from your browser
-- **Responsive Interface**: Optimized for all devices (desktop, tablet, mobile)
-- **Privacy Guaranteed**: No personal data collected or stored
-- **Real-time Processing**: All recommendations generated instantly without data retention
-- **Complete Anonymity**: No user accounts, registration, or tracking required
+- **Framework**: Expo SDK 53 + React Native
+- **Languages**: TypeScript + NativeWind (Tailwind CSS)
+- **Platforms**: iOS (App Store) + Android (coming soon)
+- **AI Integration**: Google Gemini AI
+- **Subscriptions**: RevenueCat integration
+- **Updates**: EAS Updates for instant deployments
 
-### Privacy Policy:
+### 🌐 **Website** (`/website/`)
 
-FastFlix respects your privacy with a "zero data" approach:
+- **Framework**: Next.js 15 + React 19
+- **Languages**: TypeScript + Tailwind CSS
+- **Features**: Marketing site, support, privacy policy
+- **Deployment**: Vercel
+- **Performance**: Static generation + image optimization
 
-- ❌ No personal data collection
-- ❌ No search history retained
-- ❌ No user accounts required
-- ✅ Language preferences stored locally only
-- ✅ Queries processed in real-time and immediately deleted
-- ✅ Complete anonymity guaranteed
+## 🛠️ Tech Stack
 
-For more details, see our [privacy policy](https://fastflix-nu.vercel.app/privacy-policy).
+### Mobile App
 
-## How It Works
+- **Expo SDK 53** - React Native framework
+- **React 19** - Latest React with concurrent features
+- **TypeScript** - Type-safe development
+- **NativeWind** - Tailwind CSS for React Native
+- **Expo Router** - File-based navigation
+- **RevenueCat** - Subscription management
+- **Google Gemini AI** - Movie recommendations
+- **AsyncStorage** - Local data persistence
+- **EAS Build & Submit** - CI/CD pipeline
 
-**FastFlix** is an intelligent application that combines Google Gemini AI with the TMDB API to provide personalized movie and TV show recommendations.
+### Website
 
-### Detailed Application Flow:
+- **Next.js 15** - React framework with App Router
+- **React 19** - Latest React features
+- **TypeScript 5** - Type safety
+- **Tailwind CSS 4** - Utility-first styling
+- **Radix UI** - Accessible components
+- **Vercel** - Deployment platform
 
-1. **Intuitive User Interface**:
+## 🚦 Quick Start
 
-   - Search form with natural language input
-   - Configurable filters (movies, TV shows, or both)
-   - Fixed maximum of 20 recommendations
-   - Multi-language support with automatic detection
+### Prerequisites
 
-2. **Advanced AI Processing**:
+- Node.js 18+
+- iOS device or simulator
+- Expo CLI
+- Apple Developer Account (for builds)
 
-   - Uses Gemini 2.0 Flash to analyze user queries
-   - Contextual title generation based on mood, genres, or preferences
-   - Localized processing with region-specific responses
-
-3. **Multi-Source Data Aggregation**:
-
-   - TMDB search for each recommended title
-   - Complete metadata retrieval (synopsis, ratings, posters)
-   - Cast and crew information collection
-   - Streaming platform availability
-
-4. **Enhanced Presentation**:
-
-   - Modern interface with smooth animations (Moti)
-   - Detailed cards with high-quality posters
-   - Streaming information with platform logos
-   - Advanced sorting and filtering system
-   - Loading states and error handling
-
-5. **Sophisticated State Management**:
-   - `useAppState` hook for global coordination
-   - `useMovieSearch` hook with React Query for API management
-   - Language context with preference persistence
-   - Smooth navigation between home and profile screens
-
-## Technology Stack
-
-- **Framework**: [Expo](https://expo.dev) with React Native
-- **AI**: Google Generative AI (Gemini)
-- **Movie Data**: The Movie Database (TMDB) API
-- **Styling**: NativeWind (Tailwind CSS for React Native)
-- **Animations**: Moti (Framer Motion for React Native)
-- **Navigation**: Expo Router with file-based routing
-- **State Management**: React Context API
-- **Internationalization**: Custom translation system
-- **Code Quality**: Husky for Git hooks, ESLint, Prettier, TypeScript
-
-## Prerequisites
-
-Before running the app, you'll need:
-
-1. **API Keys**:
-
-   - Google Generative AI API key
-   - The Movie Database (TMDB) API key
-
-2. **Development Environment**:
-   - Node.js (v18 or later)
-   - Expo CLI
-   - iOS Simulator (for iOS development)
-   - Android Studio (for Android development)
-
-## Setup
+### Development Setup
 
 1. **Clone the repository**
 
    ```bash
-   git clone <repository-url>
+   git clone https://github.com/your-username/fastflix.git
    cd fastflix
    ```
 
@@ -123,112 +93,170 @@ Before running the app, you'll need:
    npm install
    ```
 
-3. **Configure environment variables**
+3. **Set up environment variables**
 
-   Create a `.env` file in the root directory:
-
-   ```env
-   GOOGLE_API_KEY=your_gemini_api_key_here
-   TMDB_API_KEY=your_tmdb_api_key_here
-   ```
-
-4. **Start the development server**
    ```bash
-   npx expo start
+   cp .env.example .env
+   # Add your API keys (Google Gemini, TMDB, RevenueCat)
    ```
 
-## Running the App
+4. **Start development server**
+   ```bash
+   npm start
+   # Scan QR code with Expo Go app
+   ```
 
-After starting the development server, you can run the app on:
-
-- **iOS Simulator**: Press `i` in the terminal or scan the QR code with your iPhone
-- **Android Emulator**: Press `a` in the terminal or scan the QR code with the Expo Go app
-- **Web Browser**: Press `w` in the terminal
-- **Physical Device**: Install [Expo Go](https://expo.dev/go) and scan the QR code
-
-## Code Quality & Git Hooks
-
-The project uses **Husky** to enforce code quality standards before commits. Pre-commit hooks automatically run:
-
-- **ESLint**: Code linting and style checking
-- **Prettier**: Code formatting verification
-- **TypeScript**: Type checking with `tsc --noEmit`
-
-If any check fails, the commit will be blocked until issues are resolved. You can manually run these checks:
+### Website Development
 
 ```bash
-npm run lint          # Run ESLint
-npm run format:check  # Check code formatting
-npm run typecheck     # Run TypeScript checks
-npm run pre-commit    # Run all checks together
+cd website/
+npm install
+npm run dev
+# Visit http://localhost:3000
 ```
 
-## Project Structure
+## 📖 Documentation
 
-```
-fastflix/
-├── app/                    # Code principal de l'application
-│   ├── _layout.tsx        # Layout racine avec providers (QueryProvider, LanguageProvider)
-│   ├── index.tsx          # Écran d'accueil avec recherche et recommandations
-│   ├── profile.tsx        # Écran de profil/paramètres (langue, pays)
-│   └── +not-found.tsx     # Page 404
-├── components/            # Composants UI réutilisables
-│   ├── SearchForm.tsx     # Formulaire de recherche avec filtres
-│   ├── MovieResults.tsx   # Affichage des résultats avec tri/filtrage
-│   ├── LoadingState.tsx   # États de chargement animés
-│   ├── LanguageSelector.tsx # Sélecteur de langue
-│   ├── SettingsModal.tsx  # Modal de paramètres
-│   └── HapticTab.tsx      # Onglets avec retour haptique
-├── hooks/                 # Hooks React personnalisés
-│   ├── useAppState.ts     # Gestion d'état globale de l'application
-│   └── useMovieSearch.ts  # Logique de recherche avec Gemini + TMDB
-├── contexts/              # Providers React Context
-│   └── LanguageContext.tsx # Gestion multilingue et pays
-├── providers/             # Providers externes
-│   └── QueryProvider.tsx # Configuration React Query
-├── utils/                 # Utilitaires et services
-│   ├── apiServices.ts     # Services API (Gemini, TMDB)
-│   └── cn.ts             # Utilitaire de classes CSS
-├── locales/               # Fichiers de traduction
-│   ├── en.json           # Traductions anglaises
-│   └── fr.json           # Traductions françaises
-├── assets/               # Ressources statiques
-│   ├── app-images/       # Icônes et splash screens
-│   └── fonts/            # Polices personnalisées
+- **[Development Guide](./DEVELOPMENT.md)** - Complete command reference
+- **[Website README](./website/README.md)** - Website-specific documentation
+
+### Quick Commands
+
+```bash
+# Development
+npm start                    # Start Expo dev server
+npm run ios                  # Run on iOS simulator/device
+
+# Building & Deployment
+npx eas build --profile production    # Production build
+npx eas submit --profile production   # Submit to App Store
+npx eas update --auto                 # OTA update
+
+# Versioning
+npm run version:patch        # 1.2.0 → 1.2.1
+npm run version:minor        # 1.2.0 → 1.3.0
+
+# Code Quality
+npm run lint                 # Check code style
+npm run format              # Format code
+npm run typecheck           # Type checking
 ```
 
-## Available Scripts
+## 🏗️ Project Architecture
 
-- `npm start` - Start the Expo development server
-- `npm run android` - Start on Android emulator
-- `npm run ios` - Start on iOS simulator
-- `npm run web` - Start web version
-- `npm run lint` - Run ESLint
-- `npm run format` - Format code with Prettier
-- `npm run format:check` - Check code formatting
-- `npm run version:patch` - Increment patch version (0.0.1 → 0.0.2)
-- `npm run version:minor` - Increment minor version (0.0.1 → 0.1.0)
-- `npm run version:major` - Increment major version (0.0.1 → 1.0.0)
+### Mobile App (`/`)
 
-## Version Management
+```
+├── app/                    # Expo Router pages
+│   ├── index.tsx          # Home screen with AI search
+│   └── profile.tsx        # User profile & settings
+├── components/            # Reusable UI components
+│   ├── SearchForm.tsx     # AI prompt interface
+│   ├── MovieResults.tsx   # Recommendation display
+│   └── SubscriptionModal.tsx # Premium upgrade
+├── contexts/              # React contexts
+│   ├── RevenueCatContext.tsx  # Subscription management
+│   └── LanguageContext.tsx    # Internationalization
+├── hooks/                 # Custom React hooks
+├── utils/                 # API services & utilities
+└── locales/              # Translation files
+```
 
-FastFlix uses a centralized versioning system that manages app versions, iOS build numbers, and Android version codes from a single source. The project follows semantic versioning (MAJOR.MINOR.PATCH) and includes custom scripts for automated version management.
+### Website (`/website/`)
 
-### Key Features:
+```
+└── src/
+    ├── app/              # Next.js pages
+    ├── components/       # React components
+    ├── contexts/         # Shared contexts
+    └── lib/             # Utilities & constants
+```
 
-- **Centralized Configuration**: Single source of truth in `package.json`
-- **Automated Build Numbers**: Environment-based iOS and Android build management
-- **Custom Scripts**: Easy version incrementing with `npm run version:*` commands
-- **Store Compatibility**: Full compatibility with App Store Connect and Google Play Console
+## 🔧 Configuration
 
-For detailed information about the versioning system, implementation details, best practices, and migration guides, see [VERSIONING.md](VERSIONING.md).
+### Environment Variables
 
-## Contributing
+**Mobile App (`.env`)**
 
-Contributions are welcome! Please feel free to submit a Pull Request.
+```env
+GOOGLE_API_KEY=your_gemini_api_key
+TMDB_API_KEY=your_tmdb_api_key
+EXPO_PUBLIC_REVENUECAT_IOS_API_KEY=your_revenuecat_key
+```
 
-## License
+**Website (`.env.local`)**
 
-This project is open source and available under the [MIT License](LICENSE).
+```env
+NEXT_PUBLIC_APP_URL=https://fastflix-nu.vercel.app
+```
 
-// npx expo run:ios --device
+## 🚀 Deployment
+
+### Mobile App
+
+1. **Development**: `npm start` + Expo Go
+2. **Testing**: `npx eas build --profile preview` → TestFlight
+3. **Production**: `npx eas build --profile production` → App Store
+4. **Updates**: `npx eas update --auto` → OTA updates
+
+### Website
+
+- **Development**: `npm run dev`
+- **Production**: Auto-deployed via Vercel on git push
+
+## 🌍 Internationalization
+
+Supported languages:
+
+- 🇺🇸 English
+- 🇫🇷 French
+- 🇮🇹 Italian
+- 🇯🇵 Japanese
+
+Translation files are located in `/locales/` and `/website/src/lib/translations.ts`.
+
+## 📊 Analytics & Monitoring
+
+- **RevenueCat**: Subscription analytics
+- **EAS**: Build and update monitoring
+- **Expo**: Crash reporting and performance metrics
+
+## 🤝 Contributing
+
+1. Fork the repository
+2. Create a feature branch (`git checkout -b feature/amazing-feature`)
+3. Make your changes
+4. Run quality checks (`npm run pre-commit`)
+5. Commit your changes (`git commit -m 'Add amazing feature'`)
+6. Push to the branch (`git push origin feature/amazing-feature`)
+7. Open a Pull Request
+
+### Code Quality Standards
+
+- ESLint + Prettier configuration
+- TypeScript strict mode
+- Comprehensive error handling
+- Responsive design principles
+- Accessibility compliance (WCAG 2.1)
+
+## 📄 License
+
+All rights reserved. This is proprietary software.
+
+## 📞 Support
+
+- **Website**: [https://fastflix-nu.vercel.app/support](https://fastflix-nu.vercel.app/support)
+- **Email**: [support@fastflix.app](mailto:support@fastflix.app)
+- **App Store**: Leave a review and rating
+
+## 🔗 Links
+
+- **📱 App Store**: https://apps.apple.com/app/fastflix/id6746981485
+- **🌐 Website**: https://fastflix-nu.vercel.app
+- **📚 Privacy Policy**: https://fastflix-nu.vercel.app/privacy-policy
+- **📋 Terms of Use**: https://fastflix-nu.vercel.app/terms-of-use
+- **🛠️ Developer Dashboard**: https://expo.dev/accounts/bzrjoh/projects/fastflix
+
+---
+
+**Made with ❤️ for movie lovers everywhere**

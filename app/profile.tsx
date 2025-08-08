@@ -23,7 +23,7 @@ import {
 export default function ProfileScreen() {
   const { language, setLanguage, country, setCountry, t, availableCountries } =
     useLanguage();
-  const { isSubscribed, restorePurchases, customerInfo } = useSubscription();
+  const { isSubscribed, restorePurchases } = useSubscription();
   const { monthlyPromptCount, refreshPromptCount } = useFastFlixProFeatures();
   const [showSubscriptionModal, setShowSubscriptionModal] = useState(false);
   const [restoring, setRestoring] = useState(false);
