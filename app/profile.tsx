@@ -27,28 +27,12 @@ export default function ProfileScreen() {
   const { monthlyPromptCount, refreshPromptCount } = useFastFlixProFeatures();
   const [showSubscriptionModal, setShowSubscriptionModal] = useState(false);
   const [restoring, setRestoring] = useState(false);
-  const [debugInfo, setDebugInfo] = useState('');
 
   // Refresh prompt count when screen comes into focus
   useFocusEffect(
     useCallback(() => {
       refreshPromptCount();
-
-      // Créer info debug visible à l'écran
-      if (customerInfo) {
-        const debugText = `
-🔍 DEBUG INFO:
-Current User ID: ${customerInfo.originalAppUserId}
-Expected User ID: $RCAnonymousID:45b66c63d87547bf91d8163e565c379c
-User IDs match: ${customerInfo.originalAppUserId === '$RCAnonymousID:45b66c63d87547bf91d8163e565c379c'}
-Active subscriptions: ${customerInfo.activeSubscriptions.length}
-Active entitlements: ${Object.keys(customerInfo.entitlements.active).length}
-All purchases: ${Object.keys(customerInfo.allPurchaseDates).length}
-Subscription Status: ${isSubscribed ? 'ACTIVE' : 'INACTIVE'}
-        `.trim();
-        setDebugInfo(debugText);
-      }
-    }, [refreshPromptCount, customerInfo, isSubscribed])
+    }, [refreshPromptCount])
   );
 
   // Utilisation des constantes centralisées
@@ -409,26 +393,6 @@ Subscription Status: ${isSubscribed ? 'ACTIVE' : 'INACTIVE'}
             </View>
           </View>
         </MotiView>
-
-        {/* Debug Info Section - Temporaire */}
-        {debugInfo && (
-          <MotiView
-            from={{ opacity: 0, translateY: 20 }}
-            animate={{ opacity: 1, translateY: 0 }}
-            transition={{
-              delay: 600,
-              type: 'timing',
-              duration: 600,
-            }}
-            className='mb-6'
-          >
-            <View className='rounded-xl border-2 border-red-200 bg-red-50 p-4 dark:border-red-700 dark:bg-red-900/10'>
-              <Text className='font-mono text-xs text-red-800 dark:text-red-300'>
-                {debugInfo}
-              </Text>
-            </View>
-          </MotiView>
-        )}
       </ScrollView>
 
       <SubscriptionModal
