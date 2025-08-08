@@ -85,7 +85,10 @@ export default function SearchForm({
             }}
             className='mb-10'
           >
-            <Text className='mb-6 text-center text-3xl font-bold text-light-text dark:text-dark-text'>
+            <Text
+              className='mb-6 text-center text-3xl font-bold text-light-text dark:text-dark-text'
+              style={{ textDecorationLine: 'underline' }}
+            >
               {t('welcome.title')}
             </Text>
             <Text className='mb-4 text-justify text-base text-light-text dark:text-dark-text'>

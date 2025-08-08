@@ -58,6 +58,12 @@ export default {
     experiments: {
       typedRoutes: true,
     },
+    updates: {
+      url: 'https://u.expo.dev/d040206b-f26d-4432-a0fd-847ad637352f',
+    },
+    runtimeVersion: {
+      policy: 'appVersion',
+    },
     extra: {
       GOOGLE_API_KEY: process.env.GOOGLE_API_KEY,
       TMDB_API_KEY: process.env.TMDB_API_KEY,
