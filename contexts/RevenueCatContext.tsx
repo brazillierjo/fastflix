@@ -113,6 +113,24 @@ export const SubscriptionProvider: React.FC<SubscriptionProviderProps> = ({
 
         await Purchases.configure({ apiKey });
 
+        // Force l'utilisation du user ID connu pour retrouver l'abonnement
+        const expectedUserId =
+          '$RCAnonymousID:45b66c63d87547bf91d8163e565c379c';
+
+        try {
+          console.log(
+            '🔧 Tentative de login avec le user ID connu:',
+            expectedUserId
+          );
+          await Purchases.logIn(expectedUserId);
+          console.log('✅ Login réussi avec le user ID connu');
+        } catch (loginError) {
+          console.log(
+            '⚠️ Login échoué, utilisation du user ID par défaut:',
+            loginError
+          );
+        }
+
         // Get initial customer info and offerings
         await Promise.all([checkSubscriptionStatus(), loadOfferings()]);
       } catch (error) {
@@ -143,9 +161,37 @@ export const SubscriptionProvider: React.FC<SubscriptionProviderProps> = ({
       const customerInfo = await Purchases.getCustomerInfo();
       setCustomerInfo(customerInfo);
 
+      // Debug logging pour identifier le problème de user ID
+      console.log(
+        '🔍 DEBUG - Current User ID:',
+        customerInfo.originalAppUserId
+      );
+      console.log(
+        '🔍 DEBUG - Expected User ID:',
+        '$RCAnonymousID:45b66c63d87547bf91d8163e565c379c'
+      );
+      console.log(
+        '🔍 DEBUG - User IDs match:',
+        customerInfo.originalAppUserId ===
+          '$RCAnonymousID:45b66c63d87547bf91d8163e565c379c'
+      );
+      console.log(
+        '🔍 DEBUG - Active subscriptions:',
+        customerInfo.activeSubscriptions
+      );
+      console.log(
+        '🔍 DEBUG - Active entitlements:',
+        Object.keys(customerInfo.entitlements.active)
+      );
+      console.log(
+        '🔍 DEBUG - All purchases:',
+        Object.keys(customerInfo.allPurchaseDates)
+      );
+
       // Check if user has active subscription using helper function
       const isActive = checkIfSubscribed(customerInfo);
 
+      console.log('🔍 DEBUG - Final subscription status:', isActive);
       setIsSubscribed(isActive);
     } catch (error) {
       console.error('Failed to check subscription status:', error);
