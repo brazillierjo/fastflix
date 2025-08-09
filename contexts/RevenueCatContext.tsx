@@ -113,16 +113,6 @@ export const SubscriptionProvider: React.FC<SubscriptionProviderProps> = ({
 
         await Purchases.configure({ apiKey });
 
-        // Force l'utilisation du user ID connu pour retrouver l'abonnement
-        const expectedUserId =
-          '$RCAnonymousID:45b66c63d87547bf91d8163e565c379c';
-
-        try {
-          await Purchases.logIn(expectedUserId);
-        } catch (loginError) {
-          // Silently fallback to default user ID if login fails
-        }
-
         // Get initial customer info and offerings
         await Promise.all([checkSubscriptionStatus(), loadOfferings()]);
       } catch (error) {
