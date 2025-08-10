@@ -85,7 +85,7 @@ export default function SearchForm({
             }}
             className='mb-10'
           >
-            <Text className='mb-6 text-center text-3xl font-bold text-light-text dark:text-dark-text'>
+            <Text className='mb-6 text-center text-3xl font-bold text-light-text underline dark:text-dark-text'>
               {t('welcome.title')}
             </Text>
             <Text className='mb-4 text-justify text-base text-light-text dark:text-dark-text'>
