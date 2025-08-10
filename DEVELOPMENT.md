@@ -81,18 +81,31 @@ npx eas submit --platform android --profile production
 
 ## ⚡ Mises à jour OTA (Over-The-Air)
 
+### Configuration initiale
+
+```bash
+# Configurer EAS Update (une seule fois)
+npx eas update:configure
+```
+
 ### Publier une mise à jour
 
 ```bash
-# Mise à jour automatique (prend le dernier commit)
-npx eas update --auto
+# Mise à jour pour PREVIEW (tests internes)
+npx eas update --channel preview --message "Test nouvelle fonctionnalité"
 
-# Mise à jour avec message personnalisé
-npx eas update --message "Fix critical bug"
+# Mise à jour pour PRODUCTION (utilisateurs finaux)
+npx eas update --channel production --message "Fix critique: correction du bug de connexion"
 
-# Mise à jour pour une branche spécifique
-npx eas update --branch production
+# Mise à jour automatique (utilise le message du dernier commit)
+npx eas update --channel production --auto
 ```
+
+### Channels disponibles
+
+- **`development`** : Pour les builds de développement local
+- **`preview`** : Pour les builds de test (TestFlight, distribution interne)
+- **`production`** : Pour les builds App Store (utilisateurs finaux)
 
 ### Voir les mises à jour
 
@@ -102,7 +115,17 @@ npx eas update:list
 
 # Voir une mise à jour spécifique
 npx eas update:view [UPDATE_ID]
+
+# Voir les mises à jour d'un channel spécifique
+npx eas update:list --channel production
 ```
+
+### Workflow recommandé
+
+1. **Développement** : Tester localement
+2. **Test** : `npx eas update --channel preview`
+3. **Validation** : Tester sur build preview
+4. **Production** : `npx eas update --channel production`
 
 ## 🔧 Gestion des Versions
 
