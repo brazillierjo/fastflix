@@ -3,6 +3,8 @@ import '@/global.css';
 import { useFonts } from 'expo-font';
 import { Tabs } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
+import * as Updates from 'expo-updates';
+import { useEffect } from 'react';
 import { Text, useColorScheme } from 'react-native';
 import 'react-native-reanimated';
 
@@ -60,6 +62,27 @@ export default function RootLayout() {
   const [loaded] = useFonts({
     SpaceMono: require('../assets/fonts/SpaceMono-Regular.ttf'),
   });
+
+  // Initialize expo-updates
+  useEffect(() => {
+    async function onFetchUpdateAsync() {
+      try {
+        const update = await Updates.checkForUpdateAsync();
+
+        if (update.isAvailable) {
+          await Updates.fetchUpdateAsync();
+          await Updates.reloadAsync();
+        }
+      } catch (error) {
+        console.log('Error fetching latest Expo update:', error);
+      }
+    }
+
+    // Only check for updates in production builds
+    if (!__DEV__) {
+      onFetchUpdateAsync();
+    }
+  }, []);
 
   if (!loaded) return null;
 
