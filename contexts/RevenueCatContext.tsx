@@ -66,32 +66,9 @@ export const SubscriptionProvider: React.FC<SubscriptionProviderProps> = ({
 
   // Helper function to check if user has active subscription
   const checkIfSubscribed = (customerInfo: CustomerInfo): boolean => {
-    const hasActiveEntitlements =
-      Object.keys(customerInfo.entitlements.active).length > 0;
-    const hasActiveSubscriptions = customerInfo.activeSubscriptions.length > 0;
-
-    const activeEntitlements = Object.values(customerInfo.entitlements.active);
-    const hasValidEntitlement = activeEntitlements.some(
-      entitlement => entitlement.isActive && !entitlement.willRenew === false
-    );
-
-    const hasValidPurchases =
-      Object.keys(customerInfo.allPurchaseDates).length > 0 &&
-      customerInfo.activeSubscriptions.some(sub => {
-        const purchaseDate = customerInfo.allPurchaseDates[sub];
-        const expirationDate = customerInfo.allExpirationDates[sub];
-        return (
-          purchaseDate &&
-          (!expirationDate || new Date(expirationDate) > new Date())
-        );
-      });
-
-    return (
-      hasActiveEntitlements ||
-      hasActiveSubscriptions ||
-      hasValidEntitlement ||
-      hasValidPurchases
-    );
+    // RevenueCat recommends checking active entitlements only
+    // This is the most reliable way to check subscription status
+    return Object.keys(customerInfo.entitlements.active).length > 0;
   };
 
   // Initialize RevenueCat
