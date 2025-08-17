@@ -19,7 +19,6 @@ import {
   SUPPORTED_LANGUAGES,
   DEFAULT_LANGUAGE,
   AVAILABLE_COUNTRIES,
-  LANGUAGE_COUNTRY_MAP,
   isValidLanguage,
   getDefaultCountryForLanguage,
   detectLanguageFromDevice,
@@ -74,9 +73,17 @@ export const LanguageProvider: React.FC<{ children: ReactNode }> = ({
   const [country, setCountryState] = useState<SupportedCountry>('FR');
 
   // Get nested value from object using dot notation
-  const getNestedValue = (obj: any, path: string): string => {
+  const getNestedValue = (
+    obj: Record<string, unknown>,
+    path: string
+  ): string => {
     return (
-      path.split('.').reduce((current, key) => current?.[key], obj) || path
+      (path.split('.').reduce((current: unknown, key: string) => {
+        if (current && typeof current === 'object' && key in current) {
+          return (current as Record<string, unknown>)[key];
+        }
+        return undefined;
+      }, obj) as string) || path
     );
   };
 

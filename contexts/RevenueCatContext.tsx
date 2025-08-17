@@ -147,10 +147,10 @@ export const SubscriptionProvider: React.FC<SubscriptionProviderProps> = ({
             'Welcome to FastFlix Pro features!'
         );
       }
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error('Purchase failed:', error);
 
-      if (!error.userCancelled) {
+      if (!(error as { userCancelled?: boolean })?.userCancelled) {
         Alert.alert(
           t('subscription.error.title') || 'Purchase Failed',
           t('subscription.error.message') ||

@@ -69,7 +69,7 @@ export const formatPriceForCountry = (
       style: 'currency',
       currency: currency,
     }).format(price);
-  } catch (error) {
+  } catch {
     // Fallback en cas d'erreur de formatage
     const symbol = getCurrencySymbolForCountry(country);
     return `${symbol}${price.toFixed(2)}`;

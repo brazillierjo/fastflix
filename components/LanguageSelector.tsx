@@ -1,12 +1,12 @@
 import { Picker } from '@react-native-picker/picker';
 import React from 'react';
-import { Text, View } from 'react-native';
+import { Text, View, ViewStyle } from 'react-native';
 import { useLanguage } from '../contexts/LanguageContext';
 import { AVAILABLE_LANGUAGES } from '../constants/languages';
 import { cn } from '../utils/cn';
 
 interface LanguageSelectorProps {
-  style?: any;
+  style?: ViewStyle;
 }
 
 export const LanguageSelector: React.FC<LanguageSelectorProps> = ({
