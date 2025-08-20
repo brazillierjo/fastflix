@@ -22,6 +22,9 @@ npx expo start
 npm run ios
 # ou
 npx expo run:ios
+
+# Pour travailler avec un appareil physique connecté
+npx expo run:ios --device
 ```
 
 ### Tester sur simulateur iOS
