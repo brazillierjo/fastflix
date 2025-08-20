@@ -1,14 +1,16 @@
 /**
- * FastFlix Pro Features Hook
+ * New FastFlix Pro Features Hook - Simplified
  *
- * This hook provides a centralized way to check and manage FastFlix Pro features
- * throughout the application. It integrates with the subscription context
- * to determine which features are available to the user.
+ * This hook now uses the new RevenueCat context which handles:
+ * - Persistent prompt counting via RevenueCat attributes (no more AsyncStorage)
+ * - Proper subscription status detection
+ * - Clean separation of concerns
  */
 
-import { useSubscription } from '@/contexts/RevenueCatContext';
-import AsyncStorage from '@react-native-async-storage/async-storage';
-import { useEffect, useState } from 'react';
+import {
+  useSubscription,
+  SubscriptionStatus,
+} from '@/contexts/RevenueCatContext';
 
 export interface FastFlixProFeatures {
   // Core features
@@ -27,145 +29,108 @@ export interface FastFlixProFeatures {
   personalizedRecommendations: boolean;
 }
 
+export interface PromptStatus {
+  allowed: boolean;
+  reason: string;
+  remaining?: number;
+  limit?: number;
+  used?: number;
+}
+
 export const useFastFlixProFeatures = () => {
-  const { isSubscribed, isLoading, customerInfo } = useSubscription();
-  const [monthlyPromptCount, setMonthlyPromptCount] = useState(0);
-  const [promptCountLoading, setPromptCountLoading] = useState(true);
+  const {
+    subscriptionStatus,
+    hasUnlimitedAccess,
+    isFreeUser,
+    isLoading,
+    monthlyPromptCount,
+    maxFreePrompts,
+    remainingPrompts,
+    incrementPromptCount,
+    refreshUserData,
+  } = useSubscription();
 
-  // Load monthly prompt count on component mount and when customer info changes
-  useEffect(() => {
-    if (customerInfo) {
-      loadMonthlyPromptCount();
-    }
-  }, [customerInfo]);
-
-  // Load monthly prompt count from storage
-  const loadMonthlyPromptCount = async () => {
-    try {
-      const currentMonth = new Date().toISOString().slice(0, 7); // YYYY-MM format
-
-      // Use RevenueCat user ID if available, otherwise fall back to a device-based key
-      const userId = customerInfo?.originalAppUserId || 'anonymous';
-      const storageKey = `monthlyPromptData_${userId}`;
-
-      const storedData = await AsyncStorage.getItem(storageKey);
-
-      if (storedData) {
-        const { month, count } = JSON.parse(storedData);
-
-        // Reset count if it's a new month
-        if (month !== currentMonth) {
-          await AsyncStorage.setItem(
-            storageKey,
-            JSON.stringify({ month: currentMonth, count: 0, userId })
-          );
-          setMonthlyPromptCount(0);
-        } else {
-          setMonthlyPromptCount(count);
-        }
-      } else {
-        // First time, initialize with current month and 0 count
-        await AsyncStorage.setItem(
-          storageKey,
-          JSON.stringify({ month: currentMonth, count: 0, userId })
-        );
-        setMonthlyPromptCount(0);
-      }
-    } catch (error) {
-      console.error('Error loading monthly prompt count:', error);
-      setMonthlyPromptCount(0);
-    } finally {
-      setPromptCountLoading(false);
-    }
+  // Define which features are available
+  const fastFlixProFeatures: FastFlixProFeatures = {
+    // All features available for users with unlimited access
+    unlimitedRecommendations: hasUnlimitedAccess,
+    advancedFilters: hasUnlimitedAccess,
+    offlineAccess: hasUnlimitedAccess,
+    smartNotifications: hasUnlimitedAccess,
+    removeAds: hasUnlimitedAccess,
+    customThemes: hasUnlimitedAccess,
+    exportWatchlist: hasUnlimitedAccess,
+    enhancedAI: hasUnlimitedAccess,
+    personalizedRecommendations: hasUnlimitedAccess,
   };
 
-  // Increment monthly prompt count
-  const incrementPromptCount = async () => {
-    try {
-      const currentMonth = new Date().toISOString().slice(0, 7);
-
-      // Use RevenueCat user ID if available, otherwise fall back to a device-based key
-      const userId = customerInfo?.originalAppUserId || 'anonymous';
-      const storageKey = `monthlyPromptData_${userId}`;
-
-      // Read current data from storage to ensure we have the latest value
-      const storedData = await AsyncStorage.getItem(storageKey);
-      let currentCount = 0;
-
-      if (storedData) {
-        const { month, count } = JSON.parse(storedData);
-        // Reset count if it's a new month
-        if (month === currentMonth) {
-          currentCount = count;
-        }
-      }
-
-      const newCount = currentCount + 1;
-
-      await AsyncStorage.setItem(
-        storageKey,
-        JSON.stringify({ month: currentMonth, count: newCount, userId })
-      );
-
-      // Update state immediately
-      setMonthlyPromptCount(newCount);
-
-      return newCount;
-    } catch (error) {
-      console.error('Error incrementing prompt count:', error);
-      return monthlyPromptCount;
-    }
-  };
-
-  // Check if user can make a prompt (3 free per month for non-subscribers)
-  const canMakePrompt = () => {
-    // In development mode, allow unlimited prompts
-    if (__DEV__) {
-      return { allowed: true, reason: 'development-mode', remaining: Infinity };
-    }
-
-    if (isSubscribed) {
-      return { allowed: true, reason: 'fastflix-pro', remaining: Infinity };
-    }
-
-    const freeMonthlyLimit = 3;
-    const remaining = Math.max(0, freeMonthlyLimit - monthlyPromptCount);
-
-    if (monthlyPromptCount >= freeMonthlyLimit) {
+  // Check if user can make a prompt with detailed status
+  const getPromptStatus = (): PromptStatus => {
+    // Development mode override
+    if (process.env.NODE_ENV === 'development') {
       return {
-        allowed: false,
-        reason: 'monthly_limit_reached',
-        limit: freeMonthlyLimit,
-        used: monthlyPromptCount,
-        remaining: 0,
+        allowed: true,
+        reason: 'development-mode',
+        remaining: Infinity,
       };
     }
 
+    // Users with unlimited access (active subscribers or in grace period)
+    if (hasUnlimitedAccess) {
+      const reason =
+        subscriptionStatus === SubscriptionStatus.ACTIVE
+          ? 'active-subscription'
+          : 'grace-period-access';
+
+      return {
+        allowed: true,
+        reason,
+        remaining: Infinity,
+      };
+    }
+
+    // Free users with prompt limits
+    if (isFreeUser) {
+      const used = monthlyPromptCount;
+      const limit = maxFreePrompts;
+      const remaining = Math.max(0, limit - used);
+
+      if (used >= limit) {
+        return {
+          allowed: false,
+          reason: 'monthly-limit-reached',
+          limit,
+          used,
+          remaining: 0,
+        };
+      }
+
+      return {
+        allowed: true,
+        reason: 'within-monthly-limit',
+        limit,
+        used,
+        remaining,
+      };
+    }
+
+    // Fallback for unknown status
     return {
-      allowed: true,
-      reason: 'within_monthly_limit',
-      limit: freeMonthlyLimit,
-      used: monthlyPromptCount,
-      remaining,
+      allowed: false,
+      reason: 'unknown-status',
     };
   };
 
-  // Define which features are available for FastFlix Pro users
-  const fastFlixProFeatures: FastFlixProFeatures = {
-    // Core features - available only to FastFlix Pro users
-    unlimitedRecommendations: isSubscribed,
-    advancedFilters: isSubscribed,
-    offlineAccess: isSubscribed,
-    smartNotifications: isSubscribed,
-
-    // UI features
-    removeAds: isSubscribed,
-    customThemes: isSubscribed,
-    exportWatchlist: isSubscribed,
-
-    // AI features
-    enhancedAI: isSubscribed,
-    personalizedRecommendations: isSubscribed,
+  // Legacy compatibility - returns the old canMakePrompt format
+  const canMakePromptLegacy = () => {
+    const status = getPromptStatus();
+    return {
+      allowed: status.allowed,
+      reason: status.reason,
+      remaining: status.remaining || 0,
+      limit: status.limit,
+      used: status.used,
+    };
   };
 
   // Helper function to check if a specific feature is available
@@ -188,8 +153,8 @@ export const useFastFlixProFeatures = () => {
     currentUsage?: number,
     limit?: number
   ) => {
-    if (isSubscribed) {
-      return { allowed: true, reason: 'fastflix-pro' };
+    if (hasUnlimitedAccess) {
+      return { allowed: true, reason: 'unlimited-access' };
     }
 
     // Define limits for free users
@@ -206,7 +171,7 @@ export const useFastFlixProFeatures = () => {
     if (usage >= actionLimit) {
       return {
         allowed: false,
-        reason: 'limit_reached',
+        reason: 'limit-reached',
         limit: actionLimit,
         usage,
       };
@@ -214,7 +179,7 @@ export const useFastFlixProFeatures = () => {
 
     return {
       allowed: true,
-      reason: 'within_limit',
+      reason: 'within-limit',
       limit: actionLimit,
       usage,
       remaining: actionLimit - usage,
@@ -222,18 +187,31 @@ export const useFastFlixProFeatures = () => {
   };
 
   return {
-    isSubscribed,
-    isLoading: isLoading || promptCountLoading,
+    // Subscription info
+    subscriptionStatus,
+    hasUnlimitedAccess,
+    isFreeUser,
+    isLoading,
+
+    // Features
     features: fastFlixProFeatures,
     hasFeature,
     getFeatureStatus,
     canPerformAction,
-    // New prompt limitation features
+
+    // Prompt management
     monthlyPromptCount,
-    canMakePrompt,
+    maxFreePrompts,
+    canMakePrompt: canMakePromptLegacy, // Use the legacy format function
+    remainingPrompts,
+    getPromptStatus,
     incrementPromptCount,
-    // Utility function to refresh prompt count from storage
-    refreshPromptCount: loadMonthlyPromptCount,
+
+    // Utility functions
+    refreshPromptCount: refreshUserData,
+
+    // Backward compatibility
+    isSubscribed: hasUnlimitedAccess, // For components still using this
   };
 };
 

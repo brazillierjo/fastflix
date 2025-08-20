@@ -23,8 +23,11 @@ import {
 export default function ProfileScreen() {
   const { language, setLanguage, country, setCountry, t, availableCountries } =
     useLanguage();
-  const { isSubscribed, restorePurchases } = useSubscription();
+  const { hasUnlimitedAccess, restorePurchases } = useSubscription();
   const { monthlyPromptCount, refreshPromptCount } = useFastFlixProFeatures();
+
+  // Backward compatibility
+  const isSubscribed = hasUnlimitedAccess;
   const [showSubscriptionModal, setShowSubscriptionModal] = useState(false);
   const [restoring, setRestoring] = useState(false);
 
