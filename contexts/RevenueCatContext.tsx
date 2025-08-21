@@ -1,19 +1,18 @@
 /**
- * New RevenueCat Context - Simplified and Robust
+ * New RevenueCat Context - Simplified and Robust with Persistent Identity
  *
  * This context handles:
- * 1. Non-subscribed users: 3 free prompts/month (persistent via RevenueCat attributes)
+ * 1. Non-subscribed users: 3 free prompts/month (persistent via Keychain device identity)
  * 2. Canceled subscription but still in grace period: unlimited access
  * 3. Active subscribers: unlimited access
  *
  * Key improvements:
- * - Uses RevenueCat Subscriber Attributes for persistent prompt counting
+ * - Uses Keychain-based device identity for persistence across reinstalls
  * - Proper subscription status detection (active vs expired)
- * - No more AsyncStorage dependency
- * - Cleaner user identification
+ * - Seamless migration from old RevenueCat anonymous IDs
+ * - Clean separation of concerns with dedicated services
  */
 
-import AsyncStorage from '@react-native-async-storage/async-storage';
 import Constants from 'expo-constants';
 import React, {
   createContext,
@@ -31,6 +30,8 @@ import Purchases, {
   PurchasesPackage,
 } from 'react-native-purchases';
 import { useLanguage } from './LanguageContext';
+import { deviceIdentityService } from '@/services/deviceIdentity.service';
+import { persistentUserService } from '@/services/persistentUser.service';
 
 // Subscription status enum for clarity
 export enum SubscriptionStatus {
@@ -125,46 +126,92 @@ export const SubscriptionProvider: React.FC<SubscriptionProviderProps> = ({
     return SubscriptionStatus.FREE;
   };
 
-  // Get prompt count from AsyncStorage using stable RevenueCat ID
-  const getPromptCountFromStorage = async (
+  // Get prompt count using persistent device identity
+  const getPromptCountFromPersistentStorage = async (
     customerInfo: CustomerInfo
   ): Promise<number> => {
     try {
-      const currentMonth = new Date().toISOString().slice(0, 7); // YYYY-MM
+      // Get device ID from keychain
+      const deviceIdResult = await deviceIdentityService.getDeviceId();
+      
+      if (!deviceIdResult.success) {
+        console.error('Failed to get device ID:', deviceIdResult.error);
+        return 0;
+      }
 
-      // Use RevenueCat's original user ID as stable identifier
-      const stableUserId = customerInfo.originalAppUserId;
-      const storageKey = `fastflix_prompts_${stableUserId}_${currentMonth}`;
+      // Try migration from old system first
+      if (customerInfo.originalAppUserId) {
+        await persistentUserService.migrateFromOldSystem(
+          customerInfo.originalAppUserId,
+          deviceIdResult.data
+        );
+      }
 
-      const storedCount = await AsyncStorage.getItem(storageKey);
-      return storedCount ? parseInt(storedCount, 10) : 0;
+      // Get current user data
+      const userDataResult = await persistentUserService.getUserData(deviceIdResult.data);
+      
+      if (!userDataResult.success) {
+        console.error('Failed to get user data:', userDataResult.error);
+        return 0;
+      }
+
+      return userDataResult.data.monthlyPromptCount;
     } catch (error) {
-      console.error('Error loading prompt count from storage:', error);
+      console.error('Error loading prompt count from persistent storage:', error);
       return 0;
     }
   };
 
-  // Set prompt count in AsyncStorage with stable RevenueCat ID
-  const setPromptCountInStorage = async (
-    customerInfo: CustomerInfo,
+  // Set prompt count using persistent device identity
+  const setPromptCountInPersistentStorage = async (
     count: number
   ) => {
     try {
-      const currentMonth = new Date().toISOString().slice(0, 7);
-      const stableUserId = customerInfo.originalAppUserId;
-      const storageKey = `fastflix_prompts_${stableUserId}_${currentMonth}`;
+      // Get device ID from keychain
+      const deviceIdResult = await deviceIdentityService.getDeviceId();
+      
+      if (!deviceIdResult.success) {
+        console.error('Failed to get device ID for setting prompt count:', deviceIdResult.error);
+        return;
+      }
 
-      await AsyncStorage.setItem(storageKey, count.toString());
+      // Get current user data
+      const userDataResult = await persistentUserService.getUserData(deviceIdResult.data);
+      
+      if (!userDataResult.success) {
+        console.error('Failed to get user data for update:', userDataResult.error);
+        return;
+      }
 
-      // Also sync to RevenueCat attributes for server-side tracking (write-only)
-      await Purchases.setAttributes({
-        [`prompts_${currentMonth}`]: count.toString(),
-        last_reset_month: currentMonth,
-      });
+      // Update user data with new count
+      const updatedData = {
+        ...userDataResult.data,
+        monthlyPromptCount: count
+      };
 
-      console.log(`Set prompt count to ${count} for month ${currentMonth}`);
+      const setResult = await persistentUserService.setUserData(updatedData);
+      
+      if (!setResult.success) {
+        console.error('Failed to set user data:', setResult.error);
+        return;
+      }
+
+      // Also sync to RevenueCat attributes for server-side tracking (optional)
+      try {
+        const currentMonth = new Date().toISOString().slice(0, 7);
+        await Purchases.setAttributes({
+          [`prompts_${currentMonth}`]: count.toString(),
+          last_reset_month: currentMonth,
+          device_id: deviceIdResult.data, // Store device ID for debugging
+        });
+      } catch (attributeError) {
+        console.warn('Failed to sync to RevenueCat attributes:', attributeError);
+        // Don't fail the operation if attributes sync fails
+      }
+
+      console.log(`Set prompt count to ${count} for device ${deviceIdResult.data}`);
     } catch (error) {
-      console.error('Failed to set prompt count:', error);
+      console.error('Failed to set prompt count in persistent storage:', error);
     }
   };
 
@@ -187,8 +234,18 @@ export const SubscriptionProvider: React.FC<SubscriptionProviderProps> = ({
           return;
         }
 
-        await Purchases.configure({ apiKey });
-        console.log('RevenueCat configured successfully');
+        // Get persistent device ID and configure RevenueCat with it
+        const deviceIdResult = await deviceIdentityService.getDeviceId();
+        
+        if (!deviceIdResult.success) {
+          console.error('Failed to get device ID:', deviceIdResult.error);
+          // Still configure RevenueCat with anonymous ID as fallback
+          await Purchases.configure({ apiKey });
+        } else {
+          // Configure RevenueCat with our persistent device ID
+          await Purchases.configure({ apiKey, appUserID: deviceIdResult.data });
+          console.log('RevenueCat configured with persistent device ID:', deviceIdResult.data);
+        }
 
         // Load initial data
         await Promise.all([refreshUserData(), loadOfferings()]);
@@ -227,12 +284,12 @@ export const SubscriptionProvider: React.FC<SubscriptionProviderProps> = ({
       setSubscriptionStatus(status);
       console.log(`Subscription status: ${status}`);
 
-      // For free users, load prompt count from storage
+      // For free users, load prompt count from persistent storage
       if (
         status === SubscriptionStatus.FREE ||
         status === SubscriptionStatus.EXPIRED
       ) {
-        const promptCount = await getPromptCountFromStorage(customerInfo);
+        const promptCount = await getPromptCountFromPersistentStorage(customerInfo);
         setMonthlyPromptCount(promptCount);
         console.log(`Monthly prompt count: ${promptCount}`);
       } else {
@@ -322,11 +379,6 @@ export const SubscriptionProvider: React.FC<SubscriptionProviderProps> = ({
 
   // Increment prompt count for free users
   const incrementPromptCount = async () => {
-    if (!customerInfo) {
-      console.error('Cannot increment prompt count: no customer info');
-      return;
-    }
-
     if (
       subscriptionStatus !== SubscriptionStatus.FREE &&
       subscriptionStatus !== SubscriptionStatus.EXPIRED
@@ -336,10 +388,18 @@ export const SubscriptionProvider: React.FC<SubscriptionProviderProps> = ({
     }
 
     try {
-      const newCount = monthlyPromptCount + 1;
+      // Use persistent user service to increment count
+      const incrementResult = await persistentUserService.incrementCurrentUserPromptCount();
+      
+      if (!incrementResult.success) {
+        console.error('Failed to increment prompt count:', incrementResult.error);
+        return;
+      }
 
-      // Update storage and RevenueCat attributes
-      await setPromptCountInStorage(customerInfo, newCount);
+      const newCount = incrementResult.data;
+
+      // Also update in RevenueCat attributes for server-side tracking
+      await setPromptCountInPersistentStorage(newCount);
 
       // Update local state
       setMonthlyPromptCount(newCount);

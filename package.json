@@ -75,7 +75,8 @@
     "react-redux": "^9.2.0",
     "tailwind-merge": "^3.3.0",
     "tailwindcss": "^3.4.17",
-    "zustand": "^5.0.7"
+    "zustand": "^5.0.7",
+    "expo-secure-store": "~14.2.3"
   },
   "devDependencies": {
     "@babel/core": "^7.27.4",

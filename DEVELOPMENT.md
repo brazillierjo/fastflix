@@ -189,8 +189,24 @@ npm run typecheck
 ### Tests complets (pre-commit)
 
 ```bash
-# Lance lint + format + typecheck
+# Lance lint + format + typecheck + tests
 npm run pre-commit
+```
+
+### Tests unitaires
+
+```bash
+# Lancer tous les tests
+npm test
+
+# Tests en mode watch
+npm run test:watch
+
+# Tests avec coverage
+npm run test:coverage
+
+# Tests spécifiques aux services de persistance
+npm test -- --testPathPatterns="deviceIdentity|persistentUser"
 ```
 
 ## 📊 Monitoring & Debug
@@ -264,6 +280,38 @@ npx vercel --prod
 
 ## 📱 RevenueCat & Abonnements
 
+### Architecture du système d'abonnements
+
+FastFlix utilise un système hybride :
+- **RevenueCat** : Gestion des abonnements et achats
+- **Keychain iOS** : Identifiant persistant unique par appareil
+- **AsyncStorage** : Cache local des données utilisateur
+
+### Identité utilisateur persistante
+
+Le système génère un identifiant unique stocké dans le Keychain iOS :
+```
+ffx_device_[timestamp]_[random] 
+# Exemple: ffx_device_meln7rm_TestDevice123
+```
+
+**Avantages** :
+- ✅ Survit aux réinstallations de l'app
+- ✅ Compteur de prompts gratuits persistent
+- ✅ Migration automatique des données existantes
+- ✅ Compatible avec la restauration d'achats RevenueCat
+
+### Services développés
+
+```typescript
+// Service d'identité Keychain
+deviceIdentityService.getDeviceId() // ID persistant
+
+// Service utilisateur persistant  
+persistentUserService.getUserData(deviceId) // Données utilisateur
+persistentUserService.incrementPromptCount(deviceId) // Compteurs
+```
+
 ### Tester les achats
 
 ```bash
@@ -272,6 +320,28 @@ npx vercel --prod
 
 # Réinitialiser les achats de test
 # Réglages > App Store > Réinitialiser les achats sandbox
+```
+
+### Tester la persistance
+
+1. **Installer l'app** et noter le compteur de prompts
+2. **Utiliser quelques prompts** (max 3 pour utilisateur gratuit)
+3. **Désinstaller complètement l'app**
+4. **Réinstaller** → Le compteur doit être préservé ✅
+
+### Debug de l'identité persistante
+
+```typescript
+// Vérifier l'ID device actuel
+const deviceId = await deviceIdentityService.getDeviceId();
+console.log('Device ID:', deviceId.data);
+
+// Vérifier les données utilisateur
+const userData = await persistentUserService.getCurrentUserData();
+console.log('User data:', userData.data);
+
+// Réinitialiser pour les tests (DEV seulement)
+await deviceIdentityService.clearDeviceIdentity();
 ```
 
 ## 🚨 Commandes d'Urgence

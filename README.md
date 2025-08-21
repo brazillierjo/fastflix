@@ -21,9 +21,10 @@ Stop endless scrolling! FastFlix uses AI to provide intelligent movie and TV sho
 ### 💎 FastFlix Pro
 
 - ♾️ **Unlimited Recommendations** - No monthly limits
-- 🎛️ **Advanced Filters** - Genre, year, rating, and more
+- 🎛️ **Advanced Filters** - Genre, year, rating, and more  
 - 📱 **Premium Features** - Enhanced AI, smart notifications
 - ☁️ **Cloud Sync** - Your preferences across devices
+- 🔐 **Persistent Identity** - Keychain-based user tracking survives app reinstalls
 
 ## 📱 App Structure
 
@@ -55,8 +56,9 @@ This is a **monorepo** containing:
 - **TypeScript** - Type-safe development
 - **NativeWind** - Tailwind CSS for React Native
 - **Expo Router** - File-based navigation
-- **RevenueCat** - Subscription management
+- **RevenueCat** - Subscription management with persistent identity
 - **Google Gemini AI** - Movie recommendations
+- **Expo Secure Store** - Keychain-based persistent storage
 - **AsyncStorage** - Local data persistence
 - **EAS Build & Submit** - CI/CD pipeline
 
@@ -157,8 +159,12 @@ npm run typecheck           # Type checking
 ├── contexts/              # React contexts
 │   ├── RevenueCatContext.tsx  # Subscription management
 │   └── LanguageContext.tsx    # Internationalization
+├── services/              # Business logic services
+│   ├── deviceIdentity.service.ts  # Keychain identity management
+│   └── persistentUser.service.ts  # User data persistence
 ├── hooks/                 # Custom React hooks
 ├── utils/                 # API services & utilities
+├── types/                 # TypeScript type definitions
 └── locales/              # Translation files
 ```
 
@@ -217,9 +223,10 @@ Translation files are located in `/locales/` and `/website/src/lib/translations.
 
 ## 📊 Analytics & Monitoring
 
-- **RevenueCat**: Subscription analytics
+- **RevenueCat**: Subscription analytics with persistent device identity
 - **EAS**: Build and update monitoring
 - **Expo**: Crash reporting and performance metrics
+- **Keychain Storage**: Secure persistent user identification across app reinstalls
 
 ## 🤝 Contributing
 
