@@ -283,6 +283,7 @@ npx vercel --prod
 ### Architecture du système d'abonnements
 
 FastFlix utilise un système hybride :
+
 - **RevenueCat** : Gestion des abonnements et achats
 - **Keychain iOS** : Identifiant persistant unique par appareil
 - **AsyncStorage** : Cache local des données utilisateur
@@ -290,12 +291,14 @@ FastFlix utilise un système hybride :
 ### Identité utilisateur persistante
 
 Le système génère un identifiant unique stocké dans le Keychain iOS :
+
 ```
-ffx_device_[timestamp]_[random] 
+ffx_device_[timestamp]_[random]
 # Exemple: ffx_device_meln7rm_TestDevice123
 ```
 
 **Avantages** :
+
 - ✅ Survit aux réinstallations de l'app
 - ✅ Compteur de prompts gratuits persistent
 - ✅ Migration automatique des données existantes
@@ -305,11 +308,11 @@ ffx_device_[timestamp]_[random]
 
 ```typescript
 // Service d'identité Keychain
-deviceIdentityService.getDeviceId() // ID persistant
+deviceIdentityService.getDeviceId(); // ID persistant
 
-// Service utilisateur persistant  
-persistentUserService.getUserData(deviceId) // Données utilisateur
-persistentUserService.incrementPromptCount(deviceId) // Compteurs
+// Service utilisateur persistant
+persistentUserService.getUserData(deviceId); // Données utilisateur
+persistentUserService.incrementPromptCount(deviceId); // Compteurs
 ```
 
 ### Tester les achats

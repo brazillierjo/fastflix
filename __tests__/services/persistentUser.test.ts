@@ -24,7 +24,9 @@ jest.mock('@/services/deviceIdentity.service', () => ({
 }));
 
 const mockedAsyncStorage = AsyncStorage as jest.Mocked<typeof AsyncStorage>;
-const mockedDeviceIdentityService = deviceIdentityService as jest.Mocked<typeof deviceIdentityService>;
+const mockedDeviceIdentityService = deviceIdentityService as jest.Mocked<
+  typeof deviceIdentityService
+>;
 
 describe('PersistentUserService', () => {
   const mockDeviceId = 'ffx_device_test123';
@@ -33,7 +35,7 @@ describe('PersistentUserService', () => {
     jest.clearAllMocks();
     mockedDeviceIdentityService.getDeviceId.mockResolvedValue({
       success: true,
-      data: mockDeviceId
+      data: mockDeviceId,
     });
   });
 
@@ -54,10 +56,12 @@ describe('PersistentUserService', () => {
         deviceId: mockDeviceId,
         monthlyPromptCount: 2,
         currentMonth: getCurrentMonth(),
-        lastUpdated: '2024-01-01T00:00:00.000Z'
+        lastUpdated: '2024-01-01T00:00:00.000Z',
       };
 
-      mockedAsyncStorage.getItem.mockResolvedValueOnce(JSON.stringify(existingData));
+      mockedAsyncStorage.getItem.mockResolvedValueOnce(
+        JSON.stringify(existingData)
+      );
 
       const result = await persistentUserService.getUserData(mockDeviceId);
 
@@ -71,7 +75,7 @@ describe('PersistentUserService', () => {
         deviceId: mockDeviceId,
         monthlyPromptCount: 3,
         currentMonth: lastMonth,
-        lastUpdated: '2023-12-15T00:00:00.000Z'
+        lastUpdated: '2023-12-15T00:00:00.000Z',
       };
 
       mockedAsyncStorage.getItem.mockResolvedValueOnce(JSON.stringify(oldData));
@@ -92,13 +96,16 @@ describe('PersistentUserService', () => {
         deviceId: mockDeviceId,
         monthlyPromptCount: 1,
         currentMonth: getCurrentMonth(),
-        lastUpdated: '2024-01-01T00:00:00.000Z'
+        lastUpdated: '2024-01-01T00:00:00.000Z',
       };
 
-      mockedAsyncStorage.getItem.mockResolvedValueOnce(JSON.stringify(existingData));
+      mockedAsyncStorage.getItem.mockResolvedValueOnce(
+        JSON.stringify(existingData)
+      );
       mockedAsyncStorage.setItem.mockResolvedValueOnce(undefined);
 
-      const result = await persistentUserService.incrementPromptCount(mockDeviceId);
+      const result =
+        await persistentUserService.incrementPromptCount(mockDeviceId);
 
       expect(result.success).toBe(true);
       expect(result.data).toBe(2);
@@ -118,7 +125,10 @@ describe('PersistentUserService', () => {
       mockedAsyncStorage.setItem.mockResolvedValue(undefined);
       mockedAsyncStorage.removeItem.mockResolvedValue(undefined);
 
-      const result = await persistentUserService.migrateFromOldSystem(oldUserId, mockDeviceId);
+      const result = await persistentUserService.migrateFromOldSystem(
+        oldUserId,
+        mockDeviceId
+      );
 
       expect(result.success).toBe(true);
       expect(mockedAsyncStorage.setItem).toHaveBeenCalledWith(
@@ -131,9 +141,14 @@ describe('PersistentUserService', () => {
       const oldUserId = 'oldRevenueCatId123';
 
       // Mock existing migration
-      mockedAsyncStorage.getItem.mockResolvedValueOnce('2024-01-01T00:00:00.000Z');
+      mockedAsyncStorage.getItem.mockResolvedValueOnce(
+        '2024-01-01T00:00:00.000Z'
+      );
 
-      const result = await persistentUserService.migrateFromOldSystem(oldUserId, mockDeviceId);
+      const result = await persistentUserService.migrateFromOldSystem(
+        oldUserId,
+        mockDeviceId
+      );
 
       expect(result.success).toBe(true);
       expect(mockedAsyncStorage.setItem).not.toHaveBeenCalledWith(
@@ -149,10 +164,12 @@ describe('PersistentUserService', () => {
         deviceId: mockDeviceId,
         monthlyPromptCount: 1,
         currentMonth: getCurrentMonth(),
-        lastUpdated: '2024-01-01T00:00:00.000Z'
+        lastUpdated: '2024-01-01T00:00:00.000Z',
       };
 
-      mockedAsyncStorage.getItem.mockResolvedValueOnce(JSON.stringify(existingData));
+      mockedAsyncStorage.getItem.mockResolvedValueOnce(
+        JSON.stringify(existingData)
+      );
 
       const result = await persistentUserService.getCurrentUserData();
 
@@ -165,7 +182,7 @@ describe('PersistentUserService', () => {
       mockedDeviceIdentityService.getDeviceId.mockResolvedValueOnce({
         success: false,
         data: '',
-        error: { code: 'KEYCHAIN_ERROR', message: 'Test error' }
+        error: { code: 'KEYCHAIN_ERROR', message: 'Test error' },
       });
 
       const result = await persistentUserService.getCurrentUserData();

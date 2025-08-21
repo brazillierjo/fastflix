@@ -1,15 +1,15 @@
 /**
  * Persistent User Service
- * 
+ *
  * Manages user data persistence using device identity as the stable key.
  * Handles prompt counting, migration from old system, and monthly resets.
  */
 
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { 
-  PersistentUserData, 
-  PersistentUserService, 
-  DEVICE_IDENTITY_CONSTANTS 
+import {
+  PersistentUserData,
+  PersistentUserService,
+  DEVICE_IDENTITY_CONSTANTS,
 } from '@/types/deviceIdentity.types';
 import { APIResponse } from '@/types/api';
 import { deviceIdentityService } from './deviceIdentity.service';
@@ -17,7 +17,7 @@ import {
   getCurrentMonth,
   isNewMonth,
   generateMigrationKey,
-  sanitizeUserId
+  sanitizeUserId,
 } from '@/utils/deviceIdentifier.utils';
 
 class PersistentUserServiceImpl implements PersistentUserService {
@@ -47,7 +47,7 @@ class PersistentUserServiceImpl implements PersistentUserService {
       deviceId,
       monthlyPromptCount: 0,
       currentMonth: getCurrentMonth(),
-      lastUpdated: new Date().toISOString()
+      lastUpdated: new Date().toISOString(),
     };
   }
 
@@ -60,23 +60,29 @@ class PersistentUserServiceImpl implements PersistentUserService {
     defaultValue: T,
     originalError?: Error
   ): APIResponse<T> {
-    console.error(`PersistentUserService Error [${code}]:`, message, originalError);
-    
+    console.error(
+      `PersistentUserService Error [${code}]:`,
+      message,
+      originalError
+    );
+
     return {
       success: false,
       data: defaultValue,
       error: {
         code,
         message,
-        details: { originalError: originalError?.message }
-      }
+        details: { originalError: originalError?.message },
+      },
     };
   }
 
   /**
    * Get user data for a device
    */
-  async getUserData(deviceId: string): Promise<APIResponse<PersistentUserData>> {
+  async getUserData(
+    deviceId: string
+  ): Promise<APIResponse<PersistentUserData>> {
     try {
       const storageKey = this.getStorageKey(deviceId);
       const storedData = await AsyncStorage.getItem(storageKey);
@@ -86,7 +92,7 @@ class PersistentUserServiceImpl implements PersistentUserService {
         const defaultData = this.createDefaultUserData(deviceId);
         return {
           success: true,
-          data: defaultData
+          data: defaultData,
         };
       }
 
@@ -98,25 +104,26 @@ class PersistentUserServiceImpl implements PersistentUserService {
           ...userData,
           monthlyPromptCount: 0,
           currentMonth: getCurrentMonth(),
-          lastUpdated: new Date().toISOString()
+          lastUpdated: new Date().toISOString(),
         };
 
         // Save the reset data
         await this.setUserData(resetData);
-        
-        console.log(`Reset monthly count for device ${deviceId} (new month: ${getCurrentMonth()})`);
-        
+
+        console.log(
+          `Reset monthly count for device ${deviceId} (new month: ${getCurrentMonth()})`
+        );
+
         return {
           success: true,
-          data: resetData
+          data: resetData,
         };
       }
 
       return {
         success: true,
-        data: userData
+        data: userData,
       };
-
     } catch (error) {
       return this.createErrorResponse(
         'STORAGE_READ_ERROR',
@@ -134,7 +141,7 @@ class PersistentUserServiceImpl implements PersistentUserService {
     try {
       const updatedData: PersistentUserData = {
         ...data,
-        lastUpdated: new Date().toISOString()
+        lastUpdated: new Date().toISOString(),
       };
 
       const storageKey = this.getStorageKey(data.deviceId);
@@ -142,9 +149,8 @@ class PersistentUserServiceImpl implements PersistentUserService {
 
       return {
         success: true,
-        data: true
+        data: true,
       };
-
     } catch (error) {
       return this.createErrorResponse(
         'STORAGE_WRITE_ERROR',
@@ -161,38 +167,39 @@ class PersistentUserServiceImpl implements PersistentUserService {
   async incrementPromptCount(deviceId: string): Promise<APIResponse<number>> {
     try {
       const userDataResult = await this.getUserData(deviceId);
-      
+
       if (!userDataResult.success) {
         return {
           success: false,
           data: 0,
-          error: userDataResult.error
+          error: userDataResult.error,
         };
       }
 
       const newCount = userDataResult.data.monthlyPromptCount + 1;
       const updatedData: PersistentUserData = {
         ...userDataResult.data,
-        monthlyPromptCount: newCount
+        monthlyPromptCount: newCount,
       };
 
       const setResult = await this.setUserData(updatedData);
-      
+
       if (!setResult.success) {
         return {
           success: false,
           data: userDataResult.data.monthlyPromptCount,
-          error: setResult.error
+          error: setResult.error,
         };
       }
 
-      console.log(`Incremented prompt count to ${newCount} for device ${deviceId}`);
+      console.log(
+        `Incremented prompt count to ${newCount} for device ${deviceId}`
+      );
 
       return {
         success: true,
-        data: newCount
+        data: newCount,
       };
-
     } catch (error) {
       return this.createErrorResponse(
         'INCREMENT_ERROR',
@@ -209,28 +216,28 @@ class PersistentUserServiceImpl implements PersistentUserService {
   async resetMonthlyCount(deviceId: string): Promise<APIResponse<boolean>> {
     try {
       const userDataResult = await this.getUserData(deviceId);
-      
+
       if (!userDataResult.success) {
         return {
           success: false,
           data: false,
-          error: userDataResult.error
+          error: userDataResult.error,
         };
       }
 
       const resetData: PersistentUserData = {
         ...userDataResult.data,
         monthlyPromptCount: 0,
-        currentMonth: getCurrentMonth()
+        currentMonth: getCurrentMonth(),
       };
 
       const setResult = await this.setUserData(resetData);
-      
+
       if (!setResult.success) {
         return {
           success: false,
           data: false,
-          error: setResult.error
+          error: setResult.error,
         };
       }
 
@@ -238,9 +245,8 @@ class PersistentUserServiceImpl implements PersistentUserService {
 
       return {
         success: true,
-        data: true
+        data: true,
       };
-
     } catch (error) {
       return this.createErrorResponse(
         'RESET_ERROR',
@@ -254,19 +260,22 @@ class PersistentUserServiceImpl implements PersistentUserService {
   /**
    * Migrate data from old RevenueCat system to new device-based system
    */
-  async migrateFromOldSystem(oldUserId: string, newDeviceId: string): Promise<APIResponse<boolean>> {
+  async migrateFromOldSystem(
+    oldUserId: string,
+    newDeviceId: string
+  ): Promise<APIResponse<boolean>> {
     try {
       console.log(`Starting migration from ${oldUserId} to ${newDeviceId}`);
 
       // Check if we already migrated this user
       const migrationKey = generateMigrationKey(oldUserId);
       const alreadyMigrated = await AsyncStorage.getItem(migrationKey);
-      
+
       if (alreadyMigrated) {
         console.log(`Migration already completed for ${oldUserId}`);
         return {
           success: true,
-          data: true
+          data: true,
         };
       }
 
@@ -278,7 +287,9 @@ class PersistentUserServiceImpl implements PersistentUserService {
       let promptCount = 0;
       if (oldPromptCount) {
         promptCount = parseInt(oldPromptCount, 10) || 0;
-        console.log(`Found ${promptCount} prompts to migrate from ${oldUserId}`);
+        console.log(
+          `Found ${promptCount} prompts to migrate from ${oldUserId}`
+        );
       }
 
       // Create new user data with migrated prompt count
@@ -287,17 +298,17 @@ class PersistentUserServiceImpl implements PersistentUserService {
         monthlyPromptCount: promptCount,
         currentMonth,
         lastUpdated: new Date().toISOString(),
-        revenueCatUserId: oldUserId // Keep reference for debugging
+        revenueCatUserId: oldUserId, // Keep reference for debugging
       };
 
       // Save new data
       const setResult = await this.setUserData(newUserData);
-      
+
       if (!setResult.success) {
         return {
           success: false,
           data: false,
-          error: setResult.error
+          error: setResult.error,
         };
       }
 
@@ -313,13 +324,14 @@ class PersistentUserServiceImpl implements PersistentUserService {
         // Don't fail the migration for cleanup errors
       }
 
-      console.log(`Successfully migrated ${promptCount} prompts from ${oldUserId} to ${newDeviceId}`);
+      console.log(
+        `Successfully migrated ${promptCount} prompts from ${oldUserId} to ${newDeviceId}`
+      );
 
       return {
         success: true,
-        data: true
+        data: true,
       };
-
     } catch (error) {
       return this.createErrorResponse(
         'MIGRATION_ERROR',
@@ -336,17 +348,16 @@ class PersistentUserServiceImpl implements PersistentUserService {
   async getCurrentUserData(): Promise<APIResponse<PersistentUserData>> {
     try {
       const deviceIdResult = await deviceIdentityService.getDeviceId();
-      
+
       if (!deviceIdResult.success) {
         return {
           success: false,
           data: this.createDefaultUserData(''),
-          error: deviceIdResult.error
+          error: deviceIdResult.error,
         };
       }
 
       return await this.getUserData(deviceIdResult.data);
-
     } catch (error) {
       return this.createErrorResponse(
         'DEVICE_ID_ERROR',
@@ -363,17 +374,16 @@ class PersistentUserServiceImpl implements PersistentUserService {
   async incrementCurrentUserPromptCount(): Promise<APIResponse<number>> {
     try {
       const deviceIdResult = await deviceIdentityService.getDeviceId();
-      
+
       if (!deviceIdResult.success) {
         return {
           success: false,
           data: 0,
-          error: deviceIdResult.error
+          error: deviceIdResult.error,
         };
       }
 
       return await this.incrementPromptCount(deviceIdResult.data);
-
     } catch (error) {
       return this.createErrorResponse(
         'DEVICE_ID_ERROR',
@@ -391,9 +401,9 @@ class PersistentUserServiceImpl implements PersistentUserService {
     try {
       // Get all keys from AsyncStorage
       const allKeys = await AsyncStorage.getAllKeys();
-      
+
       // Filter keys that match our pattern
-      const userDataKeys = allKeys.filter(key => 
+      const userDataKeys = allKeys.filter(key =>
         key.startsWith(DEVICE_IDENTITY_CONSTANTS.STORAGE_KEY_PREFIX)
       );
 
@@ -404,9 +414,8 @@ class PersistentUserServiceImpl implements PersistentUserService {
 
       return {
         success: true,
-        data: true
+        data: true,
       };
-
     } catch (error) {
       return this.createErrorResponse(
         'CLEAR_ERROR',

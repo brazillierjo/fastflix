@@ -1,6 +1,6 @@
 /**
  * Device Identity Types
- * 
+ *
  * Types for managing persistent device identity across app reinstalls
  */
 
@@ -34,11 +34,18 @@ export interface PersistentUserService {
   setUserData(data: PersistentUserData): Promise<APIResponse<boolean>>;
   incrementPromptCount(deviceId: string): Promise<APIResponse<number>>;
   resetMonthlyCount(deviceId: string): Promise<APIResponse<boolean>>;
-  migrateFromOldSystem(oldUserId: string, newDeviceId: string): Promise<APIResponse<boolean>>;
+  migrateFromOldSystem(
+    oldUserId: string,
+    newDeviceId: string
+  ): Promise<APIResponse<boolean>>;
 }
 
 export interface DeviceIdentityError {
-  code: 'KEYCHAIN_ERROR' | 'GENERATION_ERROR' | 'MIGRATION_ERROR' | 'VALIDATION_ERROR';
+  code:
+    | 'KEYCHAIN_ERROR'
+    | 'GENERATION_ERROR'
+    | 'MIGRATION_ERROR'
+    | 'VALIDATION_ERROR';
   message: string;
   originalError?: Error;
 }

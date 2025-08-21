@@ -45,10 +45,12 @@ describe('DeviceIdentityService', () => {
         deviceId: 'ffx_device_meln7rm_TestDeviceId123',
         createdAt: '2024-01-01T00:00:00.000Z',
         lastAccessed: '2024-01-01T00:00:00.000Z',
-        version: '1.0.0'
+        version: '1.0.0',
       };
 
-      mockedSecureStore.getItemAsync.mockResolvedValueOnce(JSON.stringify(existingIdentity));
+      mockedSecureStore.getItemAsync.mockResolvedValueOnce(
+        JSON.stringify(existingIdentity)
+      );
       mockedSecureStore.setItemAsync.mockResolvedValueOnce(undefined);
 
       const result = await deviceIdentityService.getDeviceId();
@@ -59,7 +61,9 @@ describe('DeviceIdentityService', () => {
 
     it('should handle keychain errors gracefully when getting fails but creating succeeds', async () => {
       // First call fails (getDeviceIdentity), then creation succeeds
-      mockedSecureStore.getItemAsync.mockRejectedValueOnce(new Error('Keychain error'));
+      mockedSecureStore.getItemAsync.mockRejectedValueOnce(
+        new Error('Keychain error')
+      );
       mockedSecureStore.setItemAsync.mockResolvedValueOnce(undefined);
 
       const result = await deviceIdentityService.getDeviceId();
@@ -89,10 +93,12 @@ describe('DeviceIdentityService', () => {
         deviceId: 'ffx_device_meln7rm_TestDeviceId123',
         createdAt: '2024-01-01T00:00:00.000Z',
         lastAccessed: '2024-01-01T00:00:00.000Z',
-        version: '1.0.0'
+        version: '1.0.0',
       };
 
-      mockedSecureStore.getItemAsync.mockResolvedValueOnce(JSON.stringify(validIdentity));
+      mockedSecureStore.getItemAsync.mockResolvedValueOnce(
+        JSON.stringify(validIdentity)
+      );
 
       const result = await deviceIdentityService.validateDeviceIdentity();
 

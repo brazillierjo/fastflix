@@ -1,22 +1,22 @@
 /**
  * Device Identity Service
- * 
+ *
  * Manages persistent device identity using Keychain storage.
  * This service ensures users maintain the same identity across app reinstalls.
  */
 
 import * as SecureStore from 'expo-secure-store';
-import { 
-  DeviceIdentity, 
-  DeviceIdentityService, 
+import {
+  DeviceIdentity,
+  DeviceIdentityService,
   DeviceIdentityError,
-  DEVICE_IDENTITY_CONSTANTS 
+  DEVICE_IDENTITY_CONSTANTS,
 } from '@/types/deviceIdentity.types';
 import { APIResponse } from '@/types/api';
 import {
   generateDeviceId,
   isValidDeviceId,
-  extractTimestampFromDeviceId
+  extractTimestampFromDeviceId,
 } from '@/utils/deviceIdentifier.utils';
 
 class DeviceIdentityServiceImpl implements DeviceIdentityService {
@@ -41,16 +41,20 @@ class DeviceIdentityServiceImpl implements DeviceIdentityService {
     defaultValue: T,
     originalError?: Error
   ): APIResponse<T> {
-    console.error(`DeviceIdentityService Error [${code}]:`, message, originalError);
-    
+    console.error(
+      `DeviceIdentityService Error [${code}]:`,
+      message,
+      originalError
+    );
+
     return {
       success: false,
       data: defaultValue,
       error: {
         code,
         message,
-        details: { originalError: originalError?.message }
-      }
+        details: { originalError: originalError?.message },
+      },
     };
   }
 
@@ -64,18 +68,18 @@ class DeviceIdentityServiceImpl implements DeviceIdentityService {
         await this.updateLastAccessed();
         return {
           success: true,
-          data: this.cachedIdentity.deviceId
+          data: this.cachedIdentity.deviceId,
         };
       }
 
       // Try to load from keychain
       const identityResult = await this.getDeviceIdentity();
-      
+
       if (identityResult.success && identityResult.data.deviceId) {
         await this.updateLastAccessed();
         return {
           success: true,
-          data: identityResult.data.deviceId
+          data: identityResult.data.deviceId,
         };
       }
 
@@ -84,7 +88,7 @@ class DeviceIdentityServiceImpl implements DeviceIdentityService {
       if (newDeviceIdResult.success) {
         return {
           success: true,
-          data: newDeviceIdResult.data
+          data: newDeviceIdResult.data,
         };
       }
 
@@ -94,7 +98,6 @@ class DeviceIdentityServiceImpl implements DeviceIdentityService {
         '',
         new Error('All device ID methods failed')
       );
-
     } catch (error) {
       return this.createErrorResponse(
         'GENERATION_ERROR',
@@ -111,7 +114,7 @@ class DeviceIdentityServiceImpl implements DeviceIdentityService {
   async createDeviceId(): Promise<APIResponse<string>> {
     try {
       const deviceId = generateDeviceId();
-      
+
       if (!isValidDeviceId(deviceId)) {
         return this.createErrorResponse(
           'GENERATION_ERROR',
@@ -125,7 +128,7 @@ class DeviceIdentityServiceImpl implements DeviceIdentityService {
         deviceId,
         createdAt: now,
         lastAccessed: now,
-        version: DEVICE_IDENTITY_CONSTANTS.VERSION
+        version: DEVICE_IDENTITY_CONSTANTS.VERSION,
       };
 
       // Store in keychain
@@ -141,9 +144,8 @@ class DeviceIdentityServiceImpl implements DeviceIdentityService {
 
       return {
         success: true,
-        data: deviceId
+        data: deviceId,
       };
-
     } catch (error) {
       return this.createErrorResponse(
         'KEYCHAIN_ERROR',
@@ -163,7 +165,7 @@ class DeviceIdentityServiceImpl implements DeviceIdentityService {
       if (this.cachedIdentity) {
         return {
           success: true,
-          data: this.cachedIdentity
+          data: this.cachedIdentity,
         };
       }
 
@@ -178,12 +180,12 @@ class DeviceIdentityServiceImpl implements DeviceIdentityService {
             deviceId: '',
             createdAt: '',
             lastAccessed: '',
-            version: DEVICE_IDENTITY_CONSTANTS.VERSION
+            version: DEVICE_IDENTITY_CONSTANTS.VERSION,
           },
           error: {
             code: 'KEYCHAIN_ERROR',
-            message: 'No device identity found in keychain'
-          }
+            message: 'No device identity found in keychain',
+          },
         };
       }
 
@@ -199,7 +201,7 @@ class DeviceIdentityServiceImpl implements DeviceIdentityService {
             deviceId: '',
             createdAt: '',
             lastAccessed: '',
-            version: DEVICE_IDENTITY_CONSTANTS.VERSION
+            version: DEVICE_IDENTITY_CONSTANTS.VERSION,
           }
         );
       }
@@ -209,9 +211,8 @@ class DeviceIdentityServiceImpl implements DeviceIdentityService {
 
       return {
         success: true,
-        data: identity
+        data: identity,
       };
-
     } catch (error) {
       return this.createErrorResponse(
         'KEYCHAIN_ERROR',
@@ -220,7 +221,7 @@ class DeviceIdentityServiceImpl implements DeviceIdentityService {
           deviceId: '',
           createdAt: '',
           lastAccessed: '',
-          version: DEVICE_IDENTITY_CONSTANTS.VERSION
+          version: DEVICE_IDENTITY_CONSTANTS.VERSION,
         },
         error as Error
       );
@@ -233,18 +234,18 @@ class DeviceIdentityServiceImpl implements DeviceIdentityService {
   async updateLastAccessed(): Promise<APIResponse<boolean>> {
     try {
       const identityResult = await this.getDeviceIdentity();
-      
+
       if (!identityResult.success) {
         return {
           success: false,
           data: false,
-          error: identityResult.error
+          error: identityResult.error,
         };
       }
 
       const updatedIdentity: DeviceIdentity = {
         ...identityResult.data,
-        lastAccessed: new Date().toISOString()
+        lastAccessed: new Date().toISOString(),
       };
 
       await SecureStore.setItemAsync(
@@ -257,9 +258,8 @@ class DeviceIdentityServiceImpl implements DeviceIdentityService {
 
       return {
         success: true,
-        data: true
+        data: true,
       };
-
     } catch (error) {
       return this.createErrorResponse(
         'KEYCHAIN_ERROR',
@@ -282,9 +282,8 @@ class DeviceIdentityServiceImpl implements DeviceIdentityService {
 
       return {
         success: true,
-        data: true
+        data: true,
       };
-
     } catch (error) {
       return this.createErrorResponse(
         'KEYCHAIN_ERROR',
@@ -301,12 +300,12 @@ class DeviceIdentityServiceImpl implements DeviceIdentityService {
   async getDeviceCreationDate(): Promise<APIResponse<Date | null>> {
     try {
       const identityResult = await this.getDeviceIdentity();
-      
+
       if (!identityResult.success) {
         return {
           success: false,
           data: null,
-          error: identityResult.error
+          error: identityResult.error,
         };
       }
 
@@ -317,14 +316,15 @@ class DeviceIdentityServiceImpl implements DeviceIdentityService {
         creationDate = new Date(identityResult.data.createdAt);
       } else {
         // Fallback to extracting from device ID
-        creationDate = extractTimestampFromDeviceId(identityResult.data.deviceId);
+        creationDate = extractTimestampFromDeviceId(
+          identityResult.data.deviceId
+        );
       }
 
       return {
         success: true,
-        data: creationDate
+        data: creationDate,
       };
-
     } catch (error) {
       return this.createErrorResponse(
         'VALIDATION_ERROR',
@@ -341,21 +341,20 @@ class DeviceIdentityServiceImpl implements DeviceIdentityService {
   async validateDeviceIdentity(): Promise<APIResponse<boolean>> {
     try {
       const identityResult = await this.getDeviceIdentity();
-      
+
       if (!identityResult.success) {
         return {
           success: true, // Method succeeded, but identity is not valid
-          data: false
+          data: false,
         };
       }
 
       const isValid = isValidDeviceId(identityResult.data.deviceId);
-      
+
       return {
         success: true,
-        data: isValid
+        data: isValid,
       };
-
     } catch (error) {
       return this.createErrorResponse(
         'VALIDATION_ERROR',

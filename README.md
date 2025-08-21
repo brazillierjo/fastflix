@@ -21,7 +21,7 @@ Stop endless scrolling! FastFlix uses AI to provide intelligent movie and TV sho
 ### 💎 FastFlix Pro
 
 - ♾️ **Unlimited Recommendations** - No monthly limits
-- 🎛️ **Advanced Filters** - Genre, year, rating, and more  
+- 🎛️ **Advanced Filters** - Genre, year, rating, and more
 - 📱 **Premium Features** - Enhanced AI, smart notifications
 - ☁️ **Cloud Sync** - Your preferences across devices
 - 🔐 **Persistent Identity** - Keychain-based user tracking survives app reinstalls

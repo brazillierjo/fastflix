@@ -118,6 +118,7 @@ interface DeviceIdentityService {
 ```
 
 **Caractéristiques** :
+
 - ✅ Singleton pattern
 - ✅ Cache en mémoire pour les performances
 - ✅ Génération d'ID cryptographiquement sécurisée
@@ -133,11 +134,15 @@ interface PersistentUserService {
   setUserData(data: PersistentUserData): Promise<APIResponse<boolean>>;
   incrementPromptCount(deviceId: string): Promise<APIResponse<number>>;
   resetMonthlyCount(deviceId: string): Promise<APIResponse<boolean>>;
-  migrateFromOldSystem(oldUserId: string, newDeviceId: string): Promise<APIResponse<boolean>>;
+  migrateFromOldSystem(
+    oldUserId: string,
+    newDeviceId: string
+  ): Promise<APIResponse<boolean>>;
 }
 ```
 
 **Caractéristiques** :
+
 - ✅ Gestion automatique des resets mensuels
 - ✅ Migration transparente des anciennes données
 - ✅ Opérations atomiques
@@ -148,6 +153,7 @@ interface PersistentUserService {
 **Responsabilité** : Orchestration de l'abonnement avec identité persistante
 
 **Modifications apportées** :
+
 - Utilise `deviceIdentityService` au lieu de l'ID RevenueCat anonyme
 - Configure RevenueCat avec l'ID persistant
 - Migration automatique au premier lancement
@@ -252,7 +258,7 @@ En cas de problème avec le nouveau système :
 ### Optimisations implémentées
 
 - **Cache en mémoire** : Device ID chargé une seule fois par session
-- **Opérations lazy** : Keychain accédé seulement si nécessaire  
+- **Opérations lazy** : Keychain accédé seulement si nécessaire
 - **Batch operations** : Regroupement des écritures AsyncStorage
 - **Fallback graceful** : En cas d'échec Keychain, génération d'ID temporaire
 
