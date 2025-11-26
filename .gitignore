@@ -9,6 +9,8 @@ node_modules/
 /ios
 /android
 
+coverage/
+
 # Expo
 .expo/
 dist/
