@@ -66,15 +66,6 @@ export const useFastFlixProFeatures = () => {
 
   // Check if user can make a prompt with detailed status
   const getPromptStatus = (): PromptStatus => {
-    // Development mode override
-    if (process.env.NODE_ENV === 'development') {
-      return {
-        allowed: true,
-        reason: 'development-mode',
-        remaining: Infinity,
-      };
-    }
-
     // Users with unlimited access (active subscribers or in grace period)
     if (hasUnlimitedAccess) {
       const reason =

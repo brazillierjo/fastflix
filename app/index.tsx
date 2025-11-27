@@ -66,11 +66,6 @@ export default function HomeScreen() {
 
     handleSearchStart();
 
-    // Increment prompt count for non-subscribers
-    if (promptCheck.reason === 'within_monthly_limit') {
-      await incrementPromptCount();
-    }
-
     movieSearchMutation.mutate(
       {
         query,
@@ -78,7 +73,14 @@ export default function HomeScreen() {
         includeTvShows: true,
       },
       {
-        onSuccess: data => {
+        onSuccess: async data => {
+          // Only increment prompt count if search returned results (> 0 movies)
+          if (data.movies && data.movies.length > 0) {
+            // Increment prompt count for free users
+            // Note: incrementPromptCount() already checks if user is free/expired internally
+            await incrementPromptCount();
+          }
+
           handleSearchSuccess(data);
         },
         onError: () => {
