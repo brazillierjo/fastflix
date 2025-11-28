@@ -179,6 +179,7 @@ class DatabaseService {
 
   /**
    * Check if a device has an active subscription
+   * Returns true if subscription is 'active' or 'cancelled' with valid expiration date
    */
   async hasActiveSubscription(deviceId: string): Promise<boolean> {
     const client = this.getClient();
@@ -186,7 +187,7 @@ class DatabaseService {
     try {
       const result = await client.execute({
         sql: `SELECT status, expires_at FROM subscriptions
-              WHERE device_id = ? AND status = 'active'`,
+              WHERE device_id = ? AND (status = 'active' OR status = 'cancelled')`,
         args: [deviceId],
       });
 
