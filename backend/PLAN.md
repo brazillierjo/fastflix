@@ -23,13 +23,13 @@
 ## 🎯 Phase 1: Setup Initial
 
 ### 1.1 Configuration Base de Données Turso
-- [ ] Créer compte sur [turso.tech](https://turso.tech)
-- [ ] Installer Turso CLI (`brew install tursodatabase/tap/turso`)
-- [ ] Se connecter: `turso auth login`
-- [ ] Créer la database: `turso db create fastflix-db`
-- [ ] Récupérer l'URL: `turso db show fastflix-db`
-- [ ] Générer le token: `turso db tokens create fastflix-db`
-- [ ] Sauvegarder URL et token dans `.env.local`
+- [x] Créer compte sur [turso.tech](https://turso.tech)
+- [x] Installer Turso CLI (`brew install tursodatabase/tap/turso`)
+- [x] Se connecter: `turso auth login`
+- [x] Créer la database: `turso db create fastflix-db`
+- [x] Récupérer l'URL: `turso db show fastflix-db`
+- [x] Générer le token: `turso db tokens create fastflix-db`
+- [x] Sauvegarder URL et token dans `.env.local`
 
 ### 1.2 Schéma Base de Données
 ```sql
@@ -59,13 +59,13 @@ CREATE TABLE prompt_logs (
 );
 ```
 
-- [ ] Créer le schéma dans Turso: `turso db shell fastflix-db < schema.sql`
-- [ ] Vérifier les tables: `turso db shell fastflix-db "SELECT * FROM user_prompts LIMIT 1;"`
+- [x] Créer le schéma dans Turso: `turso db shell fastflix-db < schema.sql`
+- [x] Vérifier les tables: `turso db shell fastflix-db "SELECT * FROM user_prompts LIMIT 1;"`
 
 ### 1.3 Configuration Next.js Backend
-- [ ] Installer les dépendances Turso: `npm install @libsql/client`
-- [ ] Installer Google AI SDK: `npm install @google/generative-ai`
-- [ ] Créer `/backend/.env.local` avec:
+- [x] Installer les dépendances Turso: `npm install @libsql/client`
+- [x] Installer Google AI SDK: `npm install @google/generative-ai`
+- [x] Créer `/backend/.env.local` avec:
   ```env
   # Turso Database
   TURSO_DATABASE_URL=libsql://fastflix-db-xxx.turso.io
@@ -78,7 +78,7 @@ CREATE TABLE prompt_logs (
   MAX_FREE_PROMPTS=3
   NODE_ENV=development
   ```
-- [ ] Ajouter `.env.local` au `.gitignore` (déjà fait normalement)
+- [x] Ajouter `.env.local` au `.gitignore` (déjà fait normalement)
 
 ---
 
@@ -415,12 +415,12 @@ export interface CheckLimitResponse {
 
 ## 🚀 Ordre d'Exécution Recommandé
 
-1. ✅ Phase 1: Setup (Turso + Next.js)
-2. ✅ Phase 2: Services Backend
-3. ✅ Phase 3: Endpoints API
-4. ✅ Phase 4: Sécurité
-5. ✅ Phase 5: Tests
-6. ✅ Phase 6: Déploiement
+1. ✅ Phase 1: Setup (Turso + Next.js) - **TERMINÉE**
+2. ⏳ Phase 2: Services Backend
+3. ⏳ Phase 3: Endpoints API
+4. ⏳ Phase 4: Sécurité
+5. ⏳ Phase 5: Tests
+6. ⏳ Phase 6: Déploiement
 7. ⏳ Phase 7: Frontend (APRÈS API fonctionnelle)
 8. ⏳ Phase 8: Monitoring (APRÈS mise en prod)
 
@@ -428,4 +428,4 @@ export interface CheckLimitResponse {
 
 **Date de début**: 28 novembre 2024
 **Dernière mise à jour**: 28 novembre 2024
-**Status global**: 🔴 Phase 1 en cours
+**Status global**: 🟢 Phase 1 terminée - Prêt pour Phase 2
