@@ -7,12 +7,14 @@
 ## 📋 Vue d'ensemble
 
 ### Problème actuel
+
 - ✅ Clé Google AI exposée dans l'app mobile (risque de vol)
 - ✅ Compteur de prompts contournable (désinstallation = reset)
 - ✅ Impossible de tracer l'utilisation réelle
 - ✅ Pas de rate limiting efficace
 
 ### Solution
+
 - API Next.js hébergée sur Vercel (gratuit)
 - Base de données Turso SQLite (gratuit, 9GB)
 - Identification par Device ID persistant (iOS Keychain + Android)
@@ -30,6 +32,7 @@
 ## 🎯 Phase 1: Setup Initial
 
 ### 1.1 Configuration Base de Données Turso
+
 - [x] Créer compte sur [turso.tech](https://turso.tech)
 - [x] Installer Turso CLI (`brew install tursodatabase/tap/turso`)
 - [x] Se connecter: `turso auth login`
@@ -39,6 +42,7 @@
 - [x] Sauvegarder URL et token dans `.env.local`
 
 ### 1.2 Schéma Base de Données
+
 ```sql
 -- Table principale pour le comptage des prompts
 CREATE TABLE user_prompts (
@@ -70,9 +74,11 @@ CREATE TABLE prompt_logs (
 - [x] Vérifier les tables: `turso db shell fastflix-db "SELECT * FROM user_prompts LIMIT 1;"`
 
 ### 1.3 Configuration Next.js Backend
+
 - [x] Installer les dépendances Turso: `npm install @libsql/client`
 - [x] Installer Google AI SDK: `npm install @google/generative-ai`
 - [x] Créer `/backend/.env.local` avec:
+
   ```env
   # Turso Database
   TURSO_DATABASE_URL=libsql://fastflix-db-xxx.turso.io
@@ -89,6 +95,7 @@ CREATE TABLE prompt_logs (
   MAX_FREE_PROMPTS=3
   NODE_ENV=development
   ```
+
 - [x] Ajouter `.env.local` au `.gitignore` (déjà fait normalement)
 
 ---
@@ -96,6 +103,7 @@ CREATE TABLE prompt_logs (
 ## 🔧 Phase 2: Services Backend
 
 ### 2.1 Service Database (`/backend/lib/db.ts`)
+
 - [x] Créer le client Turso singleton
 - [x] Fonction `getOrCreateUser(deviceId, platform, appVersion)`
 - [x] Fonction `incrementPromptCount(deviceId)`
@@ -105,6 +113,7 @@ CREATE TABLE prompt_logs (
 - [x] Gestion des erreurs avec retry logic
 
 ### 2.2 Service Google AI (`/backend/lib/gemini.ts`)
+
 - [x] Créer le client Gemini singleton
 - [x] Fonction `generateRecommendations(query, contentTypes)` → retourne uniquement les titres
 - [x] Fonction `generateConversationalResponse(query)`
@@ -113,6 +122,7 @@ CREATE TABLE prompt_logs (
 - [x] Cache optionnel des requêtes populaires
 
 ### 2.3 Service TMDB (`/backend/lib/tmdb.ts`)
+
 - [x] Créer le client TMDB avec API key
 - [x] Fonction `searchMovieByTitle(title, language)` → métadonnées film
 - [x] Fonction `searchTVByTitle(title, language)` → métadonnées série
@@ -127,6 +137,7 @@ CREATE TABLE prompt_logs (
 - [x] Cache des résultats TMDB pour éviter les appels répétés
 
 ### 2.4 Service Comptage (`/backend/lib/prompt-counter.ts`)
+
 - [x] Fonction `canMakePrompt(deviceId)` → { allowed, remaining, reason }
 - [x] Fonction `checkSubscriptionStatus(deviceId)` (intégration RevenueCat future)
 - [x] Logique de vérification:
@@ -136,6 +147,7 @@ CREATE TABLE prompt_logs (
   - Retourner infos détaillées pour l'app
 
 ### 2.5 Types TypeScript Partagés (`/backend/lib/types.ts`)
+
 ```typescript
 // Types de requêtes API
 export interface SearchRequest {
@@ -145,8 +157,8 @@ export interface SearchRequest {
   includeTvShows: boolean;
   platform: 'ios' | 'android';
   appVersion: string;
-  language?: string;  // 'fr-FR', 'en-US', etc.
-  country?: string;   // 'FR', 'US', etc.
+  language?: string; // 'fr-FR', 'en-US', etc.
+  country?: string; // 'FR', 'US', etc.
 }
 
 // Type pour un film/série avec métadonnées TMDB complètes
@@ -160,15 +172,15 @@ export interface MovieResult {
   backdrop_path: string | null;
   vote_average: number;
   vote_count: number;
-  release_date?: string;       // Pour les films
-  first_air_date?: string;     // Pour les séries
+  release_date?: string; // Pour les films
+  first_air_date?: string; // Pour les séries
   genre_ids: number[];
   popularity: number;
   adult?: boolean;
 }
 
 export interface SearchResponse {
-  recommendations: MovieResult[];  // ⭐ Métadonnées complètes au lieu de simples titres
+  recommendations: MovieResult[]; // ⭐ Métadonnées complètes au lieu de simples titres
   conversationalResponse: string;
   promptsRemaining: number;
   isProUser: boolean;
@@ -189,6 +201,7 @@ export interface CheckLimitResponse {
   reason?: string;
 }
 ```
+
 - [x] Définir tous les types de requêtes/réponses
 - [x] Types pour les métadonnées TMDB
 - [x] Types pour les erreurs standardisées
@@ -199,6 +212,7 @@ export interface CheckLimitResponse {
 ## 🌐 Phase 3: Endpoints API
 
 ### 3.1 Endpoint `/api/search` (POST)
+
 **Fonction principale**: Recherche de films/séries avec AI + TMDB
 
 - [ ] Validation du corps de la requête (Zod)
@@ -245,6 +259,7 @@ export interface CheckLimitResponse {
   - 503: Service temporairement indisponible
 
 ### 3.2 Endpoint `/api/check-limit` (POST)
+
 **Fonction**: Vérifier le quota avant de faire une recherche (optionnel mais recommandé)
 
 - [ ] Validation du corps: `{ deviceId, platform? }`
@@ -266,6 +281,7 @@ export interface CheckLimitResponse {
 - [ ] Gestion des erreurs DB
 
 ### 3.3 Endpoint `/api/subscription/webhook` (POST)
+
 **Fonction**: Recevoir les webhooks RevenueCat pour les abonnements
 
 - [ ] Valider la signature RevenueCat (sécurité)
@@ -287,6 +303,7 @@ export interface CheckLimitResponse {
 - [ ] Logger tous les événements pour debug
 
 ### 3.4 Endpoint `/api/health` (GET)
+
 **Fonction**: Vérifier que l'API fonctionne (pour monitoring)
 
 - [ ] Vérifier la connexion Turso
@@ -306,18 +323,21 @@ export interface CheckLimitResponse {
 ## 🔒 Phase 4: Sécurité & Rate Limiting
 
 ### 4.1 Validation des Requêtes
+
 - [ ] Installer Zod: `npm install zod`
 - [ ] Valider tous les inputs (deviceId, query, etc.)
 - [ ] Sanitizer les queries (éviter injection)
 - [ ] Limiter la taille des requêtes (max 500 caractères pour query)
 
 ### 4.2 Rate Limiting Global
+
 - [ ] Installer `@upstash/ratelimit` ou Vercel Edge Config
 - [ ] Limiter par IP: max 10 requêtes/minute
 - [ ] Limiter par deviceId: max 5 requêtes/minute
 - [ ] Retourner headers `X-RateLimit-*` standard
 
 ### 4.3 Protection Anti-Abus
+
 - [ ] Détecter les patterns suspects:
   - Même deviceId avec multiples appVersion
   - Création massive de nouveaux deviceId depuis même IP
@@ -326,6 +346,7 @@ export interface CheckLimitResponse {
 - [ ] Logger toutes les tentatives suspectes
 
 ### 4.4 CORS & Headers Sécurité
+
 - [ ] Configurer CORS pour accepter uniquement les requêtes mobiles
 - [ ] Headers de sécurité (CSP, X-Frame-Options, etc.)
 - [ ] HTTPS obligatoire (automatique avec Vercel)
@@ -335,6 +356,7 @@ export interface CheckLimitResponse {
 ## ✅ Phase 5: Tests & Validation
 
 ### 5.1 Tests Unitaires
+
 - [ ] Installer Jest: `npm install -D jest @types/jest ts-jest`
 - [ ] Tests pour `db.ts`: CRUD operations, reset mensuel
 - [ ] Tests pour `gemini.ts`: mock des réponses AI
@@ -342,12 +364,14 @@ export interface CheckLimitResponse {
 - [ ] Coverage minimum: 80%
 
 ### 5.2 Tests d'Intégration
+
 - [ ] Test complet du flow `/api/search`
 - [ ] Test du quota (3 prompts puis blocage)
 - [ ] Test du reset mensuel
 - [ ] Test des webhooks RevenueCat (mock)
 
 ### 5.3 Tests Manuels
+
 - [ ] Tester avec Postman/Insomnia
 - [ ] Tester le rate limiting
 - [ ] Tester les erreurs (quota, AI, DB)
@@ -358,12 +382,14 @@ export interface CheckLimitResponse {
 ## 🚀 Phase 6: Déploiement Vercel
 
 ### 6.1 Configuration Vercel
+
 - [ ] Créer compte sur [vercel.com](https://vercel.com)
 - [ ] Installer Vercel CLI: `npm install -g vercel`
 - [ ] Se connecter: `vercel login`
 - [ ] Lier le projet: `vercel link` (depuis `/backend`)
 
 ### 6.2 Variables d'Environnement
+
 - [ ] Aller sur Vercel Dashboard → Settings → Environment Variables
 - [ ] Ajouter toutes les variables de `.env.local`:
   - `TURSO_DATABASE_URL`
@@ -373,12 +399,14 @@ export interface CheckLimitResponse {
 - [ ] Vérifier que les variables sont bien chargées
 
 ### 6.3 Déploiement
+
 - [ ] Premier déploiement: `vercel --prod`
 - [ ] Noter l'URL de production: `https://fastflix-api.vercel.app`
 - [ ] Tester tous les endpoints sur l'URL de prod
 - [ ] Configurer le domaine custom (optionnel)
 
 ### 6.4 Auto-deploy depuis GitHub
+
 - [ ] Connecter le repo GitHub à Vercel
 - [ ] Activer auto-deploy sur push vers `main`
 - [ ] Chaque commit → déploiement automatique
@@ -388,6 +416,7 @@ export interface CheckLimitResponse {
 ## 📱 Phase 7: Intégration Frontend (À FAIRE APRÈS)
 
 ### 7.1 Modifications App Mobile
+
 - [ ] Créer service `/frontend/services/api.service.ts`
 - [ ] Remplacer appels directs à Gemini par appels API
 - [ ] Fonction `searchMovies(query, deviceId, ...)`
@@ -396,6 +425,7 @@ export interface CheckLimitResponse {
 - [ ] Retry logic et timeout
 
 ### 7.2 Nettoyage Frontend
+
 - [ ] Supprimer `GOOGLE_API_KEY` de `.env`
 - [ ] Supprimer `/frontend/services/ai.service.ts`
 - [ ] Supprimer `/frontend/utils/aiServices.ts`
@@ -404,7 +434,9 @@ export interface CheckLimitResponse {
 - [ ] Tester sur Android
 
 ### 7.3 Configuration API URL
+
 - [ ] Ajouter `API_URL` dans `.env`:
+
   ```env
   # Development
   EXPO_PUBLIC_API_URL=http://localhost:3000
@@ -412,6 +444,7 @@ export interface CheckLimitResponse {
   # Production
   EXPO_PUBLIC_API_URL=https://fastflix-api.vercel.app
   ```
+
 - [ ] Utiliser `Constants.expoConfig?.extra?.API_URL` dans le code
 
 ---
@@ -419,12 +452,14 @@ export interface CheckLimitResponse {
 ## 📊 Phase 8: Monitoring & Analytics (Optionnel)
 
 ### 8.1 Logging
+
 - [ ] Intégrer Axiom, Datadog, ou Vercel Analytics
 - [ ] Logger toutes les requêtes avec timestamps
 - [ ] Tracker les erreurs avec stack traces
 - [ ] Alertes email si erreur critique
 
 ### 8.2 Métriques
+
 - [ ] Dashboard Vercel: voir usage, latence, erreurs
 - [ ] Métriques custom:
   - Requêtes par jour
@@ -433,6 +468,7 @@ export interface CheckLimitResponse {
   - Requêtes les plus populaires
 
 ### 8.3 Optimisations
+
 - [ ] Cache Redis/Upstash pour requêtes populaires
 - [ ] Edge Functions pour latence minimale
 - [ ] Compression des réponses (gzip)
@@ -442,12 +478,12 @@ export interface CheckLimitResponse {
 
 ## 🎯 Récapitulatif des Coûts
 
-| Service | Plan Gratuit | Utilisation FastFlix | Coût Mensuel |
-|---------|--------------|----------------------|--------------|
-| **Vercel** | 100 GB-heures compute | ~30k requêtes/mois | **Gratuit** ✅ |
-| **Turso** | 9 GB stockage, 1B reads | <1 MB, ~90k reads | **Gratuit** ✅ |
-| **Google AI** | Gemini Flash gratuit | ~30k appels/mois | **Gratuit** ✅ |
-| **Total** | - | - | **0€ /mois** 🎉 |
+| Service       | Plan Gratuit            | Utilisation FastFlix | Coût Mensuel    |
+| ------------- | ----------------------- | -------------------- | --------------- |
+| **Vercel**    | 100 GB-heures compute   | ~30k requêtes/mois   | **Gratuit** ✅  |
+| **Turso**     | 9 GB stockage, 1B reads | <1 MB, ~90k reads    | **Gratuit** ✅  |
+| **Google AI** | Gemini Flash gratuit    | ~30k appels/mois     | **Gratuit** ✅  |
+| **Total**     | -                       | -                    | **0€ /mois** 🎉 |
 
 ---
 

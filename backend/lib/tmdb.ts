@@ -5,10 +5,15 @@
 
 import type { MovieResult, TMDBSearchResponse, TMDBMovie, TMDBTVShow } from './types';
 
+interface CachedData<T> {
+  data: T;
+  timestamp: number;
+}
+
 class TMDBService {
   private baseUrl: string;
   private apiKey: string;
-  private cache: Map<string, any> = new Map();
+  private cache: Map<string, CachedData<unknown>> = new Map();
   private cacheTTL = 1000 * 60 * 60; // 1 hour cache
 
   constructor() {
@@ -32,7 +37,7 @@ class TMDBService {
     const cached = this.cache.get(cacheKey);
     if (cached && Date.now() - cached.timestamp < this.cacheTTL) {
       console.log(`📦 Cache hit: ${endpoint}`);
-      return cached.data;
+      return cached.data as T;
     }
 
     const url = new URL(`${this.baseUrl}${endpoint}`);
@@ -110,7 +115,10 @@ class TMDBService {
   /**
    * Search for both movies and TV shows (multi search)
    */
-  async searchMulti(title: string, language: string = 'fr-FR'): Promise<(TMDBMovie | TMDBTVShow) | null> {
+  async searchMulti(
+    title: string,
+    language: string = 'fr-FR'
+  ): Promise<(TMDBMovie | TMDBTVShow) | null> {
     try {
       const data = await this.makeRequest<TMDBSearchResponse>('/search/multi', {
         query: title,
@@ -121,7 +129,8 @@ class TMDBService {
       if (data.results && data.results.length > 0) {
         // Filter out person results, keep only movie/tv
         const mediaResults = data.results.filter(
-          (result: any) => result.media_type === 'movie' || result.media_type === 'tv'
+          (result): result is TMDBMovie | TMDBTVShow =>
+            result.media_type === 'movie' || result.media_type === 'tv'
         );
 
         if (mediaResults.length > 0) {
@@ -226,7 +235,7 @@ class TMDBService {
   /**
    * Get full movie details by TMDB ID
    */
-  async getMovieDetails(tmdbId: number, language: string = 'fr-FR'): Promise<any> {
+  async getMovieDetails(tmdbId: number, language: string = 'fr-FR'): Promise<TMDBMovie> {
     try {
       return await this.makeRequest(`/movie/${tmdbId}`, { language });
     } catch (error) {
@@ -238,7 +247,7 @@ class TMDBService {
   /**
    * Get full TV show details by TMDB ID
    */
-  async getTVDetails(tmdbId: number, language: string = 'fr-FR'): Promise<any> {
+  async getTVDetails(tmdbId: number, language: string = 'fr-FR'): Promise<TMDBTVShow> {
     try {
       return await this.makeRequest(`/tv/${tmdbId}`, { language });
     } catch (error) {

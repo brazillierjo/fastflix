@@ -43,10 +43,7 @@ class GeminiService {
    * Generate movie/TV show recommendations based on user query
    * Returns only titles (will be enriched with TMDB later)
    */
-  async generateRecommendations(
-    query: string,
-    contentTypes: string[]
-  ): Promise<string[]> {
+  async generateRecommendations(query: string, contentTypes: string[]): Promise<string[]> {
     const genAI = this.getClient();
     const model = genAI.getGenerativeModel({ model: 'gemini-2.0-flash-exp' });
 
@@ -94,8 +91,8 @@ Respond only with titles that match the request, separated by commas, without nu
       // Parse comma-separated titles
       const titles = text
         .split(',')
-        .map(title => title.trim())
-        .filter(title => title.length > 0 && title.length < 200); // Sanity check
+        .map((title) => title.trim())
+        .filter((title) => title.length > 0 && title.length < 200); // Sanity check
 
       console.log(`🎬 Gemini generated ${titles.length} recommendations`);
 
@@ -198,16 +195,14 @@ MESSAGE: [your conversational message]`;
       const text = response.text().trim();
 
       // Parse the response
-      const recommendationsMatch = text.match(
-        /RECOMMENDATIONS:\s*(.+?)(?=\nMESSAGE:|$)/s
-      );
-      const messageMatch = text.match(/MESSAGE:\s*(.+)$/s);
+      const recommendationsMatch = text.match(/RECOMMENDATIONS:\s*([\s\S]+?)(?=\nMESSAGE:|$)/);
+      const messageMatch = text.match(/MESSAGE:\s*([\s\S]+)$/);
 
       const recommendations = recommendationsMatch
         ? recommendationsMatch[1]
             .split(',')
-            .map(title => title.trim())
-            .filter(title => title.length > 0 && title.length < 200)
+            .map((title) => title.trim())
+            .filter((title) => title.length > 0 && title.length < 200)
         : [];
 
       const conversationalResponse = messageMatch

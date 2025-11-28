@@ -6,7 +6,12 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint"
+    "lint": "eslint . --config eslint.config.mjs",
+    "lint:fix": "eslint . --fix --config eslint.config.mjs",
+    "format": "prettier --write \"**/*.{ts,tsx,js,jsx,json,md}\"",
+    "format:check": "prettier --check \"**/*.{ts,tsx,js,jsx,json,md}\"",
+    "type-check": "tsc --noEmit",
+    "check-all": "npm run type-check && npm run lint && npm run format:check"
   },
   "dependencies": {
     "@google/generative-ai": "^0.24.1",
@@ -21,8 +26,11 @@
     "@types/node": "^20",
     "@types/react": "^19",
     "@types/react-dom": "^19",
+    "@typescript-eslint/eslint-plugin": "^8.48.0",
+    "@typescript-eslint/parser": "^8.48.0",
     "eslint": "^9",
     "eslint-config-next": "16.0.5",
+    "prettier": "^3.7.2",
     "tailwindcss": "^4",
     "typescript": "^5"
   }

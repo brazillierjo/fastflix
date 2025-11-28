@@ -3,8 +3,19 @@
  * Turso (libSQL) database client and operations
  */
 
-import { createClient, Client } from '@libsql/client';
-import type { UserPrompt, Subscription, PromptLog } from './types';
+import { createClient, Client, Row } from '@libsql/client';
+import type { UserPrompt, Subscription } from './types';
+
+/**
+ * Helper function to safely convert a database row to a specific type
+ */
+function rowToObject<T>(row: Row): T {
+  const obj: Record<string, unknown> = {};
+  for (const key in row) {
+    obj[key] = row[key];
+  }
+  return obj as T;
+}
 
 class DatabaseService {
   private client: Client | null = null;
@@ -74,7 +85,7 @@ class DatabaseService {
       });
 
       if (result.rows.length > 0) {
-        const user = result.rows[0] as unknown as UserPrompt;
+        const user = rowToObject<UserPrompt>(result.rows[0]);
 
         // Check if we need to reset the monthly count
         if (user.current_month !== currentMonth) {
@@ -116,7 +127,7 @@ class DatabaseService {
         args: [deviceId],
       });
 
-      return newUserResult.rows[0] as unknown as UserPrompt;
+      return rowToObject<UserPrompt>(newUserResult.rows[0]);
     } catch (error) {
       console.error('❌ Database error in getOrCreateUser:', error);
       throw error;
@@ -156,10 +167,10 @@ class DatabaseService {
         args: [deviceId],
       });
 
-      const newCount = (result.rows[0] as { prompt_count: number }).prompt_count;
-      console.log(`📊 Incremented prompt count for ${deviceId}: ${newCount}`);
+      const row = rowToObject<{ prompt_count: number }>(result.rows[0]);
+      console.log(`📊 Incremented prompt count for ${deviceId}: ${row.prompt_count}`);
 
-      return newCount;
+      return row.prompt_count;
     } catch (error) {
       console.error('❌ Database error in incrementPromptCount:', error);
       throw error;
@@ -183,7 +194,7 @@ class DatabaseService {
         return false;
       }
 
-      const subscription = result.rows[0] as unknown as Subscription;
+      const subscription = rowToObject<Subscription>(result.rows[0]);
 
       // Check if subscription has expired
       if (subscription.expires_at) {
@@ -245,7 +256,7 @@ class DatabaseService {
         return false;
       }
 
-      const blockedDevice = result.rows[0] as { blocked_until: string | null };
+      const blockedDevice = rowToObject<{ blocked_until: string | null }>(result.rows[0]);
 
       // If blocked_until is NULL, it's permanently blocked
       if (!blockedDevice.blocked_until) {
@@ -273,7 +284,9 @@ class DatabaseService {
   /**
    * Update or create a subscription
    */
-  async upsertSubscription(subscription: Partial<Subscription> & { device_id: string }): Promise<void> {
+  async upsertSubscription(
+    subscription: Partial<Subscription> & { device_id: string }
+  ): Promise<void> {
     const client = this.getClient();
 
     try {

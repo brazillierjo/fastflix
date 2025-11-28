@@ -14,8 +14,8 @@ export interface SearchRequest {
   includeTvShows: boolean;
   platform: 'ios' | 'android';
   appVersion: string;
-  language?: string;  // 'fr-FR', 'en-US', etc.
-  country?: string;   // 'FR', 'US', etc.
+  language?: string; // 'fr-FR', 'en-US', etc.
+  country?: string; // 'FR', 'US', etc.
 }
 
 export interface MovieResult {
@@ -28,8 +28,8 @@ export interface MovieResult {
   backdrop_path: string | null;
   vote_average: number;
   vote_count: number;
-  release_date?: string;       // For movies
-  first_air_date?: string;     // For TV shows
+  release_date?: string; // For movies
+  first_air_date?: string; // For TV shows
   genre_ids: number[];
   popularity: number;
   adult?: boolean;
@@ -64,7 +64,7 @@ export interface CheckLimitResponse {
 export interface UserPrompt {
   device_id: string;
   prompt_count: number;
-  current_month: string;  // Format: YYYY-MM
+  current_month: string; // Format: YYYY-MM
   created_at: string;
   last_updated: string;
   platform: 'ios' | 'android' | null;
@@ -102,7 +102,7 @@ export interface BlockedDevice {
 // ============================================================================
 
 export interface AIRecommendationResult {
-  recommendations: string[];  // Just titles from Gemini
+  recommendations: string[]; // Just titles from Gemini
   conversationalResponse: string;
 }
 
