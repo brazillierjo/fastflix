@@ -74,7 +74,7 @@ export interface UserPrompt {
 export interface Subscription {
   device_id: string;
   revenuecat_user_id: string | null;
-  status: 'active' | 'expired' | 'cancelled';
+  status: 'active' | 'expired' | 'cancelled' | 'billing_issue';
   expires_at: string | null;
   product_id: string | null;
   created_at: string;

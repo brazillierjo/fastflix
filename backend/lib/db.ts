@@ -282,6 +282,54 @@ class DatabaseService {
   }
 
   /**
+   * Block a device
+   */
+  async blockDevice(deviceId: string, reason: string, blockedUntil: string | null): Promise<void> {
+    const client = this.getClient();
+
+    try {
+      await client.execute({
+        sql: `INSERT INTO blocked_devices (device_id, reason, blocked_until)
+              VALUES (?, ?, ?)
+              ON CONFLICT(device_id) DO UPDATE SET
+                reason = excluded.reason,
+                blocked_until = excluded.blocked_until,
+                blocked_at = CURRENT_TIMESTAMP`,
+        args: [deviceId, reason, blockedUntil],
+      });
+
+      console.warn(`🚫 Device blocked: ${deviceId} - ${reason}`);
+    } catch (error) {
+      console.error('❌ Database error in blockDevice:', error);
+      throw error;
+    }
+  }
+
+  /**
+   * Get count of prompt logs with zero results for a device in a time window
+   */
+  async getZeroResultCount(deviceId: string, hoursAgo: number): Promise<number> {
+    const client = this.getClient();
+
+    try {
+      const result = await client.execute({
+        sql: `SELECT COUNT(*) as zero_result_count
+              FROM prompt_logs
+              WHERE device_id = ?
+                AND results_count = 0
+                AND created_at > datetime('now', ?)`,
+        args: [deviceId, `-${hoursAgo} hour`],
+      });
+
+      const row = rowToObject<{ zero_result_count: number }>(result.rows[0]);
+      return row.zero_result_count;
+    } catch (error) {
+      console.error('❌ Database error in getZeroResultCount:', error);
+      return 0;
+    }
+  }
+
+  /**
    * Update or create a subscription
    */
   async upsertSubscription(

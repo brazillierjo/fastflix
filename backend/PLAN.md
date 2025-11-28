@@ -209,28 +209,28 @@ export interface CheckLimitResponse {
 
 ---
 
-## 🌐 Phase 3: Endpoints API
+## 🌐 Phase 3: Endpoints API ✅
 
-### 3.1 Endpoint `/api/search` (POST)
+### 3.1 Endpoint `/api/search` (POST) ✅
 
 **Fonction principale**: Recherche de films/séries avec AI + TMDB
 
-- [ ] Validation du corps de la requête (Zod)
-- [ ] Extraire `deviceId`, `query`, `includeMovies`, `includeTvShows`, `platform`, `appVersion`, `language`, `country`
-- [ ] **Vérifier le quota:**
+- [x] Validation du corps de la requête (Zod)
+- [x] Extraire `deviceId`, `query`, `includeMovies`, `includeTvShows`, `platform`, `appVersion`, `language`, `country`
+- [x] **Vérifier le quota:**
   - Appeler `canMakePrompt(deviceId)`
   - Si `allowed === false`, retourner erreur 429 (Too Many Requests)
-- [ ] **Générer les recommandations AI:**
+- [x] **Générer les recommandations AI:**
   - Appeler `generateRecommendationsWithResponse(query, contentTypes)` → obtenir titres
   - Mesurer le temps de réponse Gemini
-- [ ] **Enrichir avec TMDB:**
+- [x] **Enrichir avec TMDB:**
   - Appeler `enrichRecommendations(titles, includeMovies, includeTvShows, language)`
   - Chercher chaque titre dans TMDB
   - Récupérer métadonnées complètes (poster, overview, ratings, etc.)
   - Mesurer le temps de réponse TMDB
-- [ ] **Incrémenter le compteur** (SEULEMENT si résultats > 0)
-- [ ] **Logger l'usage** (optionnel, pour analytics)
-- [ ] Retourner:
+- [x] **Incrémenter le compteur** (SEULEMENT si résultats > 0)
+- [x] **Logger l'usage** (optionnel, pour analytics)
+- [x] Retourner:
   ```json
   {
     "success": true,
@@ -252,19 +252,19 @@ export interface CheckLimitResponse {
     }
   }
   ```
-- [ ] Gestion des erreurs:
+- [x] Gestion des erreurs:
   - 400: Requête invalide
   - 429: Quota dépassé
   - 500: Erreur serveur (AI, DB)
   - 503: Service temporairement indisponible
 
-### 3.2 Endpoint `/api/check-limit` (POST)
+### 3.2 Endpoint `/api/check-limit` (POST) ✅
 
 **Fonction**: Vérifier le quota avant de faire une recherche (optionnel mais recommandé)
 
-- [ ] Validation du corps: `{ deviceId, platform? }`
-- [ ] Appeler `canMakePrompt(deviceId)`
-- [ ] Retourner:
+- [x] Validation du corps: `{ deviceId, platform? }`
+- [x] Appeler `canMakePrompt(deviceId)`
+- [x] Retourner:
   ```json
   {
     "success": true,
@@ -278,15 +278,15 @@ export interface CheckLimitResponse {
     }
   }
   ```
-- [ ] Gestion des erreurs DB
+- [x] Gestion des erreurs DB
 
-### 3.3 Endpoint `/api/subscription/webhook` (POST)
+### 3.3 Endpoint `/api/subscription/webhook` (POST) ✅
 
 **Fonction**: Recevoir les webhooks RevenueCat pour les abonnements
 
-- [ ] Valider la signature RevenueCat (sécurité)
-- [ ] Parser l'événement (INITIAL_PURCHASE, RENEWAL, CANCELLATION, etc.)
-- [ ] Créer table `subscriptions` dans Turso:
+- [x] Valider la signature RevenueCat (sécurité)
+- [x] Parser l'événement (INITIAL_PURCHASE, RENEWAL, CANCELLATION, etc.)
+- [x] Créer table `subscriptions` dans Turso:
   ```sql
   CREATE TABLE subscriptions (
     device_id TEXT PRIMARY KEY,
@@ -298,17 +298,17 @@ export interface CheckLimitResponse {
     last_updated TIMESTAMP DEFAULT CURRENT_TIMESTAMP
   );
   ```
-- [ ] Mettre à jour le statut d'abonnement dans la DB
-- [ ] Retourner 200 OK pour confirmer la réception
-- [ ] Logger tous les événements pour debug
+- [x] Mettre à jour le statut d'abonnement dans la DB
+- [x] Retourner 200 OK pour confirmer la réception
+- [x] Logger tous les événements pour debug
 
-### 3.4 Endpoint `/api/health` (GET)
+### 3.4 Endpoint `/api/health` (GET) ✅
 
 **Fonction**: Vérifier que l'API fonctionne (pour monitoring)
 
-- [ ] Vérifier la connexion Turso
-- [ ] Vérifier la connexion Google AI (optionnel)
-- [ ] Retourner:
+- [x] Vérifier la connexion Turso
+- [x] Vérifier la connexion Google AI (optionnel)
+- [x] Retourner:
   ```json
   {
     "status": "ok",
@@ -320,36 +320,36 @@ export interface CheckLimitResponse {
 
 ---
 
-## 🔒 Phase 4: Sécurité & Rate Limiting
+## 🔒 Phase 4: Sécurité & Rate Limiting ✅
 
-### 4.1 Validation des Requêtes
+### 4.1 Validation des Requêtes ✅
 
-- [ ] Installer Zod: `npm install zod`
-- [ ] Valider tous les inputs (deviceId, query, etc.)
-- [ ] Sanitizer les queries (éviter injection)
-- [ ] Limiter la taille des requêtes (max 500 caractères pour query)
+- [x] Installer Zod: `npm install zod`
+- [x] Valider tous les inputs (deviceId, query, etc.)
+- [x] Sanitizer les queries (éviter injection)
+- [x] Limiter la taille des requêtes (max 500 caractères pour query)
 
-### 4.2 Rate Limiting Global
+### 4.2 Rate Limiting Global ✅
 
-- [ ] Installer `@upstash/ratelimit` ou Vercel Edge Config
-- [ ] Limiter par IP: max 10 requêtes/minute
-- [ ] Limiter par deviceId: max 5 requêtes/minute
-- [ ] Retourner headers `X-RateLimit-*` standard
+- [x] Implémenter rate limiter en mémoire
+- [x] Limiter par IP: max 10 requêtes/minute
+- [x] Limiter par deviceId: max 5 requêtes/minute
+- [x] Retourner headers `X-RateLimit-*` standard
 
-### 4.3 Protection Anti-Abus
+### 4.3 Protection Anti-Abus ✅
 
-- [ ] Détecter les patterns suspects:
+- [x] Détecter les patterns suspects:
   - Même deviceId avec multiples appVersion
   - Création massive de nouveaux deviceId depuis même IP
   - Requêtes identiques répétées
-- [ ] Bloquer temporairement les deviceId suspects (table `blocked_devices`)
-- [ ] Logger toutes les tentatives suspectes
+- [x] Bloquer temporairement les deviceId suspects (table `blocked_devices`)
+- [x] Logger toutes les tentatives suspectes
 
-### 4.4 CORS & Headers Sécurité
+### 4.4 CORS & Headers Sécurité ✅
 
-- [ ] Configurer CORS pour accepter uniquement les requêtes mobiles
-- [ ] Headers de sécurité (CSP, X-Frame-Options, etc.)
-- [ ] HTTPS obligatoire (automatique avec Vercel)
+- [x] Configurer CORS pour accepter les requêtes
+- [x] Headers de sécurité (CSP, X-Frame-Options, etc.)
+- [x] HTTPS obligatoire (automatique avec Vercel)
 
 ---
 
