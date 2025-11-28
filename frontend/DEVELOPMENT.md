@@ -387,5 +387,5 @@ npx eas build:delete [BUILD_ID]
 - **EAS Dashboard** : https://expo.dev/accounts/bzrjoh/projects/fastflix
 - **App Store Connect** : https://appstoreconnect.apple.com
 - **RevenueCat Dashboard** : https://app.revenuecat.com
-- **Site Web Production** : https://fastflix-nu.vercel.app
+- **Site Web Production** : https://fastflix-website.vercel.app
 - **Documentation Expo** : https://docs.expo.dev

@@ -361,7 +361,7 @@ export default function ProfileScreen() {
                 <TouchableOpacity
                   onPress={() =>
                     Linking.openURL(
-                      'https://fastflix-nu.vercel.app/privacy-policy'
+                      'https://fastflix-website.vercel.app/privacy-policy'
                     )
                   }
                   className='py-2'
@@ -373,7 +373,7 @@ export default function ProfileScreen() {
 
                 <TouchableOpacity
                   onPress={() =>
-                    Linking.openURL('https://fastflix-nu.vercel.app/support')
+                    Linking.openURL('https://fastflix-website.vercel.app/support')
                   }
                   className='py-2'
                 >
@@ -384,7 +384,7 @@ export default function ProfileScreen() {
 
                 <TouchableOpacity
                   onPress={() =>
-                    Linking.openURL('https://fastflix-nu.vercel.app')
+                    Linking.openURL('https://fastflix-website.vercel.app')
                   }
                   className='py-2'
                 >

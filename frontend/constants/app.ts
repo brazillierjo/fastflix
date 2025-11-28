@@ -37,9 +37,9 @@ export const APP_CONFIG = {
 
   // External Links
   LINKS: {
-    PRIVACY_POLICY: 'https://fastflix-nu.vercel.app/privacy-policy',
-    SUPPORT: 'https://fastflix-nu.vercel.app/support',
-    WEBSITE: 'https://fastflix-nu.vercel.app',
+    PRIVACY_POLICY: 'https://fastflix-website.vercel.app/privacy-policy',
+    SUPPORT: 'https://fastflix-website.vercel.app/support',
+    WEBSITE: 'https://fastflix-website.vercel.app',
     TMDB_MOVIE: 'https://www.themoviedb.org/movie',
     TMDB_TV: 'https://www.themoviedb.org/tv',
   },

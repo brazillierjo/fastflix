@@ -3,7 +3,7 @@
 **AI-powered movie and TV show recommendations.** Discover what to watch tonight with personalized suggestions based on your mood and preferences.
 
 [![App Store](https://img.shields.io/badge/Download-App%20Store-blue?style=for-the-badge&logo=apple)](https://apps.apple.com/app/fastflix/id6746981485)
-[![Website](https://img.shields.io/badge/Visit-Website-green?style=for-the-badge&logo=vercel)](https://fastflix-nu.vercel.app)
+[![Website](https://img.shields.io/badge/Visit-Website-green?style=for-the-badge&logo=vercel)](https://fastflix-website.vercel.app)
 
 ## 🚀 Overview
 
@@ -193,7 +193,7 @@ EXPO_PUBLIC_REVENUECAT_IOS_API_KEY=your_revenuecat_key
 **Website (`.env.local`)**
 
 ```env
-NEXT_PUBLIC_APP_URL=https://fastflix-nu.vercel.app
+NEXT_PUBLIC_APP_URL=https://fastflix-website.vercel.app
 ```
 
 ## 🚀 Deployment
@@ -252,16 +252,16 @@ All rights reserved. This is proprietary software.
 
 ## 📞 Support
 
-- **Website**: [https://fastflix-nu.vercel.app/support](https://fastflix-nu.vercel.app/support)
+- **Website**: [https://fastflix-website.vercel.app/support](https://fastflix-website.vercel.app/support)
 - **Email**: [support@fastflix.app](mailto:support@fastflix.app)
 - **App Store**: Leave a review and rating
 
 ## 🔗 Links
 
 - **📱 App Store**: https://apps.apple.com/app/fastflix/id6746981485
-- **🌐 Website**: https://fastflix-nu.vercel.app
-- **📚 Privacy Policy**: https://fastflix-nu.vercel.app/privacy-policy
-- **📋 Terms of Use**: https://fastflix-nu.vercel.app/terms-of-use
+- **🌐 Website**: https://fastflix-website.vercel.app
+- **📚 Privacy Policy**: https://fastflix-website.vercel.app/privacy-policy
+- **📋 Terms of Use**: https://fastflix-website.vercel.app/terms-of-use
 - **🛠️ Developer Dashboard**: https://expo.dev/accounts/bzrjoh/projects/fastflix
 
 ---
