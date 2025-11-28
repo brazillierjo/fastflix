@@ -96,40 +96,40 @@ CREATE TABLE prompt_logs (
 ## 🔧 Phase 2: Services Backend
 
 ### 2.1 Service Database (`/backend/lib/db.ts`)
-- [ ] Créer le client Turso singleton
-- [ ] Fonction `getOrCreateUser(deviceId, platform, appVersion)`
-- [ ] Fonction `incrementPromptCount(deviceId)`
-- [ ] Fonction `getPromptCount(deviceId)`
-- [ ] Fonction `resetMonthlyCount(deviceId)` (si nouveau mois)
-- [ ] Gestion automatique du reset mensuel
-- [ ] Gestion des erreurs avec retry logic
+- [x] Créer le client Turso singleton
+- [x] Fonction `getOrCreateUser(deviceId, platform, appVersion)`
+- [x] Fonction `incrementPromptCount(deviceId)`
+- [x] Fonction `getPromptCount(deviceId)`
+- [x] Fonction `resetMonthlyCount(deviceId)` (si nouveau mois)
+- [x] Gestion automatique du reset mensuel
+- [x] Gestion des erreurs avec retry logic
 
 ### 2.2 Service Google AI (`/backend/lib/gemini.ts`)
-- [ ] Créer le client Gemini singleton
-- [ ] Fonction `generateRecommendations(query, contentTypes)` → retourne uniquement les titres
-- [ ] Fonction `generateConversationalResponse(query)`
-- [ ] Fonction combinée `generateRecommendationsWithResponse(query, contentTypes)`
-- [ ] Gestion des erreurs (quota, network, timeout)
-- [ ] Cache optionnel des requêtes populaires
+- [x] Créer le client Gemini singleton
+- [x] Fonction `generateRecommendations(query, contentTypes)` → retourne uniquement les titres
+- [x] Fonction `generateConversationalResponse(query)`
+- [x] Fonction combinée `generateRecommendationsWithResponse(query, contentTypes)`
+- [x] Gestion des erreurs (quota, network, timeout)
+- [x] Cache optionnel des requêtes populaires
 
 ### 2.3 Service TMDB (`/backend/lib/tmdb.ts`)
-- [ ] Créer le client TMDB avec API key
-- [ ] Fonction `searchMovieByTitle(title, language)` → métadonnées film
-- [ ] Fonction `searchTVByTitle(title, language)` → métadonnées série
-- [ ] Fonction `searchMulti(title, language)` → cherche films + séries
-- [ ] Fonction `getMovieDetails(tmdbId)` → détails complets
-- [ ] Fonction `getTVDetails(tmdbId)` → détails complets
-- [ ] Fonction `enrichRecommendations(titles, includeMovies, includeTvShows, language)`
+- [x] Créer le client TMDB avec API key
+- [x] Fonction `searchMovieByTitle(title, language)` → métadonnées film
+- [x] Fonction `searchTVByTitle(title, language)` → métadonnées série
+- [x] Fonction `searchMulti(title, language)` → cherche films + séries
+- [x] Fonction `getMovieDetails(tmdbId)` → détails complets
+- [x] Fonction `getTVDetails(tmdbId)` → détails complets
+- [x] Fonction `enrichRecommendations(titles, includeMovies, includeTvShows, language)`
   - Prend les titres de Gemini
   - Cherche chaque titre dans TMDB
   - Retourne les métadonnées complètes (poster, overview, ratings, etc.)
-- [ ] Gestion des erreurs TMDB (rate limit, not found, etc.)
-- [ ] Cache des résultats TMDB pour éviter les appels répétés
+- [x] Gestion des erreurs TMDB (rate limit, not found, etc.)
+- [x] Cache des résultats TMDB pour éviter les appels répétés
 
 ### 2.4 Service Comptage (`/backend/lib/prompt-counter.ts`)
-- [ ] Fonction `canMakePrompt(deviceId)` → { allowed, remaining, reason }
-- [ ] Fonction `checkSubscriptionStatus(deviceId)` (intégration RevenueCat future)
-- [ ] Logique de vérification:
+- [x] Fonction `canMakePrompt(deviceId)` → { allowed, remaining, reason }
+- [x] Fonction `checkSubscriptionStatus(deviceId)` (intégration RevenueCat future)
+- [x] Logique de vérification:
   - Vérifier si user a un abonnement actif
   - Si non, vérifier le compteur mensuel
   - Reset automatique si nouveau mois
@@ -189,10 +189,10 @@ export interface CheckLimitResponse {
   reason?: string;
 }
 ```
-- [ ] Définir tous les types de requêtes/réponses
-- [ ] Types pour les métadonnées TMDB
-- [ ] Types pour les erreurs standardisées
-- [ ] Types pour la base de données
+- [x] Définir tous les types de requêtes/réponses
+- [x] Types pour les métadonnées TMDB
+- [x] Types pour les erreurs standardisées
+- [x] Types pour la base de données
 
 ---
 
@@ -478,7 +478,7 @@ export interface CheckLimitResponse {
 ## 🚀 Ordre d'Exécution Recommandé
 
 1. ✅ Phase 1: Setup (Turso + Next.js) - **TERMINÉE**
-2. ⏳ Phase 2: Services Backend
+2. ✅ Phase 2: Services Backend - **TERMINÉE**
 3. ⏳ Phase 3: Endpoints API
 4. ⏳ Phase 4: Sécurité
 5. ⏳ Phase 5: Tests
@@ -490,4 +490,4 @@ export interface CheckLimitResponse {
 
 **Date de début**: 28 novembre 2024
 **Dernière mise à jour**: 28 novembre 2024
-**Status global**: 🟢 Phase 1 terminée - Prêt pour Phase 2
+**Status global**: 🟢 Phase 2 terminée - Prêt pour Phase 3 (Endpoints API)
