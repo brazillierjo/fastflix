@@ -16,7 +16,14 @@
 - API Next.js hébergée sur Vercel (gratuit)
 - Base de données Turso SQLite (gratuit, 9GB)
 - Identification par Device ID persistant (iOS Keychain + Android)
-- Clé AI sécurisée côté serveur uniquement
+- **Backend gère TOUTE la logique** :
+  - ✅ Clé Google AI sécurisée côté serveur
+  - ✅ Clé TMDB sécurisée côté serveur
+  - ✅ Génération des recommandations (Gemini)
+  - ✅ Recherche et enrichissement TMDB
+  - ✅ Comptage des prompts
+  - ✅ Gestion des abonnements
+- **Frontend allégé** : affichage uniquement (reçoit données complètes)
 
 ---
 
@@ -74,6 +81,10 @@ CREATE TABLE prompt_logs (
   # Google AI
   GOOGLE_API_KEY=AIzaSy...
 
+  # TMDB API
+  TMDB_API_KEY=your_tmdb_api_key_here
+  TMDB_BASE_URL=https://api.themoviedb.org/3
+
   # App Configuration
   MAX_FREE_PROMPTS=3
   NODE_ENV=development
@@ -95,13 +106,27 @@ CREATE TABLE prompt_logs (
 
 ### 2.2 Service Google AI (`/backend/lib/gemini.ts`)
 - [ ] Créer le client Gemini singleton
-- [ ] Fonction `generateRecommendations(query, contentTypes)`
+- [ ] Fonction `generateRecommendations(query, contentTypes)` → retourne uniquement les titres
 - [ ] Fonction `generateConversationalResponse(query)`
 - [ ] Fonction combinée `generateRecommendationsWithResponse(query, contentTypes)`
 - [ ] Gestion des erreurs (quota, network, timeout)
 - [ ] Cache optionnel des requêtes populaires
 
-### 2.3 Service Comptage (`/backend/lib/prompt-counter.ts`)
+### 2.3 Service TMDB (`/backend/lib/tmdb.ts`)
+- [ ] Créer le client TMDB avec API key
+- [ ] Fonction `searchMovieByTitle(title, language)` → métadonnées film
+- [ ] Fonction `searchTVByTitle(title, language)` → métadonnées série
+- [ ] Fonction `searchMulti(title, language)` → cherche films + séries
+- [ ] Fonction `getMovieDetails(tmdbId)` → détails complets
+- [ ] Fonction `getTVDetails(tmdbId)` → détails complets
+- [ ] Fonction `enrichRecommendations(titles, includeMovies, includeTvShows, language)`
+  - Prend les titres de Gemini
+  - Cherche chaque titre dans TMDB
+  - Retourne les métadonnées complètes (poster, overview, ratings, etc.)
+- [ ] Gestion des erreurs TMDB (rate limit, not found, etc.)
+- [ ] Cache des résultats TMDB pour éviter les appels répétés
+
+### 2.4 Service Comptage (`/backend/lib/prompt-counter.ts`)
 - [ ] Fonction `canMakePrompt(deviceId)` → { allowed, remaining, reason }
 - [ ] Fonction `checkSubscriptionStatus(deviceId)` (intégration RevenueCat future)
 - [ ] Logique de vérification:
@@ -110,7 +135,7 @@ CREATE TABLE prompt_logs (
   - Reset automatique si nouveau mois
   - Retourner infos détaillées pour l'app
 
-### 2.4 Types TypeScript Partagés (`/backend/lib/types.ts`)
+### 2.5 Types TypeScript Partagés (`/backend/lib/types.ts`)
 ```typescript
 // Types de requêtes API
 export interface SearchRequest {
@@ -120,13 +145,34 @@ export interface SearchRequest {
   includeTvShows: boolean;
   platform: 'ios' | 'android';
   appVersion: string;
+  language?: string;  // 'fr-FR', 'en-US', etc.
+  country?: string;   // 'FR', 'US', etc.
+}
+
+// Type pour un film/série avec métadonnées TMDB complètes
+export interface MovieResult {
+  tmdb_id: number;
+  title: string;
+  original_title?: string;
+  media_type: 'movie' | 'tv';
+  overview: string;
+  poster_path: string | null;
+  backdrop_path: string | null;
+  vote_average: number;
+  vote_count: number;
+  release_date?: string;       // Pour les films
+  first_air_date?: string;     // Pour les séries
+  genre_ids: number[];
+  popularity: number;
+  adult?: boolean;
 }
 
 export interface SearchResponse {
-  recommendations: string[];
+  recommendations: MovieResult[];  // ⭐ Métadonnées complètes au lieu de simples titres
   conversationalResponse: string;
   promptsRemaining: number;
   isProUser: boolean;
+  totalResults: number;
 }
 
 export interface CheckLimitRequest {
@@ -144,6 +190,7 @@ export interface CheckLimitResponse {
 }
 ```
 - [ ] Définir tous les types de requêtes/réponses
+- [ ] Types pour les métadonnées TMDB
 - [ ] Types pour les erreurs standardisées
 - [ ] Types pour la base de données
 
@@ -152,16 +199,21 @@ export interface CheckLimitResponse {
 ## 🌐 Phase 3: Endpoints API
 
 ### 3.1 Endpoint `/api/search` (POST)
-**Fonction principale**: Recherche de films/séries avec AI
+**Fonction principale**: Recherche de films/séries avec AI + TMDB
 
-- [ ] Validation du corps de la requête (Zod ou similaire)
-- [ ] Extraire `deviceId`, `query`, `includeMovies`, `includeTvShows`, `platform`, `appVersion`
+- [ ] Validation du corps de la requête (Zod)
+- [ ] Extraire `deviceId`, `query`, `includeMovies`, `includeTvShows`, `platform`, `appVersion`, `language`, `country`
 - [ ] **Vérifier le quota:**
   - Appeler `canMakePrompt(deviceId)`
   - Si `allowed === false`, retourner erreur 429 (Too Many Requests)
-- [ ] **Générer les recommandations:**
-  - Appeler `generateRecommendationsWithResponse(query, contentTypes)`
-  - Mesurer le temps de réponse
+- [ ] **Générer les recommandations AI:**
+  - Appeler `generateRecommendationsWithResponse(query, contentTypes)` → obtenir titres
+  - Mesurer le temps de réponse Gemini
+- [ ] **Enrichir avec TMDB:**
+  - Appeler `enrichRecommendations(titles, includeMovies, includeTvShows, language)`
+  - Chercher chaque titre dans TMDB
+  - Récupérer métadonnées complètes (poster, overview, ratings, etc.)
+  - Mesurer le temps de réponse TMDB
 - [ ] **Incrémenter le compteur** (SEULEMENT si résultats > 0)
 - [ ] **Logger l'usage** (optionnel, pour analytics)
 - [ ] Retourner:
@@ -169,7 +221,17 @@ export interface CheckLimitResponse {
   {
     "success": true,
     "data": {
-      "recommendations": ["Film 1", "Film 2", ...],
+      "recommendations": [
+        {
+          "tmdb_id": 293167,
+          "title": "Godzilla",
+          "media_type": "movie",
+          "poster_path": "/xyz.jpg",
+          "overview": "...",
+          "vote_average": 7.2,
+          ...
+        }
+      ],
       "conversationalResponse": "Voici mes suggestions...",
       "promptsRemaining": 2,
       "isProUser": false
