@@ -7,8 +7,8 @@ import { useLanguage } from '@/contexts/LanguageContext';
 import { useAppState } from '@/hooks/useAppState';
 import { useBackendMovieSearch } from '@/hooks/useBackendMovieSearch';
 import { cn } from '@/utils/cn';
-import { useRouter } from 'expo-router';
-import React, { useEffect, useState } from 'react';
+import { Redirect } from 'expo-router';
+import React, { useState } from 'react';
 import {
   Alert,
   KeyboardAvoidingView,
@@ -39,15 +39,7 @@ export default function HomeScreen() {
   const movieSearchMutation = useBackendMovieSearch();
   const { t } = useLanguage();
   const { isAuthenticated, isLoading } = useAuth();
-  const router = useRouter();
   const [showSubscriptionModal, setShowSubscriptionModal] = useState(false);
-
-  // Redirect to auth screen if not authenticated
-  useEffect(() => {
-    if (!isLoading && !isAuthenticated) {
-      router.replace('/auth');
-    }
-  }, [isAuthenticated, isLoading, router]);
 
   const handleSearch = async () => {
     handleSearchStart();
@@ -116,9 +108,9 @@ export default function HomeScreen() {
     );
   }
 
-  // Don't render anything if not authenticated - redirect will happen via useEffect
+  // Redirect to auth screen if not authenticated
   if (!isAuthenticated) {
-    return null;
+    return <Redirect href="/auth" />;
   }
 
   return (
