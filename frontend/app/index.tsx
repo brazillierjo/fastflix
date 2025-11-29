@@ -39,8 +39,6 @@ export default function HomeScreen() {
   const [showSubscriptionModal, setShowSubscriptionModal] = useState(false);
 
   const handleSearch = async () => {
-    console.log('🔍 Starting search');
-
     handleSearchStart();
 
     movieSearchMutation.mutate(
@@ -51,11 +49,9 @@ export default function HomeScreen() {
       },
       {
         onSuccess: async data => {
-          console.log('✅ Search successful - Results:', data.movies.length);
           handleSearchSuccess(data);
         },
         onError: (error) => {
-          console.error('❌ Search error:', error);
           handleSearchEnd();
 
           // Handle subscription required error
@@ -86,8 +82,6 @@ export default function HomeScreen() {
   };
 
   const handleSubscriptionSuccess = () => {
-    console.log('✅ Subscription successful - Retrying search');
-
     // Automatically retry the search after successful subscription
     if (query.trim()) {
       // Small delay to ensure subscription is synced with backend

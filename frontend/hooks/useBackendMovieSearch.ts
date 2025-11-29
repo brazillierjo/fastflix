@@ -92,14 +92,6 @@ const searchMoviesWithBackend = async (
   }
 
   try {
-    console.log('Searching with backend API:', {
-      query,
-      includeMovies,
-      includeTvShows,
-      language,
-      country,
-    });
-
     const response = await backendAPIService.search({
       query,
       includeMovies,
@@ -109,8 +101,6 @@ const searchMoviesWithBackend = async (
     });
 
     if (!response.success || !response.data) {
-      console.error('Backend search failed:', response.error);
-
       // Handle subscription required error specifically
       if (response.error?.code === 'HTTP_402') {
         throw new Error('subscriptionRequired');
@@ -120,10 +110,6 @@ const searchMoviesWithBackend = async (
     }
 
     const data = response.data;
-
-    console.log('Backend search results:', {
-      totalResults: data.totalResults,
-    });
 
     // Transform backend results to frontend format
     const movies = data.recommendations.map(transformMovieResult);
@@ -146,8 +132,6 @@ const searchMoviesWithBackend = async (
       geminiResponse: data.conversationalResponse,
     };
   } catch (error) {
-    console.error('Backend search error:', error);
-
     // Re-throw known errors (like subscriptionRequired) without transforming them
     if (error instanceof Error && error.message === 'subscriptionRequired') {
       throw error;

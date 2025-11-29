@@ -76,8 +76,6 @@ class BackendAPIService {
     } else {
       this.baseUrl = apiUrl;
     }
-
-    console.log('Backend API configured with URL:', this.baseUrl);
   }
 
   /**
@@ -103,8 +101,6 @@ class BackendAPIService {
   ): Promise<APIResponse<T>> {
     try {
       const url = `${this.baseUrl}${endpoint}`;
-
-      console.log(`Making request to: ${url}`);
 
       const controller = new AbortController();
       const timeoutId = setTimeout(() => controller.abort(), this.timeout);
@@ -197,7 +193,6 @@ class BackendAPIService {
       try {
         const customerInfo = await Purchases.getCustomerInfo();
         deviceId = customerInfo.originalAppUserId;
-        console.log('Using RevenueCat App User ID as device ID:', deviceId);
       } catch (error) {
         console.warn('Failed to get RevenueCat App User ID, falling back to custom device ID:', error);
         // Fallback to custom device ID if RevenueCat is not available
@@ -231,15 +226,11 @@ class BackendAPIService {
         country: params.country || 'FR',
       };
 
-      console.log('Search request:', requestBody);
-
       return await this.makeRequest<SearchResponse>('/api/search', {
         method: 'POST',
         body: JSON.stringify(requestBody),
       });
     } catch (error) {
-      console.error('Search error:', error);
-
       return {
         success: false,
         data: {
