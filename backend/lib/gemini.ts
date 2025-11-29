@@ -146,6 +146,17 @@ Limit your response to 3-4 sentences maximum.`;
     const genAI = this.getClient();
     const model = genAI.getGenerativeModel({ model: 'gemini-2.0-flash-exp' });
 
+    // Map language codes to full language names for clearer instructions
+    const languageMap: { [key: string]: string } = {
+      'fr': 'French', 'fr-FR': 'French',
+      'en': 'English', 'en-US': 'English',
+      'it': 'Italian', 'it-IT': 'Italian',
+      'ja': 'Japanese', 'ja-JP': 'Japanese',
+      'es': 'Spanish', 'es-ES': 'Spanish',
+      'de': 'German', 'de-DE': 'German',
+    };
+    const languageName = languageMap[language] || 'English';
+
     const contentTypeText = contentTypes.join(' and ');
     const prompt = `You are an expert AI assistant specializing in cinema and television with encyclopedic knowledge of films and series from around the world. A user asks you: "${query}".
 
@@ -187,7 +198,7 @@ Provide three distinct outputs:
 2. DETECTED_PLATFORMS: Extract any specific streaming platforms mentioned in the user's request (e.g., "Netflix", "Disney+", "Amazon Prime", "HBO", "Hulu", "Apple TV"). If no specific platform is mentioned, leave this empty. List only platform names separated by commas.
 
 3. MESSAGE: A conversational, engaging message that adapts to the user's tone and style. Provide encouragement and context about their request without mentioning specific results. Be enthusiastic and personalized, matching their energy level (humorous, serious, casual, etc.). Include a brief insight about your selection strategy.
-IMPORTANT: Respond in the following language: ${language}. Do NOT auto-detect the language. You MUST reply in ${language}, regardless of the query language.
+CRITICAL LANGUAGE INSTRUCTION: You MUST respond in ${languageName} language ONLY. This is the user's application interface language. Do NOT auto-detect the language from the query. Even if the user writes in English, French, or any other language, you MUST respond in ${languageName}. This is mandatory for a consistent user experience.
 Limit to 3-4 sentences maximum.
 
 Format your response exactly like this:
@@ -202,7 +213,7 @@ MESSAGE: [your conversational message]`;
 
       // Parse the response
       const recommendationsMatch = text.match(/RECOMMENDATIONS:\s*([\s\S]+?)(?=\nDETECTED_PLATFORMS:|\nMESSAGE:|$)/);
-      const platformsMatch = text.match(/DETECTED_PLATFORMS:\s*([\s\S]+?)(?=\nMESSAGE:|$)/);
+      const platformsMatch = text.match(/DETECTED_PLATFORMS:\s*([^\n]*)/); // Capture only until end of line
       const messageMatch = text.match(/MESSAGE:\s*([\s\S]+)$/);
 
       const recommendations = recommendationsMatch
@@ -212,11 +223,39 @@ MESSAGE: [your conversational message]`;
             .filter((title) => title.length > 0 && title.length < 200)
         : [];
 
-      const detectedPlatforms = platformsMatch
+      // List of known streaming platforms to validate against
+      const knownPlatforms = [
+        'netflix', 'disney', 'disneyplus', 'disney+', 'amazon', 'prime', 'primevideo',
+        'hbo', 'hbomax', 'apple', 'appletv', 'hulu', 'paramount', 'peacock',
+        'showtime', 'starz', 'crave', 'crunchyroll', 'funimation'
+      ];
+
+      const detectedPlatforms = platformsMatch && platformsMatch[1]
         ? platformsMatch[1]
             .split(',')
             .map((platform) => platform.trim())
-            .filter((platform) => platform.length > 0 && platform.toLowerCase() !== 'none')
+            .filter((platform) => {
+              // Ignore empty strings and 'none'
+              if (platform.length === 0 || platform.toLowerCase() === 'none') {
+                return false;
+              }
+              // Validate that this looks like a platform name (not a sentence)
+              // A platform name should be short (< 30 chars) and not contain ':' or '.'
+              if (platform.length > 30 || platform.includes(':') || platform.includes('.')) {
+                console.log(`⚠️  Ignoring invalid platform: "${platform}"`);
+                return false;
+              }
+              // Check if it matches a known platform
+              const normalized = platform.toLowerCase().replace(/\s+/g, '');
+              const isKnown = knownPlatforms.some(known =>
+                normalized.includes(known) || known.includes(normalized)
+              );
+              if (!isKnown) {
+                console.log(`⚠️  Unknown platform detected: "${platform}" - ignoring`);
+                return false;
+              }
+              return true;
+            })
         : [];
 
       const conversationalResponse = messageMatch
@@ -224,8 +263,11 @@ MESSAGE: [your conversational message]`;
         : 'Here are my recommendations for you!';
 
       console.log(
-        `🎬 Gemini generated ${recommendations.length} recommendations, ${detectedPlatforms.length} platforms + conversational response`
+        `🎬 Gemini generated ${recommendations.length} recommendations, ${detectedPlatforms.length} valid platforms + conversational response`
       );
+      if (detectedPlatforms.length > 0) {
+        console.log(`📺 Detected platforms: ${detectedPlatforms.join(', ')}`);
+      }
 
       return {
         recommendations,

@@ -15,6 +15,7 @@ import {
   StreamingProvider,
 } from '../services/backend-api.service';
 import { APP_CONFIG } from '@/constants/app';
+import { getLanguageForTMDB } from '@/constants/languages';
 
 export interface Movie {
   id: number;
@@ -163,8 +164,8 @@ const searchMoviesWithBackend = async (
 export const useBackendMovieSearch = () => {
   const { t, country, language } = useLanguage();
 
-  // Convert language format (e.g., 'fr' -> 'fr-FR')
-  const tmdbLanguage = `${language}-${country}`;
+  // Convert language format using TMDB mapping (e.g., 'fr' -> 'fr-FR', 'it' -> 'it-IT')
+  const tmdbLanguage = getLanguageForTMDB(language);
 
   return useMutation({
     mutationFn: (params: SearchParams) =>
