@@ -38,8 +38,16 @@ export interface MovieResult {
   adult?: boolean;
 }
 
+export interface StreamingProvider {
+  provider_id: number;
+  provider_name: string;
+  logo_path: string;
+  display_priority: number;
+}
+
 export interface SearchResponse {
   recommendations: MovieResult[];
+  streamingProviders: { [key: number]: StreamingProvider[] };
   conversationalResponse: string;
   promptsRemaining: number;
   isProUser: boolean;
@@ -202,6 +210,7 @@ class BackendAPIService {
           success: false,
           data: {
             recommendations: [],
+            streamingProviders: {},
             conversationalResponse: '',
             promptsRemaining: 0,
             isProUser: false,
@@ -238,6 +247,7 @@ class BackendAPIService {
         success: false,
         data: {
           recommendations: [],
+          streamingProviders: {},
           conversationalResponse: '',
           promptsRemaining: 0,
           isProUser: false,

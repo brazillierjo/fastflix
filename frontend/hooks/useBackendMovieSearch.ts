@@ -12,6 +12,7 @@ import {
   backendAPIService,
   MovieResult,
   SearchResponse,
+  StreamingProvider,
 } from '../services/backend-api.service';
 import { APP_CONFIG } from '@/constants/app';
 
@@ -25,12 +26,6 @@ export interface Movie {
   first_air_date?: string;
   vote_average: number;
   media_type?: 'movie' | 'tv' | 'person';
-}
-
-export interface StreamingProvider {
-  provider_id: number;
-  provider_name: string;
-  logo_path: string;
 }
 
 export interface Cast {
@@ -130,9 +125,10 @@ const searchMoviesWithBackend = async (
     // Transform backend results to frontend format
     const movies = data.recommendations.map(transformMovieResult);
 
-    // Since backend doesn't return streaming providers and credits yet,
-    // we'll return empty objects for now (TODO: add to backend)
-    const streamingProviders: { [key: number]: StreamingProvider[] } = {};
+    // Get streaming providers from backend response
+    const streamingProviders = data.streamingProviders || {};
+    
+    // Credits and detailed info are still empty (TODO: add to backend)
     const credits: { [key: number]: Cast[] } = {};
     const detailedInfo: { [key: number]: DetailedInfo } = {};
 

@@ -3,7 +3,7 @@
  * Handles all TMDB API interactions and enriches AI recommendations
  */
 
-import type { MovieResult, TMDBSearchResponse, TMDBMovie, TMDBTVShow } from './types';
+import type { MovieResult, TMDBSearchResponse, TMDBMovie, TMDBTVShow, TMDBWatchProviderResponse, StreamingProvider } from './types';
 
 interface CachedData<T> {
   data: T;
@@ -254,6 +254,60 @@ class TMDBService {
       console.error(`❌ Failed to get TV details for ID ${tmdbId}:`, error);
       throw error;
     }
+  }
+
+  /**
+   * Get watch providers for a movie or TV show
+   */
+  async getWatchProviders(
+    tmdbId: number,
+    mediaType: 'movie' | 'tv',
+    country: string = 'FR'
+  ): Promise<StreamingProvider[]> {
+    try {
+      const endpoint = `/${mediaType}/${tmdbId}/watch/providers`;
+      
+      const response = await this.makeRequest<TMDBWatchProviderResponse>(endpoint);
+      
+      // Get providers for the specific region
+      const regionData = response.results[country];
+            
+      if (!regionData || !regionData.flatrate) {
+        return [];
+      }
+
+      // Return only flatrate (streaming) providers
+      return regionData.flatrate.map(provider => ({
+        provider_id: provider.provider_id,
+        provider_name: provider.provider_name,
+        logo_path: provider.logo_path,
+        display_priority: provider.display_priority
+      }));
+      return flatrateProviders;
+    } catch (error) {
+      console.error(`❌ Failed to get watch providers for ${mediaType} ${tmdbId}:`, error);
+      return [];
+    }
+  }
+
+  /**
+   * Get watch providers for multiple movies/TV shows in parallel
+   */
+  async getBatchWatchProviders(
+    items: MovieResult[],
+    country: string = 'FR'
+  ): Promise<{ [key: number]: StreamingProvider[] }> {
+    const result: { [key: number]: StreamingProvider[] } = {};
+    
+    const promises = items.map(async (item) => {
+      const providers = await this.getWatchProviders(item.tmdb_id, item.media_type, country);
+      if (providers.length > 0) {
+        result[item.tmdb_id] = providers;
+      }
+    });
+
+    await Promise.all(promises);
+    return result;
   }
 
   /**

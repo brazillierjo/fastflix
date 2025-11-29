@@ -18,12 +18,8 @@
  */
 
 import { useState } from 'react';
-import {
-  Cast,
-  DetailedInfo,
-  Movie,
-  StreamingProvider,
-} from './useBackendMovieSearch';
+import { StreamingProvider } from '../services/backend-api.service';
+import { Cast, DetailedInfo, Movie } from './useBackendMovieSearch';
 
 export interface AppState {
   query: string;

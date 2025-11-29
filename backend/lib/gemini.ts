@@ -140,7 +140,8 @@ Limit your response to 3-4 sentences maximum.`;
    */
   async generateRecommendationsWithResponse(
     query: string,
-    contentTypes: string[]
+    contentTypes: string[],
+    language: string = 'fr-FR'
   ): Promise<AIRecommendationResult> {
     const genAI = this.getClient();
     const model = genAI.getGenerativeModel({ model: 'gemini-2.0-flash-exp' });
@@ -183,7 +184,9 @@ Provide two distinct outputs:
 
 1. RECOMMENDATIONS: Up to 25 ${contentTypeText} matching the request (be generous and inventive). Include exact titles, franchise variations, spiritual successors, and thematically similar works. List only titles separated by commas.
 
-2. MESSAGE: A conversational, engaging message that adapts to the user's tone and style. Provide encouragement and context about their request without mentioning specific results. Be enthusiastic and personalized, matching their energy level (humorous, serious, casual, etc.). Include a brief insight about your selection strategy. IMPORTANT: Automatically detect the language used in the user's query and respond in that same language. If the user wrote in French, respond in French. If they wrote in German, respond in German. If they wrote in Japanese, respond in Japanese. Match their language exactly. Limit to 3-4 sentences maximum.
+2. MESSAGE: A conversational, engaging message that adapts to the user's tone and style. Provide encouragement and context about their request without mentioning specific results. Be enthusiastic and personalized, matching their energy level (humorous, serious, casual, etc.). Include a brief insight about your selection strategy.
+IMPORTANT: Respond in the following language: ${language}. Do NOT auto-detect the language. You MUST reply in ${language}, regardless of the query language.
+Limit to 3-4 sentences maximum.
 
 Format your response exactly like this:
 RECOMMENDATIONS: [comma-separated list of titles]

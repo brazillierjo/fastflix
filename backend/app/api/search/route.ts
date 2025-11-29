@@ -27,7 +27,7 @@ export async function POST(request: NextRequest) {
       return rateLimitResponse;
     }
 
-    const { deviceId, query, includeMovies, includeTvShows, platform, appVersion, language } =
+    const { deviceId, query, includeMovies, includeTvShows, platform, appVersion, language, country } =
       validatedData;
 
     // Step 1: Check if device is blocked
@@ -77,7 +77,7 @@ export async function POST(request: NextRequest) {
     }
 
     // Step 5: Generate AI recommendations with conversational response
-    const aiResult = await gemini.generateRecommendationsWithResponse(query, contentTypes);
+    const aiResult = await gemini.generateRecommendationsWithResponse(query, contentTypes, language);
 
     // Step 6: Enrich recommendations with TMDB data
     const enrichedResults = await tmdb.enrichRecommendations(
@@ -86,6 +86,9 @@ export async function POST(request: NextRequest) {
       includeTvShows,
       language
     );
+
+    // Step 6b: Fetch streaming providers for enriched results
+    const streamingProviders = await tmdb.getBatchWatchProviders(enrichedResults, country);
 
     // Step 7: Increment prompt count (only if we got results)
     let newPromptCount = limitCheck.remaining;
@@ -109,6 +112,7 @@ export async function POST(request: NextRequest) {
     // Step 11: Return successful response
     const response: SearchResponse = {
       recommendations: enrichedResults,
+      streamingProviders,
       conversationalResponse: aiResult.conversationalResponse,
       promptsRemaining,
       isProUser: limitCheck.isProUser,
