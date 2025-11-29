@@ -1,36 +1,163 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# FastFlix Backend API
 
-## Getting Started
+AI-powered movie and TV show recommendations backend service for FastFlix mobile app.
 
-First, run the development server:
+## 🚀 Production
 
+**Live API:** https://fastflix-api.vercel.app
+
+## 📋 API Endpoints
+
+### Health Check
+```
+GET /api/health
+```
+Returns API status and version.
+
+### Check Prompt Limit
+```
+POST /api/check-limit
+Content-Type: application/json
+
+{
+  "deviceId": "string"
+}
+```
+Check if a device can make a prompt (quota verification).
+
+### Search Movies/TV Shows
+```
+POST /api/search
+Content-Type: application/json
+
+{
+  "deviceId": "string",
+  "query": "string",
+  "includeMovies": boolean,
+  "includeTvShows": boolean,
+  "platform": "ios" | "android",
+  "appVersion": "string",
+  "language": "string (optional)",
+  "country": "string (optional)"
+}
+```
+Search for movies and TV shows using AI + TMDB enrichment.
+
+### RevenueCat Webhook
+```
+POST /api/subscription/webhook
+```
+Handles subscription events from RevenueCat.
+
+## 🏗️ Tech Stack
+
+- **Framework:** Next.js 16 (App Router)
+- **Runtime:** Node.js / Vercel Serverless
+- **Database:** Turso (libSQL)
+- **AI:** Google Gemini 2.0 Flash
+- **Movie Data:** TMDB API
+- **Validation:** Zod
+- **Testing:** Jest + ts-jest
+- **Language:** TypeScript (strict mode)
+
+## 🔧 Local Development
+
+### Prerequisites
+
+- Node.js 20+
+- npm or pnpm
+
+### Setup
+
+1. Install dependencies:
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+npm install
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+2. Create `.env.local`:
+```env
+TURSO_DATABASE_URL=your_turso_url
+TURSO_AUTH_TOKEN=your_turso_token
+GOOGLE_API_KEY=your_google_ai_key
+TMDB_API_KEY=your_tmdb_key
+TMDB_BASE_URL=https://api.themoviedb.org/3
+MAX_FREE_PROMPTS=3
+NODE_ENV=development
+```
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+3. Run development server:
+```bash
+npm run dev
+```
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+Open [http://localhost:3000](http://localhost:3000) to see the API landing page.
 
-## Learn More
+## 🧪 Testing
 
-To learn more about Next.js, take a look at the following resources:
+Run all tests:
+```bash
+npm test
+```
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+Run tests with coverage:
+```bash
+npm run test:coverage
+```
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+Watch mode:
+```bash
+npm run test:watch
+```
 
-## Deploy on Vercel
+**Test Results:**
+- ✅ 36 tests passing
+- ✅ Coverage: 65-100% for tested files
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+## 📦 Scripts
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+- `npm run dev` - Start development server
+- `npm run build` - Build for production
+- `npm start` - Start production server
+- `npm test` - Run tests
+- `npm run test:coverage` - Run tests with coverage
+- `npm run lint` - Run ESLint
+- `npm run lint:fix` - Fix ESLint errors
+- `npm run format` - Format code with Prettier
+- `npm run format:check` - Check code formatting
+- `npm run type-check` - TypeScript type checking
+- `npm run check-all` - Run all checks (type-check + lint + format + test)
+
+## 🔒 Security Features
+
+- **Rate Limiting:** IP and device-based rate limiting
+- **Anti-Abuse:** Automatic detection and blocking of suspicious behavior
+- **Input Validation:** Zod schemas for all endpoints
+- **CORS:** Configured for mobile app access
+- **Environment Variables:** Secure configuration via Vercel
+
+## 📊 Database Schema
+
+### Tables
+
+- `user_prompts` - Track monthly prompt usage per device
+- `subscriptions` - Store subscription status (RevenueCat sync)
+- `prompt_logs` - Analytics and usage tracking
+- `blocked_devices` - Anti-abuse blocking system
+
+## 🚢 Deployment
+
+The backend is automatically deployed to Vercel on every push to `main` branch.
+
+### Manual Deployment
+
+```bash
+vercel --prod
+```
+
+## 📝 License
+
+Private project - All rights reserved
+
+## 🤝 Contributing
+
+This is a private project. For issues or questions, please contact the maintainer.
