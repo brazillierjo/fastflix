@@ -377,37 +377,38 @@ export interface CheckLimitResponse {
 
 ---
 
-## 🚀 Phase 6: Déploiement Vercel
+## 🚀 Phase 6: Déploiement Vercel ✅
 
-### 6.1 Configuration Vercel
+### 6.1 Configuration Vercel ✅
 
-- [ ] Créer compte sur [vercel.com](https://vercel.com)
-- [ ] Installer Vercel CLI: `npm install -g vercel`
-- [ ] Se connecter: `vercel login`
-- [ ] Lier le projet: `vercel link` (depuis `/backend`)
+- [x] Créer compte sur [vercel.com](https://vercel.com)
+- [x] Installer Vercel CLI: `npm install -g vercel`
+- [x] Se connecter: `vercel login`
+- [x] Lier le projet: `vercel link` (depuis `/backend`)
 
-### 6.2 Variables d'Environnement
+### 6.2 Variables d'Environnement ✅
 
-- [ ] Aller sur Vercel Dashboard → Settings → Environment Variables
-- [ ] Ajouter toutes les variables de `.env.local`:
+- [x] Aller sur Vercel Dashboard → Settings → Environment Variables
+- [x] Ajouter toutes les variables de `.env.local`:
   - `TURSO_DATABASE_URL`
   - `TURSO_AUTH_TOKEN`
   - `GOOGLE_API_KEY`
+  - `TMDB_API_KEY`
   - `MAX_FREE_PROMPTS`
-- [ ] Vérifier que les variables sont bien chargées
+- [x] Vérifier que les variables sont bien chargées
 
-### 6.3 Déploiement
+### 6.3 Déploiement ✅
 
-- [ ] Premier déploiement: `vercel --prod`
-- [ ] Noter l'URL de production: `https://fastflix-api.vercel.app`
-- [ ] Tester tous les endpoints sur l'URL de prod
-- [ ] Configurer le domaine custom (optionnel)
+- [x] Premier déploiement: `vercel --prod`
+- [x] URL de production: **https://fastflix-api.vercel.app**
+- [x] Tester tous les endpoints sur l'URL de prod
+- [x] Domaine custom non nécessaire
 
-### 6.4 Auto-deploy depuis GitHub
+### 6.4 Auto-deploy depuis GitHub ✅
 
-- [ ] Connecter le repo GitHub à Vercel
-- [ ] Activer auto-deploy sur push vers `main`
-- [ ] Chaque commit → déploiement automatique
+- [x] Connecter le repo GitHub à Vercel
+- [x] Activer auto-deploy sur push vers `main`
+- [x] Chaque commit → déploiement automatique
 
 ---
 
