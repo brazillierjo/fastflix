@@ -16,7 +16,9 @@ jest.mock('../lib/db', () => ({
 }));
 
 describe('PromptCounterService', () => {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   let promptCounter: any;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   let mockDb: any;
 
   beforeEach(async () => {

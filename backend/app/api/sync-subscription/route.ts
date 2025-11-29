@@ -44,7 +44,10 @@ export async function POST(request: NextRequest) {
 
       if (hasSubscription) {
         // User had a subscription but it's no longer active
-        await db.updateSubscriptionStatus(deviceId, 'expired');
+        await db.upsertSubscription({
+          device_id: deviceId,
+          status: 'expired',
+        });
         console.log(`⚠️ Subscription marked as expired for ${deviceId}`);
       }
     }
