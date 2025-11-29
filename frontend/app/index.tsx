@@ -4,8 +4,11 @@ import SearchForm from '@/components/SearchForm';
 import SubscriptionModal from '@/components/SubscriptionModal';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { useAppState } from '@/hooks/useAppState';
-import { useMovieSearch } from '@/hooks/useMovieSearch';
-import { useFastFlixProFeatures } from '@/hooks/usePremiumFeatures';
+import {
+  useBackendMovieSearch,
+  usePromptLimit,
+} from '@/hooks/useBackendMovieSearch';
+import { useSubscription } from '@/contexts/RevenueCatContext';
 import { cn } from '@/utils/cn';
 import React, { useState } from 'react';
 import {
@@ -35,34 +38,20 @@ export default function HomeScreen() {
     handleSearchEnd,
   } = useAppState();
 
-  const movieSearchMutation = useMovieSearch();
-  const { canMakePrompt, incrementPromptCount } = useFastFlixProFeatures();
+  // Get subscription status from RevenueCat
+  const { hasUnlimitedAccess } = useSubscription();
+
+  const movieSearchMutation = useBackendMovieSearch(hasUnlimitedAccess);
+  const { data: promptLimitData, refetch: refetchPromptLimit } =
+    usePromptLimit();
   const { t } = useLanguage();
   const [showSubscriptionModal, setShowSubscriptionModal] = useState(false);
 
   const handleSearch = async () => {
-    // Check if user can make a prompt
-    const promptCheck = canMakePrompt();
+    console.log('🔍 Starting search - User is Pro:', hasUnlimitedAccess);
 
-    if (!promptCheck.allowed) {
-      // Show subscription modal for users who have reached their limit
-      Alert.alert(
-        t('prompts.limit.title') || 'Monthly Limit Reached',
-        t('prompts.limit.message') ||
-          `You've used all 3 free prompts this month. Upgrade to FastFlix Pro for unlimited recommendations!`,
-        [
-          {
-            text: t('prompts.limit.cancel') || 'Cancel',
-            style: 'cancel',
-          },
-          {
-            text: t('prompts.limit.upgrade') || 'Upgrade to Pro',
-            onPress: () => setShowSubscriptionModal(true),
-          },
-        ]
-      );
-      return;
-    }
+    // Let the backend handle quota checks - it now knows about Pro status
+    // No need to check promptLimitData here as it doesn't know about Pro status from frontend
 
     handleSearchStart();
 
@@ -74,17 +63,36 @@ export default function HomeScreen() {
       },
       {
         onSuccess: async data => {
-          // Only increment prompt count if search returned results (> 0 movies)
-          if (data.movies && data.movies.length > 0) {
-            // Increment prompt count for free users
-            // Note: incrementPromptCount() already checks if user is free/expired internally
-            await incrementPromptCount();
-          }
+          console.log('✅ Search successful - Results:', data.movies.length);
+
+          // Backend handles prompt counting automatically
+          // Just refresh the prompt limit data
+          await refetchPromptLimit();
 
           handleSearchSuccess(data);
         },
-        onError: () => {
+        onError: (error) => {
+          console.error('❌ Search error:', error);
           handleSearchEnd();
+
+          // If quota exceeded, show upgrade modal
+          if (error.message === 'quotaExceeded') {
+            Alert.alert(
+              t('prompts.limit.title') || 'Monthly Limit Reached',
+              t('prompts.limit.message') ||
+                'You have used all your free prompts this month. Upgrade to Pro for unlimited searches!',
+              [
+                {
+                  text: t('prompts.limit.cancel') || 'Cancel',
+                  style: 'cancel',
+                },
+                {
+                  text: t('prompts.limit.upgrade') || 'Upgrade to Pro',
+                  onPress: () => setShowSubscriptionModal(true),
+                },
+              ]
+            );
+          }
         },
       }
     );

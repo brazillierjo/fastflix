@@ -18,7 +18,12 @@
  */
 
 import { useState } from 'react';
-import { Cast, DetailedInfo, Movie, StreamingProvider } from './useMovieSearch';
+import {
+  Cast,
+  DetailedInfo,
+  Movie,
+  StreamingProvider,
+} from './useBackendMovieSearch';
 
 export interface AppState {
   query: string;

@@ -318,7 +318,9 @@ export default function SubscriptionModal({
         <View className='my-3 flex-row justify-center gap-6'>
           <TouchableOpacity
             onPress={() =>
-              Linking.openURL('https://fastflix-website.vercel.app/privacy-policy')
+              Linking.openURL(
+                'https://fastflix-website.vercel.app/privacy-policy'
+              )
             }
           >
             <Text className='text-xs text-light-muted underline dark:text-dark-muted'>
@@ -328,7 +330,9 @@ export default function SubscriptionModal({
 
           <TouchableOpacity
             onPress={() =>
-              Linking.openURL('https://fastflix-website.vercel.app/terms-of-use')
+              Linking.openURL(
+                'https://fastflix-website.vercel.app/terms-of-use'
+              )
             }
           >
             <Text className='text-xs text-light-muted underline dark:text-dark-muted'>

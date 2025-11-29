@@ -19,7 +19,8 @@ type RevenueCatEventType =
   | 'UNCANCELLATION'
   | 'NON_RENEWING_PURCHASE'
   | 'BILLING_ISSUE'
-  | 'SUBSCRIBER_ALIAS';
+  | 'SUBSCRIBER_ALIAS'
+  | 'TEST'; // Test events from RevenueCat dashboard
 
 interface RevenueCatWebhookEvent {
   type: RevenueCatEventType;
@@ -130,6 +131,22 @@ export async function POST(request: NextRequest) {
       case 'SUBSCRIBER_ALIAS':
         // Handle subscriber alias (user ID change)
         console.log(`🔗 Subscriber alias event for ${deviceId}`);
+        break;
+
+      case 'TEST':
+        // Test event from RevenueCat dashboard
+        console.log(`🧪 Test event received for ${deviceId}`);
+        // Treat test events as INITIAL_PURCHASE for testing purposes
+        await db.upsertSubscription({
+          device_id: deviceId,
+          revenuecat_user_id: event.app_user_id,
+          status: 'active',
+          expires_at: event.expiration_at_ms
+            ? new Date(event.expiration_at_ms).toISOString()
+            : null,
+          product_id: event.product_id || null,
+        });
+        console.log(`✅ Test subscription activated for ${deviceId}`);
         break;
 
       default:

@@ -17,8 +17,9 @@ class PromptCounterService {
   /**
    * Check if a device can make a prompt
    * Returns detailed information about the check
+   * @param isProUserFromFrontend - Optional Pro status from frontend (temporary until webhook is configured)
    */
-  async canMakePrompt(deviceId: string): Promise<PromptCheckResult> {
+  async canMakePrompt(deviceId: string, isProUserFromFrontend?: boolean): Promise<PromptCheckResult> {
     try {
       // First check if device is blocked
       const isBlocked = await db.isDeviceBlocked(deviceId);
@@ -31,7 +32,18 @@ class PromptCounterService {
         };
       }
 
-      // Check if user has an active subscription
+      // TEMPORARY: If frontend says user is Pro, trust it (until webhook is configured)
+      if (isProUserFromFrontend === true) {
+        console.log(`✅ User is Pro (from frontend): ${deviceId}`);
+        return {
+          allowed: true,
+          remaining: Infinity,
+          reason: 'active_subscription_from_frontend',
+          isProUser: true,
+        };
+      }
+
+      // Check if user has an active subscription in database
       const hasSubscription = await db.hasActiveSubscription(deviceId);
       if (hasSubscription) {
         return {

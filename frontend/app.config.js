@@ -64,8 +64,7 @@ export default {
       policy: 'appVersion',
     },
     extra: {
-      GOOGLE_API_KEY: process.env.GOOGLE_API_KEY,
-      TMDB_API_KEY: process.env.TMDB_API_KEY,
+      API_URL: process.env.EXPO_PUBLIC_API_URL,
       EXPO_PUBLIC_REVENUECAT_IOS_API_KEY:
         process.env.EXPO_PUBLIC_REVENUECAT_IOS_API_KEY,
       eas: {

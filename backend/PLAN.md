@@ -412,39 +412,58 @@ export interface CheckLimitResponse {
 
 ---
 
-## 📱 Phase 7: Intégration Frontend (À FAIRE APRÈS)
+## 📱 Phase 7: Intégration Frontend ✅
 
-### 7.1 Modifications App Mobile
+### 7.1 Modifications App Mobile ✅
 
-- [ ] Créer service `/frontend/services/api.service.ts`
-- [ ] Remplacer appels directs à Gemini par appels API
-- [ ] Fonction `searchMovies(query, deviceId, ...)`
-- [ ] Fonction `checkPromptLimit(deviceId)`
-- [ ] Gestion des erreurs réseau
-- [ ] Retry logic et timeout
+- [x] Créer service `/frontend/services/backend-api.service.ts`
+- [x] Remplacer appels directs à Gemini par appels API backend
+- [x] Fonction `search(query, deviceId, ...)` avec gestion deviceId automatique
+- [x] Fonction `checkLimit(deviceId)` pour vérifier le quota
+- [x] Fonction `healthCheck()` pour monitoring
+- [x] Gestion des erreurs réseau avec timeout (30s)
+- [x] Retry logic via React Query
 
-### 7.2 Nettoyage Frontend
+### 7.2 Hooks et Intégration ✅
 
-- [ ] Supprimer `GOOGLE_API_KEY` de `.env`
-- [ ] Supprimer `/frontend/services/ai.service.ts`
-- [ ] Supprimer `/frontend/utils/aiServices.ts`
-- [ ] Mettre à jour les hooks pour utiliser la nouvelle API
-- [ ] Tester sur iOS
-- [ ] Tester sur Android
+- [x] Créer hook `useBackendMovieSearch()` pour remplacer `useMovieSearch()`
+- [x] Créer hook `usePromptLimit()` pour vérifier le quota
+- [x] Créer hook `useBackendHealth()` pour monitoring
+- [x] Mettre à jour `app/index.tsx` pour utiliser le nouveau hook
+- [x] Ajouter notices de déprécation sur anciens services
+- [x] Device ID géré automatiquement via `deviceIdentityService`
 
-### 7.3 Configuration API URL
+### 7.3 Configuration API URL ✅
 
-- [ ] Ajouter `API_URL` dans `.env`:
+- [x] Ajouter `EXPO_PUBLIC_API_URL` dans `.env`:
 
   ```env
-  # Development
-  EXPO_PUBLIC_API_URL=http://localhost:3000
+  # Development (local)
+  # EXPO_PUBLIC_API_URL=http://localhost:3000
 
-  # Production
+  # Production (Vercel)
   EXPO_PUBLIC_API_URL=https://fastflix-api.vercel.app
   ```
 
-- [ ] Utiliser `Constants.expoConfig?.extra?.API_URL` dans le code
+- [x] Utiliser `Constants.expoConfig?.extra?.API_URL` dans le code
+- [x] Mettre à jour `app.config.js` pour exposer la variable
+
+### 7.4 Services Dépréciés (Conservés pour compatibilité) ✅
+
+- [x] Ajouter `@deprecated` notice sur `/frontend/services/ai.service.ts`
+- [x] Ajouter `@deprecated` notice sur `/frontend/services/tmdb.service.ts`
+- [x] Les clés API Google et TMDB ne sont plus nécessaires côté frontend
+- [x] Migration guide ajouté dans les fichiers de service
+
+### 7.5 Tests à Effectuer
+
+- [ ] Tester la recherche de films/séries sur iOS
+- [ ] Tester la recherche de films/séries sur Android
+- [ ] Vérifier le comptage des prompts (quota gratuit)
+- [ ] Tester le message d'erreur quand quota dépassé
+- [ ] Tester en mode développement (localhost)
+- [ ] Tester en mode production (Vercel)
+- [ ] Vérifier que le deviceId est correctement généré et persisté
 
 ---
 

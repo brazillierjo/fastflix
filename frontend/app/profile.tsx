@@ -373,7 +373,9 @@ export default function ProfileScreen() {
 
                 <TouchableOpacity
                   onPress={() =>
-                    Linking.openURL('https://fastflix-website.vercel.app/support')
+                    Linking.openURL(
+                      'https://fastflix-website.vercel.app/support'
+                    )
                   }
                   className='py-2'
                 >
