@@ -7,6 +7,7 @@ import Constants from 'expo-constants';
 import { Platform } from 'react-native';
 import { deviceIdentityService } from './deviceIdentity.service';
 import { APIResponse, APIError } from '@/types/api';
+import Purchases from 'react-native-purchases';
 
 // Types matching backend API
 export interface SearchRequest {
@@ -191,27 +192,36 @@ class BackendAPIService {
     country?: string;
   }): Promise<APIResponse<SearchResponse>> {
     try {
-      // Get device ID
-      const deviceIdResult = await deviceIdentityService.getDeviceId();
-
-      if (!deviceIdResult.success || !deviceIdResult.data) {
-        return {
-          success: false,
-          data: {
-            recommendations: [],
-            streamingProviders: {},
-            conversationalResponse: '',
-            totalResults: 0,
-          },
-          error: {
-            code: 'DEVICE_ID_ERROR',
-            message: 'Failed to get device ID',
-          },
-        };
+      // Get RevenueCat App User ID (this is what the webhook uses)
+      let deviceId: string;
+      try {
+        const customerInfo = await Purchases.getCustomerInfo();
+        deviceId = customerInfo.originalAppUserId;
+        console.log('Using RevenueCat App User ID as device ID:', deviceId);
+      } catch (error) {
+        console.warn('Failed to get RevenueCat App User ID, falling back to custom device ID:', error);
+        // Fallback to custom device ID if RevenueCat is not available
+        const deviceIdResult = await deviceIdentityService.getDeviceId();
+        if (!deviceIdResult.success || !deviceIdResult.data) {
+          return {
+            success: false,
+            data: {
+              recommendations: [],
+              streamingProviders: {},
+              conversationalResponse: '',
+              totalResults: 0,
+            },
+            error: {
+              code: 'DEVICE_ID_ERROR',
+              message: 'Failed to get device ID',
+            },
+          };
+        }
+        deviceId = deviceIdResult.data;
       }
 
       const requestBody: SearchRequest = {
-        deviceId: deviceIdResult.data,
+        deviceId,
         query: params.query,
         includeMovies: params.includeMovies,
         includeTvShows: params.includeTvShows,
