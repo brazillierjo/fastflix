@@ -128,17 +128,33 @@ export const rateLimiter = new RateLimiter();
 
 /**
  * Rate limit configurations
+ * Can be overridden with environment variables
  */
 export const RATE_LIMITS = {
   // Per IP limits
   perIP: {
-    search: { maxRequests: 10, windowMs: 60 * 1000 }, // 10 requests per minute
-    checkLimit: { maxRequests: 30, windowMs: 60 * 1000 }, // 30 requests per minute
-    webhook: { maxRequests: 100, windowMs: 60 * 1000 }, // 100 requests per minute
+    search: {
+      maxRequests: Number(process.env.RATE_LIMIT_IP_SEARCH) || 10,
+      windowMs: 60 * 1000,
+    },
+    checkLimit: {
+      maxRequests: Number(process.env.RATE_LIMIT_IP_CHECK_LIMIT) || 30,
+      windowMs: 60 * 1000,
+    },
+    webhook: {
+      maxRequests: Number(process.env.RATE_LIMIT_IP_WEBHOOK) || 100,
+      windowMs: 60 * 1000,
+    },
   },
   // Per device limits
   perDevice: {
-    search: { maxRequests: 5, windowMs: 60 * 1000 }, // 5 requests per minute
-    checkLimit: { maxRequests: 20, windowMs: 60 * 1000 }, // 20 requests per minute
+    search: {
+      maxRequests: Number(process.env.RATE_LIMIT_DEVICE_SEARCH) || 5,
+      windowMs: 60 * 1000,
+    },
+    checkLimit: {
+      maxRequests: Number(process.env.RATE_LIMIT_DEVICE_CHECK_LIMIT) || 20,
+      windowMs: 60 * 1000,
+    },
   },
 };

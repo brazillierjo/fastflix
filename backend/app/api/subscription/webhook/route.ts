@@ -6,34 +6,8 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { db } from '@/lib/db';
 import { applyRateLimit } from '@/lib/api-helpers';
-
-/**
- * RevenueCat webhook event types
- */
-type RevenueCatEventType =
-  | 'INITIAL_PURCHASE'
-  | 'RENEWAL'
-  | 'CANCELLATION'
-  | 'EXPIRATION'
-  | 'PRODUCT_CHANGE'
-  | 'UNCANCELLATION'
-  | 'NON_RENEWING_PURCHASE'
-  | 'BILLING_ISSUE'
-  | 'SUBSCRIBER_ALIAS'
-  | 'TEST'; // Test events from RevenueCat dashboard
-
-interface RevenueCatWebhookEvent {
-  type: RevenueCatEventType;
-  app_user_id: string;
-  product_id?: string;
-  expiration_at_ms?: number;
-  presented_offering_id?: string;
-  environment: 'PRODUCTION' | 'SANDBOX';
-}
-
-interface RevenueCatWebhookPayload {
-  event: RevenueCatWebhookEvent;
-}
+import { revenueCatWebhookSchema } from '@/lib/validation';
+import { verifyRevenueCatSignature } from '@/lib/webhook-verification';
 
 export async function POST(request: NextRequest) {
   try {
@@ -43,11 +17,45 @@ export async function POST(request: NextRequest) {
       return rateLimitResponse;
     }
 
-    // Parse webhook payload
-    const payload: RevenueCatWebhookPayload = await request.json();
-    const { event } = payload;
+    // Get raw body for signature verification
+    const rawBody = await request.text();
 
-    console.log(`📬 RevenueCat webhook received: ${event.type} for ${event.app_user_id}`);
+    // Verify webhook signature (if secret is configured)
+    const signature = request.headers.get('X-Revenuecat-Signature');
+    const webhookSecret = process.env.REVENUECAT_WEBHOOK_SECRET;
+
+    const isValidSignature = verifyRevenueCatSignature(
+      rawBody,
+      signature,
+      webhookSecret
+    );
+
+    if (!isValidSignature) {
+      console.error('❌ Invalid webhook signature - rejecting request');
+      return NextResponse.json(
+        { error: 'Invalid signature' },
+        { status: 401 }
+      );
+    }
+
+    // Parse and validate webhook payload
+    const payload = JSON.parse(rawBody);
+    const validationResult = revenueCatWebhookSchema.safeParse(payload);
+
+    if (!validationResult.success) {
+      console.error('❌ Invalid webhook payload:', validationResult.error);
+      return NextResponse.json(
+        {
+          error: 'Invalid payload',
+          details: validationResult.error.format(),
+        },
+        { status: 400 }
+      );
+    }
+
+    const { event } = validationResult.data;
+
+    console.log(`📬 RevenueCat webhook received: ${event.type} for ${event.app_user_id} (${event.environment})`);
 
     // Extract device ID from app_user_id
     // Assuming app_user_id is the device_id (adjust based on your implementation)

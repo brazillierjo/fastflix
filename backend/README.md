@@ -11,27 +11,6 @@ AI-powered movie and TV show recommendation API with subscription management.
 ### `GET /api/health`
 Health check endpoint. Returns API status, version, and service availability.
 
-### `POST /api/check-limit`
-Check remaining prompt quota for a device.
-
-**Request:**
-```json
-{
-  "deviceId": "string"
-}
-```
-
-**Response:**
-```json
-{
-  "canMakePrompt": true,
-  "promptsUsed": 1,
-  "promptsRemaining": 2,
-  "maxFreePrompts": 3,
-  "isProUser": false
-}
-```
-
 ### `POST /api/search`
 Search for movies/TV shows using AI recommendations.
 
@@ -53,9 +32,8 @@ Search for movies/TV shows using AI recommendations.
 ```json
 {
   "recommendations": [...],
+  "streamingProviders": {...},
   "conversationalResponse": "Here are some great action movies...",
-  "promptsRemaining": 2,
-  "isProUser": false,
   "totalResults": 5
 }
 ```
@@ -77,14 +55,14 @@ RevenueCat webhook for subscription events (INITIAL_PURCHASE, RENEWAL, CANCELLAT
 ### How It Works
 
 ```
-Mobile App (deviceId: "ffx_device_ABC123")
+Mobile App (RevenueCat App User ID)
            ↓ search request (query, language, country)
 Backend API (checks database)
-           ↓ looks up deviceId
+           ↓ looks up App User ID from JWT
 Database: subscriptions table
            ↓ finds status: "active"
-Backend: ✅ Pro user → unlimited searches
-         ❌ Free user → check quota (3/month)
+Backend: ✅ Active subscription → allow search
+         ❌ No subscription → HTTP 402 (Payment Required)
            ↓
 AI Processing (Google Gemini)
            ↓ extracts platforms + generates recommendations
@@ -124,19 +102,20 @@ Next search request checks database
 Backend grants unlimited access ✅
 ```
 
-### Device Identity Linking
+### User Identity & Subscription Sync
 
-The `deviceId` is the single source of truth connecting everything:
+The RevenueCat App User ID connects subscriptions across all services:
 
-1. **Frontend** generates `deviceId` (stored in iOS Keychain)
-2. **Frontend** configures RevenueCat: `Purchases.configure({ appUserID: deviceId })`
-3. **RevenueCat** uses this `deviceId` as `app_user_id` in webhooks
-4. **Backend** receives webhook with `app_user_id` = same `deviceId`
-5. **Backend** stores subscription in database with `device_id`
-6. **Frontend** sends search with same `deviceId`
-7. **Backend** checks database: `SELECT * FROM subscriptions WHERE device_id = ?`
+1. **Frontend** initializes RevenueCat (generates anonymous App User ID)
+2. **Frontend** retrieves App User ID: `customerInfo.originalAppUserId`
+3. **RevenueCat** sends webhooks with `app_user_id` on subscription events
+4. **Backend** receives webhook and stores subscription with `device_id = app_user_id`
+5. **Frontend** sends search requests with App User ID as `deviceId`
+6. **Backend** validates subscription: `SELECT * FROM subscriptions WHERE device_id = ?`
 
-**Result:** All systems use the same ID, everything stays in sync ✅
+**Result:** RevenueCat App User ID is the single source of truth for subscriptions ✅
+
+**Note:** In the next version, this will be replaced with proper user authentication (Sign in with Apple/Google).
 
 ## Tech Stack
 
@@ -195,7 +174,6 @@ TMDB_API_KEY=your_tmdb_key
 TMDB_BASE_URL=https://api.themoviedb.org/3
 
 # Configuration
-MAX_FREE_PROMPTS=3
 NODE_ENV=development
 ```
 
@@ -231,19 +209,6 @@ npm run check-all        # Run type-check + lint + format + test
 ```
 
 ## Database Schema
-
-### `user_prompts`
-Tracks monthly prompt usage per device (free users).
-
-```sql
-device_id TEXT PRIMARY KEY
-prompt_count INTEGER
-current_month TEXT (YYYY-MM format)
-created_at TEXT
-last_updated TEXT
-platform TEXT
-app_version TEXT
-```
 
 ### `subscriptions`
 Stores Pro subscription status (updated by RevenueCat webhook).
@@ -326,7 +291,7 @@ Set these in Vercel dashboard:
 | `GOOGLE_API_KEY` | Google AI API key (Gemini) |
 | `TMDB_API_KEY` | TMDB API key |
 | `TMDB_BASE_URL` | `https://api.themoviedb.org/3` |
-| `MAX_FREE_PROMPTS` | Monthly limit for free users (default: 3) |
+| `REVENUECAT_WEBHOOK_SECRET` | RevenueCat webhook secret (optional, for signature verification) |
 
 ## Troubleshooting
 

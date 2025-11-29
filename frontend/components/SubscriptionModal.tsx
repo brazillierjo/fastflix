@@ -11,6 +11,7 @@ import { MotiView } from 'moti';
 import React, { useState } from 'react';
 import {
   ActivityIndicator,
+  Alert,
   Linking,
   Modal,
   ScrollView,
@@ -78,6 +79,11 @@ export default function SubscriptionModal({
 
     if (!packageToPurchase) {
       console.error('No package selected');
+      Alert.alert(
+        t('subscription.error.title') || 'Error',
+        t('subscription.error.noPackage') ||
+          'No subscription package available. Please try again later.'
+      );
       return;
     }
 

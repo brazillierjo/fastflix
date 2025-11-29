@@ -20,13 +20,31 @@ export const searchRequestSchema = z.object({
 });
 
 /**
- * RevenueCat webhook schema (simplified - adjust based on actual webhook payload)
+ * RevenueCat webhook event types
+ */
+const revenueCatEventTypes = z.enum([
+  'INITIAL_PURCHASE',
+  'RENEWAL',
+  'CANCELLATION',
+  'EXPIRATION',
+  'PRODUCT_CHANGE',
+  'UNCANCELLATION',
+  'NON_RENEWING_PURCHASE',
+  'BILLING_ISSUE',
+  'SUBSCRIBER_ALIAS',
+  'TEST',
+]);
+
+/**
+ * RevenueCat webhook schema
  */
 export const revenueCatWebhookSchema = z.object({
   event: z.object({
-    type: z.string(),
-    app_user_id: z.string(),
+    type: revenueCatEventTypes,
+    app_user_id: z.string().min(1, 'App User ID is required'),
     product_id: z.string().optional(),
     expiration_at_ms: z.number().optional(),
+    presented_offering_id: z.string().optional(),
+    environment: z.enum(['PRODUCTION', 'SANDBOX']),
   }),
 });

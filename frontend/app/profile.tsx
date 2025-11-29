@@ -225,6 +225,11 @@ export default function ProfileScreen() {
                       await restorePurchases();
                     } catch (error) {
                       console.error('Restore error:', error);
+                      Alert.alert(
+                        t('subscription.restoration.error.title') || 'Restore Failed',
+                        t('subscription.restoration.error.message') ||
+                          'An error occurred while restoring purchases. Please try again.'
+                      );
                     } finally {
                       setRestoring(false);
                     }
