@@ -106,11 +106,11 @@ Nettoyer le codebase avant d'ajouter la nouvelle feature pour éviter la dette t
 
 ---
 
-### Phase 2 : 🏗️ Infrastructure d'authentification
+### Phase 2 : 🏗️ Infrastructure d'authentification ✅ COMPLETE
 
 #### Backend - Base de données
 
-- [ ] **Créer la table `users`**
+- [x] **Créer la table `users`**
   ```sql
   CREATE TABLE IF NOT EXISTS users (
     id TEXT PRIMARY KEY,           -- UUID v4
@@ -124,41 +124,41 @@ Nettoyer le codebase avant d'ajouter la nouvelle feature pour éviter la dette t
   );
   ```
 
-- [ ] **Créer les index nécessaires**
+- [x] **Créer les index nécessaires**
   ```sql
   CREATE INDEX idx_users_email ON users(email);
   CREATE INDEX idx_users_provider ON users(auth_provider, provider_user_id);
   ```
 
-- [ ] **Migrer la table `subscriptions`**
+- [x] **Migrer la table `subscriptions`**
   - Ajouter colonne `user_id TEXT`
   - Créer index `idx_subscriptions_user_id`
   - Garder `device_id` temporairement pour migration
   - Ajouter contrainte foreign key vers `users(id)`
 
-- [ ] **Migrer la table `prompt_logs`**
+- [x] **Migrer la table `prompt_logs`**
   - Ajouter colonne `user_id TEXT`
   - Créer index `idx_prompt_logs_user_id`
 
-- [ ] **Créer script de migration**
+- [x] **Créer script de migration**
   - Fichier `backend/migrations/001_add_users_auth.sql`
   - Script pour tester en local avant déploiement
 
 #### Backend - JWT et authentification
 
-- [ ] **Installer les dépendances**
+- [x] **Installer les dépendances**
   ```bash
   npm install jsonwebtoken @types/jsonwebtoken
   npm install apple-signin-auth google-auth-library
   ```
 
-- [ ] **Créer `lib/auth.ts`**
+- [x] **Créer `lib/auth.ts`**
   - Fonction `verifyAppleToken(idToken: string)`
   - Fonction `verifyGoogleToken(idToken: string)`
   - Fonction `generateJWT(userId: string, email: string)`
   - Fonction `verifyJWT(token: string)`
 
-- [ ] **Créer `lib/types.ts` - Types auth**
+- [x] **Créer `lib/types.ts` - Types auth**
   ```typescript
   export interface User {
     id: string;
@@ -182,7 +182,7 @@ Nettoyer le codebase avant d'ajouter la nouvelle feature pour éviter la dette t
   }
   ```
 
-- [ ] **Ajouter méthodes DB dans `lib/db.ts`**
+- [x] **Ajouter méthodes DB dans `lib/db.ts`**
   - `createUser(email, name, provider, providerId)`
   - `getUserByEmail(email)`
   - `getUserById(id)`
@@ -191,40 +191,40 @@ Nettoyer le codebase avant d'ajouter la nouvelle feature pour éviter la dette t
 
 #### Backend - Endpoints API
 
-- [ ] **Créer `POST /api/auth/apple`**
+- [x] **Créer `POST /api/auth/apple`**
   - Vérifier le token Apple
   - Créer/récupérer le user
   - Générer JWT
   - Retourner `{ user, token }`
 
-- [ ] **Créer `POST /api/auth/google`**
+- [x] **Créer `POST /api/auth/google`**
   - Vérifier le token Google
   - Créer/récupérer le user
   - Générer JWT
   - Retourner `{ user, token }`
 
-- [ ] **Créer `GET /api/auth/me`**
+- [x] **Créer `GET /api/auth/me`**
   - Vérifier le JWT
   - Retourner les infos du user
 
-- [ ] **Créer middleware `requireAuth`**
+- [x] **Créer middleware `requireAuth`**
   - Extraire et vérifier le JWT du header Authorization
   - Ajouter `userId` et `email` à la request
   - Utiliser dans les endpoints protégés
 
-- [ ] **Modifier `POST /api/search`**
+- [x] **Modifier `POST /api/search`**
   - Ajouter middleware `requireAuth`
   - Utiliser `userId` au lieu de `deviceId`
   - Mettre à jour validation schema
 
-- [ ] **Modifier webhook RevenueCat** (`/api/subscription/webhook`)
+- [x] **Modifier webhook RevenueCat** (`/api/subscription/webhook`)
   - Trouver le user par email au lieu de deviceId
   - Créer user automatiquement si première souscription
   - Utiliser `user_id` pour les subscriptions
 
 #### Backend - Variables d'environnement
 
-- [ ] **Ajouter à `.env.example`**
+- [x] **Ajouter à `.env.example`**
   ```
   JWT_SECRET=your-super-secret-jwt-key-change-in-production
   APPLE_CLIENT_ID=com.fastflix.app
