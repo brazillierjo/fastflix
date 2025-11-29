@@ -9,43 +9,39 @@ import { gemini } from '@/lib/gemini';
 import { tmdb } from '@/lib/tmdb';
 import { db } from '@/lib/db';
 import { applyRateLimit } from '@/lib/api-helpers';
-import { antiAbuse } from '@/lib/anti-abuse';
+import { requireAuth } from '@/lib/middleware';
 import type { SearchResponse } from '@/lib/types';
 
 export async function POST(request: NextRequest) {
   const startTime = Date.now();
 
   try {
-    // Parse request body first to get deviceId for rate limiting
+    // Step 1: Require authentication
+    const authResult = await requireAuth(request);
+
+    if (!authResult.success || !authResult.userId) {
+      return authResult.error!;
+    }
+
+    const userId = authResult.userId;
+    const user = authResult.user!;
+
+    // Parse request body
     const body = await request.json();
     const validatedData = searchRequestSchema.parse(body);
 
-    // Apply rate limiting (IP + device)
-    const rateLimitResponse = await applyRateLimit(request, 'search', validatedData.deviceId);
+    // Apply rate limiting (IP only, no device ID needed)
+    const rateLimitResponse = await applyRateLimit(request, 'search');
     if (rateLimitResponse) {
       return rateLimitResponse;
     }
 
-    const { deviceId, query, includeMovies, includeTvShows, language, country } =
-      validatedData;
-
-    // Step 1: Check if device is blocked
-    const isBlocked = await db.isDeviceBlocked(deviceId);
-    if (isBlocked) {
-      await antiAbuse.recordFailedAttempt(deviceId);
-      return NextResponse.json(
-        {
-          error: 'Device is blocked',
-          reason: 'Your device has been blocked due to policy violations',
-        },
-        { status: 403 }
-      );
-    }
+    const { query, includeMovies, includeTvShows, language, country } = validatedData;
 
     // Step 2: Check subscription status (REQUIRED)
-    const hasActiveSubscription = await db.hasActiveSubscription(deviceId);
+    const hasActiveSubscription = await db.hasActiveSubscriptionByUserId(userId);
     if (!hasActiveSubscription) {
-      console.log(`🔒 Access denied for ${deviceId}: No active subscription`);
+      console.log(`🔒 Access denied for user ${user.email}: No active subscription`);
       return NextResponse.json(
         {
           error: 'Subscription required',
@@ -55,7 +51,7 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    console.log(`✅ Access granted for ${deviceId}: Active subscription`);
+    console.log(`✅ Access granted for user ${user.email}: Active subscription`);
 
     // Step 3: Build content type array for Gemini
     const contentTypes: string[] = [];
@@ -117,12 +113,9 @@ export async function POST(request: NextRequest) {
 
     // Step 8: Log the prompt for analytics
     const responseTimeMs = Date.now() - startTime;
-    await db.logPrompt(deviceId, query, finalResults.length, responseTimeMs);
+    await db.logPromptWithUserId(userId, query, finalResults.length, responseTimeMs);
 
-    // Step 9: Record successful attempt (clears abuse records)
-    await antiAbuse.recordSuccessfulAttempt(deviceId);
-
-    // Step 10: Return successful response
+    // Step 9: Return successful response
     const response: SearchResponse = {
       recommendations: finalResults,
       streamingProviders,

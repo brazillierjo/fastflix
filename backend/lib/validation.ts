@@ -7,14 +7,15 @@ import { z } from 'zod';
 
 /**
  * Search request schema
+ * Note: deviceId is now optional since authentication is required
  */
 export const searchRequestSchema = z.object({
-  deviceId: z.string().min(1, 'Device ID is required').max(255),
+  deviceId: z.string().min(1).max(255).optional(), // Kept for backward compatibility
   query: z.string().min(1, 'Query is required').max(500),
   includeMovies: z.boolean().default(true),
   includeTvShows: z.boolean().default(true),
-  platform: z.enum(['ios', 'android']),
-  appVersion: z.string().min(1).max(50),
+  platform: z.enum(['ios', 'android']).optional(), // Optional with auth
+  appVersion: z.string().min(1).max(50).optional(), // Optional with auth
   language: z.string().optional().default('fr-FR'),
   country: z.string().optional().default('FR'),
 });

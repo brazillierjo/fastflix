@@ -413,6 +413,29 @@ class DatabaseService {
       return false;
     }
   }
+
+  /**
+   * Log a prompt with user_id for analytics
+   */
+  async logPromptWithUserId(
+    userId: string,
+    query: string,
+    resultsCount: number,
+    responseTimeMs: number
+  ): Promise<void> {
+    this.initialize();
+
+    try {
+      await this.client!.execute({
+        sql: `INSERT INTO prompt_logs (user_id, device_id, query, results_count, response_time_ms)
+              VALUES (?, 'authenticated', ?, ?, ?)`,
+        args: [userId, query, resultsCount, responseTimeMs],
+      });
+    } catch (error) {
+      console.error('❌ Database error in logPromptWithUserId:', error);
+      // Don't throw - logging should not break the request
+    }
+  }
 }
 
 // Export singleton instance
