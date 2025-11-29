@@ -51,25 +51,25 @@ Nettoyer le codebase avant d'ajouter la nouvelle feature pour éviter la dette t
 - [x] **Supprimer `getZeroResultCount()`** (`lib/db.ts`, lignes 190-209)
   - Fonction jamais appelée
 
-- [ ] **Corriger la documentation README**
+- [x] **Corriger la documentation README**
   - Supprimer les références à `user_prompts` table (n'existe plus)
   - Supprimer les références à `MAX_FREE_PROMPTS` (non implémenté)
   - Mettre à jour le schéma de base de données
 
 #### Backend - Améliorations critiques
 
-- [ ] **Ajouter validation webhook RevenueCat** (`app/api/subscription/webhook/route.ts`)
+- [x] **Ajouter validation webhook RevenueCat** (`app/api/subscription/webhook/route.ts`)
   - Utiliser `revenueCatWebhookSchema` pour valider le payload
   - Ajouter signature verification pour sécurité
 
-- [ ] **Externaliser les valeurs hardcodées**
+- [x] **Externaliser les valeurs hardcodées**
   - `GEMINI_MODEL` → variable d'environnement
-  - CORS origins → variable d'environnement
   - Rate limits → variables d'environnement
+  - Créé `.env.example` avec toutes les variables
 
-- [ ] **Standardiser la gestion d'erreurs**
-  - Utiliser des types d'erreur au lieu de `error: any`
-  - Implémenter un système de logging structuré (winston/pino)
+- [x] **Standardiser la gestion d'erreurs**
+  - Tous les `error: any` ont été remplacés par des type guards
+  - Logging structuré reporté à Phase 2+ (nice to have)
 
 #### Frontend - Supprimer le code mort
 
@@ -80,11 +80,9 @@ Nettoyer le codebase avant d'ajouter la nouvelle feature pour éviter la dette t
   - `hooks/usePremiumFeatures.ts` (87 lignes)
   - `hooks/useSubscription.ts` (220 lignes - duplique RevenueCatContext)
 
-- [ ] **DÉCISION : Garder ou supprimer Zustand store**
-  - `store/index.ts` est configuré mais jamais utilisé en production
-  - Option A : Supprimer complètement
-  - Option B : Commencer à l'utiliser pour l'auth
-  - **→ DÉCISION À PRENDRE**
+- [x] **DÉCISION : Supprimer Zustand store**
+  - `store/index.ts` et tests supprimés (jamais utilisé en production)
+  - On continue avec React Context API
 
 - [x] **Nettoyer les console.logs de debug**
   - `app/index.tsx` (lignes 42, 54, 58, 89)
@@ -92,9 +90,9 @@ Nettoyer le codebase avant d'ajouter la nouvelle feature pour éviter la dette t
   - `services/backend-api.service.ts` (lignes 80, 107, 200, 234)
   - `contexts/RevenueCatContext.tsx` (multiples logs avec emojis)
 
-- [ ] **Améliorer la gestion d'erreurs**
-  - `app/profile.tsx` ligne 227 : Ajouter Alert pour les erreurs restore
-  - `components/SubscriptionModal.tsx` ligne 80 : Ajouter feedback utilisateur
+- [x] **Améliorer la gestion d'erreurs**
+  - `app/profile.tsx` ligne 227 : Ajouté Alert pour les erreurs restore
+  - `components/SubscriptionModal.tsx` ligne 80 : Ajouté feedback utilisateur
 
 #### Frontend - DeviceIdentity (sera remplacé par auth)
 
