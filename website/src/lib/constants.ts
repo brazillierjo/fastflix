@@ -3,7 +3,7 @@ export const CONTACT_EMAIL = 'j.brazillier@gmail.com';
 
 // App Store Links
 export const APP_STORE_LINKS = {
-  ios: 'https://apps.apple.com/app/fastflix',
+  ios: 'https://apps.apple.com/fr/app/fastflix/id6746981485',
 };
 
 // External Links
