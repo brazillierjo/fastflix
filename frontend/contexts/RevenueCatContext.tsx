@@ -115,8 +115,8 @@ export const SubscriptionProvider: React.FC<SubscriptionProviderProps> = ({
       try {
         console.log('Initializing RevenueCat...');
 
-        // Configure RevenueCat with verbose logging for debugging
-        Purchases.setLogLevel(LOG_LEVEL.VERBOSE);
+        // Configure RevenueCat with minimal logging (only warnings and errors)
+        Purchases.setLogLevel(LOG_LEVEL.WARN);
 
         const apiKey = Platform.select({
           ios: Constants.expoConfig?.extra?.EXPO_PUBLIC_REVENUECAT_IOS_API_KEY,
