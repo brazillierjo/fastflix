@@ -3,7 +3,7 @@
 > **Objectif :** Remplacer le système d'ID anonymes par une vraie authentification utilisateur (Sign in with Apple + Google) pour une gestion robuste des abonnements et une meilleure expérience utilisateur.
 
 **Date de création :** 2025-11-29
-**Statut :** 📋 Planification
+**Statut :** ✅ Phase 1 Complete
 
 ---
 
@@ -25,30 +25,30 @@ Nettoyer le codebase avant d'ajouter la nouvelle feature pour éviter la dette t
 
 #### Backend - Code mort et documentation
 
-- [ ] **Supprimer `/api/check-limit` de la documentation** (ligne 29 de `page.tsx`, lignes 14-33 du README)
+- [x] **Supprimer `/api/check-limit` de la documentation** (ligne 29 de `page.tsx`, lignes 14-33 du README)
   - Cet endpoint est documenté mais n'existe pas
   - Supprimer les références ou implémenter l'endpoint
 
-- [ ] **Supprimer les schemas de validation inutilisés** (`lib/validation.ts`)
+- [x] **Supprimer les schemas de validation inutilisés** (`lib/validation.ts`)
   - Ligne 18-20 : `checkLimitSchema` (jamais utilisé)
   - Ligne 11-13 : `deviceIdSchema` (jamais utilisé)
   - OU les utiliser dans les endpoints concernés
 
-- [ ] **Supprimer les fonctions Gemini inutilisées** (`lib/gemini.ts`)
+- [x] **Supprimer les fonctions Gemini inutilisées** (`lib/gemini.ts`)
   - Lignes 46-104 : `generateRecommendations()` (obsolète)
   - Lignes 109-135 : `generateConversationalResponse()` (obsolète)
   - Ces fonctions sont remplacées par `generateRecommendationsWithResponse()`
 
-- [ ] **Supprimer les fonctions TMDB inutilisées** (`lib/tmdb.ts`)
+- [x] **Supprimer les fonctions TMDB inutilisées** (`lib/tmdb.ts`)
   - Ligne 238-245 : `getMovieDetails()`
   - Ligne 250-257 : `getTVDetails()`
   - Ligne 315-318 : `clearCache()`
 
-- [ ] **Supprimer les fonctions CORS inutilisées** (`lib/api-helpers.ts`)
+- [x] **Supprimer les fonctions CORS inutilisées** (`lib/api-helpers.ts`)
   - Lignes 102-108 : `getCORSHeaders()`
   - Lignes 113-118 : `handleOPTIONS()`
 
-- [ ] **Supprimer `getZeroResultCount()`** (`lib/db.ts`, lignes 190-209)
+- [x] **Supprimer `getZeroResultCount()`** (`lib/db.ts`, lignes 190-209)
   - Fonction jamais appelée
 
 - [ ] **Corriger la documentation README**
@@ -73,7 +73,7 @@ Nettoyer le codebase avant d'ajouter la nouvelle feature pour éviter la dette t
 
 #### Frontend - Supprimer le code mort
 
-- [ ] **Supprimer les fichiers complètement inutilisés**
+- [x] **Supprimer les fichiers complètement inutilisés**
   - `components/SettingsModal.tsx` (64 lignes)
   - `components/LanguageSelector.tsx` (44 lignes)
   - `components/HapticTab.tsx` (18 lignes)
@@ -86,7 +86,7 @@ Nettoyer le codebase avant d'ajouter la nouvelle feature pour éviter la dette t
   - Option B : Commencer à l'utiliser pour l'auth
   - **→ DÉCISION À PRENDRE**
 
-- [ ] **Nettoyer les console.logs de debug**
+- [x] **Nettoyer les console.logs de debug**
   - `app/index.tsx` (lignes 42, 54, 58, 89)
   - `hooks/useBackendMovieSearch.ts` (lignes 95-101, 112, 124, 149)
   - `services/backend-api.service.ts` (lignes 80, 107, 200, 234)
