@@ -3,6 +3,7 @@ import { AVAILABLE_LANGUAGES } from '@/constants/languages';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { useSubscription } from '@/contexts/RevenueCatContext';
 import { useFastFlixProFeatures } from '@/hooks/usePremiumFeatures';
+import { usePromptLimit } from '@/hooks/useBackendMovieSearch';
 import { getAppVersion } from '@/utils/appVersion';
 import { useFocusEffect } from 'expo-router';
 import { MotiView } from 'moti';
@@ -24,7 +25,12 @@ export default function ProfileScreen() {
   const { language, setLanguage, country, setCountry, t, availableCountries } =
     useLanguage();
   const { hasUnlimitedAccess, restorePurchases } = useSubscription();
-  const { monthlyPromptCount, refreshPromptCount } = useFastFlixProFeatures();
+  const { refreshPromptCount } = useFastFlixProFeatures();
+
+  // Get prompt count from backend (source of truth)
+  const { data: promptLimitData, refetch: refetchPromptLimit } = usePromptLimit();
+  const monthlyPromptCount = promptLimitData?.promptsUsed || 0;
+  const maxFreePrompts = promptLimitData?.maxFreePrompts || 3;
 
   // Backward compatibility
   const isSubscribed = hasUnlimitedAccess;
@@ -35,7 +41,8 @@ export default function ProfileScreen() {
   useFocusEffect(
     useCallback(() => {
       refreshPromptCount();
-    }, [refreshPromptCount])
+      refetchPromptLimit(); // Also refresh from backend
+    }, [refreshPromptCount, refetchPromptLimit])
   );
 
   // Utilisation des constantes centralisées
@@ -280,7 +287,7 @@ export default function ProfileScreen() {
                     {t('profile.freePrompts.used')}
                   </Text>
                   <Text className='font-medium text-light-text dark:text-dark-text'>
-                    {monthlyPromptCount} / 3
+                    {monthlyPromptCount} / {maxFreePrompts}
                   </Text>
                 </View>
 
@@ -290,24 +297,24 @@ export default function ProfileScreen() {
                   </Text>
                   <Text
                     className={`font-medium ${
-                      isSubscribed || Math.max(0, 3 - monthlyPromptCount) > 0
+                      isSubscribed || Math.max(0, maxFreePrompts - monthlyPromptCount) > 0
                         ? 'text-success-500'
                         : 'text-error-500'
                     }`}
                   >
-                    {isSubscribed ? '∞' : Math.max(0, 3 - monthlyPromptCount)}
+                    {isSubscribed ? '∞' : Math.max(0, maxFreePrompts - monthlyPromptCount)}
                   </Text>
                 </View>
 
                 <View className='mt-2 h-2 w-full rounded-full bg-light-border dark:bg-dark-border'>
                   <View
                     className={`h-full rounded-full ${
-                      isSubscribed || Math.max(0, 3 - monthlyPromptCount) > 0
+                      isSubscribed || Math.max(0, maxFreePrompts - monthlyPromptCount) > 0
                         ? 'bg-success-500'
                         : 'bg-error-500'
                     }`}
                     style={{
-                      width: `${Math.min((monthlyPromptCount / 3) * 100, 100)}%`,
+                      width: `${Math.min((monthlyPromptCount / maxFreePrompts) * 100, 100)}%`,
                     }}
                   />
                 </View>
