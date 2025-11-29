@@ -147,6 +147,13 @@ const searchMoviesWithBackend = async (
     };
   } catch (error) {
     console.error('Backend search error:', error);
+
+    // Re-throw known errors (like subscriptionRequired) without transforming them
+    if (error instanceof Error && error.message === 'subscriptionRequired') {
+      throw error;
+    }
+
+    // For unexpected errors, throw a generic searchError
     throw new Error('searchError');
   }
 };
@@ -165,6 +172,11 @@ export const useBackendMovieSearch = () => {
     mutationFn: (params: SearchParams) =>
       searchMoviesWithBackend(params, tmdbLanguage, country),
     onError: (error: Error) => {
+      // Don't show alert for subscriptionRequired - it's handled in the component
+      if (error.message === 'subscriptionRequired') {
+        return;
+      }
+
       // Map error codes to user-friendly messages
       const errorMessage = t(`errors.${error.message}`) || t('errors.searchError');
 
