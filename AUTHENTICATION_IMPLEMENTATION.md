@@ -3,7 +3,7 @@
 > **Objectif :** Remplacer le système d'ID anonymes par une vraie authentification utilisateur (Sign in with Apple + Google) pour une gestion robuste des abonnements et une meilleure expérience utilisateur.
 
 **Date de création :** 2025-11-29
-**Statut :** ✅ Phase 1 Complete
+**Statut :** ✅ Phase 1-3 Complete
 
 ---
 
@@ -233,99 +233,103 @@ Nettoyer le codebase avant d'ajouter la nouvelle feature pour éviter la dette t
 
 ---
 
-### Phase 3 : 📱 Frontend - Authentification
+### Phase 3 : 📱 Frontend - Authentification ✅ COMPLETE
 
 #### Configuration iOS (Sign in with Apple)
 
-- [ ] **Activer Sign in with Apple dans Xcode**
+- [x] **Activer Sign in with Apple dans Xcode**
   - Ouvrir `ios/fastflix.xcworkspace`
   - Signing & Capabilities → + Capability → Sign in with Apple
 
-- [ ] **Configurer dans Apple Developer**
+- [x] **Configurer dans Apple Developer**
   - App ID : Activer "Sign in with Apple"
   - Créer Service ID pour le web (si besoin)
 
 #### Configuration Google Sign-In
 
-- [ ] **Créer OAuth Client dans Google Cloud Console**
+- [ ] **Créer OAuth Client dans Google Cloud Console** (À faire plus tard)
   - Type: iOS application
   - Bundle ID: `com.fastflix.app`
   - Récupérer le Client ID
 
-- [ ] **Installer les dépendances**
+- [x] **Installer les dépendances**
   ```bash
-  npx expo install expo-auth-session expo-web-browser
+  npx expo install expo-secure-store
   npx expo install expo-apple-authentication
-  npm install @react-native-google-signin/google-signin
   ```
 
 #### Frontend - Services d'authentification
 
-- [ ] **Créer `services/auth.service.ts`**
+- [x] **Créer `services/auth.service.ts`**
   ```typescript
   - signInWithApple(): Promise<AuthResponse>
-  - signInWithGoogle(): Promise<AuthResponse>
   - signOut(): Promise<void>
   - getCurrentUser(): Promise<User | null>
   - getAuthToken(): Promise<string | null>
+  - isAuthenticated(): Promise<boolean>
+  - refreshUserData(): Promise<User | null>
   ```
 
-- [ ] **Créer `contexts/AuthContext.tsx`**
+- [x] **Créer `contexts/AuthContext.tsx`**
   ```typescript
   interface AuthContextType {
     user: User | null;
     isLoading: boolean;
     isAuthenticated: boolean;
     signInWithApple: () => Promise<void>;
-    signInWithGoogle: () => Promise<void>;
     signOut: () => Promise<void>;
+    refreshUser: () => Promise<void>;
   }
   ```
 
-- [ ] **Stocker le JWT dans SecureStore**
-  - Clé: `fastflix_auth_token`
-  - Utiliser expo-secure-store
+- [x] **Stocker le JWT dans SecureStore**
+  - Clés: `fastflix_auth_token` et `fastflix_user_data`
+  - Utiliser expo-secure-store pour stockage chiffré
 
 #### Frontend - UI Components
 
-- [ ] **Créer `app/auth.tsx` (écran de connexion)**
-  - Logo FastFlix
-  - Bouton "Sign in with Apple"
-  - Bouton "Sign in with Google"
-  - Design épuré et professionnel
+- [x] **Créer `app/auth.tsx` (écran de connexion)**
+  - Logo FastFlix avec emoji 🎬
+  - Bouton "Sign in with Apple" natif
+  - Message d'accueil et description
+  - Design épuré et professionnel avec animations Moti
+  - Gestion plateforme (iOS uniquement pour Apple)
 
-- [ ] **Créer `components/AuthButton.tsx`**
-  - Bouton réutilisable pour Apple/Google
-  - Icônes et styles appropriés
-  - Loading states
+- [x] **Créer `components/AuthButton.tsx`**
+  - Bouton réutilisable pour actions auth
+  - Variants: primary, secondary, danger
+  - Loading states avec ActivityIndicator
 
-- [ ] **Modifier `app/_layout.tsx`**
-  - Wrapper avec AuthContext
-  - Redirection si non authentifié
+- [x] **Modifier `app/_layout.tsx`**
+  - Wrapper avec AuthProvider
+  - Route `/auth` ajoutée (masquée de la tab bar)
+  - AuthProvider placé avant SubscriptionProvider
 
-- [ ] **Modifier `app/index.tsx`**
-  - Utiliser `user.id` au lieu de `deviceId`
-  - Récupérer le token pour les API calls
+- [x] **Modifier `app/index.tsx`**
+  - Check d'authentification au mount
+  - Redirection vers `/auth` si non authentifié
+  - Loading state pendant vérification auth
+  - Le backend utilise automatiquement userId du JWT
 
-- [ ] **Modifier `app/profile.tsx`**
-  - Afficher nom et email du user
-  - Bouton "Sign Out"
-  - Afficher provider (Apple/Google icon)
+- [x] **Modifier `app/profile.tsx`**
+  - Section "Account" avec infos utilisateur
+  - Affichage nom, email, provider (🍎 Apple)
+  - Bouton "Sign Out" rouge
+  - Affichage conditionnel si user existe
 
 #### Frontend - Backend API Integration
 
-- [ ] **Modifier `services/backend-api.service.ts`**
-  - Supprimer tout le code deviceIdentity
-  - Ajouter méthode `setAuthToken(token: string)`
-  - Ajouter header `Authorization: Bearer ${token}` à toutes les requêtes
-  - Ajouter méthodes auth:
-    - `signInWithApple(idToken: string)`
-    - `signInWithGoogle(idToken: string)`
+- [x] **Modifier `services/backend-api.service.ts`**
+  - Auto-injection du JWT dans header Authorization
+  - Lecture du token depuis SecureStore à chaque requête
+  - Méthodes auth ajoutées:
+    - `signInWithApple(data)`
     - `getCurrentUser()`
+  - Headers dynamiques avec Record<string, string>
 
-- [ ] **Modifier `hooks/useBackendMovieSearch.ts`**
-  - Supprimer la logique deviceId
-  - Le backend utilisera automatiquement le userId du JWT
+- [x] **Hooks - Pas de modification nécessaire**
+  - `useBackendMovieSearch` fonctionne tel quel
+  - Le backend extrait automatiquement userId du JWT via middleware requireAuth
 
 ---
 
