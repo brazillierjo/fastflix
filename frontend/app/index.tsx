@@ -8,7 +8,6 @@ import {
   useBackendMovieSearch,
   usePromptLimit,
 } from '@/hooks/useBackendMovieSearch';
-import { useSubscription } from '@/contexts/RevenueCatContext';
 import { cn } from '@/utils/cn';
 import React, { useState } from 'react';
 import {

@@ -120,9 +120,10 @@ export async function POST(request: NextRequest) {
     }
 
     // Step 7: Increment prompt count (only if we got results)
+    // This automatically skips counting for Pro users
     let newPromptCount = limitCheck.remaining;
     if (finalResults.length > 0) {
-      newPromptCount = await db.incrementPromptCount(deviceId);
+      newPromptCount = await promptCounter.recordPromptUsage(deviceId);
     }
 
     // Step 8: Log the prompt for analytics

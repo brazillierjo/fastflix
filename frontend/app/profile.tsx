@@ -2,7 +2,6 @@ import SubscriptionModal from '@/components/SubscriptionModal';
 import { AVAILABLE_LANGUAGES } from '@/constants/languages';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { useSubscription } from '@/contexts/RevenueCatContext';
-import { useFastFlixProFeatures } from '@/hooks/usePremiumFeatures';
 import { usePromptLimit } from '@/hooks/useBackendMovieSearch';
 import { getAppVersion } from '@/utils/appVersion';
 import { useFocusEffect } from 'expo-router';
@@ -25,7 +24,6 @@ export default function ProfileScreen() {
   const { language, setLanguage, country, setCountry, t, availableCountries } =
     useLanguage();
   const { hasUnlimitedAccess, restorePurchases } = useSubscription();
-  const { refreshPromptCount } = useFastFlixProFeatures();
 
   // Get prompt count from backend (source of truth)
   const { data: promptLimitData, refetch: refetchPromptLimit } = usePromptLimit();
@@ -37,12 +35,11 @@ export default function ProfileScreen() {
   const [showSubscriptionModal, setShowSubscriptionModal] = useState(false);
   const [restoring, setRestoring] = useState(false);
 
-  // Refresh prompt count when screen comes into focus
+  // Refresh prompt count from backend when screen comes into focus
   useFocusEffect(
     useCallback(() => {
-      refreshPromptCount();
-      refetchPromptLimit(); // Also refresh from backend
-    }, [refreshPromptCount, refetchPromptLimit])
+      refetchPromptLimit();
+    }, [refetchPromptLimit])
   );
 
   // Utilisation des constantes centralisées

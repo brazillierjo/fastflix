@@ -82,63 +82,6 @@ class AntiAbuseService {
   }
 
   /**
-   * Check if suspicious rapid-fire behavior (many requests in short time)
-   */
-  async detectRapidFire(deviceId: string, requestTimestamps: number[]): Promise<boolean> {
-    const RAPID_FIRE_THRESHOLD = 5; // 5 requests
-    const RAPID_FIRE_WINDOW_MS = 5 * 1000; // in 5 seconds
-
-    if (requestTimestamps.length < RAPID_FIRE_THRESHOLD) {
-      return false;
-    }
-
-    // Check last N requests
-    const recentRequests = requestTimestamps.slice(-RAPID_FIRE_THRESHOLD);
-    const timeSpan = recentRequests[recentRequests.length - 1] - recentRequests[0];
-
-    if (timeSpan < RAPID_FIRE_WINDOW_MS) {
-      await this.blockDevice(
-        deviceId,
-        `Automatic block: Rapid-fire detected (${RAPID_FIRE_THRESHOLD} requests in ${timeSpan}ms)`
-      );
-      return true;
-    }
-
-    return false;
-  }
-
-  /**
-   * Detect patterns of abuse from request logs
-   */
-  async analyzePatterns(deviceId: string): Promise<{
-    suspicious: boolean;
-    reason?: string;
-  }> {
-    // This could be extended to analyze prompt_logs table for:
-    // - Too many empty results (possible scraping)
-    // - Identical queries repeated
-    // - Unusual query patterns
-    // For now, we'll keep it simple
-
-    try {
-      // Check for too many requests with 0 results in last hour
-      const zeroResultCount = await db.getZeroResultCount(deviceId, 1);
-
-      if (zeroResultCount > 20) {
-        return {
-          suspicious: true,
-          reason: `Automatic block: Too many zero-result queries (${zeroResultCount} in last hour)`,
-        };
-      }
-
-      return { suspicious: false };
-    } catch (error) {
-      console.error('❌ Error analyzing patterns:', error);
-      return { suspicious: false };
-    }
-  }
-
-  /**
    * Clean up old records
    */
   cleanup(): void {

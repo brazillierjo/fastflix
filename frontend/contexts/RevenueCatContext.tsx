@@ -1,23 +1,19 @@
 /**
- * New RevenueCat Context - Simplified and Robust with Persistent Identity
+ * RevenueCat Context - Subscription Management
  *
- * This context handles:
- * 1. Non-subscribed users: 3 free prompts/month (persistent via Keychain device identity)
- * 2. Canceled subscription but still in grace period: unlimited access
- * 3. Active subscribers: unlimited access
+ * This context handles subscription management via RevenueCat:
+ * - Active subscribers: unlimited access
+ * - Canceled subscription but still in grace period: unlimited access
+ * - Non-subscribed users: limited access (managed by backend)
  *
- * Key improvements:
- * - Uses Keychain-based device identity for persistence across reinstalls
- * - Proper subscription status detection (active vs expired)
- * - Seamless migration from old RevenueCat anonymous IDs
- * - Clean separation of concerns with dedicated services
+ * NOTE: Prompt counting and limits are now handled entirely by the backend API.
+ * Use usePromptLimit() hook to get current prompt status.
  */
 
 import Constants from 'expo-constants';
 import React, {
   createContext,
   ReactNode,
-  useCallback,
   useContext,
   useEffect,
   useState,
@@ -30,8 +26,6 @@ import Purchases, {
   PurchasesPackage,
 } from 'react-native-purchases';
 import { useLanguage } from './LanguageContext';
-import { deviceIdentityService } from '@/services/deviceIdentity.service';
-import { persistentUserService } from '@/services/persistentUser.service';
 
 // Subscription status enum for clarity
 export enum SubscriptionStatus {
@@ -53,17 +47,9 @@ export interface SubscriptionContextType {
   hasUnlimitedAccess: boolean; // True for ACTIVE and GRACE_PERIOD
   isFreeUser: boolean; // True for FREE users
 
-  // Prompt management (for free users)
-  monthlyPromptCount: number;
-  maxFreePrompts: number;
-  canMakePrompt: boolean;
-  remainingPrompts: number;
-
   // Actions
   purchasePackage: (packageToPurchase: PurchasesPackage) => Promise<void>;
   restorePurchases: () => Promise<void>;
-  incrementPromptCount: () => Promise<void>;
-  refreshUserData: () => Promise<void>;
 
   // Package helpers
   getMonthlyPackage: () => PurchasesPackage | null;
@@ -87,9 +73,6 @@ export const SubscriptionProvider: React.FC<SubscriptionProviderProps> = ({
   const [isLoading, setIsLoading] = useState(true);
   const [customerInfo, setCustomerInfo] = useState<CustomerInfo | null>(null);
   const [offerings, setOfferings] = useState<PurchasesOffering[] | null>(null);
-  const [monthlyPromptCount, setMonthlyPromptCount] = useState(0);
-
-  const maxFreePrompts = 3;
 
   // Determine subscription status from CustomerInfo
   const determineSubscriptionStatus = (
@@ -126,111 +109,6 @@ export const SubscriptionProvider: React.FC<SubscriptionProviderProps> = ({
     return SubscriptionStatus.FREE;
   };
 
-  // Get prompt count using persistent device identity
-  const getPromptCountFromPersistentStorage = async (
-    customerInfo: CustomerInfo
-  ): Promise<number> => {
-    try {
-      // Get device ID from keychain
-      const deviceIdResult = await deviceIdentityService.getDeviceId();
-
-      if (!deviceIdResult.success) {
-        console.error('Failed to get device ID:', deviceIdResult.error);
-        return 0;
-      }
-
-      // Try migration from old system first
-      if (customerInfo.originalAppUserId) {
-        await persistentUserService.migrateFromOldSystem(
-          customerInfo.originalAppUserId,
-          deviceIdResult.data
-        );
-      }
-
-      // Get current user data
-      const userDataResult = await persistentUserService.getUserData(
-        deviceIdResult.data
-      );
-
-      if (!userDataResult.success) {
-        console.error('Failed to get user data:', userDataResult.error);
-        return 0;
-      }
-
-      return userDataResult.data.monthlyPromptCount;
-    } catch (error) {
-      console.error(
-        'Error loading prompt count from persistent storage:',
-        error
-      );
-      return 0;
-    }
-  };
-
-  // Set prompt count using persistent device identity
-  const setPromptCountInPersistentStorage = async (count: number) => {
-    try {
-      // Get device ID from keychain
-      const deviceIdResult = await deviceIdentityService.getDeviceId();
-
-      if (!deviceIdResult.success) {
-        console.error(
-          'Failed to get device ID for setting prompt count:',
-          deviceIdResult.error
-        );
-        return;
-      }
-
-      // Get current user data
-      const userDataResult = await persistentUserService.getUserData(
-        deviceIdResult.data
-      );
-
-      if (!userDataResult.success) {
-        console.error(
-          'Failed to get user data for update:',
-          userDataResult.error
-        );
-        return;
-      }
-
-      // Update user data with new count
-      const updatedData = {
-        ...userDataResult.data,
-        monthlyPromptCount: count,
-      };
-
-      const setResult = await persistentUserService.setUserData(updatedData);
-
-      if (!setResult.success) {
-        console.error('Failed to set user data:', setResult.error);
-        return;
-      }
-
-      // Also sync to RevenueCat attributes for server-side tracking (optional)
-      try {
-        const currentMonth = new Date().toISOString().slice(0, 7);
-        await Purchases.setAttributes({
-          [`prompts_${currentMonth}`]: count.toString(),
-          last_reset_month: currentMonth,
-          device_id: deviceIdResult.data, // Store device ID for debugging
-        });
-      } catch (attributeError) {
-        console.warn(
-          'Failed to sync to RevenueCat attributes:',
-          attributeError
-        );
-        // Don't fail the operation if attributes sync fails
-      }
-
-      console.log(
-        `Set prompt count to ${count} for device ${deviceIdResult.data}`
-      );
-    } catch (error) {
-      console.error('Failed to set prompt count in persistent storage:', error);
-    }
-  };
-
   // Initialize RevenueCat
   useEffect(() => {
     const initializeRevenueCat = async () => {
@@ -250,27 +128,30 @@ export const SubscriptionProvider: React.FC<SubscriptionProviderProps> = ({
           return;
         }
 
-        // Get persistent device ID and configure RevenueCat with it
-        const deviceIdResult = await deviceIdentityService.getDeviceId();
+        // Configure RevenueCat
+        await Purchases.configure({ apiKey });
 
-        if (!deviceIdResult.success) {
-          console.error('Failed to get device ID:', deviceIdResult.error);
-          // Still configure RevenueCat with anonymous ID as fallback
-          await Purchases.configure({ apiKey });
-        } else {
-          // Configure RevenueCat with our persistent device ID
-          await Purchases.configure({ apiKey, appUserID: deviceIdResult.data });
-          console.log(
-            'RevenueCat configured with persistent device ID:',
-            deviceIdResult.data
-          );
+        console.log('✅ RevenueCat configured successfully');
+
+        // Get customer info
+        const info = await Purchases.getCustomerInfo();
+        setCustomerInfo(info);
+
+        const status = determineSubscriptionStatus(info);
+        setSubscriptionStatus(status);
+
+        console.log('✅ RevenueCat initialized - Status:', status);
+
+        // Fetch available offerings
+        const offerings = await Purchases.getOfferings();
+        if (offerings.current) {
+          setOfferings([offerings.current]);
+          console.log('✅ Offerings loaded:', offerings.current.identifier);
         }
 
-        // Load initial data
-        await Promise.all([refreshUserData(), loadOfferings()]);
+        setIsLoading(false);
       } catch (error) {
-        console.error('Failed to initialize RevenueCat:', error);
-      } finally {
+        console.error('❌ Error initializing RevenueCat:', error);
         setIsLoading(false);
       }
     };
@@ -278,208 +159,117 @@ export const SubscriptionProvider: React.FC<SubscriptionProviderProps> = ({
     initializeRevenueCat();
   }, []);
 
-  // Load available offerings
-  const loadOfferings = async () => {
-    try {
-      const offerings = await Purchases.getOfferings();
-      if (offerings.current) {
-        setOfferings([offerings.current]);
-        console.log('Offerings loaded successfully');
-      }
-    } catch (error) {
-      console.error('Failed to load offerings:', error);
-    }
-  };
-
-  // Refresh user data from RevenueCat
-  const refreshUserData = useCallback(async () => {
-    try {
-      console.log('Refreshing user data...');
-      const customerInfo = await Purchases.getCustomerInfo();
-      setCustomerInfo(customerInfo);
-
-      // Determine subscription status
-      const status = determineSubscriptionStatus(customerInfo);
-      setSubscriptionStatus(status);
-      console.log(`Subscription status: ${status}`);
-
-      // For free users, load prompt count from persistent storage
-      if (
-        status === SubscriptionStatus.FREE ||
-        status === SubscriptionStatus.EXPIRED
-      ) {
-        const promptCount =
-          await getPromptCountFromPersistentStorage(customerInfo);
-        setMonthlyPromptCount(promptCount);
-        console.log(`Monthly prompt count: ${promptCount}`);
-      } else {
-        // Premium users don't need prompt counting
-        setMonthlyPromptCount(0);
-      }
-    } catch (error) {
-      console.error('Failed to refresh user data:', error);
-      setSubscriptionStatus(SubscriptionStatus.FREE);
-    }
-  }, []);
-
   // Purchase a package
   const purchasePackage = async (packageToPurchase: PurchasesPackage) => {
     try {
-      setIsLoading(true);
       console.log('Purchasing package:', packageToPurchase.identifier);
 
-      const { customerInfo } =
-        await Purchases.purchasePackage(packageToPurchase);
+      const { customerInfo } = await Purchases.purchasePackage(packageToPurchase);
       setCustomerInfo(customerInfo);
 
       const status = determineSubscriptionStatus(customerInfo);
       setSubscriptionStatus(status);
 
-      if (status === SubscriptionStatus.ACTIVE) {
-        Alert.alert(
-          t('subscription.success.title') || 'Subscription Activated',
-          t('subscription.success.message') ||
-            'Welcome to FastFlix Pro features!'
-        );
-      }
-    } catch (error: any) {
-      console.error('Purchase failed:', error);
+      console.log('✅ Purchase successful - Status:', status);
 
-      if (!error?.userCancelled) {
-        Alert.alert(
-          t('subscription.error.title') || 'Purchase Failed',
-          t('subscription.error.message') ||
-            'Unable to complete purchase. Please try again.'
-        );
+      Alert.alert(
+        t('subscription.success.title') || 'Welcome to Pro!',
+        t('subscription.success.message') ||
+          'Thank you for upgrading! You now have unlimited access to all features.'
+      );
+    } catch (error: any) {
+      console.error('❌ Error purchasing package:', error);
+
+      if (error.userCancelled) {
+        console.log('User cancelled purchase');
+        return;
       }
-    } finally {
-      setIsLoading(false);
+
+      Alert.alert(
+        t('subscription.error.title') || 'Purchase Failed',
+        t('subscription.error.message') ||
+          error.message ||
+          'Something went wrong. Please try again.'
+      );
     }
   };
 
   // Restore purchases
   const restorePurchases = async () => {
     try {
-      setIsLoading(true);
       console.log('Restoring purchases...');
 
-      const customerInfo = await Purchases.restorePurchases();
-      setCustomerInfo(customerInfo);
+      const info = await Purchases.restorePurchases();
+      setCustomerInfo(info);
 
-      const status = determineSubscriptionStatus(customerInfo);
+      const status = determineSubscriptionStatus(info);
       setSubscriptionStatus(status);
 
-      if (
-        status === SubscriptionStatus.ACTIVE ||
-        status === SubscriptionStatus.GRACE_PERIOD
-      ) {
+      console.log('✅ Purchases restored - Status:', status);
+
+      if (status === SubscriptionStatus.ACTIVE || status === SubscriptionStatus.GRACE_PERIOD) {
         Alert.alert(
-          t('subscription.restoration.success.title') || 'Purchases Restored',
-          t('subscription.restoration.success.message') ||
-            'Your subscription has been restored.'
+          t('subscription.restore.success.title') || 'Purchases Restored',
+          t('subscription.restore.success.message') ||
+            'Your purchases have been restored successfully!'
         );
       } else {
         Alert.alert(
-          t('subscription.restoration.none.title') || 'No Purchases Found',
-          t('subscription.restoration.none.message') ||
+          t('subscription.restore.none.title') || 'No Purchases Found',
+          t('subscription.restore.none.message') ||
             'No active subscriptions found to restore.'
         );
       }
-    } catch (error) {
-      console.error('Restore failed:', error);
+    } catch (error: any) {
+      console.error('❌ Error restoring purchases:', error);
+
       Alert.alert(
-        t('subscription.restoration.error.title') || 'Restore Failed',
-        t('subscription.restoration.error.message') ||
-          'Unable to restore purchases. Please try again.'
+        t('subscription.error.title') || 'Restore Failed',
+        t('subscription.error.message') ||
+          error.message ||
+          'Something went wrong. Please try again.'
       );
-    } finally {
-      setIsLoading(false);
     }
   };
 
-  // Increment prompt count for free users
-  const incrementPromptCount = async () => {
-    if (
-      subscriptionStatus !== SubscriptionStatus.FREE &&
-      subscriptionStatus !== SubscriptionStatus.EXPIRED
-    ) {
-      console.log('User has unlimited access, not incrementing prompt count');
-      return;
-    }
-
-    try {
-      // Use persistent user service to increment count
-      const incrementResult =
-        await persistentUserService.incrementCurrentUserPromptCount();
-
-      if (!incrementResult.success) {
-        console.error(
-          'Failed to increment prompt count:',
-          incrementResult.error
-        );
-        return;
-      }
-
-      const newCount = incrementResult.data;
-
-      // Also update in RevenueCat attributes for server-side tracking
-      await setPromptCountInPersistentStorage(newCount);
-
-      // Update local state
-      setMonthlyPromptCount(newCount);
-
-      console.log(`Incremented prompt count to ${newCount}`);
-    } catch (error) {
-      console.error('Failed to increment prompt count:', error);
-    }
-  };
-
-  // Get monthly package
+  // Package helpers
   const getMonthlyPackage = (): PurchasesPackage | null => {
     if (!offerings || offerings.length === 0) return null;
-    return offerings[0].monthly ?? null;
+
+    const monthlyPackage = offerings[0].availablePackages.find(
+      pkg => pkg.identifier === '$rc_monthly' || pkg.packageType === 'MONTHLY'
+    );
+
+    return monthlyPackage || null;
   };
 
-  // Get annual package
   const getAnnualPackage = (): PurchasesPackage | null => {
     if (!offerings || offerings.length === 0) return null;
-    return offerings[0].annual ?? null;
+
+    const annualPackage = offerings[0].availablePackages.find(
+      pkg => pkg.identifier === '$rc_annual' || pkg.packageType === 'ANNUAL'
+    );
+
+    return annualPackage || null;
   };
 
-  // Derived properties
-  const hasUnlimitedAccess =
-    subscriptionStatus === SubscriptionStatus.ACTIVE ||
-    subscriptionStatus === SubscriptionStatus.GRACE_PERIOD;
-  const isFreeUser =
-    subscriptionStatus === SubscriptionStatus.FREE ||
-    subscriptionStatus === SubscriptionStatus.EXPIRED;
-  const canMakePrompt =
-    hasUnlimitedAccess || monthlyPromptCount < maxFreePrompts;
-  const remainingPrompts = hasUnlimitedAccess
-    ? Infinity
-    : Math.max(0, maxFreePrompts - monthlyPromptCount);
-
-  const value: SubscriptionContextType = {
+  const contextValue: SubscriptionContextType = {
     subscriptionStatus,
     isLoading,
     customerInfo,
     offerings,
-    hasUnlimitedAccess,
-    isFreeUser,
-    monthlyPromptCount,
-    maxFreePrompts,
-    canMakePrompt,
-    remainingPrompts,
+    hasUnlimitedAccess:
+      subscriptionStatus === SubscriptionStatus.ACTIVE ||
+      subscriptionStatus === SubscriptionStatus.GRACE_PERIOD,
+    isFreeUser: subscriptionStatus === SubscriptionStatus.FREE,
     purchasePackage,
     restorePurchases,
-    incrementPromptCount,
-    refreshUserData,
     getMonthlyPackage,
     getAnnualPackage,
   };
 
   return (
-    <SubscriptionContext.Provider value={value}>
+    <SubscriptionContext.Provider value={contextValue}>
       {children}
     </SubscriptionContext.Provider>
   );
@@ -487,12 +277,8 @@ export const SubscriptionProvider: React.FC<SubscriptionProviderProps> = ({
 
 export const useSubscription = (): SubscriptionContextType => {
   const context = useContext(SubscriptionContext);
-
-  if (context === undefined) {
-    throw new Error(
-      'useSubscription must be used within a SubscriptionProvider'
-    );
+  if (!context) {
+    throw new Error('useSubscription must be used within a SubscriptionProvider');
   }
-
   return context;
 };

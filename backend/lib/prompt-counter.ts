@@ -77,40 +77,6 @@ class PromptCounterService {
   }
 
   /**
-   * Get prompt usage statistics for a device
-   */
-  async getPromptStats(deviceId: string): Promise<{
-    promptsUsed: number;
-    promptsRemaining: number;
-    maxFreePrompts: number;
-    isProUser: boolean;
-    currentMonth: string;
-  }> {
-    try {
-      // Check subscription status
-      const hasSubscription = await db.hasActiveSubscription(deviceId);
-
-      // Get user data
-      const user = await db.getOrCreateUser(deviceId);
-      const promptsUsed = user.prompt_count;
-      const promptsRemaining = hasSubscription
-        ? Infinity
-        : Math.max(0, this.maxFreePrompts - promptsUsed);
-
-      return {
-        promptsUsed,
-        promptsRemaining,
-        maxFreePrompts: this.maxFreePrompts,
-        isProUser: hasSubscription,
-        currentMonth: user.current_month,
-      };
-    } catch (error) {
-      console.error('❌ Error in getPromptStats:', error);
-      throw error;
-    }
-  }
-
-  /**
    * Record a prompt usage
    * Only increments if user is not a pro subscriber
    */
@@ -135,46 +101,6 @@ class PromptCounterService {
     }
   }
 
-  /**
-   * Check subscription status for a device
-   */
-  async checkSubscriptionStatus(deviceId: string): Promise<{
-    isActive: boolean;
-    expiresAt: string | null;
-  }> {
-    try {
-      const hasSubscription = await db.hasActiveSubscription(deviceId);
-
-      // If has subscription, get expiry date
-      // (This is simplified - in production you'd fetch the actual subscription record)
-      return {
-        isActive: hasSubscription,
-        expiresAt: null, // TODO: Fetch actual expiry date from subscription table
-      };
-    } catch (error) {
-      console.error('❌ Error in checkSubscriptionStatus:', error);
-      return {
-        isActive: false,
-        expiresAt: null,
-      };
-    }
-  }
-
-  /**
-   * Reset monthly count for a specific device (admin function)
-   * Useful for testing or support
-   */
-  async resetMonthlyCount(deviceId: string): Promise<void> {
-    try {
-      // This is handled automatically in getOrCreateUser
-      // when the month changes, but we can force it here
-      await db.getOrCreateUser(deviceId);
-      console.log(`🔄 Monthly count reset for ${deviceId}`);
-    } catch (error) {
-      console.error('❌ Error in resetMonthlyCount:', error);
-      throw error;
-    }
-  }
 }
 
 // Export singleton instance

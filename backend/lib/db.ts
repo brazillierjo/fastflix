@@ -135,15 +135,8 @@ class DatabaseService {
   }
 
   /**
-   * Get prompt count for a device
-   */
-  async getPromptCount(deviceId: string): Promise<number> {
-    const user = await this.getOrCreateUser(deviceId);
-    return user.prompt_count;
-  }
-
-  /**
    * Increment prompt count for a device
+   * Note: This is called by promptCounter.recordPromptUsage() which already checks for Pro status
    */
   async incrementPromptCount(deviceId: string): Promise<number> {
     const client = this.getClient();
