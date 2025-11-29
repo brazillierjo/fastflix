@@ -103,9 +103,24 @@ describe('Validation Schemas', () => {
       expect(androidResult.success).toBe(true);
     });
 
-    it('should reject missing required fields', () => {
+    it('should accept minimal request with only query (for authenticated users)', () => {
       const result = searchRequestSchema.safeParse({
         query: 'test',
+      });
+
+      expect(result.success).toBe(true);
+      if (result.success) {
+        // Should use default values
+        expect(result.data.includeMovies).toBe(true);
+        expect(result.data.includeTvShows).toBe(true);
+        expect(result.data.language).toBe('fr-FR');
+        expect(result.data.country).toBe('FR');
+      }
+    });
+
+    it('should reject missing query field', () => {
+      const result = searchRequestSchema.safeParse({
+        deviceId: 'test-device',
       });
 
       expect(result.success).toBe(false);
