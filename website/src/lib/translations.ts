@@ -23,7 +23,7 @@ export const translations = {
     heroTitle: 'Your perfect movie,',
     heroTitleHighlight: 'One prompt away 🎬',
     heroDescription:
-      "Tell us what you're in the mood for, and our AI will find the perfect movie or TV show for you. Filter by your streaming platforms and discover content that matches your exact vibe.",
+      "Tell us what you're in the mood for, and our powerful backend API powered by Google Gemini AI will find the perfect movie or TV show for you. Just mention your streaming platform in your query, and we'll show you what's available.",
     heroSubDescription:
       'Whether you want "something funny but not too silly" or "a thriller that won\'t keep me up all night," FastFlix understands and delivers.',
     downloadIOS: 'Download for iPhone & iPad',
@@ -37,12 +37,12 @@ export const translations = {
     flexiblePrompts: 'Flexible Prompts',
     flexiblePromptsDesc:
       'Describe your mood in natural language - no rigid categories',
-    aiPowered: 'AI-Powered',
+    aiPowered: 'Dedicated Backend API',
     aiPoweredDesc:
-      'Advanced AI understands context and nuance in your requests',
-    platformFiltering: 'Platform Filtering',
+      'Powered by our own API backend with Google Gemini AI integration for accurate, context-aware recommendations',
+    platformFiltering: 'Smart Platform Filtering',
     platformFilteringDesc:
-      'Filter results by your streaming services and platforms',
+      'Mention streaming services in your query (e.g., "on Netflix") and our AI automatically filters results for that platform',
     zeroDataCollection: 'Zero Data Collection',
     zeroDataCollectionDesc:
       'Complete privacy - no accounts, no tracking, no data storage',
@@ -201,7 +201,7 @@ export const translations = {
       {
         question: 'How does FastFlix generate recommendations?',
         answer:
-          'FastFlix uses Google Gemini AI to analyze your preferences and mood descriptions, then searches The Movie Database (TMDB) to find matching content with detailed information and streaming availability.',
+          'FastFlix uses a dedicated backend API powered by Google Gemini AI to analyze your preferences and mood descriptions. The API then enriches results with data from The Movie Database (TMDB), including detailed information and streaming availability for your country. If you mention a streaming platform in your query (e.g., "on Netflix"), our smart filtering system automatically shows only content available on that platform.',
       },
       {
         question: 'Is FastFlix free to use?',
@@ -255,7 +255,7 @@ export const translations = {
     heroTitle: 'Votre film parfait,',
     heroTitleHighlight: 'en une phrase 🎬',
     heroDescription:
-      'Dites-nous ce que vous avez envie de regarder, et notre IA trouvera le film ou la série parfait pour vous. Filtrez par vos plateformes de streaming et découvrez du contenu qui correspond exactement à votre humeur.',
+      "Dites-nous ce que vous avez envie de regarder, et notre puissante API backend alimentée par l'IA Google Gemini trouvera le film ou la série parfait pour vous. Mentionnez simplement votre plateforme de streaming dans votre recherche, et nous vous montrerons ce qui est disponible.",
     heroSubDescription:
       'Que vous vouliez "quelque chose de drôle mais pas trop bête" ou "un thriller qui ne m\'empêchera pas de dormir", FastFlix comprend et livre.',
     downloadIOS: 'Télécharger pour iPhone et iPad',
@@ -269,12 +269,12 @@ export const translations = {
     flexiblePrompts: 'Prompts flexibles',
     flexiblePromptsDesc:
       'Décrivez votre humeur en langage naturel - aucune catégorie rigide',
-    aiPowered: "Alimenté par l'IA",
+    aiPowered: "API Backend dédiée",
     aiPoweredDesc:
-      'IA avancée qui comprend le contexte et les nuances de vos demandes',
-    platformFiltering: 'Filtrage par plateforme',
+      "Propulsé par notre propre backend API avec intégration de l'IA Google Gemini pour des recommandations précises et contextuelles",
+    platformFiltering: 'Filtrage intelligent par plateforme',
     platformFilteringDesc:
-      'Filtrez les résultats par vos services de streaming et plateformes',
+      'Mentionnez un service de streaming dans votre recherche (ex: "sur Netflix") et notre IA filtre automatiquement les résultats pour cette plateforme',
     zeroDataCollection: 'Zéro collecte de données',
     zeroDataCollectionDesc:
       'Confidentialité complète - pas de comptes, pas de suivi, pas de stockage de données',
@@ -438,7 +438,7 @@ export const translations = {
       {
         question: 'Comment FastFlix génère-t-il des recommandations ?',
         answer:
-          "FastFlix utilise l'IA Google Gemini pour analyser vos préférences et descriptions d'humeur, puis recherche dans The Movie Database (TMDB) pour trouver du contenu correspondant avec des informations détaillées et la disponibilité en streaming.",
+          "FastFlix utilise une API backend dédiée alimentée par l'IA Google Gemini pour analyser vos préférences et descriptions d'humeur. L'API enrichit ensuite les résultats avec des données de The Movie Database (TMDB), incluant des informations détaillées et la disponibilité en streaming pour votre pays. Si vous mentionnez une plateforme de streaming dans votre recherche (ex: \"sur Netflix\"), notre système de filtrage intelligent affiche automatiquement uniquement le contenu disponible sur cette plateforme.",
       },
       {
         question: 'FastFlix est-il gratuit ?',

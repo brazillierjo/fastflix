@@ -78,14 +78,33 @@ RevenueCat webhook for subscription events (INITIAL_PURCHASE, RENEWAL, CANCELLAT
 
 ```
 Mobile App (deviceId: "ffx_device_ABC123")
-           ↓ search request
+           ↓ search request (query, language, country)
 Backend API (checks database)
            ↓ looks up deviceId
 Database: subscriptions table
            ↓ finds status: "active"
 Backend: ✅ Pro user → unlimited searches
          ❌ Free user → check quota (3/month)
+           ↓
+AI Processing (Google Gemini)
+           ↓ extracts platforms + generates recommendations
+TMDB Enrichment
+           ↓ fetch movie data + streaming providers
+Smart Platform Filtering
+           ↓ filter by detected platforms (if any)
+Return Results ✅
 ```
+
+### Smart Platform Filtering
+
+When users mention streaming platforms in their queries (e.g., "movies on Netflix", "shows available on Disney+"), the system:
+
+1. **AI Detection:** Gemini extracts platform names from the query
+2. **Validation:** Validates detected platforms against a known list
+3. **Intelligent Filtering:** Applies a 30% retention threshold
+   - If filtering would remove >70% of results → keeps original results
+   - If filtering retains ≥30% of results → applies the filter
+4. **Always Returns Results:** Users never get empty result sets
 
 ### Subscription Flow
 
@@ -124,11 +143,30 @@ The `deviceId` is the single source of truth connecting everything:
 - **Framework:** Next.js 16 (App Router, Turbopack)
 - **Runtime:** Node.js 20+ / Vercel Serverless
 - **Database:** Turso (libSQL - distributed SQLite)
-- **AI:** Google Gemini 2.0 Flash Thinking
-- **Movie Data:** TMDB API v3
+- **AI:** Google Gemini 2.0 Flash (with platform detection & multilingual support)
+- **Movie Data:** TMDB API v3 (with streaming provider integration)
 - **Validation:** Zod schemas
 - **Testing:** Jest + ts-jest (36 tests)
 - **Language:** TypeScript 5 (strict mode)
+
+## Key Features
+
+### 🌍 Multilingual Support
+- Supports French, English, Italian, Japanese
+- Language-aware AI responses (matches user's app language)
+- Localized content from TMDB
+
+### 🎯 Smart Platform Filtering
+- AI-powered platform detection from natural language queries
+- Intelligent filtering with 30% retention threshold
+- Validates against known streaming platforms
+- Never returns empty results
+
+### 🔒 Privacy & Security
+- Rate limiting (IP + device-based)
+- Anti-abuse detection system
+- Input validation with Zod
+- No personal data storage beyond device ID
 
 ## Local Development
 

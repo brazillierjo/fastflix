@@ -6,12 +6,14 @@ AI-powered movie and TV show recommendation app for iOS and Android.
 
 - ✅ AI-powered recommendations using Google Gemini
 - ✅ Natural language search ("action movies like Die Hard")
+- ✅ **Smart platform filtering** ("shows on Netflix", "movies on Disney+")
+- ✅ **Multilingual support** (French, English, Italian, Japanese)
+- ✅ **Localized streaming availability** by country
 - ✅ TMDB enriched movie/TV data
 - ✅ Pro subscription via RevenueCat (Apple/Google in-app purchases)
 - ✅ Free tier: 3 searches/month
 - ✅ Pro tier: Unlimited searches
 - ✅ Persistent device identity (survives reinstalls)
-- ✅ Multi-language support (French, English)
 
 ## Tech Stack
 
@@ -34,11 +36,19 @@ deviceId generated/retrieved (iOS Keychain)
       ↓
 RevenueCat configured with deviceId as appUserID
       ↓
-User searches for movies
+User selects language & country (stored locally)
       ↓
-Frontend sends: { deviceId, query }
+User searches for movies (natural language)
+      ↓
+Frontend sends: { deviceId, query, language, country }
       ↓
 Backend checks subscription status in database
+      ↓
+AI processes query (detects platforms, generates recommendations)
+      ↓
+TMDB enriches data (localized to user's country & language)
+      ↓
+Smart filtering applies (if platforms detected)
       ↓
 Backend returns results (respecting quota)
 ```
