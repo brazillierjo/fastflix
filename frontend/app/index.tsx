@@ -38,20 +38,17 @@ export default function HomeScreen() {
     handleSearchEnd,
   } = useAppState();
 
-  // Get subscription status from RevenueCat
-  const { hasUnlimitedAccess } = useSubscription();
-
-  const movieSearchMutation = useBackendMovieSearch(hasUnlimitedAccess);
+  // Backend automatically checks subscription status via database (updated by RevenueCat webhook)
+  const movieSearchMutation = useBackendMovieSearch();
   const { data: promptLimitData, refetch: refetchPromptLimit } =
     usePromptLimit();
   const { t } = useLanguage();
   const [showSubscriptionModal, setShowSubscriptionModal] = useState(false);
 
   const handleSearch = async () => {
-    console.log('🔍 Starting search - User is Pro:', hasUnlimitedAccess);
+    console.log('🔍 Starting search');
 
-    // Let the backend handle quota checks - it now knows about Pro status
-    // No need to check promptLimitData here as it doesn't know about Pro status from frontend
+    // Backend handles all quota and subscription checks via database
 
     handleSearchStart();
 

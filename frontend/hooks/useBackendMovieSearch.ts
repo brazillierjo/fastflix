@@ -89,8 +89,7 @@ const transformMovieResult = (result: MovieResult): Movie => {
 const searchMoviesWithBackend = async (
   params: SearchParams,
   language: string = 'fr-FR',
-  country: string = 'FR',
-  isProUser: boolean = false
+  country: string = 'FR'
 ): Promise<SearchResult> => {
   const { query, includeMovies, includeTvShows } = params;
 
@@ -105,7 +104,6 @@ const searchMoviesWithBackend = async (
       includeTvShows,
       language,
       country,
-      isProUser,
     });
 
     const response = await backendAPIService.search({
@@ -114,7 +112,6 @@ const searchMoviesWithBackend = async (
       includeTvShows,
       language,
       country,
-      isProUser, // Pass subscription status to backend
     });
 
     if (!response.success || !response.data) {
@@ -165,8 +162,9 @@ const searchMoviesWithBackend = async (
 
 /**
  * Hook for searching movies using the backend API
+ * Backend automatically checks subscription status via database (updated by RevenueCat webhook)
  */
-export const useBackendMovieSearch = (isProUser: boolean = false) => {
+export const useBackendMovieSearch = () => {
   const { t, country, language } = useLanguage();
 
   // Convert language format (e.g., 'fr' -> 'fr-FR')
@@ -174,7 +172,7 @@ export const useBackendMovieSearch = (isProUser: boolean = false) => {
 
   return useMutation({
     mutationFn: (params: SearchParams) =>
-      searchMoviesWithBackend(params, tmdbLanguage, country, isProUser),
+      searchMoviesWithBackend(params, tmdbLanguage, country),
     onError: (error: Error) => {
       // Map error codes to user-friendly messages
       const errorMessage =

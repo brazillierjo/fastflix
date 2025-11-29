@@ -192,7 +192,6 @@ class BackendAPIService {
     includeTvShows: boolean;
     language?: string;
     country?: string;
-    isProUser?: boolean; // Optional: subscription status from RevenueCat
   }): Promise<APIResponse<SearchResponse>> {
     try {
       // Get device ID
@@ -224,7 +223,6 @@ class BackendAPIService {
         appVersion: this.getAppVersion(),
         language: params.language || 'fr-FR',
         country: params.country || 'FR',
-        isProUser: params.isProUser, // Pass subscription status
       };
 
       console.log('Search request:', requestBody);

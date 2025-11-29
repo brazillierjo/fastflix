@@ -16,7 +16,6 @@ export interface SearchRequest {
   appVersion: string;
   language?: string; // 'fr-FR', 'en-US', etc.
   country?: string; // 'FR', 'US', etc.
-  isProUser?: boolean; // Frontend sends subscription status (temporary until webhook is configured)
 }
 
 export interface MovieResult {

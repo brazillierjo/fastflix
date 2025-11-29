@@ -43,9 +43,8 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Step 2: Check prompt quota
-    // Pass isProUser from frontend (temporary until webhook is configured)
-    const limitCheck = await promptCounter.canMakePrompt(deviceId, validatedData.isProUser);
+    // Step 2: Check prompt quota (checks database for Pro status via webhook)
+    const limitCheck = await promptCounter.canMakePrompt(deviceId);
     if (!limitCheck.allowed) {
       await antiAbuse.recordFailedAttempt(deviceId);
       return NextResponse.json(
