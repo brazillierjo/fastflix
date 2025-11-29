@@ -4,7 +4,7 @@
  */
 
 import { createClient, Client, Row } from '@libsql/client';
-import type { Subscription } from './types';
+import type { Subscription, User } from './types';
 
 /**
  * Helper function to safely convert a database row to a specific type
@@ -218,6 +218,199 @@ class DatabaseService {
     } catch (error) {
       console.error('❌ Database error in upsertSubscription:', error);
       throw error;
+    }
+  }
+
+  // ==========================================================================
+  // User Methods (Authentication)
+  // ==========================================================================
+
+  /**
+   * Create a new user
+   */
+  async createUser(data: {
+    id: string;
+    email: string;
+    name: string | null;
+    avatar_url: string | null;
+    auth_provider: 'apple' | 'google';
+    provider_user_id: string;
+  }): Promise<User> {
+    this.initialize();
+
+    try {
+      const { id, email, name, avatar_url, auth_provider, provider_user_id } = data;
+
+      await this.client!.execute({
+        sql: `INSERT INTO users (id, email, name, avatar_url, auth_provider, provider_user_id)
+              VALUES (?, ?, ?, ?, ?, ?)`,
+        args: [id, email, name, avatar_url, auth_provider, provider_user_id],
+      });
+
+      console.log(`✅ User created: ${email} (${auth_provider})`);
+
+      // Return the created user
+      const user = await this.getUserById(id);
+      if (!user) {
+        throw new Error('Failed to retrieve created user');
+      }
+
+      return user;
+    } catch (error) {
+      console.error('❌ Database error in createUser:', error);
+      throw error;
+    }
+  }
+
+  /**
+   * Get user by ID
+   */
+  async getUserById(id: string): Promise<User | null> {
+    this.initialize();
+
+    try {
+      const result = await this.client!.execute({
+        sql: 'SELECT * FROM users WHERE id = ?',
+        args: [id],
+      });
+
+      if (result.rows.length === 0) {
+        return null;
+      }
+
+      return rowToObject<User>(result.rows[0]);
+    } catch (error) {
+      console.error('❌ Database error in getUserById:', error);
+      throw error;
+    }
+  }
+
+  /**
+   * Get user by email
+   */
+  async getUserByEmail(email: string): Promise<User | null> {
+    this.initialize();
+
+    try {
+      const result = await this.client!.execute({
+        sql: 'SELECT * FROM users WHERE email = ?',
+        args: [email],
+      });
+
+      if (result.rows.length === 0) {
+        return null;
+      }
+
+      return rowToObject<User>(result.rows[0]);
+    } catch (error) {
+      console.error('❌ Database error in getUserByEmail:', error);
+      throw error;
+    }
+  }
+
+  /**
+   * Get user by provider and provider_user_id
+   */
+  async getUserByProvider(
+    auth_provider: 'apple' | 'google',
+    provider_user_id: string
+  ): Promise<User | null> {
+    this.initialize();
+
+    try {
+      const result = await this.client!.execute({
+        sql: 'SELECT * FROM users WHERE auth_provider = ? AND provider_user_id = ?',
+        args: [auth_provider, provider_user_id],
+      });
+
+      if (result.rows.length === 0) {
+        return null;
+      }
+
+      return rowToObject<User>(result.rows[0]);
+    } catch (error) {
+      console.error('❌ Database error in getUserByProvider:', error);
+      throw error;
+    }
+  }
+
+  /**
+   * Update user information
+   */
+  async updateUser(
+    id: string,
+    data: {
+      name?: string | null;
+      avatar_url?: string | null;
+    }
+  ): Promise<User> {
+    this.initialize();
+
+    try {
+      const updates: string[] = [];
+      const args: (string | null)[] = [];
+
+      if (data.name !== undefined) {
+        updates.push('name = ?');
+        args.push(data.name);
+      }
+
+      if (data.avatar_url !== undefined) {
+        updates.push('avatar_url = ?');
+        args.push(data.avatar_url);
+      }
+
+      if (updates.length === 0) {
+        // No updates, just return current user
+        const user = await this.getUserById(id);
+        if (!user) {
+          throw new Error('User not found');
+        }
+        return user;
+      }
+
+      updates.push('updated_at = datetime(\'now\')');
+      args.push(id);
+
+      await this.client!.execute({
+        sql: `UPDATE users SET ${updates.join(', ')} WHERE id = ?`,
+        args,
+      });
+
+      console.log(`✅ User updated: ${id}`);
+
+      const user = await this.getUserById(id);
+      if (!user) {
+        throw new Error('Failed to retrieve updated user');
+      }
+
+      return user;
+    } catch (error) {
+      console.error('❌ Database error in updateUser:', error);
+      throw error;
+    }
+  }
+
+  /**
+   * Check if user has active subscription (by user_id)
+   */
+  async hasActiveSubscriptionByUserId(userId: string): Promise<boolean> {
+    this.initialize();
+
+    try {
+      const result = await this.client!.execute({
+        sql: `SELECT COUNT(*) as count FROM subscriptions
+              WHERE user_id = ?
+              AND status IN ('active', 'cancelled')
+              AND (expires_at IS NULL OR datetime(expires_at) > datetime('now'))`,
+        args: [userId],
+      });
+
+      const count = Number(result.rows[0]?.count || 0);
+      return count > 0;
+    } catch (error) {
+      console.error('❌ Database error in hasActiveSubscriptionByUserId:', error);
+      return false;
     }
   }
 }

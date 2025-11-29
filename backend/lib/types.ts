@@ -165,3 +165,45 @@ export interface TMDBWatchProviderResponse {
     };
   };
 }
+
+// ============================================================================
+// Authentication Types
+// ============================================================================
+
+export interface User {
+  id: string;
+  email: string;
+  name: string | null;
+  avatar_url: string | null;
+  auth_provider: 'apple' | 'google';
+  provider_user_id: string;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface AuthResponse {
+  user: User;
+  token: string;
+}
+
+export interface JWTPayload {
+  userId: string;
+  email: string;
+  iat: number;
+  exp: number;
+}
+
+export interface AppleAuthRequest {
+  identityToken: string;
+  user?: {
+    email?: string;
+    name?: {
+      firstName?: string;
+      lastName?: string;
+    };
+  };
+}
+
+export interface GoogleAuthRequest {
+  idToken: string;
+}
