@@ -4,7 +4,7 @@
     "slug": "fastflix",
     "description": "AI-powered movie and TV show recommendations. Discover what to watch tonight with personalized suggestions based on your mood and preferences.",
     "orientation": "portrait",
-    "icon": "./assets/app-images/icon.png",
+    "icon": "./assets/appstore.png",
     "scheme": "fastflix",
     "userInterfaceStyle": "automatic",
     "newArchEnabled": true,
@@ -24,8 +24,8 @@
     },
     "android": {
       "adaptiveIcon": {
-        "foregroundImage": "./assets/app-images/adaptive-icon.png",
-        "backgroundColor": "#ffffff"
+        "foregroundImage": "./assets/appstore.png",
+        "backgroundColor": "#000000"
       },
       "edgeToEdgeEnabled": true,
       "package": "com.fastflix.app",
@@ -34,7 +34,7 @@
     "web": {
       "bundler": "metro",
       "output": "static",
-      "favicon": "./assets/app-images/favicon.png"
+      "favicon": "./assets/playstore.png"
     },
     "plugins": [
       "expo-router",
@@ -42,10 +42,10 @@
       [
         "expo-splash-screen",
         {
-          "image": "./assets/app-images/splash.png",
+          "image": "./assets/appstore.png",
           "imageWidth": 120,
           "resizeMode": "contain",
-          "backgroundColor": "transparent"
+          "backgroundColor": "#000000"
         }
       ]
     ],

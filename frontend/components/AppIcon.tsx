@@ -9,7 +9,7 @@ interface AppIconProps {
 export default function AppIcon({ size = 40, style }: AppIconProps) {
   return (
     <Image
-      source={require('../assets/app-images/icon.png')}
+      source={require('../assets/appstore.png')}
       style={[
         {
           width: size,
