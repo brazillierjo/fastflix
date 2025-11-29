@@ -241,78 +241,80 @@ export default function ProfileScreen() {
           </View>
         </MotiView>
 
-        {/* Subscription Section */}
-        <MotiView
-          from={{ opacity: 0, translateY: 20 }}
-          animate={{ opacity: 1, translateY: 0 }}
-          transition={{
-            delay: 400,
-            type: 'timing',
-            duration: 600,
-          }}
-          className='mb-6'
-        >
-          <View className='rounded-xl bg-light-card p-6 dark:bg-dark-card'>
-            <Text className='mb-4 text-lg font-semibold text-light-text dark:text-dark-text'>
-              ⭐ {t('profile.premiumSubscription')}
-            </Text>
+        {/* Subscription Section - Only show if user is authenticated */}
+        {user && (
+          <MotiView
+            from={{ opacity: 0, translateY: 20 }}
+            animate={{ opacity: 1, translateY: 0 }}
+            transition={{
+              delay: 400,
+              type: 'timing',
+              duration: 600,
+            }}
+            className='mb-6'
+          >
+            <View className='rounded-xl bg-light-card p-6 dark:bg-dark-card'>
+              <Text className='mb-4 text-lg font-semibold text-light-text dark:text-dark-text'>
+                ⭐ {t('profile.premiumSubscription')}
+              </Text>
 
-            {isSubscribed ? (
-              <View className='gap-3'>
-                <View className='flex-row items-center'>
-                  <View className='mr-3 h-3 w-3 rounded-full bg-success-500' />
-                  <Text className='font-medium text-light-text dark:text-dark-text'>
-                    {t('profile.activeSubscription')}
+              {isSubscribed ? (
+                <View className='gap-3'>
+                  <View className='flex-row items-center'>
+                    <View className='mr-3 h-3 w-3 rounded-full bg-success-500' />
+                    <Text className='font-medium text-light-text dark:text-dark-text'>
+                      {t('profile.activeSubscription')}
+                    </Text>
+                  </View>
+                  <Text className='text-sm text-light-muted dark:text-dark-muted'>
+                    {t('profile.enjoyPremiumFeatures')}
                   </Text>
                 </View>
-                <Text className='text-sm text-light-muted dark:text-dark-muted'>
-                  {t('profile.enjoyPremiumFeatures')}
-                </Text>
-              </View>
-            ) : (
-              <View className='gap-4'>
-                <Text className='text-light-muted dark:text-dark-muted'>
-                  {t('profile.unlockPremiumMessage')}
-                </Text>
-                <TouchableOpacity
-                  onPress={() => setShowSubscriptionModal(true)}
-                  className='rounded-lg bg-primary-500 px-6 py-3'
-                >
-                  <Text className='text-center font-semibold text-white'>
-                    {t('profile.viewPlans')}
+              ) : (
+                <View className='gap-4'>
+                  <Text className='text-light-muted dark:text-dark-muted'>
+                    {t('profile.unlockPremiumMessage')}
                   </Text>
-                </TouchableOpacity>
-                <TouchableOpacity
-                  onPress={async () => {
-                    try {
-                      setRestoring(true);
-                      await restorePurchases();
-                    } catch (error) {
-                      console.error('Restore error:', error);
-                      Alert.alert(
-                        t('subscription.restoration.error.title') || 'Restore Failed',
-                        t('subscription.restoration.error.message') ||
-                          'An error occurred while restoring purchases. Please try again.'
-                      );
-                    } finally {
-                      setRestoring(false);
-                    }
-                  }}
-                  disabled={restoring}
-                  className='py-3'
-                >
-                  {restoring ? (
-                    <ActivityIndicator color='#3B82F6' />
-                  ) : (
-                    <Text className='text-center font-medium text-primary-500'>
-                      {t('subscription.restore') || 'Restore Purchases'}
+                  <TouchableOpacity
+                    onPress={() => setShowSubscriptionModal(true)}
+                    className='rounded-lg bg-primary-500 px-6 py-3'
+                  >
+                    <Text className='text-center font-semibold text-white'>
+                      {t('profile.viewPlans')}
                     </Text>
-                  )}
-                </TouchableOpacity>
-              </View>
-            )}
-          </View>
-        </MotiView>
+                  </TouchableOpacity>
+                  <TouchableOpacity
+                    onPress={async () => {
+                      try {
+                        setRestoring(true);
+                        await restorePurchases();
+                      } catch (error) {
+                        console.error('Restore error:', error);
+                        Alert.alert(
+                          t('subscription.restoration.error.title') || 'Restore Failed',
+                          t('subscription.restoration.error.message') ||
+                            'An error occurred while restoring purchases. Please try again.'
+                        );
+                      } finally {
+                        setRestoring(false);
+                      }
+                    }}
+                    disabled={restoring}
+                    className='py-3'
+                  >
+                    {restoring ? (
+                      <ActivityIndicator color='#3B82F6' />
+                    ) : (
+                      <Text className='text-center font-medium text-primary-500'>
+                        {t('subscription.restore') || 'Restore Purchases'}
+                      </Text>
+                    )}
+                  </TouchableOpacity>
+                </View>
+              )}
+            </View>
+          </MotiView>
+        )}
 
         {/* App Info Section */}
         <MotiView
