@@ -165,7 +165,34 @@
     "privacyPolicy": "Politique de confidentialité",
     "termsOfUse": "Conditions d'utilisation",
     "support": "Centre d'assistance",
-    "website": "Site web"
+    "website": "Site web",
+    "account": "Compte",
+    "name": "Nom",
+    "email": "Email",
+    "signInMethod": "Méthode de connexion",
+    "signOut": "Se déconnecter"
+  },
+  "auth": {
+    "welcome": {
+      "subtitle": "Recommandations IA de films et séries",
+      "description": "Connectez-vous pour obtenir des recommandations personnalisées et accéder à toutes les fonctionnalités."
+    },
+    "loading": "Connexion en cours...",
+    "platformNotSupported": "L'authentification n'est actuellement disponible que sur iOS.",
+    "footer": "En vous connectant, vous acceptez nos Conditions d'utilisation et notre Politique de confidentialité.",
+    "success": {
+      "title": "Bienvenue !",
+      "message": "Bienvenue{{name}} !"
+    },
+    "error": {
+      "title": "Échec de la connexion",
+      "message": "Une erreur s'est produite. Veuillez réessayer.",
+      "signout": "Échec de la déconnexion. Veuillez réessayer."
+    },
+    "signout": {
+      "title": "Déconnecté",
+      "message": "Vous avez été déconnecté avec succès."
+    }
   },
   "common": {
     "cancel": "Annuler"

@@ -165,7 +165,34 @@
     "privacyPolicy": "プライバシーポリシー",
     "termsOfUse": "利用規約",
     "support": "サポートセンター",
-    "website": "ウェブサイト"
+    "website": "ウェブサイト",
+    "account": "アカウント",
+    "name": "名前",
+    "email": "メール",
+    "signInMethod": "サインイン方法",
+    "signOut": "サインアウト"
+  },
+  "auth": {
+    "welcome": {
+      "subtitle": "AI搭載の映画・TV番組レコメンデーション",
+      "description": "サインインしてパーソナライズされたレコメンデーションとすべての機能にアクセスしてください。"
+    },
+    "loading": "サインイン中...",
+    "platformNotSupported": "認証は現在iOSでのみ利用可能です。",
+    "footer": "サインインすることで、利用規約とプライバシーポリシーに同意したものとみなされます。",
+    "success": {
+      "title": "ようこそ！",
+      "message": "ようこそ{{name}}！"
+    },
+    "error": {
+      "title": "サインイン失敗",
+      "message": "問題が発生しました。もう一度お試しください。",
+      "signout": "サインアウトに失敗しました。もう一度お試しください。"
+    },
+    "signout": {
+      "title": "サインアウトしました",
+      "message": "サインアウトに成功しました。"
+    }
   },
   "common": {
     "cancel": "キャンセル"

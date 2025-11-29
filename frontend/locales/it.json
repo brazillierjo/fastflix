@@ -180,7 +180,34 @@
     "privacyPolicy": "Politica sulla privacy",
     "termsOfUse": "Termini di utilizzo",
     "support": "Centro assistenza",
-    "website": "Sito web"
+    "website": "Sito web",
+    "account": "Account",
+    "name": "Nome",
+    "email": "Email",
+    "signInMethod": "Metodo di accesso",
+    "signOut": "Esci"
+  },
+  "auth": {
+    "welcome": {
+      "subtitle": "Raccomandazioni AI di film e serie TV",
+      "description": "Accedi per ottenere raccomandazioni personalizzate e accedere a tutte le funzionalità."
+    },
+    "loading": "Accesso in corso...",
+    "platformNotSupported": "L'autenticazione è attualmente disponibile solo su iOS.",
+    "footer": "Effettuando l'accesso, accetti i nostri Termini di servizio e l'Informativa sulla privacy.",
+    "success": {
+      "title": "Benvenuto!",
+      "message": "Benvenuto{{name}}!"
+    },
+    "error": {
+      "title": "Accesso fallito",
+      "message": "Qualcosa è andato storto. Riprova.",
+      "signout": "Impossibile disconnettersi. Riprova."
+    },
+    "signout": {
+      "title": "Disconnesso",
+      "message": "Sei stato disconnesso con successo."
+    }
   },
   "common": {
     "cancel": "Annulla"

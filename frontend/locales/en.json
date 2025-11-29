@@ -172,7 +172,34 @@
     "privacyPolicy": "Privacy Policy",
     "termsOfUse": "Terms of Use",
     "support": "Support Center",
-    "website": "Website"
+    "website": "Website",
+    "account": "Account",
+    "name": "Name",
+    "email": "Email",
+    "signInMethod": "Sign-in Method",
+    "signOut": "Sign Out"
+  },
+  "auth": {
+    "welcome": {
+      "subtitle": "AI-powered movie & TV show recommendations",
+      "description": "Sign in to get personalized recommendations and access all features."
+    },
+    "loading": "Signing in...",
+    "platformNotSupported": "Authentication is currently only available on iOS.",
+    "footer": "By signing in, you agree to our Terms of Service and Privacy Policy.",
+    "success": {
+      "title": "Welcome!",
+      "message": "Welcome{{name}}!"
+    },
+    "error": {
+      "title": "Sign In Failed",
+      "message": "Something went wrong. Please try again.",
+      "signout": "Failed to sign out. Please try again."
+    },
+    "signout": {
+      "title": "Signed Out",
+      "message": "You have been signed out successfully."
+    }
   },
   "common": {
     "cancel": "Cancel"
