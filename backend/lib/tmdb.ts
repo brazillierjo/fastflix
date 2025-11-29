@@ -283,7 +283,6 @@ class TMDBService {
         logo_path: provider.logo_path,
         display_priority: provider.display_priority
       }));
-      return flatrateProviders;
     } catch (error) {
       console.error(`❌ Failed to get watch providers for ${mediaType} ${tmdbId}:`, error);
       return [];
