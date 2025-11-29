@@ -341,7 +341,7 @@ Nettoyer le codebase avant d'ajouter la nouvelle feature pour éviter la dette t
   - Dashboard RevenueCat → Settings
   - Activer "Transfer purchases between users"
 
-- [ ] **Documenter le flow**
+- [x] **Documenter le flow**
   ```
   1. User se connecte (Apple/Google)
   2. App récupère userId du backend
@@ -352,20 +352,32 @@ Nettoyer le codebase avant d'ajouter la nouvelle feature pour éviter la dette t
 
 #### Frontend - RevenueCat Integration
 
-- [ ] **Modifier `contexts/RevenueCatContext.tsx`**
+- [x] **Modifier `contexts/RevenueCatContext.tsx`**
   - Ajouter méthode `linkUserToRevenueCat(userId: string)`
   - Appeler `Purchases.logIn(userId)` après auth réussie
   - Gérer le transfert de purchases
 
-- [ ] **Ajouter dans `AuthContext`**
+- [x] **Ajouter dans `AuthContext`**
   - Après login réussi, appeler `linkUserToRevenueCat(user.id)`
 
 #### Backend - Webhook Update
 
-- [ ] **Modifier `app/api/subscription/webhook/route.ts`**
+- [x] **Modifier `app/api/subscription/webhook/route.ts`**
   - Utiliser `event.app_user_id` au lieu de chercher par email
   - Vérifier que le user existe
   - Logger si user introuvable
+
+#### UI Update
+
+- [x] **Modifier `app/profile.tsx`**
+  - Afficher la carte d'abonnement seulement si user authentifié
+  - Conditionner l'affichage sur `user !== null`
+
+#### Bugfixes
+
+- [x] **Corriger l'ordre des providers dans `app/_layout.tsx`**
+  - SubscriptionProvider avant AuthProvider
+  - Permet à AuthProvider d'utiliser useSubscription()
 
 ---
 
