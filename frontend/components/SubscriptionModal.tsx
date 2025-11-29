@@ -23,11 +23,13 @@ import AppIcon from './AppIcon';
 interface SubscriptionModalProps {
   visible: boolean;
   onClose: () => void;
+  onSubscriptionSuccess?: () => void;
 }
 
 export default function SubscriptionModal({
   visible,
   onClose,
+  onSubscriptionSuccess,
 }: SubscriptionModalProps) {
   const { t, country } = useLanguage();
   const {
@@ -82,6 +84,12 @@ export default function SubscriptionModal({
     try {
       setPurchasing(true);
       await purchasePackage(packageToPurchase);
+
+      // Call success callback before closing (if provided)
+      if (onSubscriptionSuccess) {
+        onSubscriptionSuccess();
+      }
+
       onClose();
     } catch (error) {
       console.error('Purchase error:', error);
@@ -93,7 +101,13 @@ export default function SubscriptionModal({
   const handleRestore = async () => {
     try {
       setPurchasing(true);
-      await restorePurchases();
+      const restored = await restorePurchases();
+
+      // If restore was successful and callback is provided, call it
+      if (restored && onSubscriptionSuccess) {
+        onSubscriptionSuccess();
+        onClose();
+      }
     } catch (error) {
       console.error('Restore error:', error);
     } finally {

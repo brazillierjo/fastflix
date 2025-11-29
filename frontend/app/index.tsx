@@ -68,6 +68,10 @@ export default function HomeScreen() {
                 {
                   text: t('subscription.required.cancel') || 'Cancel',
                   style: 'cancel',
+                  onPress: () => {
+                    // Reset to welcome screen when user cancels
+                    goBackToHome();
+                  },
                 },
                 {
                   text: t('subscription.required.subscribe') || 'Subscribe',
@@ -79,6 +83,21 @@ export default function HomeScreen() {
         },
       }
     );
+  };
+
+  const handleSubscriptionSuccess = () => {
+    console.log('✅ Subscription successful - Retrying search');
+
+    // Automatically retry the search after successful subscription
+    if (query.trim()) {
+      // Small delay to ensure subscription is synced with backend
+      setTimeout(() => {
+        handleSearch();
+      }, 500);
+    } else {
+      // If no query, go back to home
+      goBackToHome();
+    }
   };
 
   return (
@@ -122,6 +141,7 @@ export default function HomeScreen() {
       <SubscriptionModal
         visible={showSubscriptionModal}
         onClose={() => setShowSubscriptionModal(false)}
+        onSubscriptionSuccess={handleSubscriptionSuccess}
       />
     </SafeAreaView>
   );

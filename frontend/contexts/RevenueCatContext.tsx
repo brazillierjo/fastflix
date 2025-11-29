@@ -195,7 +195,7 @@ export const SubscriptionProvider: React.FC<SubscriptionProviderProps> = ({
   };
 
   // Restore purchases
-  const restorePurchases = async () => {
+  const restorePurchases = async (): Promise<boolean> => {
     try {
       console.log('Restoring purchases...');
 
@@ -207,7 +207,11 @@ export const SubscriptionProvider: React.FC<SubscriptionProviderProps> = ({
 
       console.log('✅ Purchases restored - Status:', status);
 
-      if (status === SubscriptionStatus.ACTIVE || status === SubscriptionStatus.GRACE_PERIOD) {
+      const hasActiveSubscription =
+        status === SubscriptionStatus.ACTIVE ||
+        status === SubscriptionStatus.GRACE_PERIOD;
+
+      if (hasActiveSubscription) {
         Alert.alert(
           t('subscription.restoration.success.title') || 'Purchases Restored',
           t('subscription.restoration.success.message') ||
@@ -220,6 +224,8 @@ export const SubscriptionProvider: React.FC<SubscriptionProviderProps> = ({
             'No active subscriptions found to restore.'
         );
       }
+
+      return hasActiveSubscription;
     } catch (error: any) {
       console.error('❌ Error restoring purchases:', error);
 
@@ -229,6 +235,8 @@ export const SubscriptionProvider: React.FC<SubscriptionProviderProps> = ({
           error.message ||
           'Something went wrong. Please try again.'
       );
+
+      return false;
     }
   };
 
