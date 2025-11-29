@@ -42,7 +42,22 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Step 2: Build content type array for Gemini
+    // Step 2: Check subscription status (REQUIRED)
+    const hasActiveSubscription = await db.hasActiveSubscription(deviceId);
+    if (!hasActiveSubscription) {
+      console.log(`🔒 Access denied for ${deviceId}: No active subscription`);
+      return NextResponse.json(
+        {
+          error: 'Subscription required',
+          reason: 'An active subscription is required to access movie recommendations',
+        },
+        { status: 402 } // Payment Required
+      );
+    }
+
+    console.log(`✅ Access granted for ${deviceId}: Active subscription`);
+
+    // Step 3: Build content type array for Gemini
     const contentTypes: string[] = [];
     if (includeMovies) contentTypes.push('movies');
     if (includeTvShows) contentTypes.push('TV shows');
@@ -57,10 +72,10 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Step 3: Generate AI recommendations with conversational response
+    // Step 4: Generate AI recommendations with conversational response
     const aiResult = await gemini.generateRecommendationsWithResponse(query, contentTypes, language);
 
-    // Step 4: Enrich recommendations with TMDB data
+    // Step 5: Enrich recommendations with TMDB data
     const enrichedResults = await tmdb.enrichRecommendations(
       aiResult.recommendations,
       includeMovies,
@@ -68,10 +83,10 @@ export async function POST(request: NextRequest) {
       language
     );
 
-    // Step 5: Fetch streaming providers for enriched results
+    // Step 6: Fetch streaming providers for enriched results
     const streamingProviders = await tmdb.getBatchWatchProviders(enrichedResults, country);
 
-    // Step 6: Filter results if specific platforms were requested
+    // Step 7: Filter results if specific platforms were requested
     let finalResults = enrichedResults;
     if (aiResult.detectedPlatforms && aiResult.detectedPlatforms.length > 0) {
       console.log(`🔍 Filtering results for platforms: ${aiResult.detectedPlatforms.join(', ')}`);
@@ -100,14 +115,14 @@ export async function POST(request: NextRequest) {
       }
     }
 
-    // Step 7: Log the prompt for analytics
+    // Step 8: Log the prompt for analytics
     const responseTimeMs = Date.now() - startTime;
     await db.logPrompt(deviceId, query, finalResults.length, responseTimeMs);
 
-    // Step 8: Record successful attempt (clears abuse records)
+    // Step 9: Record successful attempt (clears abuse records)
     await antiAbuse.recordSuccessfulAttempt(deviceId);
 
-    // Step 9: Return successful response
+    // Step 10: Return successful response
     const response: SearchResponse = {
       recommendations: finalResults,
       streamingProviders,

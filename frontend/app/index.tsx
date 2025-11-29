@@ -57,6 +57,25 @@ export default function HomeScreen() {
         onError: (error) => {
           console.error('❌ Search error:', error);
           handleSearchEnd();
+
+          // Handle subscription required error
+          if (error.message === 'subscriptionRequired') {
+            Alert.alert(
+              t('subscription.required.title') || 'Subscription Required',
+              t('subscription.required.message') ||
+                'An active subscription is required to access movie recommendations. Subscribe now to get unlimited access!',
+              [
+                {
+                  text: t('subscription.required.cancel') || 'Cancel',
+                  style: 'cancel',
+                },
+                {
+                  text: t('subscription.required.subscribe') || 'Subscribe',
+                  onPress: () => setShowSubscriptionModal(true),
+                },
+              ]
+            );
+          }
         },
       }
     );

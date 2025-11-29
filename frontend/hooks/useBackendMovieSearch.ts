@@ -110,6 +110,12 @@ const searchMoviesWithBackend = async (
 
     if (!response.success || !response.data) {
       console.error('Backend search failed:', response.error);
+
+      // Handle subscription required error specifically
+      if (response.error?.code === 'HTTP_402') {
+        throw new Error('subscriptionRequired');
+      }
+
       throw new Error(response.error?.code || 'searchError');
     }
 
