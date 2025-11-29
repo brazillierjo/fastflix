@@ -45,7 +45,7 @@ export default function HomeScreen() {
   // Redirect to auth screen if not authenticated
   useEffect(() => {
     if (!isLoading && !isAuthenticated) {
-      router.push('/auth');
+      router.replace('/auth');
     }
   }, [isAuthenticated, isLoading, router]);
 
@@ -105,8 +105,8 @@ export default function HomeScreen() {
     }
   };
 
-  // Show loading while checking authentication or redirecting
-  if (isLoading || !isAuthenticated) {
+  // Show loading while checking authentication
+  if (isLoading) {
     return (
       <SafeAreaView
         className={cn('flex-1 bg-light-background dark:bg-dark-background')}
@@ -114,6 +114,11 @@ export default function HomeScreen() {
         <LoadingState isSearching={false} />
       </SafeAreaView>
     );
+  }
+
+  // Don't render anything if not authenticated - redirect will happen via useEffect
+  if (!isAuthenticated) {
+    return null;
   }
 
   return (
