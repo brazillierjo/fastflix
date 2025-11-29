@@ -2,11 +2,13 @@ import LoadingState from '@/components/LoadingState';
 import MovieResults from '@/components/MovieResults';
 import SearchForm from '@/components/SearchForm';
 import SubscriptionModal from '@/components/SubscriptionModal';
+import { useAuth } from '@/contexts/AuthContext';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { useAppState } from '@/hooks/useAppState';
 import { useBackendMovieSearch } from '@/hooks/useBackendMovieSearch';
 import { cn } from '@/utils/cn';
-import React, { useState } from 'react';
+import { useRouter } from 'expo-router';
+import React, { useEffect, useState } from 'react';
 import {
   Alert,
   KeyboardAvoidingView,
@@ -36,7 +38,16 @@ export default function HomeScreen() {
 
   const movieSearchMutation = useBackendMovieSearch();
   const { t } = useLanguage();
+  const { isAuthenticated, isLoading } = useAuth();
+  const router = useRouter();
   const [showSubscriptionModal, setShowSubscriptionModal] = useState(false);
+
+  // Redirect to auth screen if not authenticated
+  useEffect(() => {
+    if (!isLoading && !isAuthenticated) {
+      router.replace('/auth');
+    }
+  }, [isAuthenticated, isLoading, router]);
 
   const handleSearch = async () => {
     handleSearchStart();
@@ -93,6 +104,22 @@ export default function HomeScreen() {
       goBackToHome();
     }
   };
+
+  // Show loading while checking authentication
+  if (isLoading) {
+    return (
+      <SafeAreaView
+        className={cn('flex-1 bg-light-background dark:bg-dark-background')}
+      >
+        <LoadingState isSearching={false} />
+      </SafeAreaView>
+    );
+  }
+
+  // Don't render content if not authenticated (redirect will happen)
+  if (!isAuthenticated) {
+    return null;
+  }
 
   return (
     <SafeAreaView

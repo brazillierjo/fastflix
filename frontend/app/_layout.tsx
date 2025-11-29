@@ -8,6 +8,7 @@ import { useEffect } from 'react';
 import { Text, useColorScheme } from 'react-native';
 import 'react-native-reanimated';
 
+import { AuthProvider } from '@/contexts/AuthContext';
 import { LanguageProvider, useLanguage } from '@/contexts/LanguageContext';
 import { SubscriptionProvider } from '@/contexts/RevenueCatContext';
 import { QueryProvider } from '@/providers/QueryProvider';
@@ -46,6 +47,12 @@ function TabsLayout() {
           tabBarIcon: ({ color }) => (
             <Text style={{ color, fontSize: 20 }}>👤</Text>
           ),
+        }}
+      />
+      <Tabs.Screen
+        name='auth'
+        options={{
+          href: null, // This hides the tab from the tab bar
         }}
       />
       <Tabs.Screen
@@ -89,10 +96,12 @@ export default function RootLayout() {
   return (
     <QueryProvider>
       <LanguageProvider>
-        <SubscriptionProvider>
-          <TabsLayout />
-          <StatusBar style='auto' />
-        </SubscriptionProvider>
+        <AuthProvider>
+          <SubscriptionProvider>
+            <TabsLayout />
+            <StatusBar style='auto' />
+          </SubscriptionProvider>
+        </AuthProvider>
       </LanguageProvider>
     </QueryProvider>
   );

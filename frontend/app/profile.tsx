@@ -1,5 +1,6 @@
 import SubscriptionModal from '@/components/SubscriptionModal';
 import { AVAILABLE_LANGUAGES } from '@/constants/languages';
+import { useAuth } from '@/contexts/AuthContext';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { useSubscription } from '@/contexts/RevenueCatContext';
 import { getAppVersion } from '@/utils/appVersion';
@@ -22,6 +23,7 @@ export default function ProfileScreen() {
   const { language, setLanguage, country, setCountry, t, availableCountries } =
     useLanguage();
   const { hasUnlimitedAccess, restorePurchases } = useSubscription();
+  const { user, signOut } = useAuth();
 
   const isSubscribed = hasUnlimitedAccess;
   const [showSubscriptionModal, setShowSubscriptionModal] = useState(false);
@@ -49,6 +51,68 @@ export default function ProfileScreen() {
             {t('profile.subtitle')}
           </Text>
         </MotiView>
+
+        {/* User Information Section */}
+        {user && (
+          <MotiView
+            from={{ opacity: 0, translateY: 20 }}
+            animate={{ opacity: 1, translateY: 0 }}
+            transition={{
+              delay: 100,
+              type: 'timing',
+              duration: 600,
+            }}
+            className='mb-6'
+          >
+            <View className='rounded-xl bg-light-card p-6 dark:bg-dark-card'>
+              <Text className='mb-4 text-lg font-semibold text-light-text dark:text-dark-text'>
+                👤 {t('profile.account') || 'Account'}
+              </Text>
+
+              <View className='space-y-3'>
+                {user.name && (
+                  <View className='flex-row items-center justify-between'>
+                    <Text className='text-light-muted dark:text-dark-muted'>
+                      {t('profile.name') || 'Name'}
+                    </Text>
+                    <Text className='text-light-text dark:text-dark-text'>
+                      {user.name}
+                    </Text>
+                  </View>
+                )}
+
+                <View className='flex-row items-center justify-between'>
+                  <Text className='text-light-muted dark:text-dark-muted'>
+                    {t('profile.email') || 'Email'}
+                  </Text>
+                  <Text className='text-light-text dark:text-dark-text'>
+                    {user.email}
+                  </Text>
+                </View>
+
+                <View className='flex-row items-center justify-between'>
+                  <Text className='text-light-muted dark:text-dark-muted'>
+                    {t('profile.signInMethod') || 'Sign-in Method'}
+                  </Text>
+                  <Text className='text-light-text dark:text-dark-text'>
+                    {user.auth_provider === 'apple' ? ' Apple' : '🔵 Google'}
+                  </Text>
+                </View>
+
+                <View className='mt-4'>
+                  <TouchableOpacity
+                    onPress={signOut}
+                    className='rounded-lg bg-red-500 px-6 py-3 dark:bg-red-600'
+                  >
+                    <Text className='text-center font-semibold text-white'>
+                      {t('profile.signOut') || 'Sign Out'}
+                    </Text>
+                  </TouchableOpacity>
+                </View>
+              </View>
+            </View>
+          </MotiView>
+        )}
 
         {/* Language Section */}
         <MotiView
