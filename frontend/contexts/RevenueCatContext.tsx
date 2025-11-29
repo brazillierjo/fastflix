@@ -209,14 +209,14 @@ export const SubscriptionProvider: React.FC<SubscriptionProviderProps> = ({
 
       if (status === SubscriptionStatus.ACTIVE || status === SubscriptionStatus.GRACE_PERIOD) {
         Alert.alert(
-          t('subscription.restore.success.title') || 'Purchases Restored',
-          t('subscription.restore.success.message') ||
+          t('subscription.restoration.success.title') || 'Purchases Restored',
+          t('subscription.restoration.success.message') ||
             'Your purchases have been restored successfully!'
         );
       } else {
         Alert.alert(
-          t('subscription.restore.none.title') || 'No Purchases Found',
-          t('subscription.restore.none.message') ||
+          t('subscription.restoration.none.title') || 'No Purchases Found',
+          t('subscription.restoration.none.message') ||
             'No active subscriptions found to restore.'
         );
       }
@@ -224,8 +224,8 @@ export const SubscriptionProvider: React.FC<SubscriptionProviderProps> = ({
       console.error('❌ Error restoring purchases:', error);
 
       Alert.alert(
-        t('subscription.error.title') || 'Restore Failed',
-        t('subscription.error.message') ||
+        t('subscription.restoration.error.title') || 'Restore Failed',
+        t('subscription.restoration.error.message') ||
           error.message ||
           'Something went wrong. Please try again.'
       );
