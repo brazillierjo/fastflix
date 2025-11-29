@@ -49,18 +49,7 @@ export interface SearchResponse {
   recommendations: MovieResult[];
   streamingProviders: { [key: number]: StreamingProvider[] };
   conversationalResponse: string;
-  promptsRemaining: number;
-  isProUser: boolean;
   totalResults: number;
-}
-
-export interface CheckLimitResponse {
-  canMakePrompt: boolean;
-  promptsUsed: number;
-  promptsRemaining: number;
-  maxFreePrompts: number;
-  isProUser: boolean;
-  reason?: string;
 }
 
 export interface HealthCheckResponse {
@@ -212,8 +201,6 @@ class BackendAPIService {
             recommendations: [],
             streamingProviders: {},
             conversationalResponse: '',
-            promptsRemaining: 0,
-            isProUser: false,
             totalResults: 0,
           },
           error: {
@@ -249,68 +236,11 @@ class BackendAPIService {
           recommendations: [],
           streamingProviders: {},
           conversationalResponse: '',
-          promptsRemaining: 0,
-          isProUser: false,
           totalResults: 0,
         },
         error: {
           code: 'SEARCH_ERROR',
           message: 'Failed to execute search',
-          details: { error: (error as Error).message },
-        },
-      };
-    }
-  }
-
-  /**
-   * Check remaining prompt limit
-   */
-  async checkLimit(): Promise<APIResponse<CheckLimitResponse>> {
-    try {
-      // Get device ID
-      const deviceIdResult = await deviceIdentityService.getDeviceId();
-
-      if (!deviceIdResult.success || !deviceIdResult.data) {
-        return {
-          success: false,
-          data: {
-            canMakePrompt: false,
-            promptsUsed: 0,
-            promptsRemaining: 0,
-            maxFreePrompts: 3,
-            isProUser: false,
-          },
-          error: {
-            code: 'DEVICE_ID_ERROR',
-            message: 'Failed to get device ID',
-          },
-        };
-      }
-
-      const requestBody = {
-        deviceId: deviceIdResult.data,
-        platform: this.getPlatform(),
-      };
-
-      return await this.makeRequest<CheckLimitResponse>('/api/check-limit', {
-        method: 'POST',
-        body: JSON.stringify(requestBody),
-      });
-    } catch (error) {
-      console.error('Check limit error:', error);
-
-      return {
-        success: false,
-        data: {
-          canMakePrompt: false,
-          promptsUsed: 0,
-          promptsRemaining: 0,
-          maxFreePrompts: 3,
-          isProUser: false,
-        },
-        error: {
-          code: 'CHECK_LIMIT_ERROR',
-          message: 'Failed to check prompt limit',
           details: { error: (error as Error).message },
         },
       };

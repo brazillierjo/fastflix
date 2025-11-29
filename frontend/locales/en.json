@@ -61,14 +61,6 @@
     "backButton": "Back to Home",
     "funMessage": "🍿 Maybe a good movie will cheer you up?"
   },
-  "prompts": {
-    "limit": {
-      "title": "Monthly Limit Reached",
-      "message": "You've used all 3 free prompts this month. Upgrade to FastFlix Pro for unlimited recommendations!",
-      "cancel": "Cancel",
-      "upgrade": "Upgrade to Pro"
-    }
-  },
   "errors": {
     "title": "Error",
     "enterRequest": "Please enter a request",

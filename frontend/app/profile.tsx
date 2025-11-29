@@ -2,11 +2,9 @@ import SubscriptionModal from '@/components/SubscriptionModal';
 import { AVAILABLE_LANGUAGES } from '@/constants/languages';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { useSubscription } from '@/contexts/RevenueCatContext';
-import { usePromptLimit } from '@/hooks/useBackendMovieSearch';
 import { getAppVersion } from '@/utils/appVersion';
-import { useFocusEffect } from 'expo-router';
 import { MotiView } from 'moti';
-import React, { useCallback, useState } from 'react';
+import React, { useState } from 'react';
 import {
   ActionSheetIOS,
   ActivityIndicator,
@@ -25,24 +23,10 @@ export default function ProfileScreen() {
     useLanguage();
   const { hasUnlimitedAccess, restorePurchases } = useSubscription();
 
-  // Get prompt count from backend (source of truth)
-  const { data: promptLimitData, refetch: refetchPromptLimit } = usePromptLimit();
-  const monthlyPromptCount = promptLimitData?.promptsUsed || 0;
-  const maxFreePrompts = promptLimitData?.maxFreePrompts || 3;
-
-  // Backward compatibility
   const isSubscribed = hasUnlimitedAccess;
   const [showSubscriptionModal, setShowSubscriptionModal] = useState(false);
   const [restoring, setRestoring] = useState(false);
 
-  // Refresh prompt count from backend when screen comes into focus
-  useFocusEffect(
-    useCallback(() => {
-      refetchPromptLimit();
-    }, [refetchPromptLimit])
-  );
-
-  // Utilisation des constantes centralisées
   const languages = AVAILABLE_LANGUAGES;
 
   return (
@@ -260,80 +244,6 @@ export default function ProfileScreen() {
             )}
           </View>
         </MotiView>
-
-        {/* Free Prompts Section */}
-        {!isSubscribed && (
-          <MotiView
-            from={{ opacity: 0, translateY: 20 }}
-            animate={{ opacity: 1, translateY: 0 }}
-            transition={{
-              delay: 450,
-              type: 'timing',
-              duration: 600,
-            }}
-            className='mb-6'
-          >
-            <View className='rounded-xl bg-light-card p-6 dark:bg-dark-card'>
-              <Text className='mb-4 text-lg font-semibold text-light-text dark:text-dark-text'>
-                🎯 {t('profile.freePrompts.title')}
-              </Text>
-
-              <View className='gap-3'>
-                <View className='flex-row items-center justify-between'>
-                  <Text className='text-light-muted dark:text-dark-muted'>
-                    {t('profile.freePrompts.used')}
-                  </Text>
-                  <Text className='font-medium text-light-text dark:text-dark-text'>
-                    {monthlyPromptCount} / {maxFreePrompts}
-                  </Text>
-                </View>
-
-                <View className='flex-row items-center justify-between'>
-                  <Text className='text-light-muted dark:text-dark-muted'>
-                    {t('profile.freePrompts.remaining')}
-                  </Text>
-                  <Text
-                    className={`font-medium ${
-                      isSubscribed || Math.max(0, maxFreePrompts - monthlyPromptCount) > 0
-                        ? 'text-success-500'
-                        : 'text-error-500'
-                    }`}
-                  >
-                    {isSubscribed ? '∞' : Math.max(0, maxFreePrompts - monthlyPromptCount)}
-                  </Text>
-                </View>
-
-                <View className='mt-2 h-2 w-full rounded-full bg-light-border dark:bg-dark-border'>
-                  <View
-                    className={`h-full rounded-full ${
-                      isSubscribed || Math.max(0, maxFreePrompts - monthlyPromptCount) > 0
-                        ? 'bg-success-500'
-                        : 'bg-error-500'
-                    }`}
-                    style={{
-                      width: `${Math.min((monthlyPromptCount / maxFreePrompts) * 100, 100)}%`,
-                    }}
-                  />
-                </View>
-
-                <Text className='mt-2 text-sm text-light-muted dark:text-dark-muted'>
-                  {t('profile.freePrompts.resetInfo')}
-                </Text>
-
-                {!isSubscribed && monthlyPromptCount >= 3 && (
-                  <TouchableOpacity
-                    onPress={() => setShowSubscriptionModal(true)}
-                    className='mt-3 rounded-lg bg-primary-500 px-4 py-3'
-                  >
-                    <Text className='text-center font-semibold text-white'>
-                      {t('profile.freePrompts.upgradeButton')}
-                    </Text>
-                  </TouchableOpacity>
-                )}
-              </View>
-            </View>
-          </MotiView>
-        )}
 
         {/* App Info Section */}
         <MotiView

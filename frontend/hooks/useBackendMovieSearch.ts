@@ -58,8 +58,6 @@ export interface SearchResult {
   credits: { [key: number]: Cast[] };
   detailedInfo: { [key: number]: DetailedInfo };
   geminiResponse: string;
-  promptsRemaining?: number;
-  isProUser?: boolean;
 }
 
 /**
@@ -119,8 +117,6 @@ const searchMoviesWithBackend = async (
 
     console.log('Backend search results:', {
       totalResults: data.totalResults,
-      promptsRemaining: data.promptsRemaining,
-      isProUser: data.isProUser,
     });
 
     // Transform backend results to frontend format
@@ -142,17 +138,9 @@ const searchMoviesWithBackend = async (
       credits,
       detailedInfo,
       geminiResponse: data.conversationalResponse,
-      promptsRemaining: data.promptsRemaining,
-      isProUser: data.isProUser,
     };
   } catch (error) {
     console.error('Backend search error:', error);
-
-    // Handle quota exceeded error
-    if (error instanceof Error && error.message === 'HTTP_429') {
-      throw new Error('quotaExceeded');
-    }
-
     throw new Error('searchError');
   }
 };
@@ -172,34 +160,10 @@ export const useBackendMovieSearch = () => {
       searchMoviesWithBackend(params, tmdbLanguage, country),
     onError: (error: Error) => {
       // Map error codes to user-friendly messages
-      const errorMessage =
-        error.message === 'quotaExceeded'
-          ? t('errors.quotaExceeded') ||
-            'You have reached your monthly limit. Please upgrade to Pro for unlimited searches.'
-          : t(`errors.${error.message}`) || t('errors.searchError');
+      const errorMessage = t(`errors.${error.message}`) || t('errors.searchError');
 
       Alert.alert(t('errors.title'), errorMessage);
     },
-  });
-};
-
-/**
- * Hook to check remaining prompt limit
- */
-export const usePromptLimit = () => {
-  return useQuery({
-    queryKey: ['promptLimit'],
-    queryFn: async () => {
-      const response = await backendAPIService.checkLimit();
-
-      if (!response.success) {
-        throw new Error(response.error?.message || 'Failed to check limit');
-      }
-
-      return response.data;
-    },
-    staleTime: 60000, // Cache for 1 minute
-    refetchOnWindowFocus: true,
   });
 };
 

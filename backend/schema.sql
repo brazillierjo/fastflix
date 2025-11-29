@@ -1,17 +1,6 @@
 -- FastFlix Backend Database Schema
 -- Turso SQLite Database
 
--- Table principale pour le comptage des prompts
-CREATE TABLE IF NOT EXISTS user_prompts (
-  device_id TEXT PRIMARY KEY,           -- ID unique de l'appareil (iOS/Android)
-  prompt_count INTEGER DEFAULT 0,       -- Nombre de prompts utilisés ce mois
-  current_month TEXT NOT NULL,          -- Format: YYYY-MM
-  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-  last_updated TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-  platform TEXT,                        -- 'ios' ou 'android'
-  app_version TEXT                      -- Pour analytics
-);
-
 -- Table pour les abonnements (RevenueCat)
 CREATE TABLE IF NOT EXISTS subscriptions (
   device_id TEXT PRIMARY KEY,
@@ -42,7 +31,5 @@ CREATE TABLE IF NOT EXISTS blocked_devices (
 );
 
 -- Index pour optimiser les requêtes
-CREATE INDEX IF NOT EXISTS idx_current_month ON user_prompts(current_month);
-CREATE INDEX IF NOT EXISTS idx_device_created ON user_prompts(device_id, created_at);
 CREATE INDEX IF NOT EXISTS idx_prompt_logs_device ON prompt_logs(device_id, created_at);
 CREATE INDEX IF NOT EXISTS idx_subscriptions_status ON subscriptions(status, expires_at);

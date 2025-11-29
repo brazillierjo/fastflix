@@ -4,7 +4,7 @@
  */
 
 import { createClient, Client, Row } from '@libsql/client';
-import type { UserPrompt, Subscription } from './types';
+import type { Subscription } from './types';
 
 /**
  * Helper function to safely convert a database row to a specific type
@@ -53,121 +53,6 @@ class DatabaseService {
       this.initialize();
     }
     return this.client!;
-  }
-
-  /**
-   * Get current month in YYYY-MM format
-   */
-  private getCurrentMonth(): string {
-    const now = new Date();
-    const year = now.getFullYear();
-    const month = String(now.getMonth() + 1).padStart(2, '0');
-    return `${year}-${month}`;
-  }
-
-  /**
-   * Get or create a user in the database
-   * Automatically resets prompt count if it's a new month
-   */
-  async getOrCreateUser(
-    deviceId: string,
-    platform?: 'ios' | 'android',
-    appVersion?: string
-  ): Promise<UserPrompt> {
-    const client = this.getClient();
-    const currentMonth = this.getCurrentMonth();
-
-    try {
-      // Check if user exists
-      const result = await client.execute({
-        sql: 'SELECT * FROM user_prompts WHERE device_id = ?',
-        args: [deviceId],
-      });
-
-      if (result.rows.length > 0) {
-        const user = rowToObject<UserPrompt>(result.rows[0]);
-
-        // Check if we need to reset the monthly count
-        if (user.current_month !== currentMonth) {
-          console.log(`📅 Resetting monthly count for ${deviceId} (new month: ${currentMonth})`);
-
-          await client.execute({
-            sql: `UPDATE user_prompts
-                  SET prompt_count = 0,
-                      current_month = ?,
-                      last_updated = CURRENT_TIMESTAMP
-                  WHERE device_id = ?`,
-            args: [currentMonth, deviceId],
-          });
-
-          // Return updated user
-          return {
-            ...user,
-            prompt_count: 0,
-            current_month: currentMonth,
-          };
-        }
-
-        return user;
-      }
-
-      // Create new user
-      console.log(`➕ Creating new user: ${deviceId}`);
-
-      await client.execute({
-        sql: `INSERT INTO user_prompts
-              (device_id, prompt_count, current_month, platform, app_version)
-              VALUES (?, 0, ?, ?, ?)`,
-        args: [deviceId, currentMonth, platform || null, appVersion || null],
-      });
-
-      // Return the newly created user
-      const newUserResult = await client.execute({
-        sql: 'SELECT * FROM user_prompts WHERE device_id = ?',
-        args: [deviceId],
-      });
-
-      return rowToObject<UserPrompt>(newUserResult.rows[0]);
-    } catch (error) {
-      console.error('❌ Database error in getOrCreateUser:', error);
-      throw error;
-    }
-  }
-
-  /**
-   * Increment prompt count for a device
-   * Note: This is called by promptCounter.recordPromptUsage() which already checks for Pro status
-   */
-  async incrementPromptCount(deviceId: string): Promise<number> {
-    const client = this.getClient();
-
-    try {
-      // First ensure user exists and month is current
-      await this.getOrCreateUser(deviceId);
-
-      // Increment the count
-      await client.execute({
-        sql: `UPDATE user_prompts
-              SET prompt_count = prompt_count + 1,
-                  last_updated = CURRENT_TIMESTAMP
-              WHERE device_id = ?`,
-        args: [deviceId],
-      });
-
-      // Get the new count
-      const result = await client.execute({
-        sql: 'SELECT prompt_count FROM user_prompts WHERE device_id = ?',
-        args: [deviceId],
-      });
-
-      const row = rowToObject<{ prompt_count: number }>(result.rows[0]);
-      console.log(`📊 Incremented prompt count for ${deviceId}: ${row.prompt_count}`);
-
-      return row.prompt_count;
-    } catch (error) {
-      console.error('❌ Database error in incrementPromptCount:', error);
-      throw error;
-    }
   }
 
   /**

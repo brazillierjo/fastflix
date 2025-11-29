@@ -61,14 +61,6 @@
     "backButton": "Retour à l'accueil",
     "funMessage": "🍿 Peut-être qu'un bon film vous consolera ?"
   },
-  "prompts": {
-    "limit": {
-      "title": "Limite mensuelle atteinte",
-      "message": "Vous avez utilisé vos 3 prompts gratuits ce mois-ci. Passez à FastFlix Pro pour des recommandations illimitées !",
-      "cancel": "Annuler",
-      "upgrade": "Passer à Pro"
-    }
-  },
   "errors": {
     "title": "Erreur",
     "enterRequest": "Veuillez entrer une demande",
@@ -164,13 +156,6 @@
     "version": "Version",
     "developedBy": "Développé par",
     "yourTeam": "Votre équipe",
-    "freePrompts": {
-      "title": "Prompts gratuits",
-      "used": "Utilisés ce mois",
-      "remaining": "Restants",
-      "resetInfo": "Le compteur se remet à zéro chaque mois",
-      "upgradeButton": "Passer à FastFlix Pro"
-    },
     "privacyPolicy": "Politique de confidentialité",
     "termsOfUse": "Conditions d'utilisation",
     "support": "Centre d'assistance",

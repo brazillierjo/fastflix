@@ -4,10 +4,7 @@ import SearchForm from '@/components/SearchForm';
 import SubscriptionModal from '@/components/SubscriptionModal';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { useAppState } from '@/hooks/useAppState';
-import {
-  useBackendMovieSearch,
-  usePromptLimit,
-} from '@/hooks/useBackendMovieSearch';
+import { useBackendMovieSearch } from '@/hooks/useBackendMovieSearch';
 import { cn } from '@/utils/cn';
 import React, { useState } from 'react';
 import {
@@ -37,17 +34,12 @@ export default function HomeScreen() {
     handleSearchEnd,
   } = useAppState();
 
-  // Backend automatically checks subscription status via database (updated by RevenueCat webhook)
   const movieSearchMutation = useBackendMovieSearch();
-  const { data: promptLimitData, refetch: refetchPromptLimit } =
-    usePromptLimit();
   const { t } = useLanguage();
   const [showSubscriptionModal, setShowSubscriptionModal] = useState(false);
 
   const handleSearch = async () => {
     console.log('🔍 Starting search');
-
-    // Backend handles all quota and subscription checks via database
 
     handleSearchStart();
 
@@ -60,35 +52,11 @@ export default function HomeScreen() {
       {
         onSuccess: async data => {
           console.log('✅ Search successful - Results:', data.movies.length);
-
-          // Backend handles prompt counting automatically
-          // Just refresh the prompt limit data
-          await refetchPromptLimit();
-
           handleSearchSuccess(data);
         },
         onError: (error) => {
           console.error('❌ Search error:', error);
           handleSearchEnd();
-
-          // If quota exceeded, show upgrade modal
-          if (error.message === 'quotaExceeded') {
-            Alert.alert(
-              t('prompts.limit.title') || 'Monthly Limit Reached',
-              t('prompts.limit.message') ||
-                'You have used all your free prompts this month. Upgrade to Pro for unlimited searches!',
-              [
-                {
-                  text: t('prompts.limit.cancel') || 'Cancel',
-                  style: 'cancel',
-                },
-                {
-                  text: t('prompts.limit.upgrade') || 'Upgrade to Pro',
-                  onPress: () => setShowSubscriptionModal(true),
-                },
-              ]
-            );
-          }
         },
       }
     );

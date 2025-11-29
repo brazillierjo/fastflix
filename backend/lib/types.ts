@@ -39,8 +39,6 @@ export interface SearchResponse {
   recommendations: MovieResult[];
   streamingProviders: { [key: number]: StreamingProvider[] };
   conversationalResponse: string;
-  promptsRemaining: number;
-  isProUser: boolean;
   totalResults: number;
 }
 
@@ -51,33 +49,9 @@ export interface StreamingProvider {
   display_priority: number;
 }
 
-export interface CheckLimitRequest {
-  deviceId: string;
-  platform?: 'ios' | 'android';
-}
-
-export interface CheckLimitResponse {
-  canMakePrompt: boolean;
-  promptsUsed: number;
-  promptsRemaining: number;
-  maxFreePrompts: number;
-  isProUser: boolean;
-  reason?: string;
-}
-
 // ============================================================================
 // Database Types
 // ============================================================================
-
-export interface UserPrompt {
-  device_id: string;
-  prompt_count: number;
-  current_month: string; // Format: YYYY-MM
-  created_at: string;
-  last_updated: string;
-  platform: 'ios' | 'android' | null;
-  app_version: string | null;
-}
 
 export interface Subscription {
   device_id: string;
@@ -113,13 +87,6 @@ export interface AIRecommendationResult {
   recommendations: string[]; // Just titles from Gemini
   conversationalResponse: string;
   detectedPlatforms: string[]; // Detected streaming platforms from query
-}
-
-export interface PromptCheckResult {
-  allowed: boolean;
-  remaining: number;
-  reason?: string;
-  isProUser: boolean;
 }
 
 // ============================================================================

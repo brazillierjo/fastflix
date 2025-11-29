@@ -5,7 +5,6 @@
 
 import { NextRequest, NextResponse } from 'next/server';
 import { searchRequestSchema } from '@/lib/validation';
-import { promptCounter } from '@/lib/prompt-counter';
 import { gemini } from '@/lib/gemini';
 import { tmdb } from '@/lib/tmdb';
 import { db } from '@/lib/db';
@@ -27,7 +26,7 @@ export async function POST(request: NextRequest) {
       return rateLimitResponse;
     }
 
-    const { deviceId, query, includeMovies, includeTvShows, platform, appVersion, language, country } =
+    const { deviceId, query, includeMovies, includeTvShows, language, country } =
       validatedData;
 
     // Step 1: Check if device is blocked
@@ -43,25 +42,7 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Step 2: Check prompt quota (checks database for Pro status via webhook)
-    const limitCheck = await promptCounter.canMakePrompt(deviceId);
-    if (!limitCheck.allowed) {
-      await antiAbuse.recordFailedAttempt(deviceId);
-      return NextResponse.json(
-        {
-          error: 'Quota exceeded',
-          reason: limitCheck.reason,
-          promptsRemaining: 0,
-          isProUser: limitCheck.isProUser,
-        },
-        { status: 429 }
-      );
-    }
-
-    // Step 3: Ensure user exists in database (create if needed)
-    await db.getOrCreateUser(deviceId, platform, appVersion);
-
-    // Step 4: Build content type array for Gemini
+    // Step 2: Build content type array for Gemini
     const contentTypes: string[] = [];
     if (includeMovies) contentTypes.push('movies');
     if (includeTvShows) contentTypes.push('TV shows');
@@ -76,10 +57,10 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Step 5: Generate AI recommendations with conversational response
+    // Step 3: Generate AI recommendations with conversational response
     const aiResult = await gemini.generateRecommendationsWithResponse(query, contentTypes, language);
 
-    // Step 6: Enrich recommendations with TMDB data
+    // Step 4: Enrich recommendations with TMDB data
     const enrichedResults = await tmdb.enrichRecommendations(
       aiResult.recommendations,
       includeMovies,
@@ -87,10 +68,10 @@ export async function POST(request: NextRequest) {
       language
     );
 
-    // Step 6b: Fetch streaming providers for enriched results
+    // Step 5: Fetch streaming providers for enriched results
     const streamingProviders = await tmdb.getBatchWatchProviders(enrichedResults, country);
 
-    // Step 6c: Filter results if specific platforms were requested
+    // Step 6: Filter results if specific platforms were requested
     let finalResults = enrichedResults;
     if (aiResult.detectedPlatforms && aiResult.detectedPlatforms.length > 0) {
       console.log(`🔍 Filtering results for platforms: ${aiResult.detectedPlatforms.join(', ')}`);
@@ -119,55 +100,30 @@ export async function POST(request: NextRequest) {
       }
     }
 
-    // Step 7: Increment prompt count (only if we got results)
-    // This automatically skips counting for Pro users
-    let newPromptCount = limitCheck.remaining;
-    if (finalResults.length > 0) {
-      newPromptCount = await promptCounter.recordPromptUsage(deviceId);
-    }
-
-    // Step 8: Log the prompt for analytics
+    // Step 7: Log the prompt for analytics
     const responseTimeMs = Date.now() - startTime;
     await db.logPrompt(deviceId, query, finalResults.length, responseTimeMs);
 
-    // Step 9: Calculate remaining prompts
-    const maxFreePrompts = parseInt(process.env.MAX_FREE_PROMPTS || '3', 10);
-    const promptsRemaining = limitCheck.isProUser
-      ? -1 // Unlimited for Pro users
-      : Math.max(0, maxFreePrompts - newPromptCount);
-
-    // Step 10: Record successful attempt (clears abuse records)
+    // Step 8: Record successful attempt (clears abuse records)
     await antiAbuse.recordSuccessfulAttempt(deviceId);
 
-    // Step 11: Return successful response
+    // Step 9: Return successful response
     const response: SearchResponse = {
       recommendations: finalResults,
       streamingProviders,
       conversationalResponse: aiResult.conversationalResponse,
-      promptsRemaining,
-      isProUser: limitCheck.isProUser,
       totalResults: finalResults.length,
     };
 
-    return NextResponse.json(response);
-  } catch (error) {
-    // Zod validation error
-    if (error instanceof Error && error.name === 'ZodError') {
-      return NextResponse.json(
-        {
-          error: 'Validation failed',
-          details: error.message,
-        },
-        { status: 400 }
-      );
-    }
+    return NextResponse.json(response, { status: 200 });
+  } catch (error: any) {
+    console.error('❌ Error in search endpoint:', error);
 
-    // Other errors
-    console.error('❌ Error in /api/search:', error);
+    // Return user-friendly error
     return NextResponse.json(
       {
-        error: 'Internal server error',
-        message: error instanceof Error ? error.message : 'Unknown error',
+        error: error.message || 'Internal server error',
+        reason: 'Failed to process recommendation request',
       },
       { status: 500 }
     );
