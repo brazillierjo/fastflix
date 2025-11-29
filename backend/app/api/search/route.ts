@@ -131,13 +131,14 @@ export async function POST(request: NextRequest) {
     };
 
     return NextResponse.json(response, { status: 200 });
-  } catch (error: any) {
+  } catch (error) {
     console.error('❌ Error in search endpoint:', error);
 
     // Return user-friendly error
+    const errorMessage = error instanceof Error ? error.message : 'Internal server error';
     return NextResponse.json(
       {
-        error: error.message || 'Internal server error',
+        error: errorMessage,
         reason: 'Failed to process recommendation request',
       },
       { status: 500 }

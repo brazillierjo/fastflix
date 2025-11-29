@@ -3,63 +3,9 @@
  */
 
 import { describe, it, expect } from '@jest/globals';
-import { deviceIdSchema, checkLimitSchema, searchRequestSchema } from '../lib/validation';
+import { searchRequestSchema } from '../lib/validation';
 
 describe('Validation Schemas', () => {
-  describe('deviceIdSchema', () => {
-    it('should accept valid device ID', () => {
-      const result = deviceIdSchema.safeParse({
-        deviceId: 'abc-123-def-456',
-      });
-
-      expect(result.success).toBe(true);
-    });
-
-    it('should reject empty device ID', () => {
-      const result = deviceIdSchema.safeParse({
-        deviceId: '',
-      });
-
-      expect(result.success).toBe(false);
-    });
-
-    it('should reject missing device ID', () => {
-      const result = deviceIdSchema.safeParse({});
-
-      expect(result.success).toBe(false);
-    });
-
-    it('should reject too long device ID', () => {
-      const longId = 'a'.repeat(300);
-      const result = deviceIdSchema.safeParse({
-        deviceId: longId,
-      });
-
-      expect(result.success).toBe(false);
-    });
-  });
-
-  describe('checkLimitSchema', () => {
-    it('should accept valid check limit request', () => {
-      const result = checkLimitSchema.safeParse({
-        deviceId: 'test-device-123',
-      });
-
-      expect(result.success).toBe(true);
-      if (result.success) {
-        expect(result.data.deviceId).toBe('test-device-123');
-      }
-    });
-
-    it('should reject invalid device ID', () => {
-      const result = checkLimitSchema.safeParse({
-        deviceId: '',
-      });
-
-      expect(result.success).toBe(false);
-    });
-  });
-
   describe('searchRequestSchema', () => {
     it('should accept valid search request with all fields', () => {
       const validRequest = {

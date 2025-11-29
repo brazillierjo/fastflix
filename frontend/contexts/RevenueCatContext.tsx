@@ -49,7 +49,7 @@ export interface SubscriptionContextType {
 
   // Actions
   purchasePackage: (packageToPurchase: PurchasesPackage) => Promise<void>;
-  restorePurchases: () => Promise<void>;
+  restorePurchases: () => Promise<boolean>;
 
   // Package helpers
   getMonthlyPackage: () => PurchasesPackage | null;
