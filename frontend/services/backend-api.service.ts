@@ -5,9 +5,13 @@
 
 import Constants from 'expo-constants';
 import { Platform } from 'react-native';
+import * as SecureStore from 'expo-secure-store';
 import { deviceIdentityService } from './deviceIdentity.service';
 import { APIResponse, APIError } from '@/types/api';
 import Purchases from 'react-native-purchases';
+
+// Storage key for auth token
+const AUTH_TOKEN_KEY = 'fastflix_auth_token';
 
 // Types matching backend API
 export interface SearchRequest {
@@ -102,16 +106,30 @@ class BackendAPIService {
     try {
       const url = `${this.baseUrl}${endpoint}`;
 
+      // Get auth token if available
+      const authToken = await SecureStore.getItemAsync(AUTH_TOKEN_KEY);
+
+      // Build headers with auth token if available
+      const headers: Record<string, string> = {
+        'Content-Type': 'application/json',
+      };
+
+      if (authToken) {
+        headers['Authorization'] = `Bearer ${authToken}`;
+      }
+
+      // Merge with provided headers
+      if (options.headers) {
+        Object.assign(headers, options.headers);
+      }
+
       const controller = new AbortController();
       const timeoutId = setTimeout(() => controller.abort(), this.timeout);
 
       const response = await fetch(url, {
         ...options,
         signal: controller.signal,
-        headers: {
-          'Content-Type': 'application/json',
-          ...options.headers,
-        },
+        headers,
       });
 
       clearTimeout(timeoutId);
@@ -279,6 +297,38 @@ class BackendAPIService {
    */
   getBaseUrl(): string {
     return this.baseUrl;
+  }
+
+  // ==========================================================================
+  // Authentication Methods
+  // ==========================================================================
+
+  /**
+   * Sign in with Apple
+   */
+  async signInWithApple(data: {
+    identityToken: string;
+    user?: {
+      email?: string;
+      name?: {
+        firstName?: string;
+        lastName?: string;
+      };
+    };
+  }): Promise<APIResponse<{ user: any; token: string }>> {
+    return await this.makeRequest('/api/auth/apple', {
+      method: 'POST',
+      body: JSON.stringify(data),
+    });
+  }
+
+  /**
+   * Get current authenticated user
+   */
+  async getCurrentUser(): Promise<APIResponse<{ user: any }>> {
+    return await this.makeRequest('/api/auth/me', {
+      method: 'GET',
+    });
   }
 }
 
