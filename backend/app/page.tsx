@@ -1,11 +1,14 @@
+import Image from 'next/image';
+import Logo from '../app/assets/logo.png'
+
 export default function Home() {
   return (
     <div className="flex min-h-screen items-center justify-center bg-gradient-to-br from-blue-50 via-white to-purple-50">
       <main className="text-center">
         {/* Logo */}
         <div className="mb-6 flex items-center justify-center space-x-3">
-          <div className="flex h-12 w-12 items-center justify-center rounded-lg bg-gradient-to-br from-blue-600 to-purple-600">
-            <span className="text-xl font-bold text-white">FF</span>
+          <div className="flex h-12 w-12 items-center rounded justify-center">
+            <Image src={Logo} alt="FastFlix Logo" className="rounded" width={48} height={48} />
           </div>
           <span className="text-3xl font-bold text-gray-900">FastFlix</span>
         </div>
