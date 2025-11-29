@@ -96,12 +96,12 @@ export default function RootLayout() {
   return (
     <QueryProvider>
       <LanguageProvider>
-        <AuthProvider>
-          <SubscriptionProvider>
+        <SubscriptionProvider>
+          <AuthProvider>
             <TabsLayout />
             <StatusBar style='auto' />
-          </SubscriptionProvider>
-        </AuthProvider>
+          </AuthProvider>
+        </SubscriptionProvider>
       </LanguageProvider>
     </QueryProvider>
   );
