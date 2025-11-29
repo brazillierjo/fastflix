@@ -406,10 +406,20 @@ Nettoyer le codebase avant d'ajouter la nouvelle feature pour éviter la dette t
   - User linking avec RevenueCat ✅ Logs confirmés
 
 - [x] **Tests automatisés Jest**
-  - Tous les tests passent (22/22) ✅
+  - Tous les tests passent (39/39) ✅ +17 nouveaux tests d'auth
+  - JWT generation & verification (6 tests) ✅
+  - JWT expiration logic (1 test) ✅
+  - Token payload structure (2 tests) ✅
+  - GET /api/auth/me endpoint logic (8 tests) ✅
   - Validation schemas mis à jour ✅
   - Rate limiter tests ✅
   - API health tests ✅
+
+- [x] **Critical Gap Fixes**
+  - Gestion automatique JWT expiré (401) ✅
+  - Auto-déconnexion si token invalide ✅
+  - AppState listener pour re-vérifier auth ✅
+  - Refresh automatique user data au foreground ✅
 
 #### Tests Frontend
 
