@@ -82,6 +82,12 @@
   "subscription": {
     "title": "Passa a FastFlix Pro",
     "loading": "Caricamento opzioni abbonamento...",
+    "required": {
+      "title": "Abbonamento richiesto",
+      "message": "È necessario un abbonamento attivo per accedere ai consigli su film e serie TV. Abbonati ora per ottenere accesso illimitato!",
+      "cancel": "Annulla",
+      "subscribe": "Abbonati"
+    },
     "hero": {
       "title": "Sblocca le funzionalità FastFlix Pro",
       "subtitle": "Ottieni il massimo dalla tua esperienza di scoperta cinematografica"
