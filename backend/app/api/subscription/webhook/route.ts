@@ -57,9 +57,23 @@ export async function POST(request: NextRequest) {
 
     console.log(`📬 RevenueCat webhook received: ${event.type} for ${event.app_user_id} (${event.environment})`);
 
-    // Extract device ID from app_user_id
-    // Assuming app_user_id is the device_id (adjust based on your implementation)
-    const deviceId = event.app_user_id;
+    // Extract userId from app_user_id
+    // After Phase 4, app_user_id will be the authenticated user's ID
+    const userId = event.app_user_id;
+
+    // Verify that the user exists in our database
+    const user = await db.getUserById(userId);
+
+    if (!user) {
+      console.warn(`⚠️ User ${userId} not found in database - webhook event will be ignored`);
+      // Return 200 to acknowledge receipt, but don't process
+      return NextResponse.json({
+        received: true,
+        warning: 'User not found - event not processed',
+      });
+    }
+
+    console.log(`👤 Processing webhook for user: ${user.email}`);
 
     // Handle different event types
     switch (event.type) {
@@ -68,8 +82,8 @@ export async function POST(request: NextRequest) {
       case 'UNCANCELLATION':
       case 'NON_RENEWING_PURCHASE':
         // Activate subscription
-        await db.upsertSubscription({
-          device_id: deviceId,
+        await db.upsertSubscriptionByUserId({
+          user_id: userId,
           revenuecat_user_id: event.app_user_id,
           status: 'active',
           expires_at: event.expiration_at_ms
@@ -77,13 +91,13 @@ export async function POST(request: NextRequest) {
             : null,
           product_id: event.product_id || null,
         });
-        console.log(`✅ Subscription activated for ${deviceId}`);
+        console.log(`✅ Subscription activated for user ${user.email}`);
         break;
 
       case 'CANCELLATION':
         // Mark as cancelled but keep expiration date
-        await db.upsertSubscription({
-          device_id: deviceId,
+        await db.upsertSubscriptionByUserId({
+          user_id: userId,
           revenuecat_user_id: event.app_user_id,
           status: 'cancelled',
           expires_at: event.expiration_at_ms
@@ -91,13 +105,13 @@ export async function POST(request: NextRequest) {
             : null,
           product_id: event.product_id || null,
         });
-        console.log(`⚠️ Subscription cancelled for ${deviceId}`);
+        console.log(`⚠️ Subscription cancelled for user ${user.email}`);
         break;
 
       case 'EXPIRATION':
         // Mark as expired
-        await db.upsertSubscription({
-          device_id: deviceId,
+        await db.upsertSubscriptionByUserId({
+          user_id: userId,
           revenuecat_user_id: event.app_user_id,
           status: 'expired',
           expires_at: event.expiration_at_ms
@@ -105,13 +119,13 @@ export async function POST(request: NextRequest) {
             : null,
           product_id: event.product_id || null,
         });
-        console.log(`❌ Subscription expired for ${deviceId}`);
+        console.log(`❌ Subscription expired for user ${user.email}`);
         break;
 
       case 'PRODUCT_CHANGE':
         // Update product ID
-        await db.upsertSubscription({
-          device_id: deviceId,
+        await db.upsertSubscriptionByUserId({
+          user_id: userId,
           revenuecat_user_id: event.app_user_id,
           status: 'active',
           expires_at: event.expiration_at_ms
@@ -119,13 +133,13 @@ export async function POST(request: NextRequest) {
             : null,
           product_id: event.product_id || null,
         });
-        console.log(`🔄 Product changed for ${deviceId}`);
+        console.log(`🔄 Product changed for user ${user.email}`);
         break;
 
       case 'BILLING_ISSUE':
         // Mark as billing issue
-        await db.upsertSubscription({
-          device_id: deviceId,
+        await db.upsertSubscriptionByUserId({
+          user_id: userId,
           revenuecat_user_id: event.app_user_id,
           status: 'billing_issue',
           expires_at: event.expiration_at_ms
@@ -133,20 +147,20 @@ export async function POST(request: NextRequest) {
             : null,
           product_id: event.product_id || null,
         });
-        console.log(`💳 Billing issue for ${deviceId}`);
+        console.log(`💳 Billing issue for user ${user.email}`);
         break;
 
       case 'SUBSCRIBER_ALIAS':
         // Handle subscriber alias (user ID change)
-        console.log(`🔗 Subscriber alias event for ${deviceId}`);
+        console.log(`🔗 Subscriber alias event for user ${user.email}`);
         break;
 
       case 'TEST':
         // Test event from RevenueCat dashboard
-        console.log(`🧪 Test event received for ${deviceId}`);
+        console.log(`🧪 Test event received for user ${user.email}`);
         // Treat test events as INITIAL_PURCHASE for testing purposes
-        await db.upsertSubscription({
-          device_id: deviceId,
+        await db.upsertSubscriptionByUserId({
+          user_id: userId,
           revenuecat_user_id: event.app_user_id,
           status: 'active',
           expires_at: event.expiration_at_ms
@@ -154,7 +168,7 @@ export async function POST(request: NextRequest) {
             : null,
           product_id: event.product_id || null,
         });
-        console.log(`✅ Test subscription activated for ${deviceId}`);
+        console.log(`✅ Test subscription activated for user ${user.email}`);
         break;
 
       default:

@@ -415,6 +415,57 @@ class DatabaseService {
   }
 
   /**
+   * Upsert subscription by user_id (for authenticated users)
+   */
+  async upsertSubscriptionByUserId(subscription: {
+    user_id: string;
+    revenuecat_user_id: string;
+    status: string;
+    expires_at: string | null;
+    product_id: string | null;
+  }): Promise<void> {
+    this.initialize();
+
+    try {
+      const { user_id, revenuecat_user_id, status, expires_at, product_id } =
+        subscription;
+
+      // First, check if a subscription exists for this user
+      const existing = await this.client!.execute({
+        sql: 'SELECT * FROM subscriptions WHERE user_id = ?',
+        args: [user_id],
+      });
+
+      if (existing.rows.length > 0) {
+        // Update existing subscription
+        await this.client!.execute({
+          sql: `UPDATE subscriptions
+                SET revenuecat_user_id = ?,
+                    status = ?,
+                    expires_at = ?,
+                    product_id = ?,
+                    last_updated = CURRENT_TIMESTAMP
+                WHERE user_id = ?`,
+          args: [revenuecat_user_id, status, expires_at, product_id, user_id],
+        });
+      } else {
+        // Insert new subscription with user_id (device_id can be null)
+        await this.client!.execute({
+          sql: `INSERT INTO subscriptions
+                (user_id, revenuecat_user_id, status, expires_at, product_id)
+                VALUES (?, ?, ?, ?, ?)`,
+          args: [user_id, revenuecat_user_id, status, expires_at, product_id],
+        });
+      }
+
+      console.log(`✅ Subscription upserted for user_id: ${user_id}`);
+    } catch (error) {
+      console.error('❌ Database error in upsertSubscriptionByUserId:', error);
+      throw error;
+    }
+  }
+
+  /**
    * Log a prompt with user_id for analytics
    */
   async logPromptWithUserId(

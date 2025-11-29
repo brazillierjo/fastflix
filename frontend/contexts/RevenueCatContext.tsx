@@ -50,6 +50,7 @@ export interface SubscriptionContextType {
   // Actions
   purchasePackage: (packageToPurchase: PurchasesPackage) => Promise<void>;
   restorePurchases: () => Promise<boolean>;
+  linkUserToRevenueCat: (userId: string) => Promise<void>;
 
   // Package helpers
   getMonthlyPackage: () => PurchasesPackage | null;
@@ -240,6 +241,28 @@ export const SubscriptionProvider: React.FC<SubscriptionProviderProps> = ({
     }
   };
 
+  // Link user to RevenueCat (call after authentication)
+  const linkUserToRevenueCat = async (userId: string): Promise<void> => {
+    try {
+      console.log('🔗 Linking user to RevenueCat:', userId);
+
+      // Log in to RevenueCat with the userId from our auth system
+      // This associates the anonymous ID with the actual user ID
+      const { customerInfo } = await Purchases.logIn(userId);
+
+      setCustomerInfo(customerInfo);
+
+      const status = determineSubscriptionStatus(customerInfo);
+      setSubscriptionStatus(status);
+
+      console.log('✅ User linked to RevenueCat - Status:', status);
+    } catch (error: any) {
+      console.error('❌ Error linking user to RevenueCat:', error);
+      // Don't throw - this is not critical, just log the error
+      // The user can still use the app, but purchases might not sync properly
+    }
+  };
+
   // Package helpers
   const getMonthlyPackage = (): PurchasesPackage | null => {
     if (!offerings || offerings.length === 0) return null;
@@ -272,6 +295,7 @@ export const SubscriptionProvider: React.FC<SubscriptionProviderProps> = ({
     isFreeUser: subscriptionStatus === SubscriptionStatus.FREE,
     purchasePackage,
     restorePurchases,
+    linkUserToRevenueCat,
     getMonthlyPackage,
     getAnnualPackage,
   };

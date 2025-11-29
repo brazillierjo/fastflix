@@ -12,6 +12,7 @@ import React, {
 } from 'react';
 import { Alert } from 'react-native';
 import { useLanguage } from './LanguageContext';
+import { useSubscription } from './RevenueCatContext';
 import { authService, User } from '../services/auth.service';
 
 export interface AuthContextType {
@@ -34,6 +35,7 @@ interface AuthProviderProps {
 
 export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   const { t } = useLanguage();
+  const { linkUserToRevenueCat } = useSubscription();
   const [user, setUser] = useState<User | null>(null);
   const [isLoading, setIsLoading] = useState(true);
 
@@ -50,6 +52,11 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       setIsLoading(true);
       const storedUser = await authService.getCurrentUser();
       setUser(storedUser);
+
+      // If user is already logged in, link to RevenueCat
+      if (storedUser) {
+        await linkUserToRevenueCat(storedUser.id);
+      }
     } catch (error) {
       console.error('Error loading user:', error);
       setUser(null);
@@ -68,6 +75,9 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       const authData = await authService.signInWithApple();
 
       setUser(authData.user);
+
+      // Link user to RevenueCat to associate purchases with userId
+      await linkUserToRevenueCat(authData.user.id);
 
       // Show success message
       Alert.alert(
