@@ -31,6 +31,7 @@ export const searchRequestSchema = z.object({
   appVersion: z.string().min(1).max(50),
   language: z.string().optional().default('fr-FR'),
   country: z.string().optional().default('FR'),
+  isProUser: z.boolean().optional(), // Subscription status from frontend (temporary)
 });
 
 /**
