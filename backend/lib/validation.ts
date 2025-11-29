@@ -6,20 +6,6 @@
 import { z } from 'zod';
 
 /**
- * Device ID validation schema
- */
-export const deviceIdSchema = z.object({
-  deviceId: z.string().min(1, 'Device ID is required').max(255),
-});
-
-/**
- * Check limit request schema
- */
-export const checkLimitSchema = z.object({
-  deviceId: z.string().min(1, 'Device ID is required').max(255),
-});
-
-/**
  * Search request schema
  */
 export const searchRequestSchema = z.object({

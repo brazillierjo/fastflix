@@ -26,7 +26,6 @@ export default function Home() {
         {/* API Endpoints */}
         <div className="mx-auto max-w-md space-y-2 text-left">
           <p className="font-mono text-sm text-gray-600">GET /api/health</p>
-          <p className="font-mono text-sm text-gray-600">POST /api/check-limit</p>
           <p className="font-mono text-sm text-gray-600">POST /api/search</p>
           <p className="font-mono text-sm text-gray-600">POST /api/subscription/webhook</p>
         </div>

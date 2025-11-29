@@ -95,24 +95,3 @@ export async function applyRateLimit(
   // Not rate limited
   return null;
 }
-
-/**
- * CORS headers for API responses
- */
-export function getCORSHeaders() {
-  return {
-    'Access-Control-Allow-Origin': '*', // Adjust for production
-    'Access-Control-Allow-Methods': 'GET, POST, OPTIONS',
-    'Access-Control-Allow-Headers': 'Content-Type, Authorization',
-  };
-}
-
-/**
- * Handle OPTIONS request for CORS
- */
-export function handleOPTIONS() {
-  return new NextResponse(null, {
-    status: 204,
-    headers: getCORSHeaders(),
-  });
-}

@@ -233,30 +233,6 @@ class TMDBService {
   }
 
   /**
-   * Get full movie details by TMDB ID
-   */
-  async getMovieDetails(tmdbId: number, language: string = 'fr-FR'): Promise<TMDBMovie> {
-    try {
-      return await this.makeRequest(`/movie/${tmdbId}`, { language });
-    } catch (error) {
-      console.error(`❌ Failed to get movie details for ID ${tmdbId}:`, error);
-      throw error;
-    }
-  }
-
-  /**
-   * Get full TV show details by TMDB ID
-   */
-  async getTVDetails(tmdbId: number, language: string = 'fr-FR'): Promise<TMDBTVShow> {
-    try {
-      return await this.makeRequest(`/tv/${tmdbId}`, { language });
-    } catch (error) {
-      console.error(`❌ Failed to get TV details for ID ${tmdbId}:`, error);
-      throw error;
-    }
-  }
-
-  /**
    * Get watch providers for a movie or TV show
    */
   async getWatchProviders(
@@ -307,14 +283,6 @@ class TMDBService {
 
     await Promise.all(promises);
     return result;
-  }
-
-  /**
-   * Clear the cache (useful for testing or manual refresh)
-   */
-  clearCache(): void {
-    this.cache.clear();
-    console.log('🗑️ TMDB cache cleared');
   }
 }
 
