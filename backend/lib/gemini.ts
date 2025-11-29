@@ -180,16 +180,19 @@ Creative expansion algorithms:
 
 CRITICAL: Be EXCEPTIONALLY generous and creative in recommendations. Cast a wide net - better to include comprehensive relevant results than miss hidden gems. Include cult classics, international variants, and thematic connections.
 
-Provide two distinct outputs:
+Provide three distinct outputs:
 
 1. RECOMMENDATIONS: Up to 25 ${contentTypeText} matching the request (be generous and inventive). Include exact titles, franchise variations, spiritual successors, and thematically similar works. List only titles separated by commas.
 
-2. MESSAGE: A conversational, engaging message that adapts to the user's tone and style. Provide encouragement and context about their request without mentioning specific results. Be enthusiastic and personalized, matching their energy level (humorous, serious, casual, etc.). Include a brief insight about your selection strategy.
+2. DETECTED_PLATFORMS: Extract any specific streaming platforms mentioned in the user's request (e.g., "Netflix", "Disney+", "Amazon Prime", "HBO", "Hulu", "Apple TV"). If no specific platform is mentioned, leave this empty. List only platform names separated by commas.
+
+3. MESSAGE: A conversational, engaging message that adapts to the user's tone and style. Provide encouragement and context about their request without mentioning specific results. Be enthusiastic and personalized, matching their energy level (humorous, serious, casual, etc.). Include a brief insight about your selection strategy.
 IMPORTANT: Respond in the following language: ${language}. Do NOT auto-detect the language. You MUST reply in ${language}, regardless of the query language.
 Limit to 3-4 sentences maximum.
 
 Format your response exactly like this:
 RECOMMENDATIONS: [comma-separated list of titles]
+DETECTED_PLATFORMS: [comma-separated list of platforms]
 MESSAGE: [your conversational message]`;
 
     try {
@@ -198,7 +201,8 @@ MESSAGE: [your conversational message]`;
       const text = response.text().trim();
 
       // Parse the response
-      const recommendationsMatch = text.match(/RECOMMENDATIONS:\s*([\s\S]+?)(?=\nMESSAGE:|$)/);
+      const recommendationsMatch = text.match(/RECOMMENDATIONS:\s*([\s\S]+?)(?=\nDETECTED_PLATFORMS:|\nMESSAGE:|$)/);
+      const platformsMatch = text.match(/DETECTED_PLATFORMS:\s*([\s\S]+?)(?=\nMESSAGE:|$)/);
       const messageMatch = text.match(/MESSAGE:\s*([\s\S]+)$/);
 
       const recommendations = recommendationsMatch
@@ -208,17 +212,25 @@ MESSAGE: [your conversational message]`;
             .filter((title) => title.length > 0 && title.length < 200)
         : [];
 
+      const detectedPlatforms = platformsMatch
+        ? platformsMatch[1]
+            .split(',')
+            .map((platform) => platform.trim())
+            .filter((platform) => platform.length > 0 && platform.toLowerCase() !== 'none')
+        : [];
+
       const conversationalResponse = messageMatch
         ? messageMatch[1].trim()
         : 'Here are my recommendations for you!';
 
       console.log(
-        `🎬 Gemini generated ${recommendations.length} recommendations + conversational response`
+        `🎬 Gemini generated ${recommendations.length} recommendations, ${detectedPlatforms.length} platforms + conversational response`
       );
 
       return {
         recommendations,
         conversationalResponse,
+        detectedPlatforms,
       };
     } catch (error) {
       console.error('❌ Gemini error in generateRecommendationsWithResponse:', error);

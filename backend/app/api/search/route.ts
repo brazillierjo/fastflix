@@ -90,15 +90,34 @@ export async function POST(request: NextRequest) {
     // Step 6b: Fetch streaming providers for enriched results
     const streamingProviders = await tmdb.getBatchWatchProviders(enrichedResults, country);
 
+    // Step 6c: Filter results if specific platforms were requested
+    let finalResults = enrichedResults;
+    if (aiResult.detectedPlatforms && aiResult.detectedPlatforms.length > 0) {
+      console.log(`🔍 Filtering results for platforms: ${aiResult.detectedPlatforms.join(', ')}`);
+      
+      finalResults = enrichedResults.filter(movie => {
+        const movieProviders = streamingProviders[movie.tmdb_id] || [];
+        return aiResult.detectedPlatforms.some(requestedPlatform => {
+          const normalizedRequested = requestedPlatform.toLowerCase().replace(/\s+/g, '');
+          return movieProviders.some(provider => {
+            const normalizedProvider = provider.provider_name.toLowerCase().replace(/\s+/g, '');
+            return normalizedProvider.includes(normalizedRequested) || normalizedRequested.includes(normalizedProvider);
+          });
+        });
+      });
+      
+      console.log(`✅ Filtered ${enrichedResults.length} -> ${finalResults.length} results`);
+    }
+
     // Step 7: Increment prompt count (only if we got results)
     let newPromptCount = limitCheck.remaining;
-    if (enrichedResults.length > 0) {
+    if (finalResults.length > 0) {
       newPromptCount = await db.incrementPromptCount(deviceId);
     }
 
     // Step 8: Log the prompt for analytics
     const responseTimeMs = Date.now() - startTime;
-    await db.logPrompt(deviceId, query, enrichedResults.length, responseTimeMs);
+    await db.logPrompt(deviceId, query, finalResults.length, responseTimeMs);
 
     // Step 9: Calculate remaining prompts
     const maxFreePrompts = parseInt(process.env.MAX_FREE_PROMPTS || '3', 10);
@@ -111,12 +130,12 @@ export async function POST(request: NextRequest) {
 
     // Step 11: Return successful response
     const response: SearchResponse = {
-      recommendations: enrichedResults,
+      recommendations: finalResults,
       streamingProviders,
       conversationalResponse: aiResult.conversationalResponse,
       promptsRemaining,
       isProUser: limitCheck.isProUser,
-      totalResults: enrichedResults.length,
+      totalResults: finalResults.length,
     };
 
     return NextResponse.json(response);

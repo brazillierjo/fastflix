@@ -112,6 +112,7 @@ export interface BlockedDevice {
 export interface AIRecommendationResult {
   recommendations: string[]; // Just titles from Gemini
   conversationalResponse: string;
+  detectedPlatforms: string[]; // Detected streaming platforms from query
 }
 
 export interface PromptCheckResult {
