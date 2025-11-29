@@ -165,7 +165,8 @@ export const SubscriptionProvider: React.FC<SubscriptionProviderProps> = ({
     try {
       console.log('Purchasing package:', packageToPurchase.identifier);
 
-      const { customerInfo } = await Purchases.purchasePackage(packageToPurchase);
+      const { customerInfo } =
+        await Purchases.purchasePackage(packageToPurchase);
       setCustomerInfo(customerInfo);
 
       const status = determineSubscriptionStatus(customerInfo);
@@ -310,7 +311,9 @@ export const SubscriptionProvider: React.FC<SubscriptionProviderProps> = ({
 export const useSubscription = (): SubscriptionContextType => {
   const context = useContext(SubscriptionContext);
   if (!context) {
-    throw new Error('useSubscription must be used within a SubscriptionProvider');
+    throw new Error(
+      'useSubscription must be used within a SubscriptionProvider'
+    );
   }
   return context;
 };

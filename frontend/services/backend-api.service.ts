@@ -137,6 +137,19 @@ class BackendAPIService {
       if (!response.ok) {
         const errorData = await response.json().catch(() => ({}));
 
+        // Handle 401 Unauthorized - token expired or invalid
+        if (response.status === 401) {
+          console.warn(
+            '⚠️ 401 Unauthorized - Token expired or invalid. Clearing auth data.'
+          );
+          // Clear auth token and user data
+          await SecureStore.deleteItemAsync(AUTH_TOKEN_KEY);
+          await SecureStore.deleteItemAsync('fastflix_user_data');
+
+          // Note: The app will detect the missing token and show login screen
+          // This is handled by AuthContext checking getCurrentUser() on mount
+        }
+
         return {
           success: false,
           data: {} as T,
@@ -144,6 +157,7 @@ class BackendAPIService {
             code: `HTTP_${response.status}`,
             message:
               errorData.error?.message ||
+              errorData.error ||
               `Request failed with status ${response.status}`,
             details: errorData,
           },
@@ -212,7 +226,10 @@ class BackendAPIService {
         const customerInfo = await Purchases.getCustomerInfo();
         deviceId = customerInfo.originalAppUserId;
       } catch (error) {
-        console.warn('Failed to get RevenueCat App User ID, falling back to custom device ID:', error);
+        console.warn(
+          'Failed to get RevenueCat App User ID, falling back to custom device ID:',
+          error
+        );
         // Fallback to custom device ID if RevenueCat is not available
         const deviceIdResult = await deviceIdentityService.getDeviceId();
         if (!deviceIdResult.success || !deviceIdResult.data) {

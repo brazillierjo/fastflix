@@ -15,10 +15,7 @@ export async function POST(request: NextRequest) {
     const { identityToken, user } = body;
 
     if (!identityToken) {
-      return NextResponse.json(
-        { error: 'Missing identityToken' },
-        { status: 400 }
-      );
+      return NextResponse.json({ error: 'Missing identityToken' }, { status: 400 });
     }
 
     // Step 1: Verify Apple token
@@ -30,10 +27,7 @@ export async function POST(request: NextRequest) {
     const email = applePayload.email || user?.email;
 
     if (!email) {
-      return NextResponse.json(
-        { error: 'Email is required for authentication' },
-        { status: 400 }
-      );
+      return NextResponse.json({ error: 'Email is required for authentication' }, { status: 400 });
     }
 
     // Step 3: Check if user exists (by provider ID or email)
@@ -82,8 +76,7 @@ export async function POST(request: NextRequest) {
   } catch (error) {
     console.error('❌ Error in Apple Sign In:', error);
 
-    const errorMessage =
-      error instanceof Error ? error.message : 'Authentication failed';
+    const errorMessage = error instanceof Error ? error.message : 'Authentication failed';
 
     return NextResponse.json(
       {

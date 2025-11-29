@@ -58,7 +58,10 @@ export function verifyJWT(token: string): JWTPayload | null {
     const decoded = jwt.verify(token, secret) as JWTPayload;
     return decoded;
   } catch (error) {
-    console.error('JWT verification failed:', error instanceof Error ? error.message : 'Unknown error');
+    console.error(
+      'JWT verification failed:',
+      error instanceof Error ? error.message : 'Unknown error'
+    );
     return null;
   }
 }
@@ -79,9 +82,7 @@ export interface AppleTokenPayload {
  * @param identityToken - Identity token from Apple Sign In
  * @returns Decoded token payload
  */
-export async function verifyAppleToken(
-  identityToken: string
-): Promise<AppleTokenPayload> {
+export async function verifyAppleToken(identityToken: string): Promise<AppleTokenPayload> {
   try {
     const clientId = process.env.APPLE_CLIENT_ID;
 
@@ -123,9 +124,7 @@ export interface GoogleTokenPayload {
  * @param idToken - ID token from Google Sign In
  * @returns Decoded token payload
  */
-export async function verifyGoogleToken(
-  idToken: string
-): Promise<GoogleTokenPayload> {
+export async function verifyGoogleToken(idToken: string): Promise<GoogleTokenPayload> {
   try {
     const clientId = process.env.GOOGLE_CLIENT_ID;
 

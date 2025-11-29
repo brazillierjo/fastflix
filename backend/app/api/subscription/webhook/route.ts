@@ -24,18 +24,11 @@ export async function POST(request: NextRequest) {
     const signature = request.headers.get('X-Revenuecat-Signature');
     const webhookSecret = process.env.REVENUECAT_WEBHOOK_SECRET;
 
-    const isValidSignature = verifyRevenueCatSignature(
-      rawBody,
-      signature,
-      webhookSecret
-    );
+    const isValidSignature = verifyRevenueCatSignature(rawBody, signature, webhookSecret);
 
     if (!isValidSignature) {
       console.error('❌ Invalid webhook signature - rejecting request');
-      return NextResponse.json(
-        { error: 'Invalid signature' },
-        { status: 401 }
-      );
+      return NextResponse.json({ error: 'Invalid signature' }, { status: 401 });
     }
 
     // Parse and validate webhook payload
@@ -55,7 +48,9 @@ export async function POST(request: NextRequest) {
 
     const { event } = validationResult.data;
 
-    console.log(`📬 RevenueCat webhook received: ${event.type} for ${event.app_user_id} (${event.environment})`);
+    console.log(
+      `📬 RevenueCat webhook received: ${event.type} for ${event.app_user_id} (${event.environment})`
+    );
 
     // Extract userId from app_user_id
     // After Phase 4, app_user_id will be the authenticated user's ID

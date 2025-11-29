@@ -10,7 +10,7 @@ import React, {
   useEffect,
   useState,
 } from 'react';
-import { Alert } from 'react-native';
+import { Alert, AppState, AppStateStatus } from 'react-native';
 import { useLanguage } from './LanguageContext';
 import { useSubscription } from './RevenueCatContext';
 import { authService, User } from '../services/auth.service';
@@ -44,6 +44,24 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     loadUser();
   }, []);
 
+  // Re-check auth status when app comes to foreground
+  // This catches cases where token was cleared due to 401 error
+  useEffect(() => {
+    const subscription = AppState.addEventListener(
+      'change',
+      (nextAppState: AppStateStatus) => {
+        if (nextAppState === 'active') {
+          // App came to foreground, check if user is still authenticated
+          loadUser();
+        }
+      }
+    );
+
+    return () => {
+      subscription.remove();
+    };
+  }, []);
+
   /**
    * Load user from secure storage
    */
@@ -56,6 +74,21 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       // If user is already logged in, link to RevenueCat
       if (storedUser) {
         await linkUserToRevenueCat(storedUser.id);
+
+        // Refresh user data from backend in background
+        // This ensures we have the latest user info
+        authService
+          .refreshUserData()
+          .then(freshUser => {
+            if (freshUser) {
+              setUser(freshUser);
+            }
+          })
+          .catch(error => {
+            // Don't throw - just log the error
+            // If refresh fails (e.g., 401), the 401 handler will clear the token
+            console.warn('Failed to refresh user data:', error);
+          });
       }
     } catch (error) {
       console.error('Error loading user:', error);
@@ -125,8 +158,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
 
       Alert.alert(
         t('auth.error.title') || 'Error',
-        t('auth.error.signout') ||
-          'Failed to sign out. Please try again.'
+        t('auth.error.signout') || 'Failed to sign out. Please try again.'
       );
     } finally {
       setIsLoading(false);
@@ -157,9 +189,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   };
 
   return (
-    <AuthContext.Provider value={contextValue}>
-      {children}
-    </AuthContext.Provider>
+    <AuthContext.Provider value={contextValue}>{children}</AuthContext.Provider>
   );
 };
 

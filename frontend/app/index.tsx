@@ -54,7 +54,7 @@ export default function HomeScreen() {
         onSuccess: async data => {
           handleSearchSuccess(data);
         },
-        onError: (error) => {
+        onError: error => {
           handleSearchEnd();
 
           // Handle subscription required error
@@ -110,7 +110,7 @@ export default function HomeScreen() {
 
   // Redirect to auth screen if not authenticated
   if (!isAuthenticated) {
-    return <Redirect href="/auth" />;
+    return <Redirect href='/auth' />;
   }
 
   return (

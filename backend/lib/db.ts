@@ -369,7 +369,7 @@ class DatabaseService {
         return user;
       }
 
-      updates.push('updated_at = datetime(\'now\')');
+      updates.push("updated_at = datetime('now')");
       args.push(id);
 
       await this.client!.execute({
@@ -427,8 +427,7 @@ class DatabaseService {
     this.initialize();
 
     try {
-      const { user_id, revenuecat_user_id, status, expires_at, product_id } =
-        subscription;
+      const { user_id, revenuecat_user_id, status, expires_at, product_id } = subscription;
 
       // First, check if a subscription exists for this user
       const existing = await this.client!.execute({

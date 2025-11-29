@@ -13,7 +13,7 @@ dotenv.config({ path: '.env.local' });
 // En production, ce secret est dans Vercel
 if (!process.env.JWT_SECRET) {
   console.log('⚠️  JWT_SECRET non trouvé dans .env.local');
-  console.log('⚠️  Les tests vont utiliser les tokens JWT depuis l\'app réelle\n');
+  console.log("⚠️  Les tests vont utiliser les tokens JWT depuis l'app réelle\n");
 }
 
 // Configuration
@@ -22,7 +22,7 @@ const TEST_USER_ID = '57248865-dfc5-4aa0-93da-0fd8d4590032'; // userId réel dep
 const TEST_EMAIL = 'johan@example.com'; // Email de test
 
 async function runTests() {
-  console.log('🧪 Tests des endpoints d\'authentification\n');
+  console.log("🧪 Tests des endpoints d'authentification\n");
   console.log(`Backend URL: ${BACKEND_URL}\n`);
 
   // Test 1: GET /api/auth/me avec JWT valide
@@ -33,7 +33,7 @@ async function runTests() {
 
     const response = await fetch(`${BACKEND_URL}/api/auth/me`, {
       headers: {
-        'Authorization': `Bearer ${validToken}`,
+        Authorization: `Bearer ${validToken}`,
       },
     });
 
@@ -82,13 +82,13 @@ async function runTests() {
   console.log('📝 Test 3: POST /api/search avec JWT expiré (doit retourner 401)');
   try {
     // Créer un token expiré manuellement
-    const jwt = require('jsonwebtoken');
+    const jwtLib = await import('jsonwebtoken');
     const secret = process.env.JWT_SECRET;
 
     if (!secret) {
       console.log('⚠️  SKIP - JWT_SECRET non défini\n');
     } else {
-      const expiredToken = jwt.sign(
+      const expiredToken = jwtLib.default.sign(
         { userId: TEST_USER_ID, email: TEST_EMAIL },
         secret,
         { expiresIn: '-1h' } // Token expiré il y a 1 heure
@@ -98,7 +98,7 @@ async function runTests() {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': `Bearer ${expiredToken}`,
+          Authorization: `Bearer ${expiredToken}`,
         },
         body: JSON.stringify({
           query: 'test movie',
@@ -130,7 +130,7 @@ async function runTests() {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        'Authorization': `Bearer ${validToken}`,
+        Authorization: `Bearer ${validToken}`,
       },
       body: JSON.stringify({
         query: 'Inception',

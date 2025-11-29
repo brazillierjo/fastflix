@@ -40,10 +40,7 @@ export function verifyRevenueCatSignature(
     const computedSignature = hmac.digest('hex');
 
     // Compare signatures (timing-safe comparison)
-    const isValid = crypto.timingSafeEqual(
-      Buffer.from(signature),
-      Buffer.from(computedSignature)
-    );
+    const isValid = crypto.timingSafeEqual(Buffer.from(signature), Buffer.from(computedSignature));
 
     if (!isValid) {
       console.error('❌ Invalid RevenueCat webhook signature');

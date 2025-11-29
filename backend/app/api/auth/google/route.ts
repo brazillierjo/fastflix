@@ -15,10 +15,7 @@ export async function POST(request: NextRequest) {
     const { idToken } = body;
 
     if (!idToken) {
-      return NextResponse.json(
-        { error: 'Missing idToken' },
-        { status: 400 }
-      );
+      return NextResponse.json({ error: 'Missing idToken' }, { status: 400 });
     }
 
     // Step 1: Verify Google token
@@ -30,10 +27,7 @@ export async function POST(request: NextRequest) {
     const email = googlePayload.email;
 
     if (!email) {
-      return NextResponse.json(
-        { error: 'Email is required for authentication' },
-        { status: 400 }
-      );
+      return NextResponse.json({ error: 'Email is required for authentication' }, { status: 400 });
     }
 
     // Step 3: Check if user exists (by provider ID or email)
@@ -78,8 +72,7 @@ export async function POST(request: NextRequest) {
   } catch (error) {
     console.error('❌ Error in Google Sign In:', error);
 
-    const errorMessage =
-      error instanceof Error ? error.message : 'Authentication failed';
+    const errorMessage = error instanceof Error ? error.message : 'Authentication failed';
 
     return NextResponse.json(
       {

@@ -54,12 +54,18 @@ class GeminiService {
 
     // Map language codes to full language names for clearer instructions
     const languageMap: { [key: string]: string } = {
-      'fr': 'French', 'fr-FR': 'French',
-      'en': 'English', 'en-US': 'English',
-      'it': 'Italian', 'it-IT': 'Italian',
-      'ja': 'Japanese', 'ja-JP': 'Japanese',
-      'es': 'Spanish', 'es-ES': 'Spanish',
-      'de': 'German', 'de-DE': 'German',
+      fr: 'French',
+      'fr-FR': 'French',
+      en: 'English',
+      'en-US': 'English',
+      it: 'Italian',
+      'it-IT': 'Italian',
+      ja: 'Japanese',
+      'ja-JP': 'Japanese',
+      es: 'Spanish',
+      'es-ES': 'Spanish',
+      de: 'German',
+      'de-DE': 'German',
     };
     const languageName = languageMap[language] || 'English';
 
@@ -118,7 +124,9 @@ MESSAGE: [your conversational message]`;
       const text = response.text().trim();
 
       // Parse the response
-      const recommendationsMatch = text.match(/RECOMMENDATIONS:\s*([\s\S]+?)(?=\nDETECTED_PLATFORMS:|\nMESSAGE:|$)/);
+      const recommendationsMatch = text.match(
+        /RECOMMENDATIONS:\s*([\s\S]+?)(?=\nDETECTED_PLATFORMS:|\nMESSAGE:|$)/
+      );
       const platformsMatch = text.match(/DETECTED_PLATFORMS:\s*([^\n]*)/); // Capture only until end of line
       const messageMatch = text.match(/MESSAGE:\s*([\s\S]+)$/);
 
@@ -131,38 +139,55 @@ MESSAGE: [your conversational message]`;
 
       // List of known streaming platforms to validate against
       const knownPlatforms = [
-        'netflix', 'disney', 'disneyplus', 'disney+', 'amazon', 'prime', 'primevideo',
-        'hbo', 'hbomax', 'apple', 'appletv', 'hulu', 'paramount', 'peacock',
-        'showtime', 'starz', 'crave', 'crunchyroll', 'funimation'
+        'netflix',
+        'disney',
+        'disneyplus',
+        'disney+',
+        'amazon',
+        'prime',
+        'primevideo',
+        'hbo',
+        'hbomax',
+        'apple',
+        'appletv',
+        'hulu',
+        'paramount',
+        'peacock',
+        'showtime',
+        'starz',
+        'crave',
+        'crunchyroll',
+        'funimation',
       ];
 
-      const detectedPlatforms = platformsMatch && platformsMatch[1]
-        ? platformsMatch[1]
-            .split(',')
-            .map((platform) => platform.trim())
-            .filter((platform) => {
-              // Ignore empty strings and 'none'
-              if (platform.length === 0 || platform.toLowerCase() === 'none') {
-                return false;
-              }
-              // Validate that this looks like a platform name (not a sentence)
-              // A platform name should be short (< 30 chars) and not contain ':' or '.'
-              if (platform.length > 30 || platform.includes(':') || platform.includes('.')) {
-                console.log(`⚠️  Ignoring invalid platform: "${platform}"`);
-                return false;
-              }
-              // Check if it matches a known platform
-              const normalized = platform.toLowerCase().replace(/\s+/g, '');
-              const isKnown = knownPlatforms.some(known =>
-                normalized.includes(known) || known.includes(normalized)
-              );
-              if (!isKnown) {
-                console.log(`⚠️  Unknown platform detected: "${platform}" - ignoring`);
-                return false;
-              }
-              return true;
-            })
-        : [];
+      const detectedPlatforms =
+        platformsMatch && platformsMatch[1]
+          ? platformsMatch[1]
+              .split(',')
+              .map((platform) => platform.trim())
+              .filter((platform) => {
+                // Ignore empty strings and 'none'
+                if (platform.length === 0 || platform.toLowerCase() === 'none') {
+                  return false;
+                }
+                // Validate that this looks like a platform name (not a sentence)
+                // A platform name should be short (< 30 chars) and not contain ':' or '.'
+                if (platform.length > 30 || platform.includes(':') || platform.includes('.')) {
+                  console.log(`⚠️  Ignoring invalid platform: "${platform}"`);
+                  return false;
+                }
+                // Check if it matches a known platform
+                const normalized = platform.toLowerCase().replace(/\s+/g, '');
+                const isKnown = knownPlatforms.some(
+                  (known) => normalized.includes(known) || known.includes(normalized)
+                );
+                if (!isKnown) {
+                  console.log(`⚠️  Unknown platform detected: "${platform}" - ignoring`);
+                  return false;
+                }
+                return true;
+              })
+          : [];
 
       const conversationalResponse = messageMatch
         ? messageMatch[1].trim()

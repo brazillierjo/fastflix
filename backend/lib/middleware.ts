@@ -42,10 +42,7 @@ export async function requireAuth(request: NextRequest): Promise<AuthResult> {
     if (!token) {
       return {
         success: false,
-        error: NextResponse.json(
-          { error: 'Missing authentication token' },
-          { status: 401 }
-        ),
+        error: NextResponse.json({ error: 'Missing authentication token' }, { status: 401 }),
       };
     }
 
@@ -55,10 +52,7 @@ export async function requireAuth(request: NextRequest): Promise<AuthResult> {
     if (!payload) {
       return {
         success: false,
-        error: NextResponse.json(
-          { error: 'Invalid or expired token' },
-          { status: 401 }
-        ),
+        error: NextResponse.json({ error: 'Invalid or expired token' }, { status: 401 }),
       };
     }
 
@@ -68,10 +62,7 @@ export async function requireAuth(request: NextRequest): Promise<AuthResult> {
     if (!user) {
       return {
         success: false,
-        error: NextResponse.json(
-          { error: 'User not found' },
-          { status: 404 }
-        ),
+        error: NextResponse.json({ error: 'User not found' }, { status: 404 }),
       };
     }
 

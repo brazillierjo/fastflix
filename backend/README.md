@@ -9,12 +9,15 @@ AI-powered movie and TV show recommendation API with subscription management.
 ## API Endpoints
 
 ### `GET /api/health`
+
 Health check endpoint. Returns API status, version, and service availability.
 
 ### `POST /api/search`
+
 Search for movies/TV shows using AI recommendations.
 
 **Request:**
+
 ```json
 {
   "deviceId": "string",
@@ -29,6 +32,7 @@ Search for movies/TV shows using AI recommendations.
 ```
 
 **Response:**
+
 ```json
 {
   "recommendations": [...],
@@ -39,9 +43,11 @@ Search for movies/TV shows using AI recommendations.
 ```
 
 ### `POST /api/subscription/webhook`
+
 RevenueCat webhook for subscription events (INITIAL_PURCHASE, RENEWAL, CANCELLATION, etc.).
 
 **Handled Events:**
+
 - `INITIAL_PURCHASE` - New subscription
 - `RENEWAL` - Subscription renewed
 - `CANCELLATION` - Subscription cancelled
@@ -131,17 +137,20 @@ The RevenueCat App User ID connects subscriptions across all services:
 ## Key Features
 
 ### 🌍 Multilingual Support
+
 - Supports French, English, Italian, Japanese
 - Language-aware AI responses (matches user's app language)
 - Localized content from TMDB
 
 ### 🎯 Smart Platform Filtering
+
 - AI-powered platform detection from natural language queries
 - Intelligent filtering with 30% retention threshold
 - Validates against known streaming platforms
 - Never returns empty results
 
 ### 🔒 Privacy & Security
+
 - Rate limiting (IP + device-based)
 - Anti-abuse detection system
 - Input validation with Zod
@@ -158,11 +167,13 @@ The RevenueCat App User ID connects subscriptions across all services:
 ### Setup
 
 1. **Install dependencies:**
+
 ```bash
 npm install
 ```
 
 2. **Create `.env.local`:**
+
 ```env
 # Database (Turso)
 TURSO_DATABASE_URL=libsql://your-database.turso.io
@@ -178,6 +189,7 @@ NODE_ENV=development
 ```
 
 3. **Run development server:**
+
 ```bash
 npm run dev
 ```
@@ -211,6 +223,7 @@ npm run check-all        # Run type-check + lint + format + test
 ## Database Schema
 
 ### `subscriptions`
+
 Stores Pro subscription status (updated by RevenueCat webhook).
 
 ```sql
@@ -224,6 +237,7 @@ last_updated TEXT
 ```
 
 ### `prompt_logs`
+
 Analytics and usage tracking.
 
 ```sql
@@ -236,6 +250,7 @@ response_time_ms INTEGER
 ```
 
 ### `blocked_devices`
+
 Anti-abuse system for blocking malicious devices.
 
 ```sql
@@ -257,12 +272,14 @@ blocked_until TEXT
 ## Testing
 
 **Coverage:**
+
 - ✅ 36 tests passing
 - ✅ 65-100% coverage for core services
 - ✅ Unit tests for all services (db, gemini, tmdb, prompt-counter, anti-abuse)
 - ✅ API endpoint tests
 
 **Test Files:**
+
 - `__tests__/db.test.ts` - Database operations
 - `__tests__/gemini.test.ts` - AI service
 - `__tests__/tmdb.test.ts` - TMDB integration
@@ -272,10 +289,12 @@ blocked_until TEXT
 ## Deployment
 
 **Vercel (Automatic):**
+
 - Push to `main` branch → auto-deploy to production
 - Pull requests → preview deployments
 
 **Manual Deploy:**
+
 ```bash
 vercel --prod
 ```
@@ -284,30 +303,33 @@ vercel --prod
 
 Set these in Vercel dashboard:
 
-| Variable | Description |
-|----------|-------------|
-| `TURSO_DATABASE_URL` | Turso database connection URL |
-| `TURSO_AUTH_TOKEN` | Turso authentication token |
-| `GOOGLE_API_KEY` | Google AI API key (Gemini) |
-| `TMDB_API_KEY` | TMDB API key |
-| `TMDB_BASE_URL` | `https://api.themoviedb.org/3` |
+| Variable                    | Description                                                      |
+| --------------------------- | ---------------------------------------------------------------- |
+| `TURSO_DATABASE_URL`        | Turso database connection URL                                    |
+| `TURSO_AUTH_TOKEN`          | Turso authentication token                                       |
+| `GOOGLE_API_KEY`            | Google AI API key (Gemini)                                       |
+| `TMDB_API_KEY`              | TMDB API key                                                     |
+| `TMDB_BASE_URL`             | `https://api.themoviedb.org/3`                                   |
 | `REVENUECAT_WEBHOOK_SECRET` | RevenueCat webhook secret (optional, for signature verification) |
 
 ## Troubleshooting
 
 **Database connection errors:**
+
 ```bash
 # Test Turso connection
 turso db shell your-database "SELECT 1;"
 ```
 
 **Webhook not working:**
+
 1. Check RevenueCat webhook configuration
 2. Verify webhook URL: `https://fastflix-api.vercel.app/api/subscription/webhook`
 3. Check Vercel logs for errors
 4. Send test event from RevenueCat dashboard
 
 **Tests failing:**
+
 ```bash
 # Clear cache and re-run
 rm -rf .next coverage

@@ -51,16 +51,14 @@ export default function AuthButton({
       {loading ? (
         <>
           <ActivityIndicator
-            size="small"
-            color="#ffffff"
+            size='small'
+            color='#ffffff'
             style={{ marginRight: 8 }}
           />
-          <Text className="text-base font-semibold text-white">
-            Loading...
-          </Text>
+          <Text className='text-base font-semibold text-white'>Loading...</Text>
         </>
       ) : (
-        <Text className="text-base font-semibold text-white">{children}</Text>
+        <Text className='text-base font-semibold text-white'>{children}</Text>
       )}
     </TouchableOpacity>
   );

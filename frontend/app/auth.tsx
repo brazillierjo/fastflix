@@ -45,9 +45,9 @@ export default function AuthScreen() {
     <SafeAreaView
       className={cn('flex-1 bg-light-background dark:bg-dark-background')}
     >
-      <StatusBar barStyle="dark-content" backgroundColor="#ffffff" />
+      <StatusBar barStyle='dark-content' backgroundColor='#ffffff' />
 
-      <View className="flex-1 justify-center px-6">
+      <View className='flex-1 justify-center px-6'>
         {/* App Logo/Title */}
         <MotiView
           from={{ opacity: 0, translateY: -20 }}
@@ -56,13 +56,13 @@ export default function AuthScreen() {
             type: 'timing',
             duration: 800,
           }}
-          className="mb-12 items-center"
+          className='mb-12 items-center'
         >
-          <Text className="mb-4 text-center text-5xl">🎬</Text>
-          <Text className="mb-6 text-center text-4xl font-bold text-light-text dark:text-dark-text">
+          <Text className='mb-4 text-center text-5xl'>🎬</Text>
+          <Text className='mb-6 text-center text-4xl font-bold text-light-text dark:text-dark-text'>
             FastFlix
           </Text>
-          <Text className="text-center text-base text-light-text/70 dark:text-dark-text/70">
+          <Text className='text-center text-base text-light-text/70 dark:text-dark-text/70'>
             {t('auth.welcome.subtitle') ||
               'AI-powered movie & TV show recommendations'}
           </Text>
@@ -77,9 +77,9 @@ export default function AuthScreen() {
             type: 'timing',
             duration: 600,
           }}
-          className="mb-10"
+          className='mb-10'
         >
-          <Text className="text-center text-base leading-relaxed text-light-text dark:text-dark-text">
+          <Text className='text-center text-base leading-relaxed text-light-text dark:text-dark-text'>
             {t('auth.welcome.description') ||
               'Sign in to get personalized recommendations and access all features.'}
           </Text>
@@ -97,9 +97,9 @@ export default function AuthScreen() {
             }}
           >
             {isLoading ? (
-              <View className="items-center justify-center py-4">
-                <ActivityIndicator size="large" color="#007AFF" />
-                <Text className="mt-2 text-sm text-light-text/70 dark:text-dark-text/70">
+              <View className='items-center justify-center py-4'>
+                <ActivityIndicator size='large' color='#007AFF' />
+                <Text className='mt-2 text-sm text-light-text/70 dark:text-dark-text/70'>
                   {t('auth.loading') || 'Signing in...'}
                 </Text>
               </View>
@@ -130,8 +130,8 @@ export default function AuthScreen() {
               duration: 600,
             }}
           >
-            <View className="rounded-xl border border-light-accent/20 bg-light-accent/5 p-4 dark:border-dark-accent/20 dark:bg-dark-accent/5">
-              <Text className="text-center text-sm text-light-text dark:text-dark-text">
+            <View className='rounded-xl border border-light-accent/20 bg-light-accent/5 p-4 dark:border-dark-accent/20 dark:bg-dark-accent/5'>
+              <Text className='text-center text-sm text-light-text dark:text-dark-text'>
                 {t('auth.platformNotSupported') ||
                   'Authentication is currently only available on iOS.'}
               </Text>
@@ -148,9 +148,9 @@ export default function AuthScreen() {
             type: 'timing',
             duration: 600,
           }}
-          className="mt-10"
+          className='mt-10'
         >
-          <Text className="text-center text-xs text-light-text/50 dark:text-dark-text/50">
+          <Text className='text-center text-xs text-light-text/50 dark:text-dark-text/50'>
             {t('auth.footer') ||
               'By signing in, you agree to our Terms of Service and Privacy Policy.'}
           </Text>

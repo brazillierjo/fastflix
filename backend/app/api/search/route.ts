@@ -69,7 +69,11 @@ export async function POST(request: NextRequest) {
     }
 
     // Step 4: Generate AI recommendations with conversational response
-    const aiResult = await gemini.generateRecommendationsWithResponse(query, contentTypes, language);
+    const aiResult = await gemini.generateRecommendationsWithResponse(
+      query,
+      contentTypes,
+      language
+    );
 
     // Step 5: Enrich recommendations with TMDB data
     const enrichedResults = await tmdb.enrichRecommendations(
@@ -87,23 +91,29 @@ export async function POST(request: NextRequest) {
     if (aiResult.detectedPlatforms && aiResult.detectedPlatforms.length > 0) {
       console.log(`🔍 Filtering results for platforms: ${aiResult.detectedPlatforms.join(', ')}`);
 
-      const filteredResults = enrichedResults.filter(movie => {
+      const filteredResults = enrichedResults.filter((movie) => {
         const movieProviders = streamingProviders[movie.tmdb_id] || [];
-        return aiResult.detectedPlatforms.some(requestedPlatform => {
+        return aiResult.detectedPlatforms.some((requestedPlatform) => {
           const normalizedRequested = requestedPlatform.toLowerCase().replace(/\s+/g, '');
-          return movieProviders.some(provider => {
+          return movieProviders.some((provider) => {
             const normalizedProvider = provider.provider_name.toLowerCase().replace(/\s+/g, '');
-            return normalizedProvider.includes(normalizedRequested) || normalizedRequested.includes(normalizedProvider);
+            return (
+              normalizedProvider.includes(normalizedRequested) ||
+              normalizedRequested.includes(normalizedProvider)
+            );
           });
         });
       });
 
       // Smart filtering: only apply filter if we retain at least 30% of results
       // This prevents returning empty results when content isn't available on the requested platform
-      const retentionRate = enrichedResults.length > 0 ? filteredResults.length / enrichedResults.length : 0;
+      const retentionRate =
+        enrichedResults.length > 0 ? filteredResults.length / enrichedResults.length : 0;
 
       if (filteredResults.length === 0 || retentionRate < 0.3) {
-        console.log(`⚠️  Platform filtering would remove too many results (${enrichedResults.length} -> ${filteredResults.length}). Keeping original results.`);
+        console.log(
+          `⚠️  Platform filtering would remove too many results (${enrichedResults.length} -> ${filteredResults.length}). Keeping original results.`
+        );
         finalResults = enrichedResults;
       } else {
         console.log(`✅ Filtered ${enrichedResults.length} -> ${filteredResults.length} results`);

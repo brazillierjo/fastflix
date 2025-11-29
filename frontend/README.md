@@ -81,6 +81,7 @@ The `deviceId` is generated once and stored in iOS Keychain (survives app reinst
    - Analytics and support
 
 **Why it survives reinstalls:**
+
 - iOS Keychain persists across app installations
 - Android Keystore persists (if not wiped)
 - Ensures users don't lose Pro subscription or quota
@@ -184,21 +185,27 @@ frontend/
 ## Key Components
 
 ### `useBackendMovieSearch` Hook
+
 Handles all movie/TV searches via backend API. Automatically manages:
+
 - Device ID attachment
 - Language/country preferences
 - Error handling
 - Quota exceeded detection
 
 ### `RevenueCatContext`
+
 Manages subscription state:
+
 - Configure RevenueCat with deviceId
 - Check Pro status
 - Handle purchases
 - Restore purchases
 
 ### `device-identity.service.ts`
+
 Generates and persists device ID:
+
 - iOS: Keychain storage
 - Android: Keystore storage
 - Format: `ffx_device_[random]`
@@ -208,12 +215,14 @@ Generates and persists device ID:
 ### 1. Create Products
 
 In RevenueCat dashboard, create products:
+
 - Monthly: `com.fastflix.pro.monthly`
 - Yearly: `com.fastflix.pro.yearly`
 
 ### 2. Configure App
 
 Set the API key in `.env.local`:
+
 ```env
 EXPO_PUBLIC_REVENUECAT_IOS_API_KEY=appl_YOUR_KEY_HERE
 ```
@@ -221,11 +230,13 @@ EXPO_PUBLIC_REVENUECAT_IOS_API_KEY=appl_YOUR_KEY_HERE
 ### 3. Configure Webhook
 
 The webhook is already configured to send events to:
+
 ```
 https://fastflix-api.vercel.app/api/subscription/webhook
 ```
 
 **Events handled:**
+
 - INITIAL_PURCHASE
 - RENEWAL
 - CANCELLATION
@@ -274,6 +285,7 @@ eas submit --platform android
 ### Verify Backend Sync
 
 After purchase, check backend database:
+
 ```bash
 turso db shell fastflix-db "SELECT * FROM subscriptions WHERE device_id = 'YOUR_DEVICE_ID';"
 ```
@@ -283,22 +295,26 @@ Should show `status = 'active'`.
 ## Troubleshooting
 
 **"Network request failed":**
+
 - Check API_URL in `.env.local`
 - Verify backend is running
 - Check device has internet connection
 
 **Subscription not working:**
+
 - Verify RevenueCat API key is correct
 - Check RevenueCat webhook is configured
 - Send test webhook from RevenueCat dashboard
 - Check backend database for subscription entry
 
 **Device ID issues:**
+
 - Clear app data and reinstall
 - Check iOS Keychain access permissions
 - Verify `expo-secure-store` is installed
 
 **Build errors:**
+
 ```bash
 # Clear Expo cache
 npx expo start --clear

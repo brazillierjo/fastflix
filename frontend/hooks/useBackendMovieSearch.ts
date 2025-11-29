@@ -116,7 +116,7 @@ const searchMoviesWithBackend = async (
 
     // Get streaming providers from backend response
     const streamingProviders = data.streamingProviders || {};
-    
+
     // Credits and detailed info are still empty (TODO: add to backend)
     const credits: { [key: number]: Cast[] } = {};
     const detailedInfo: { [key: number]: DetailedInfo } = {};
@@ -162,7 +162,8 @@ export const useBackendMovieSearch = () => {
       }
 
       // Map error codes to user-friendly messages
-      const errorMessage = t(`errors.${error.message}`) || t('errors.searchError');
+      const errorMessage =
+        t(`errors.${error.message}`) || t('errors.searchError');
 
       Alert.alert(t('errors.title'), errorMessage);
     },
