@@ -83,6 +83,30 @@ export function Navigation() {
               >
                 🇫🇷 Français
               </DropdownMenuItem>
+              <DropdownMenuItem
+                onClick={() => setLanguage('de')}
+                className={language === 'de' ? 'bg-blue-50' : ''}
+              >
+                🇩🇪 Deutsch
+              </DropdownMenuItem>
+              <DropdownMenuItem
+                onClick={() => setLanguage('es')}
+                className={language === 'es' ? 'bg-blue-50' : ''}
+              >
+                🇪🇸 Español
+              </DropdownMenuItem>
+              <DropdownMenuItem
+                onClick={() => setLanguage('it')}
+                className={language === 'it' ? 'bg-blue-50' : ''}
+              >
+                🇮🇹 Italiano
+              </DropdownMenuItem>
+              <DropdownMenuItem
+                onClick={() => setLanguage('ja')}
+                className={language === 'ja' ? 'bg-blue-50' : ''}
+              >
+                🇯🇵 日本語
+              </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
         </div>

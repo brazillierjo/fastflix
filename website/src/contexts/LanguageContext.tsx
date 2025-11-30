@@ -17,15 +17,21 @@ export function LanguageProvider({ children }: { children: React.ReactNode }) {
   const [language, setLanguage] = useState<Language>('en');
 
   useEffect(() => {
+    // Supported languages
+    const supportedLanguages: Language[] = ['en', 'fr', 'it', 'ja', 'es', 'de'];
+
     // Check for saved language preference
     const savedLanguage = localStorage.getItem('fastflix-language') as Language;
-    if (savedLanguage && (savedLanguage === 'en' || savedLanguage === 'fr')) {
+    if (savedLanguage && supportedLanguages.includes(savedLanguage)) {
       setLanguage(savedLanguage);
     } else {
       // Detect browser language
       const browserLang = navigator.language.toLowerCase();
-      if (browserLang.startsWith('fr')) {
-        setLanguage('fr');
+      const detectedLang = supportedLanguages.find((lang) =>
+        browserLang.startsWith(lang)
+      );
+      if (detectedLang) {
+        setLanguage(detectedLang);
       }
     }
   }, []);
