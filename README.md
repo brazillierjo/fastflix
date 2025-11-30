@@ -37,22 +37,28 @@ npm run dev:website
 
 ### Frontend → Backend Flow
 
-1. **User searches** for movies/TV shows
-2. **Frontend** sends request with `deviceId` and `query`
-3. **Backend** checks database for Pro subscription status
-4. **Backend** processes with AI (Google Gemini) + TMDB enrichment
-5. **Backend** returns results (respecting free/Pro limits)
+1. **User authenticates** with Apple Sign In
+2. **Backend** issues JWT token (30-day expiration)
+3. **User searches** for movies/TV shows
+4. **Frontend** sends authenticated request with JWT + query
+5. **Backend** validates JWT and checks Pro subscription status
+6. **Backend** processes with AI (Google Gemini) + TMDB enrichment
+7. **Backend** returns results (respecting subscription limits)
 
-### Subscription Management
+### Authentication & Subscription Flow
 
 ```
-User purchases Pro
+User Sign In (Apple)
        ↓
-RevenueCat (Apple/Google)
-       ↓ webhook
+Backend validates & creates user
+       ↓
+JWT token issued (30 days)
+       ↓
+User purchases Pro → RevenueCat
+       ↓ webhook (with userId)
 Backend Database (Turso)
-       ↓ checks on each request
-Backend validates Pro status
+       ↓ validates on each search
+Backend allows unlimited access
 ```
 
 ## Tech Stack
@@ -68,10 +74,12 @@ Backend validates Pro status
 ## Key Features
 
 - ✅ AI-powered movie/TV recommendations
-- ✅ Persistent device identity (survives reinstalls)
-- ✅ RevenueCat webhook integration for real-time subscription updates
+- ✅ Apple Sign In authentication (Google Sign In ready)
+- ✅ JWT-based secure authentication (30-day tokens)
+- ✅ RevenueCat integration for subscription management
+- ✅ Real-time webhook sync for subscription status
+- ✅ Automatic token refresh and session management
 - ✅ Rate limiting and anti-abuse protection
-- ✅ Monthly prompt quota for free users
 - ✅ Unlimited searches for Pro subscribers
 
 ## Documentation
