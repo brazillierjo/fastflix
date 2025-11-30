@@ -64,9 +64,9 @@ Backend allows unlimited access
 ## Tech Stack
 
 - **Frontend**: React Native, Expo, TypeScript, React Query
-- **Backend**: Next.js 15, TypeScript, Turso (SQLite), Zod
+- **Backend**: Next.js 16, TypeScript, Turso (SQLite), Zod
 - **Website**: Next.js 15, TypeScript, TailwindCSS
-- **AI**: Google Gemini 2.0 Flash Thinking
+- **AI**: Google Gemini 2.0 Flash
 - **Data**: TMDB API
 - **Subscriptions**: RevenueCat
 - **Infrastructure**: Vercel (backend), Turso (database)
