@@ -10,7 +10,6 @@
     "generating": "Generazione...",
     "pleaseWait": "Si prega di attendere...",
     "options": "Opzioni:",
-    "noDescription": "Nessuna descrizione disponibile",
     "languageTip": {
       "title": "Configurazione importante",
       "description": "Per ottenere i migliori risultati adattati alla tua regione, ricorda di configurare correttamente la lingua dell'applicazione e il paese di ricerca nella",
@@ -50,10 +49,10 @@
     "allPlatforms": "Tutte le piattaforme",
     "platformsSelected": "piattaforma",
     "platformsSelectedPlural": "piattaforme",
-    "clearFilters": "Cancella filtri"
+    "clearFilters": "Cancella filtri",
+    "noDescription": "Nessuna descrizione disponibile"
   },
   "settings": {
-    "language": "Lingua",
     "country": "Paese di ricerca"
   },
   "notFound": {
@@ -62,20 +61,10 @@
     "backButton": "Torna alla home",
     "funMessage": "🍿 Forse un buon film ti consolerà?"
   },
-  "prompts": {
-    "limit": {
-      "title": "Limite mensile raggiunto",
-      "message": "Hai utilizzato i tuoi 3 prompt gratuiti questo mese. Passa a FastFlix Pro per raccomandazioni illimitate!",
-      "cancel": "Annulla",
-      "upgrade": "Passa a Pro"
-    }
-  },
   "errors": {
     "title": "Errore",
     "enterRequest": "Inserisci una richiesta",
-    "selectContentType": "Seleziona almeno un tipo di contenuto (film o serie TV)",
-    "searchError": "Si è verificato un errore durante la ricerca",
-    "searchMovieError": "Errore durante la ricerca di"
+    "searchError": "Si è verificato un errore durante la ricerca"
   },
   "modal": {
     "title": "Profilo utente"
@@ -97,18 +86,6 @@
       "unlimited": {
         "title": "Raccomandazioni illimitate",
         "description": "Ottieni tutte le raccomandazioni di film che desideri"
-      },
-      "advanced": {
-        "title": "Filtri avanzati",
-        "description": "Filtra per genere, anno, valutazione e altro ancora"
-      },
-      "offline": {
-        "title": "Accesso offline",
-        "description": "Salva le raccomandazioni per consultarle offline"
-      },
-      "notifications": {
-        "title": "Notifiche intelligenti",
-        "description": "Ricevi notifiche per le nuove uscite"
       }
     },
     "plans": {
@@ -163,12 +140,6 @@
       "message": "Qualcosa è andato storto. Riprova."
     }
   },
-  "premium": {
-    "limitReached": "Limite raggiunto",
-    "upgradeMessage": "Passa a FastFlix Pro per continuare",
-    "dailyLimit": "Limite giornaliero raggiunto",
-    "remainingUses": "Utilizzi rimanenti: {{count}}"
-  },
   "profile": {
     "subtitle": "Personalizza la tua esperienza",
     "language": "Lingua dell'applicazione",
@@ -185,15 +156,6 @@
     "viewPlans": "Vedi le offerte",
     "aboutApp": "Informazioni sull'app",
     "version": "Versione",
-    "developedBy": "Sviluppato da",
-    "yourTeam": "Il tuo team",
-    "freePrompts": {
-      "title": "Prompt gratuiti",
-      "used": "Utilizzati questo mese",
-      "remaining": "Rimanenti",
-      "resetInfo": "Il contatore si resetta ogni mese",
-      "upgradeButton": "Passa a FastFlix Pro"
-    },
     "privacyPolicy": "Politica sulla privacy",
     "termsOfUse": "Termini di utilizzo",
     "support": "Centro assistenza",
@@ -237,6 +199,8 @@
     "en": "English",
     "fr": "Français",
     "ja": "日本語",
-    "it": "Italiano"
+    "it": "Italiano",
+    "es": "Español",
+    "de": "Deutsch"
   }
 }

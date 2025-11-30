@@ -10,7 +10,6 @@
     "generating": "生成中...",
     "pleaseWait": "お待ちください...",
     "options": "オプション：",
-    "noDescription": "説明がありません",
     "languageTip": {
       "title": "重要な設定",
       "description": "お住まいの地域に最適な結果を得るために、",
@@ -50,10 +49,10 @@
     "allPlatforms": "すべてのプラットフォーム",
     "platformsSelected": "プラットフォーム",
     "platformsSelectedPlural": "プラットフォーム",
-    "clearFilters": "フィルターをクリア"
+    "clearFilters": "フィルターをクリア",
+    "noDescription": "説明がありません"
   },
   "settings": {
-    "language": "言語",
     "country": "検索国"
   },
   "notFound": {
@@ -65,9 +64,10 @@
   "errors": {
     "title": "エラー",
     "enterRequest": "リクエストを入力してください",
-    "selectContentType": "少なくとも1つのコンテンツタイプ（映画またはシリーズ）を選択してください",
-    "searchError": "検索中にエラーが発生しました",
-    "searchMovieError": "検索エラー"
+    "searchError": "検索中にエラーが発生しました"
+  },
+  "modal": {
+    "title": "ユーザープロフィール"
   },
   "subscription": {
     "title": "FastFlix Proにアップグレード",
@@ -86,18 +86,6 @@
       "unlimited": {
         "title": "無制限のレコメンデーション",
         "description": "お好きなだけ映画のレコメンデーションを取得"
-      },
-      "advanced": {
-        "title": "高度なフィルター",
-        "description": "ジャンル、年、評価などでフィルタリング"
-      },
-      "offline": {
-        "title": "オフラインアクセス",
-        "description": "オフラインで閲覧するためにレコメンデーションを保存"
-      },
-      "notifications": {
-        "title": "スマート通知",
-        "description": "新しいリリースの通知を受け取る"
       }
     },
     "plans": {
@@ -152,15 +140,6 @@
       "message": "問題が発生しました。もう一度お試しください。"
     }
   },
-  "modal": {
-    "title": "ユーザープロフィール"
-  },
-  "premium": {
-    "limitReached": "制限に達しました",
-    "upgradeMessage": "続行するにはFastFlix Proにアップグレードしてください",
-    "dailyLimit": "1日の制限に達しました",
-    "remainingUses": "残り使用回数：{{count}}"
-  },
   "profile": {
     "subtitle": "体験をカスタマイズ",
     "language": "アプリの言語",
@@ -177,8 +156,6 @@
     "viewPlans": "プランを見る",
     "aboutApp": "アプリについて",
     "version": "バージョン",
-    "developedBy": "開発者",
-    "yourTeam": "あなたのチーム",
     "privacyPolicy": "プライバシーポリシー",
     "termsOfUse": "利用規約",
     "support": "サポートセンター",
@@ -222,6 +199,8 @@
     "en": "English",
     "fr": "Français",
     "ja": "日本語",
-    "it": "Italiano"
+    "it": "Italiano",
+    "es": "Español",
+    "de": "Deutsch"
   }
 }

@@ -1,0 +1,206 @@
+{
+  "welcome": {
+    "title": "¿Qué ver? 🍿",
+    "subtitle": "¡Basta de hacer zapping sin fin! Cuéntame lo que te apetece y obtén recomendaciones ordenadas por puntuación.",
+    "description": "Ya no necesitas pasar horas navegando por plataformas de streaming sin saber qué elegir. Menciona actores, un género, una época, un ambiente... Nuestra IA te sugiere las mejores recomendaciones, clasificadas por puntuación para ayudarte a decidir rápidamente.",
+    "placeholder": "Una película o serie con Jennifer Aniston como protagonista, finales de los 90, disponible en Amazon Prime",
+    "exampleButton": "Ejemplo",
+    "searchButton": "Generar ✨",
+    "searching": "Buscando...",
+    "generating": "Generando...",
+    "pleaseWait": "Por favor espera...",
+    "options": "Opciones:",
+    "languageTip": {
+      "title": "Configuración importante",
+      "description": "Para obtener los mejores resultados adaptados a tu región, recuerda configurar correctamente el idioma de la aplicación y el país de búsqueda en la",
+      "profileLink": "página de perfil"
+    }
+  },
+  "movies": {
+    "recommendations": "Recomendaciones",
+    "noRecommendations": "No se encontraron recomendaciones. Intenta ajustar tus criterios de búsqueda.",
+    "seeMore": "Ver más",
+    "seeLess": "Ver menos",
+    "releaseDate": "Fecha de estreno:",
+    "rating": "Puntuación:",
+    "availableOn": "Disponible en:",
+    "mainActors": "Actores principales:",
+    "contentType": "Tipo de contenido:",
+    "genre": "Género:",
+    "genres": "Géneros:",
+    "duration": "Duración:",
+    "seasons": "Temporadas:",
+    "episodes": "Episodios:",
+    "status": "Estado:",
+    "movie": "Película",
+    "tvShow": "Serie",
+    "minutes": "min",
+    "statusReturning": "En emisión",
+    "statusEnded": "Finalizada",
+    "statusCanceled": "Cancelada",
+    "statusInProduction": "En producción",
+    "statusPlanned": "Planificada",
+    "statusPilot": "Piloto",
+    "year": "Año:",
+    "externalLinks": "Enlaces externos:",
+    "viewOnTMDB": "Ver en TMDB",
+    "sortByRating": "Puntuación",
+    "sortByDate": "Fecha de estreno",
+    "allPlatforms": "Todas las plataformas",
+    "platformsSelected": "plataforma",
+    "platformsSelectedPlural": "plataformas",
+    "clearFilters": "Borrar filtros",
+    "noDescription": "Sin descripción disponible"
+  },
+  "settings": {
+    "country": "País de búsqueda"
+  },
+  "notFound": {
+    "title": "Página no encontrada",
+    "subtitle": "Lo sentimos, esta página no existe.\n¡Volvamos a buscar películas!",
+    "backButton": "Volver al inicio",
+    "funMessage": "🍿 ¿Quizás una buena película te anime?"
+  },
+  "errors": {
+    "title": "Error",
+    "enterRequest": "Por favor, introduce una solicitud",
+    "searchError": "Ocurrió un error durante la búsqueda"
+  },
+  "modal": {
+    "title": "Perfil de usuario"
+  },
+  "subscription": {
+    "title": "Pásate a FastFlix Pro",
+    "loading": "Cargando opciones de suscripción...",
+    "required": {
+      "title": "Suscripción requerida",
+      "message": "Se necesita una suscripción activa para acceder a las recomendaciones de películas y series. ¡Suscríbete ahora para obtener acceso ilimitado!",
+      "cancel": "Cancelar",
+      "subscribe": "Suscribirse"
+    },
+    "hero": {
+      "title": "Desbloquea las funciones de FastFlix Pro",
+      "subtitle": "Aprovecha al máximo tu experiencia de descubrimiento de películas"
+    },
+    "features": {
+      "unlimited": {
+        "title": "Recomendaciones ilimitadas",
+        "description": "Obtén tantas recomendaciones de películas como quieras"
+      }
+    },
+    "plans": {
+      "title": "Elige tu plan"
+    },
+    "popular": "POPULAR",
+    "annual": {
+      "title": "Plan Anual",
+      "description": "Mejor valor - 2 meses gratis",
+      "period": "por año"
+    },
+    "monthly": {
+      "title": "Plan Mensual",
+      "description": "Facturación mensual flexible",
+      "period": "por mes"
+    },
+    "subscribe": "Suscribirse ahora",
+    "startTrial": "Prueba gratuita de 7 días",
+    "restore": "Restaurar compras",
+    "terms": "La suscripción se renueva automáticamente salvo cancelación. Se aplican términos y condiciones.",
+    "success": {
+      "title": "Suscripción activada",
+      "message": "¡Bienvenido a las funciones de FastFlix Pro!"
+    },
+    "error": {
+      "title": "Error en la compra",
+      "message": "No se pudo completar la compra. Por favor, inténtalo de nuevo."
+    },
+    "restoration": {
+      "success": {
+        "title": "Compras restauradas",
+        "message": "Tu suscripción ha sido restaurada."
+      },
+      "none": {
+        "title": "No se encontraron compras",
+        "message": "No se encontraron suscripciones activas para restaurar."
+      },
+      "error": {
+        "title": "Error en la restauración",
+        "message": "No se pudieron restaurar las compras. Por favor, inténtalo de nuevo."
+      }
+    }
+  },
+  "trial": {
+    "success": {
+      "title": "¡Prueba gratuita activada!",
+      "message": "¡Disfruta de 7 días de acceso ilimitado a todas las funciones!"
+    },
+    "error": {
+      "title": "Prueba no disponible",
+      "alreadyUsed": "Ya has utilizado tu prueba gratuita.",
+      "message": "Algo salió mal. Por favor, inténtalo de nuevo."
+    }
+  },
+  "profile": {
+    "subtitle": "Personaliza tu experiencia",
+    "language": "Idioma de la aplicación",
+    "chooseLanguage": "Elegir un idioma",
+    "chooseCountry": "Elegir un país",
+    "premiumSubscription": "Suscripción FastFlix Pro",
+    "activeSubscription": "Suscripción activa",
+    "activeTrial": "Prueba gratuita activa",
+    "dayRemaining": "día restante",
+    "daysRemaining": "días restantes",
+    "trialEndsMessage": "Suscríbete antes de que termine tu prueba para mantener el acceso ilimitado",
+    "enjoyPremiumFeatures": "Disfruta de todas las funciones de FastFlix Pro",
+    "unlockPremiumMessage": "Desbloquea todas las funciones de FastFlix Pro para la mejor experiencia",
+    "viewPlans": "Ver planes",
+    "aboutApp": "Acerca de la aplicación",
+    "version": "Versión",
+    "privacyPolicy": "Política de privacidad",
+    "termsOfUse": "Términos de uso",
+    "support": "Centro de ayuda",
+    "website": "Sitio web",
+    "account": "Cuenta",
+    "name": "Nombre",
+    "email": "Correo electrónico",
+    "signInMethod": "Método de inicio de sesión",
+    "signOut": "Cerrar sesión"
+  },
+  "auth": {
+    "welcome": {
+      "subtitle": "Recomendaciones de películas y series con IA",
+      "description": "Inicia sesión para obtener recomendaciones personalizadas y acceder a todas las funciones."
+    },
+    "loading": "Iniciando sesión...",
+    "platformNotSupported": "La autenticación solo está disponible actualmente en iOS.",
+    "footer": "Al iniciar sesión, aceptas nuestros Términos de servicio y Política de privacidad.",
+    "success": {
+      "title": "¡Bienvenido!",
+      "message": "¡Bienvenido{{name}}!"
+    },
+    "error": {
+      "title": "Error de inicio de sesión",
+      "message": "Algo salió mal. Por favor, inténtalo de nuevo.",
+      "signout": "Error al cerrar sesión. Por favor, inténtalo de nuevo."
+    },
+    "signout": {
+      "title": "Sesión cerrada",
+      "message": "Has cerrado sesión correctamente."
+    }
+  },
+  "common": {
+    "cancel": "Cancelar"
+  },
+  "tabs": {
+    "movies": "Películas",
+    "profile": "Perfil"
+  },
+  "languages": {
+    "en": "English",
+    "fr": "Français",
+    "ja": "日本語",
+    "it": "Italiano",
+    "es": "Español",
+    "de": "Deutsch"
+  }
+}

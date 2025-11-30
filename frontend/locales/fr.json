@@ -10,7 +10,6 @@
     "generating": "Génération...",
     "pleaseWait": "Veuillez patienter...",
     "options": "Options :",
-    "noDescription": "Aucune description disponible",
     "languageTip": {
       "title": "Configuration importante",
       "description": "Pour obtenir les meilleurs résultats adaptés à votre région, pensez à bien configurer la langue de l'application et le pays de recherche sur la",
@@ -50,10 +49,10 @@
     "allPlatforms": "Toutes les plateformes",
     "platformsSelected": "plateforme",
     "platformsSelectedPlural": "plateformes",
-    "clearFilters": "Effacer les filtres"
+    "clearFilters": "Effacer les filtres",
+    "noDescription": "Aucune description disponible"
   },
   "settings": {
-    "language": "Langue",
     "country": "Pays de recherche"
   },
   "notFound": {
@@ -65,9 +64,7 @@
   "errors": {
     "title": "Erreur",
     "enterRequest": "Veuillez entrer une demande",
-    "selectContentType": "Veuillez sélectionner au moins un type de contenu (films ou séries)",
-    "searchError": "Une erreur est survenue lors de la recherche",
-    "searchMovieError": "Erreur lors de la recherche de"
+    "searchError": "Une erreur est survenue lors de la recherche"
   },
   "modal": {
     "title": "Profil utilisateur"
@@ -89,18 +86,6 @@
       "unlimited": {
         "title": "Recommandations illimitées",
         "description": "Obtenez autant de recommandations de films que vous le souhaitez"
-      },
-      "advanced": {
-        "title": "Filtres avancés",
-        "description": "Filtrez par genre, année, note et plus encore"
-      },
-      "offline": {
-        "title": "Accès hors ligne",
-        "description": "Sauvegardez les recommandations pour les consulter hors ligne"
-      },
-      "notifications": {
-        "title": "Notifications intelligentes",
-        "description": "Soyez notifié des nouvelles sorties"
       }
     },
     "plans": {
@@ -155,12 +140,6 @@
       "message": "Une erreur s'est produite. Veuillez réessayer."
     }
   },
-  "premium": {
-    "limitReached": "Limite atteinte",
-    "upgradeMessage": "Passez à FastFlix Pro pour continuer",
-    "dailyLimit": "Limite quotidienne atteinte",
-    "remainingUses": "Utilisations restantes : {{count}}"
-  },
   "profile": {
     "subtitle": "Personnalisez votre expérience",
     "language": "Langue de l'application",
@@ -177,8 +156,6 @@
     "viewPlans": "Voir les offres",
     "aboutApp": "À propos de l'application",
     "version": "Version",
-    "developedBy": "Développé par",
-    "yourTeam": "Votre équipe",
     "privacyPolicy": "Politique de confidentialité",
     "termsOfUse": "Conditions d'utilisation",
     "support": "Centre d'assistance",
@@ -222,6 +199,8 @@
     "en": "English",
     "fr": "Français",
     "ja": "日本語",
-    "it": "Italiano"
+    "it": "Italiano",
+    "es": "Español",
+    "de": "Deutsch"
   }
 }

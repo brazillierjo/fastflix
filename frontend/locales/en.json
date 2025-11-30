@@ -10,7 +10,6 @@
     "generating": "Generating...",
     "pleaseWait": "Please wait...",
     "options": "Options:",
-    "noDescription": "No description available",
     "languageTip": {
       "title": "Important Configuration",
       "description": "For the best results tailored to your region, make sure to properly configure the application language and the search country on the",
@@ -50,10 +49,10 @@
     "allPlatforms": "All Platforms",
     "platformsSelected": "platform",
     "platformsSelectedPlural": "platforms",
-    "clearFilters": "Clear Filters"
+    "clearFilters": "Clear Filters",
+    "noDescription": "No description available"
   },
   "settings": {
-    "language": "Language",
     "country": "Search Country"
   },
   "notFound": {
@@ -65,9 +64,7 @@
   "errors": {
     "title": "Error",
     "enterRequest": "Please enter a request",
-    "selectContentType": "Please select at least one content type (movies or TV shows)",
-    "searchError": "An error occurred during the search",
-    "searchMovieError": "Error while searching for"
+    "searchError": "An error occurred during the search"
   },
   "modal": {
     "title": "User profile"
@@ -89,18 +86,6 @@
       "unlimited": {
         "title": "Unlimited Recommendations",
         "description": "Get as many movie recommendations as you want"
-      },
-      "advanced": {
-        "title": "Advanced Filters",
-        "description": "Filter by genre, year, rating and more"
-      },
-      "offline": {
-        "title": "Offline Access",
-        "description": "Save recommendations for offline viewing"
-      },
-      "notifications": {
-        "title": "Smart Notifications",
-        "description": "Get notified about new releases"
       }
     },
     "plans": {
@@ -155,12 +140,6 @@
       "message": "Something went wrong. Please try again."
     }
   },
-  "premium": {
-    "limitReached": "Limit Reached",
-    "upgradeMessage": "Upgrade to FastFlix Pro to continue",
-    "dailyLimit": "Daily limit reached",
-    "remainingUses": "Remaining uses: {{count}}"
-  },
   "profile": {
     "subtitle": "Customize your experience",
     "language": "Application Language",
@@ -177,15 +156,6 @@
     "viewPlans": "View Plans",
     "aboutApp": "About the app",
     "version": "Version",
-    "developedBy": "Developed by",
-    "yourTeam": "Your team",
-    "freePrompts": {
-      "title": "Free Prompts",
-      "used": "Used this month",
-      "remaining": "Remaining",
-      "resetInfo": "Counter resets every month",
-      "upgradeButton": "Upgrade to FastFlix Pro"
-    },
     "privacyPolicy": "Privacy Policy",
     "termsOfUse": "Terms of Use",
     "support": "Support Center",
@@ -229,6 +199,8 @@
     "en": "English",
     "fr": "Français",
     "ja": "日本語",
-    "it": "Italiano"
+    "it": "Italiano",
+    "es": "Español",
+    "de": "Deutsch"
   }
 }

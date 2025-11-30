@@ -13,6 +13,8 @@ import en from '../locales/en.json';
 import fr from '../locales/fr.json';
 import ja from '../locales/ja.json';
 import it from '../locales/it.json';
+import es from '../locales/es.json';
+import de from '../locales/de.json';
 
 // Import centralized constants
 import {
@@ -39,6 +41,8 @@ const translations: Translations = {
   en,
   ja,
   it,
+  es,
+  de,
 };
 
 // Re-export for backward compatibility
