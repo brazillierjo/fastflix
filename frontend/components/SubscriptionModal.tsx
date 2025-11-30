@@ -42,6 +42,8 @@ export default function SubscriptionModal({
     restorePurchases,
     getMonthlyPackage,
     getAnnualPackage,
+    trialInfo,
+    startFreeTrial,
   } = useSubscription();
 
   const [selectedPlan, setSelectedPlan] = useState<'monthly' | 'annual'>(
@@ -125,6 +127,27 @@ export default function SubscriptionModal({
       setPurchasing(false);
     }
   };
+
+  const handleStartTrial = async () => {
+    try {
+      setPurchasing(true);
+      const success = await startFreeTrial();
+
+      if (success) {
+        if (onSubscriptionSuccess) {
+          onSubscriptionSuccess();
+        }
+        onClose();
+      }
+    } catch (error) {
+      console.error('Start trial error:', error);
+    } finally {
+      setPurchasing(false);
+    }
+  };
+
+  // Check if user can start trial (hasn't used it yet)
+  const canStartTrial = !trialInfo?.used;
 
   const features = [
     {
@@ -321,6 +344,30 @@ export default function SubscriptionModal({
 
         {/* Bottom Actions */}
         <View className='border-t border-light-border p-6 dark:border-dark-border'>
+          {/* Free Trial Button - Only shown if user hasn't used trial */}
+          {canStartTrial && (
+            <TouchableOpacity
+              onPress={handleStartTrial}
+              disabled={purchasing}
+              style={getButtonBorderRadius()}
+              className={cn(
+                'mb-3 border-2 border-netflix-500 bg-transparent py-4',
+                purchasing && 'opacity-50'
+              )}
+            >
+              {purchasing ? (
+                <ActivityIndicator color='#E50914' />
+              ) : (
+                <View className='flex-row items-center justify-center gap-2'>
+                  <Ionicons name='gift-outline' size={20} color='#E50914' />
+                  <Text className='text-center text-lg font-semibold text-netflix-500'>
+                    {t('subscription.startTrial') || 'Start 7-Day Free Trial'}
+                  </Text>
+                </View>
+              )}
+            </TouchableOpacity>
+          )}
+
           <TouchableOpacity
             onPress={handlePurchase}
             disabled={purchasing || (!monthlyPackage && !annualPackage)}

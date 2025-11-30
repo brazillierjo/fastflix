@@ -189,6 +189,15 @@ export interface SubscriptionState {
   offerings: unknown; // Use unknown for RevenueCat types
 }
 
+// Trial types
+export interface TrialInfo {
+  isActive: boolean;
+  daysRemaining: number;
+  startsAt: string | null;
+  endsAt: string | null;
+  used: boolean;
+}
+
 export interface UserState {
   language: string;
   country: string;

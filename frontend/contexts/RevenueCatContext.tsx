@@ -27,6 +27,7 @@ import Purchases, {
 } from 'react-native-purchases';
 import { useLanguage } from './LanguageContext';
 import { backendAPIService } from '../services/backend-api.service';
+import { TrialInfo } from '@/types/api';
 
 // Subscription status enum for clarity
 export enum SubscriptionStatus {
@@ -44,14 +45,19 @@ export interface SubscriptionContextType {
   customerInfo: CustomerInfo | null;
   offerings: PurchasesOffering[] | null;
 
+  // Trial state
+  trialInfo: TrialInfo | null;
+  isInTrial: boolean;
+
   // Derived properties for easy access
-  hasUnlimitedAccess: boolean; // True for ACTIVE and GRACE_PERIOD
-  isFreeUser: boolean; // True for FREE users
+  hasUnlimitedAccess: boolean; // True for ACTIVE, GRACE_PERIOD, or active trial
+  isFreeUser: boolean; // True for FREE users without trial
 
   // Actions
   purchasePackage: (packageToPurchase: PurchasesPackage) => Promise<void>;
   restorePurchases: () => Promise<boolean>;
   linkUserToRevenueCat: (userId: string) => Promise<void>;
+  startFreeTrial: () => Promise<boolean>;
 
   // Package helpers
   getMonthlyPackage: () => PurchasesPackage | null;
@@ -76,6 +82,7 @@ export const SubscriptionProvider: React.FC<SubscriptionProviderProps> = ({
   const [customerInfo, setCustomerInfo] = useState<CustomerInfo | null>(null);
   const [offerings, setOfferings] = useState<PurchasesOffering[] | null>(null);
   const [hasBackendSubscription, setHasBackendSubscription] = useState(false);
+  const [trialInfo, setTrialInfo] = useState<TrialInfo | null>(null);
 
   // Determine subscription status from CustomerInfo
   const determineSubscriptionStatus = (
@@ -244,15 +251,26 @@ export const SubscriptionProvider: React.FC<SubscriptionProviderProps> = ({
     }
   };
 
-  // Check backend subscription status
+  // Check backend subscription and trial status
   const checkBackendSubscription = async (): Promise<boolean> => {
     try {
       const response = await backendAPIService.getCurrentUser();
 
-      if (response.success && response.data?.subscription?.isActive) {
-        console.log('✅ Backend subscription is active');
-        setHasBackendSubscription(true);
-        return true;
+      if (response.success && response.data) {
+        // Update trial info
+        if (response.data.trial) {
+          setTrialInfo(response.data.trial);
+          if (response.data.trial.isActive) {
+            console.log('✅ User is in active trial, days remaining:', response.data.trial.daysRemaining);
+          }
+        }
+
+        // Check subscription status
+        if (response.data.subscription?.isActive) {
+          console.log('✅ Backend subscription is active');
+          setHasBackendSubscription(true);
+          return true;
+        }
       }
 
       setHasBackendSubscription(false);
@@ -309,19 +327,70 @@ export const SubscriptionProvider: React.FC<SubscriptionProviderProps> = ({
     return annualPackage || null;
   };
 
+  // Start free trial
+  const startFreeTrial = async (): Promise<boolean> => {
+    try {
+      console.log('🎁 Starting free trial...');
+
+      const response = await backendAPIService.startFreeTrial();
+
+      if (response.success && response.data?.trial) {
+        setTrialInfo(response.data.trial);
+        console.log('✅ Free trial started successfully');
+
+        Alert.alert(
+          t('trial.success.title') || 'Free Trial Started!',
+          t('trial.success.message') ||
+            'Enjoy 7 days of unlimited access to all features!'
+        );
+
+        return true;
+      }
+
+      // Handle error cases
+      const errorMessage = response.error?.message || 'Failed to start trial';
+      console.warn('⚠️ Failed to start trial:', errorMessage);
+
+      Alert.alert(
+        t('trial.error.title') || 'Trial Unavailable',
+        errorMessage === 'You have already used your free trial'
+          ? (t('trial.error.alreadyUsed') || 'You have already used your free trial.')
+          : (t('trial.error.message') || errorMessage)
+      );
+
+      return false;
+    } catch (error) {
+      console.error('❌ Error starting trial:', error);
+
+      Alert.alert(
+        t('trial.error.title') || 'Error',
+        t('trial.error.message') || 'Something went wrong. Please try again.'
+      );
+
+      return false;
+    }
+  };
+
+  // Computed property for trial status
+  const isInTrial = trialInfo?.isActive ?? false;
+
   const contextValue: SubscriptionContextType = {
     subscriptionStatus,
     isLoading,
     customerInfo,
     offerings,
+    trialInfo,
+    isInTrial,
     hasUnlimitedAccess:
       hasBackendSubscription ||
+      isInTrial ||
       subscriptionStatus === SubscriptionStatus.ACTIVE ||
       subscriptionStatus === SubscriptionStatus.GRACE_PERIOD,
-    isFreeUser: subscriptionStatus === SubscriptionStatus.FREE && !hasBackendSubscription,
+    isFreeUser: subscriptionStatus === SubscriptionStatus.FREE && !hasBackendSubscription && !isInTrial,
     purchasePackage,
     restorePurchases,
     linkUserToRevenueCat,
+    startFreeTrial,
     getMonthlyPackage,
     getAnnualPackage,
   };

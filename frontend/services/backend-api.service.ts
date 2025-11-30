@@ -5,7 +5,7 @@
 
 import Constants from 'expo-constants';
 import * as SecureStore from 'expo-secure-store';
-import { APIResponse, APIError } from '@/types/api';
+import { APIResponse, APIError, TrialInfo } from '@/types/api';
 
 // Storage key for auth token
 const AUTH_TOKEN_KEY = 'fastflix_auth_token';
@@ -280,10 +280,40 @@ class BackendAPIService {
   }
 
   /**
-   * Get current authenticated user with subscription status
+   * Get current authenticated user with subscription and trial status
    */
-  async getCurrentUser(): Promise<APIResponse<{ user: any; subscription: { isActive: boolean } }>> {
+  async getCurrentUser(): Promise<APIResponse<{
+    user: any;
+    subscription: { isActive: boolean };
+    trial: TrialInfo;
+  }>> {
     return await this.makeRequest('/api/auth/me', {
+      method: 'GET',
+    });
+  }
+
+  // ==========================================================================
+  // Trial Methods
+  // ==========================================================================
+
+  /**
+   * Start free trial for authenticated user
+   */
+  async startFreeTrial(): Promise<APIResponse<{
+    success: boolean;
+    message: string;
+    trial: TrialInfo;
+  }>> {
+    return await this.makeRequest('/api/trial', {
+      method: 'POST',
+    });
+  }
+
+  /**
+   * Get trial status for authenticated user
+   */
+  async getTrialStatus(): Promise<APIResponse<{ trial: TrialInfo }>> {
+    return await this.makeRequest('/api/trial', {
       method: 'GET',
     });
   }

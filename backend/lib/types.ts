@@ -207,3 +207,15 @@ export interface AppleAuthRequest {
 export interface GoogleAuthRequest {
   idToken: string;
 }
+
+// ============================================================================
+// Trial Types
+// ============================================================================
+
+export interface TrialInfo {
+  isActive: boolean;
+  daysRemaining: number;
+  startsAt: string | null;
+  endsAt: string | null;
+  used: boolean;
+}

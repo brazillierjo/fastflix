@@ -38,20 +38,20 @@ export async function POST(request: NextRequest) {
 
     const { query, includeMovies, includeTvShows, language, country } = validatedData;
 
-    // Step 2: Check subscription status (REQUIRED)
-    const hasActiveSubscription = await db.hasActiveSubscriptionByUserId(userId);
-    if (!hasActiveSubscription) {
-      console.log(`🔒 Access denied for user ${user.email}: No active subscription`);
+    // Step 2: Check access (subscription OR active trial)
+    const hasAccess = await db.hasAccess(userId);
+    if (!hasAccess) {
+      console.log(`🔒 Access denied for user ${user.email}: No active subscription or trial`);
       return NextResponse.json(
         {
           error: 'Subscription required',
-          reason: 'An active subscription is required to access movie recommendations',
+          reason: 'An active subscription or free trial is required to access movie recommendations',
         },
         { status: 402 } // Payment Required
       );
     }
 
-    console.log(`✅ Access granted for user ${user.email}: Active subscription`);
+    console.log(`✅ Access granted for user ${user.email}`);
 
     // Step 3: Build content type array for Gemini
     const contentTypes: string[] = [];

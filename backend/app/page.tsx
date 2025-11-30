@@ -24,10 +24,30 @@ export default function Home() {
         <p className="mb-8 text-lg text-gray-600">AI-powered movie recommendations service</p>
 
         {/* API Endpoints */}
-        <div className="mx-auto max-w-md space-y-2 text-left">
-          <p className="font-mono text-sm text-gray-600">GET /api/health</p>
-          <p className="font-mono text-sm text-gray-600">POST /api/search</p>
-          <p className="font-mono text-sm text-gray-600">POST /api/subscription/webhook</p>
+        <div className="mx-auto max-w-md space-y-3 text-left">
+          <div>
+            <p className="text-xs font-semibold text-gray-400 uppercase mb-1">Health</p>
+            <p className="font-mono text-sm text-gray-600">GET /api/health</p>
+          </div>
+          <div>
+            <p className="text-xs font-semibold text-gray-400 uppercase mb-1">Auth</p>
+            <p className="font-mono text-sm text-gray-600">POST /api/auth/apple</p>
+            <p className="font-mono text-sm text-gray-600">POST /api/auth/google</p>
+            <p className="font-mono text-sm text-gray-600">GET /api/auth/me</p>
+          </div>
+          <div>
+            <p className="text-xs font-semibold text-gray-400 uppercase mb-1">Trial</p>
+            <p className="font-mono text-sm text-gray-600">GET /api/trial</p>
+            <p className="font-mono text-sm text-gray-600">POST /api/trial</p>
+          </div>
+          <div>
+            <p className="text-xs font-semibold text-gray-400 uppercase mb-1">Search</p>
+            <p className="font-mono text-sm text-gray-600">POST /api/search</p>
+          </div>
+          <div>
+            <p className="text-xs font-semibold text-gray-400 uppercase mb-1">Subscription</p>
+            <p className="font-mono text-sm text-gray-600">POST /api/subscription/webhook</p>
+          </div>
         </div>
 
         {/* Footer */}

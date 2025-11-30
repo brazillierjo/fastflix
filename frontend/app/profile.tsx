@@ -25,7 +25,7 @@ import {
 export default function ProfileScreen() {
   const { language, setLanguage, country, setCountry, t, availableCountries } =
     useLanguage();
-  const { hasUnlimitedAccess, restorePurchases } = useSubscription();
+  const { hasUnlimitedAccess, restorePurchases, trialInfo, isInTrial } = useSubscription();
   const { user, signOut } = useAuth();
 
   const isSubscribed = hasUnlimitedAccess;
@@ -314,12 +314,30 @@ export default function ProfileScreen() {
                   <View className='flex-row items-center'>
                     <View className='mr-3 h-3 w-3 rounded-full bg-success-500' />
                     <Text className='font-medium text-light-text dark:text-dark-text'>
-                      {t('profile.activeSubscription')}
+                      {isInTrial
+                        ? (t('profile.activeTrial') || 'Free Trial Active')
+                        : t('profile.activeSubscription')}
                     </Text>
                   </View>
-                  <Text className='text-sm text-light-muted dark:text-dark-muted'>
-                    {t('profile.enjoyPremiumFeatures')}
-                  </Text>
+                  {isInTrial && trialInfo ? (
+                    <View className='rounded-lg bg-amber-500/10 p-3 dark:bg-amber-500/20'>
+                      <View className='flex-row items-center gap-2'>
+                        <Ionicons name='time-outline' size={16} color='#f59e0b' />
+                        <Text className='font-medium text-amber-600 dark:text-amber-400'>
+                          {trialInfo.daysRemaining} {trialInfo.daysRemaining === 1
+                            ? (t('profile.dayRemaining') || 'day remaining')
+                            : (t('profile.daysRemaining') || 'days remaining')}
+                        </Text>
+                      </View>
+                      <Text className='mt-1 text-xs text-amber-600/80 dark:text-amber-400/80'>
+                        {t('profile.trialEndsMessage') || 'Subscribe before your trial ends to keep unlimited access'}
+                      </Text>
+                    </View>
+                  ) : (
+                    <Text className='text-sm text-light-muted dark:text-dark-muted'>
+                      {t('profile.enjoyPremiumFeatures')}
+                    </Text>
+                  )}
                 </View>
               ) : (
                 <View className='gap-4'>
