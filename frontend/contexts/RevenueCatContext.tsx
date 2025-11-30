@@ -26,6 +26,7 @@ import Purchases, {
   PurchasesPackage,
 } from 'react-native-purchases';
 import { useLanguage } from './LanguageContext';
+import { backendAPIService } from '../services/backend-api.service';
 
 // Subscription status enum for clarity
 export enum SubscriptionStatus {
@@ -74,6 +75,7 @@ export const SubscriptionProvider: React.FC<SubscriptionProviderProps> = ({
   const [isLoading, setIsLoading] = useState(true);
   const [customerInfo, setCustomerInfo] = useState<CustomerInfo | null>(null);
   const [offerings, setOfferings] = useState<PurchasesOffering[] | null>(null);
+  const [hasBackendSubscription, setHasBackendSubscription] = useState(false);
 
   // Determine subscription status from CustomerInfo
   const determineSubscriptionStatus = (
@@ -242,10 +244,32 @@ export const SubscriptionProvider: React.FC<SubscriptionProviderProps> = ({
     }
   };
 
+  // Check backend subscription status
+  const checkBackendSubscription = async (): Promise<boolean> => {
+    try {
+      const response = await backendAPIService.getCurrentUser();
+
+      if (response.success && response.data?.subscription?.isActive) {
+        console.log('✅ Backend subscription is active');
+        setHasBackendSubscription(true);
+        return true;
+      }
+
+      setHasBackendSubscription(false);
+      return false;
+    } catch (error) {
+      console.warn('⚠️ Failed to check backend subscription:', error);
+      return false;
+    }
+  };
+
   // Link user to RevenueCat (call after authentication)
   const linkUserToRevenueCat = async (userId: string): Promise<void> => {
     try {
       console.log('🔗 Linking user to RevenueCat:', userId);
+
+      // Check backend subscription first (for admin/manual subscriptions)
+      await checkBackendSubscription();
 
       // Log in to RevenueCat with the userId from our auth system
       // This associates the anonymous ID with the actual user ID
@@ -291,9 +315,10 @@ export const SubscriptionProvider: React.FC<SubscriptionProviderProps> = ({
     customerInfo,
     offerings,
     hasUnlimitedAccess:
+      hasBackendSubscription ||
       subscriptionStatus === SubscriptionStatus.ACTIVE ||
       subscriptionStatus === SubscriptionStatus.GRACE_PERIOD,
-    isFreeUser: subscriptionStatus === SubscriptionStatus.FREE,
+    isFreeUser: subscriptionStatus === SubscriptionStatus.FREE && !hasBackendSubscription,
     purchasePackage,
     restorePurchases,
     linkUserToRevenueCat,

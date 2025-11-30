@@ -280,9 +280,9 @@ class BackendAPIService {
   }
 
   /**
-   * Get current authenticated user
+   * Get current authenticated user with subscription status
    */
-  async getCurrentUser(): Promise<APIResponse<{ user: any }>> {
+  async getCurrentUser(): Promise<APIResponse<{ user: any; subscription: { isActive: boolean } }>> {
     return await this.makeRequest('/api/auth/me', {
       method: 'GET',
     });

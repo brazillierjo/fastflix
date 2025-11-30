@@ -12,8 +12,10 @@ import { MotiView } from 'moti';
 import React, { useRef, useState, useEffect } from 'react';
 import {
   KeyboardAvoidingView,
+  Modal,
   PanResponder,
   Platform,
+  Pressable,
   ScrollView,
   Text,
   TextInput,
@@ -39,6 +41,7 @@ export default function SearchForm({
 }: SearchFormProps) {
   const { t, getRandomPlaceholder } = useLanguage();
   const [placeholder, setPlaceholder] = useState('');
+  const [showInfoModal, setShowInfoModal] = useState(false);
   const colorScheme = useColorScheme();
   const isDark = colorScheme === 'dark';
 
@@ -93,49 +96,17 @@ export default function SearchForm({
               type: 'timing',
               duration: 600,
             }}
-            className='mb-12'
-          >
-            <Text className='mb-4 text-5xl font-bold text-light-text dark:text-dark-text'>
-              {t('welcome.title')}
-            </Text>
-            <Text className='mb-4 text-lg text-light-textSecondary dark:text-dark-textSecondary'>
-              {t('welcome.subtitle')}
-            </Text>
-            <Text className='text-base leading-relaxed text-light-textMuted dark:text-dark-textMuted'>
-              {t('welcome.description')}
-            </Text>
-          </MotiView>
-
-          {/* Language Configuration Info */}
-          <MotiView
-            from={{ opacity: 0, translateY: 10 }}
-            animate={{ opacity: 1, translateY: 0 }}
-            transition={{
-              delay: 200,
-              type: 'timing',
-              duration: 600,
-            }}
             className='mb-8'
           >
-            <View
-              style={getSquircle(18)}
-              className='border border-netflix-500/20 bg-netflix-500/5 p-4'
-            >
-              <View className='mb-2 flex-row items-center gap-2'>
-                <Ionicons name='settings-outline' size={16} color='#E50914' />
-                <Text className='text-sm font-semibold text-netflix-500'>
-                  {t('welcome.languageTip.title')}
-                </Text>
-              </View>
-              <Text className='text-xs leading-relaxed text-light-textSecondary dark:text-dark-textSecondary'>
-                {t('welcome.languageTip.description')}{' '}
-                <Link href='/profile' asChild>
-                  <Text className='text-xs font-semibold text-netflix-500 underline'>
-                    {t('welcome.languageTip.profileLink')}
-                  </Text>
-                </Link>
-              </Text>
-            </View>
+            <Text className='mb-3 text-4xl font-bold text-light-text dark:text-dark-text'>
+              {t('welcome.title')}
+            </Text>
+            <Text className='mb-3 text-base text-light-textSecondary dark:text-dark-textSecondary'>
+              {t('welcome.subtitle')}
+            </Text>
+            <Text className='text-sm leading-relaxed text-light-textMuted dark:text-dark-textMuted'>
+              {t('welcome.description')}
+            </Text>
           </MotiView>
 
           {/* Search Input */}
@@ -143,14 +114,28 @@ export default function SearchForm({
             from={{ opacity: 0, scale: 0.9 }}
             animate={{ opacity: 1, scale: 1 }}
             transition={{
-              delay: 300,
+              delay: 200,
               type: 'timing',
               duration: 600,
             }}
-            className='mb-6'
+            className='mb-5'
           >
-            {/* Example Button */}
-            <View className='mb-3 flex-row justify-end'>
+            {/* Action Buttons Row */}
+            <View className='mb-3 flex-row items-center justify-end gap-2'>
+              {/* Info Button */}
+              <TouchableOpacity
+                onPress={() => setShowInfoModal(true)}
+                style={getSquircle(20)}
+                className='items-center justify-center bg-cinematic-200 px-3 py-2 dark:bg-cinematic-700'
+              >
+                <Ionicons
+                  name='information-circle-outline'
+                  size={18}
+                  color={isDark ? '#a3a3a3' : '#525252'}
+                />
+              </TouchableOpacity>
+
+              {/* Example Button */}
               <TouchableOpacity
                 onPress={fillWithRandomExample}
                 style={getSquircle(20)}
@@ -192,7 +177,7 @@ export default function SearchForm({
             from={{ opacity: 0, scale: 0.95 }}
             animate={{ opacity: 1, scale: 1 }}
             transition={{
-              delay: 400,
+              delay: 300,
               type: 'timing',
               duration: 600,
             }}
@@ -201,7 +186,7 @@ export default function SearchForm({
               onPress={onSearch}
               disabled={loading}
               className={cn(
-                'items-center px-8 py-6',
+                'items-center px-6 py-5',
                 loading
                   ? 'bg-cinematic-600'
                   : 'bg-netflix-500 active:bg-netflix-600'
@@ -211,13 +196,65 @@ export default function SearchForm({
                 !loading ? getNetflixGlow(isDark) : undefined,
               ]}
             >
-              <Text className='text-lg font-semibold text-white'>
+              <Text className='text-base font-semibold text-white'>
                 {loading ? t('welcome.generating') : t('welcome.searchButton')}
               </Text>
             </TouchableOpacity>
           </MotiView>
         </View>
       </ScrollView>
+
+      {/* Info Modal */}
+      <Modal
+        visible={showInfoModal}
+        transparent
+        animationType='fade'
+        onRequestClose={() => setShowInfoModal(false)}
+      >
+        <Pressable
+          className='flex-1 items-center justify-center bg-black/60'
+          onPress={() => setShowInfoModal(false)}
+        >
+          <Pressable
+            onPress={e => e.stopPropagation()}
+            style={getSquircle(20)}
+            className='mx-6 max-w-md bg-light-surface p-6 dark:bg-dark-surface'
+          >
+            <View className='mb-4 flex-row items-center gap-3'>
+              <View
+                style={getSquircle(12)}
+                className='items-center justify-center bg-netflix-500/10 p-2'
+              >
+                <Ionicons name='settings-outline' size={20} color='#E50914' />
+              </View>
+              <Text className='flex-1 text-lg font-semibold text-light-text dark:text-dark-text'>
+                {t('welcome.languageTip.title')}
+              </Text>
+            </View>
+
+            <Text className='mb-5 text-sm leading-relaxed text-light-textSecondary dark:text-dark-textSecondary'>
+              {t('welcome.languageTip.description')}{' '}
+              <Link
+                href='/profile'
+                onPress={() => setShowInfoModal(false)}
+                asChild
+              >
+                <Text className='text-sm font-semibold text-netflix-500 underline'>
+                  {t('welcome.languageTip.profileLink')}
+                </Text>
+              </Link>
+            </Text>
+
+            <TouchableOpacity
+              onPress={() => setShowInfoModal(false)}
+              style={getSquircle(12)}
+              className='items-center bg-netflix-500 py-3'
+            >
+              <Text className='font-semibold text-white'>OK</Text>
+            </TouchableOpacity>
+          </Pressable>
+        </Pressable>
+      </Modal>
     </KeyboardAvoidingView>
   );
 }

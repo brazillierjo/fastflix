@@ -34,13 +34,13 @@ export const getGlassStyle = (isDark: boolean): ViewStyle => ({
 
 /**
  * Get glassmorphism style for tab bar specifically
- * Slightly more transparent for the floating tab effect
+ * Slightly elevated from background for visibility
  */
 export const getGlassTabStyle = (isDark: boolean): ViewStyle => ({
   backgroundColor: isDark
-    ? 'rgba(31, 31, 31, 0.75)'
-    : 'rgba(255, 255, 255, 0.75)',
-  borderColor: isDark ? 'rgba(255, 255, 255, 0.12)' : 'rgba(0, 0, 0, 0.08)',
+    ? 'rgba(42, 42, 42, 0.85)' // Lighter than background (#141414) for contrast
+    : 'rgba(240, 240, 240, 0.85)', // Slightly darker than white background
+  borderColor: isDark ? 'rgba(255, 255, 255, 0.15)' : 'rgba(0, 0, 0, 0.1)',
   borderWidth: 1,
 });
 

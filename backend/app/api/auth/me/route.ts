@@ -31,8 +31,16 @@ export async function GET(request: NextRequest) {
       return NextResponse.json({ error: 'User not found' }, { status: 404 });
     }
 
-    // Step 4: Return user info
-    return NextResponse.json({ user }, { status: 200 });
+    // Step 4: Check subscription status from database
+    const hasActiveSubscription = await db.hasActiveSubscriptionByUserId(payload.userId);
+
+    // Step 5: Return user info with subscription status
+    return NextResponse.json({
+      user,
+      subscription: {
+        isActive: hasActiveSubscription,
+      }
+    }, { status: 200 });
   } catch (error) {
     console.error('❌ Error in GET /api/auth/me:', error);
 
