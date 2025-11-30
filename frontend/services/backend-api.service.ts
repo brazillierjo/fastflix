@@ -4,27 +4,11 @@
  */
 
 import Constants from 'expo-constants';
-import { Platform } from 'react-native';
 import * as SecureStore from 'expo-secure-store';
-import { deviceIdentityService } from './deviceIdentity.service';
 import { APIResponse, APIError } from '@/types/api';
-import Purchases from 'react-native-purchases';
 
 // Storage key for auth token
 const AUTH_TOKEN_KEY = 'fastflix_auth_token';
-
-// Types matching backend API
-export interface SearchRequest {
-  deviceId: string;
-  query: string;
-  includeMovies: boolean;
-  includeTvShows: boolean;
-  platform: 'ios' | 'android';
-  appVersion: string;
-  language?: string;
-  country?: string;
-  isProUser?: boolean; // Subscription status from RevenueCat
-}
 
 export interface MovieResult {
   tmdb_id: number;
@@ -80,20 +64,6 @@ class BackendAPIService {
     } else {
       this.baseUrl = apiUrl;
     }
-  }
-
-  /**
-   * Get current app version
-   */
-  private getAppVersion(): string {
-    return Constants.expoConfig?.version || '1.0.0';
-  }
-
-  /**
-   * Get current platform
-   */
-  private getPlatform(): 'ios' | 'android' {
-    return Platform.OS === 'ios' ? 'ios' : 'android';
   }
 
   /**
@@ -211,6 +181,7 @@ class BackendAPIService {
 
   /**
    * Search for movies/TV shows using AI recommendations
+   * Requires authentication - JWT token must be present
    */
   async search(params: {
     query: string;
@@ -220,43 +191,12 @@ class BackendAPIService {
     country?: string;
   }): Promise<APIResponse<SearchResponse>> {
     try {
-      // Get RevenueCat App User ID (this is what the webhook uses)
-      let deviceId: string;
-      try {
-        const customerInfo = await Purchases.getCustomerInfo();
-        deviceId = customerInfo.originalAppUserId;
-      } catch (error) {
-        console.warn(
-          'Failed to get RevenueCat App User ID, falling back to custom device ID:',
-          error
-        );
-        // Fallback to custom device ID if RevenueCat is not available
-        const deviceIdResult = await deviceIdentityService.getDeviceId();
-        if (!deviceIdResult.success || !deviceIdResult.data) {
-          return {
-            success: false,
-            data: {
-              recommendations: [],
-              streamingProviders: {},
-              conversationalResponse: '',
-              totalResults: 0,
-            },
-            error: {
-              code: 'DEVICE_ID_ERROR',
-              message: 'Failed to get device ID',
-            },
-          };
-        }
-        deviceId = deviceIdResult.data;
-      }
-
-      const requestBody: SearchRequest = {
-        deviceId,
+      // Authentication is now required - no deviceId needed
+      // JWT token is automatically included by makeRequest()
+      const requestBody = {
         query: params.query,
         includeMovies: params.includeMovies,
         includeTvShows: params.includeTvShows,
-        platform: this.getPlatform(),
-        appVersion: this.getAppVersion(),
         language: params.language || 'fr-FR',
         country: params.country || 'FR',
       };
