@@ -126,6 +126,7 @@
       "period": "al mese"
     },
     "subscribe": "Abbonati ora",
+    "startTrial": "Prova gratuita di 7 giorni",
     "restore": "Ripristina acquisti",
     "terms": "L'abbonamento si rinnova automaticamente salvo cancellazione. Si applicano i termini e condizioni.",
     "success": {
@@ -151,6 +152,17 @@
       }
     }
   },
+  "trial": {
+    "success": {
+      "title": "Prova gratuita attivata!",
+      "message": "Goditi 7 giorni di accesso illimitato a tutte le funzionalità!"
+    },
+    "error": {
+      "title": "Prova non disponibile",
+      "alreadyUsed": "Hai già utilizzato la tua prova gratuita.",
+      "message": "Qualcosa è andato storto. Riprova."
+    }
+  },
   "premium": {
     "limitReached": "Limite raggiunto",
     "upgradeMessage": "Passa a FastFlix Pro per continuare",
@@ -164,6 +176,10 @@
     "chooseCountry": "Scegli un paese",
     "premiumSubscription": "Abbonamento FastFlix Pro",
     "activeSubscription": "Abbonamento attivo",
+    "activeTrial": "Prova gratuita attiva",
+    "dayRemaining": "giorno rimanente",
+    "daysRemaining": "giorni rimanenti",
+    "trialEndsMessage": "Abbonati prima della fine della prova per mantenere l'accesso illimitato",
     "enjoyPremiumFeatures": "Goditi tutte le funzionalità FastFlix Pro",
     "unlockPremiumMessage": "Sblocca tutte le funzionalità FastFlix Pro per un'esperienza ottimale",
     "viewPlans": "Vedi le offerte",

@@ -115,6 +115,7 @@
       "period": "月間"
     },
     "subscribe": "今すぐ購読",
+    "startTrial": "7日間無料トライアル",
     "restore": "購入を復元",
     "terms": "キャンセルしない限り、サブスクリプションは自動更新されます。利用規約が適用されます。",
     "success": {
@@ -140,6 +141,17 @@
       }
     }
   },
+  "trial": {
+    "success": {
+      "title": "無料トライアル開始！",
+      "message": "7日間すべての機能に無制限でアクセスできます！"
+    },
+    "error": {
+      "title": "トライアル利用不可",
+      "alreadyUsed": "すでに無料トライアルを使用しています。",
+      "message": "問題が発生しました。もう一度お試しください。"
+    }
+  },
   "modal": {
     "title": "ユーザープロフィール"
   },
@@ -156,6 +168,10 @@
     "chooseCountry": "国を選択",
     "premiumSubscription": "FastFlix Pro サブスクリプション",
     "activeSubscription": "アクティブなサブスクリプション",
+    "activeTrial": "無料トライアル中",
+    "dayRemaining": "日残り",
+    "daysRemaining": "日残り",
+    "trialEndsMessage": "無制限アクセスを維持するには、トライアル終了前にご登録ください",
     "enjoyPremiumFeatures": "すべてのFastFlix Pro機能をお楽しみください",
     "unlockPremiumMessage": "最高の体験のためにFastFlix Proの全機能をアンロック",
     "viewPlans": "プランを見る",

@@ -118,6 +118,7 @@
       "period": "per month"
     },
     "subscribe": "Subscribe Now",
+    "startTrial": "Start 7-Day Free Trial",
     "restore": "Restore Purchases",
     "terms": "Subscription automatically renews unless cancelled. Terms and conditions apply.",
     "success": {
@@ -143,6 +144,17 @@
       }
     }
   },
+  "trial": {
+    "success": {
+      "title": "Free Trial Started!",
+      "message": "Enjoy 7 days of unlimited access to all features!"
+    },
+    "error": {
+      "title": "Trial Unavailable",
+      "alreadyUsed": "You have already used your free trial.",
+      "message": "Something went wrong. Please try again."
+    }
+  },
   "premium": {
     "limitReached": "Limit Reached",
     "upgradeMessage": "Upgrade to FastFlix Pro to continue",
@@ -156,6 +168,10 @@
     "chooseCountry": "Choose a country",
     "premiumSubscription": "FastFlix Pro Subscription",
     "activeSubscription": "Active subscription",
+    "activeTrial": "Free Trial Active",
+    "dayRemaining": "day remaining",
+    "daysRemaining": "days remaining",
+    "trialEndsMessage": "Subscribe before your trial ends to keep unlimited access",
     "enjoyPremiumFeatures": "Enjoy all FastFlix Pro features",
     "unlockPremiumMessage": "Unlock all FastFlix Pro features for the best experience",
     "viewPlans": "View Plans",
