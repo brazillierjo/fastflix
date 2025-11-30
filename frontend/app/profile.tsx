@@ -1,9 +1,11 @@
+import { Ionicons } from '@expo/vector-icons';
 import SubscriptionModal from '@/components/SubscriptionModal';
 import { AVAILABLE_LANGUAGES } from '@/constants/languages';
 import { useAuth } from '@/contexts/AuthContext';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { useSubscription } from '@/contexts/RevenueCatContext';
 import { getAppVersion } from '@/utils/appVersion';
+import { getSquircle, getButtonBorderRadius } from '@/utils/designHelpers';
 import { MotiView } from 'moti';
 import React, { useState } from 'react';
 import {
@@ -16,6 +18,7 @@ import {
   ScrollView,
   Text,
   TouchableOpacity,
+  useColorScheme,
   View,
 } from 'react-native';
 
@@ -28,12 +31,17 @@ export default function ProfileScreen() {
   const isSubscribed = hasUnlimitedAccess;
   const [showSubscriptionModal, setShowSubscriptionModal] = useState(false);
   const [restoring, setRestoring] = useState(false);
+  const colorScheme = useColorScheme();
+  const isDark = colorScheme === 'dark';
 
   const languages = AVAILABLE_LANGUAGES;
 
   return (
     <SafeAreaView className='flex-1 bg-light-background dark:bg-dark-background'>
-      <ScrollView className='flex-1 px-6 pt-8'>
+      <ScrollView
+        className='flex-1 px-6 pt-8'
+        contentContainerStyle={{ paddingBottom: 120 }}
+      >
         {/* Header */}
         <MotiView
           from={{ opacity: 0, translateY: -20 }}
@@ -64,10 +72,20 @@ export default function ProfileScreen() {
             }}
             className='mb-6'
           >
-            <View className='rounded-xl bg-light-card p-6 dark:bg-dark-card'>
-              <Text className='mb-4 text-lg font-semibold text-light-text dark:text-dark-text'>
-                👤 {t('profile.account') || 'Account'}
-              </Text>
+            <View
+              style={getSquircle(18)}
+              className='bg-light-card p-6 dark:bg-dark-card'
+            >
+              <View className='mb-4 flex-row items-center gap-2'>
+                <Ionicons
+                  name='person'
+                  size={20}
+                  color={isDark ? '#ffffff' : '#0f172a'}
+                />
+                <Text className='text-lg font-semibold text-light-text dark:text-dark-text'>
+                  {t('profile.account') || 'Account'}
+                </Text>
+              </View>
 
               <View className='space-y-3'>
                 {user.name && (
@@ -102,7 +120,8 @@ export default function ProfileScreen() {
                 <View className='mt-4'>
                   <TouchableOpacity
                     onPress={signOut}
-                    className='rounded-lg bg-red-500 px-6 py-3 dark:bg-red-600'
+                    style={getButtonBorderRadius()}
+                    className='bg-red-500 px-6 py-3 dark:bg-red-600'
                   >
                     <Text className='text-center font-semibold text-white'>
                       {t('profile.signOut') || 'Sign Out'}
@@ -125,10 +144,20 @@ export default function ProfileScreen() {
           }}
           className='mb-6'
         >
-          <View className='rounded-xl bg-light-card p-6 dark:bg-dark-card'>
-            <Text className='mb-4 text-lg font-semibold text-light-text dark:text-dark-text'>
-              🌍 {t('profile.language')}
-            </Text>
+          <View
+            style={getSquircle(18)}
+            className='bg-light-card p-6 dark:bg-dark-card'
+          >
+            <View className='mb-4 flex-row items-center gap-2'>
+              <Ionicons
+                name='globe'
+                size={20}
+                color={isDark ? '#ffffff' : '#0f172a'}
+              />
+              <Text className='text-lg font-semibold text-light-text dark:text-dark-text'>
+                {t('profile.language')}
+              </Text>
+            </View>
 
             <TouchableOpacity
               onPress={() => {
@@ -163,7 +192,8 @@ export default function ProfileScreen() {
                   ]);
                 }
               }}
-              className='rounded-lg border border-light-border bg-light-background p-4 dark:border-dark-border dark:bg-dark-background'
+              style={getButtonBorderRadius()}
+              className='border border-light-border bg-light-background p-4 dark:border-dark-border dark:bg-dark-background'
             >
               <View className='flex-row items-center justify-between'>
                 <Text className='text-base text-light-text dark:text-dark-text'>
@@ -187,10 +217,20 @@ export default function ProfileScreen() {
           }}
           className='mb-6'
         >
-          <View className='rounded-xl bg-light-card p-6 dark:bg-dark-card'>
-            <Text className='mb-4 text-lg font-semibold text-light-text dark:text-dark-text'>
-              🌍 {t('settings.country')}
-            </Text>
+          <View
+            style={getSquircle(18)}
+            className='bg-light-card p-6 dark:bg-dark-card'
+          >
+            <View className='mb-4 flex-row items-center gap-2'>
+              <Ionicons
+                name='flag'
+                size={20}
+                color={isDark ? '#ffffff' : '#0f172a'}
+              />
+              <Text className='text-lg font-semibold text-light-text dark:text-dark-text'>
+                {t('settings.country')}
+              </Text>
+            </View>
 
             <TouchableOpacity
               onPress={() => {
@@ -228,7 +268,8 @@ export default function ProfileScreen() {
                   ]);
                 }
               }}
-              className='rounded-lg border border-light-border bg-light-background p-4 dark:border-dark-border dark:bg-dark-background'
+              style={getButtonBorderRadius()}
+              className='border border-light-border bg-light-background p-4 dark:border-dark-border dark:bg-dark-background'
             >
               <View className='flex-row items-center justify-between'>
                 <Text className='text-base text-light-text dark:text-dark-text'>
@@ -253,10 +294,20 @@ export default function ProfileScreen() {
             }}
             className='mb-6'
           >
-            <View className='rounded-xl bg-light-card p-6 dark:bg-dark-card'>
-              <Text className='mb-4 text-lg font-semibold text-light-text dark:text-dark-text'>
-                ⭐ {t('profile.premiumSubscription')}
-              </Text>
+            <View
+              style={getSquircle(18)}
+              className='bg-light-card p-6 dark:bg-dark-card'
+            >
+              <View className='mb-4 flex-row items-center gap-2'>
+                <Ionicons
+                  name='star'
+                  size={20}
+                  color={isDark ? '#fbbf24' : '#f59e0b'}
+                />
+                <Text className='text-lg font-semibold text-light-text dark:text-dark-text'>
+                  {t('profile.premiumSubscription')}
+                </Text>
+              </View>
 
               {isSubscribed ? (
                 <View className='gap-3'>
@@ -277,7 +328,8 @@ export default function ProfileScreen() {
                   </Text>
                   <TouchableOpacity
                     onPress={() => setShowSubscriptionModal(true)}
-                    className='rounded-lg bg-primary-500 px-6 py-3'
+                    style={getButtonBorderRadius()}
+                    className='bg-netflix-500 px-6 py-3'
                   >
                     <Text className='text-center font-semibold text-white'>
                       {t('profile.viewPlans')}
@@ -304,9 +356,9 @@ export default function ProfileScreen() {
                     className='py-3'
                   >
                     {restoring ? (
-                      <ActivityIndicator color='#3B82F6' />
+                      <ActivityIndicator color='#E50914' />
                     ) : (
-                      <Text className='text-center font-medium text-primary-500'>
+                      <Text className='text-center font-medium text-netflix-500'>
                         {t('subscription.restore') || 'Restore Purchases'}
                       </Text>
                     )}
@@ -328,10 +380,20 @@ export default function ProfileScreen() {
           }}
           className='mb-6'
         >
-          <View className='rounded-xl bg-light-card p-6 dark:bg-dark-card'>
-            <Text className='mb-4 text-lg font-semibold text-light-text dark:text-dark-text'>
-              📱 {t('profile.aboutApp')}
-            </Text>
+          <View
+            style={getSquircle(18)}
+            className='bg-light-card p-6 dark:bg-dark-card'
+          >
+            <View className='mb-4 flex-row items-center gap-2'>
+              <Ionicons
+                name='phone-portrait'
+                size={20}
+                color={isDark ? '#ffffff' : '#0f172a'}
+              />
+              <Text className='text-lg font-semibold text-light-text dark:text-dark-text'>
+                {t('profile.aboutApp')}
+              </Text>
+            </View>
             <View className='space-y-3'>
               <View className='flex-row justify-between'>
                 <Text className='text-light-muted dark:text-dark-muted'>
@@ -352,7 +414,7 @@ export default function ProfileScreen() {
                   }
                   className='py-2'
                 >
-                  <Text className='text-primary-500 underline'>
+                  <Text className='text-netflix-500 underline'>
                     {t('profile.privacyPolicy')}
                   </Text>
                 </TouchableOpacity>
@@ -365,7 +427,7 @@ export default function ProfileScreen() {
                   }
                   className='py-2'
                 >
-                  <Text className='text-primary-500 underline'>
+                  <Text className='text-netflix-500 underline'>
                     {t('profile.support')}
                   </Text>
                 </TouchableOpacity>
@@ -376,7 +438,7 @@ export default function ProfileScreen() {
                   }
                   className='py-2'
                 >
-                  <Text className='text-primary-500 underline'>
+                  <Text className='text-netflix-500 underline'>
                     {t('profile.website')}
                   </Text>
                 </TouchableOpacity>

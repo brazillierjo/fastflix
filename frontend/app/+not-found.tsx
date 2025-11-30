@@ -1,7 +1,9 @@
+import { Ionicons } from '@expo/vector-icons';
 import { Link, Stack } from 'expo-router';
 import { View, Text, TouchableOpacity } from 'react-native';
 import { MotiView, MotiText } from 'moti';
 import { useLanguage } from '@/contexts/LanguageContext';
+import { getButtonBorderRadius } from '@/utils/designHelpers';
 import AppIcon from '@/components/AppIcon';
 
 export default function NotFoundScreen() {
@@ -13,10 +15,10 @@ export default function NotFoundScreen() {
       <View className='flex-1 bg-light-background dark:bg-dark-background'>
         {/* Background decoration */}
         <View className='absolute inset-0 opacity-5'>
-          <View className='absolute left-10 top-20 h-32 w-32 rounded-full bg-primary-300' />
-          <View className='absolute right-16 top-40 h-24 w-24 rounded-full bg-primary-200' />
-          <View className='absolute bottom-32 left-20 h-20 w-20 rounded-full bg-primary-400' />
-          <View className='absolute bottom-20 right-8 h-16 w-16 rounded-full bg-primary-300' />
+          <View className='absolute left-10 top-20 h-32 w-32 rounded-full bg-netflix-300' />
+          <View className='absolute right-16 top-40 h-24 w-24 rounded-full bg-netflix-200' />
+          <View className='absolute bottom-32 left-20 h-20 w-20 rounded-full bg-netflix-400' />
+          <View className='absolute bottom-20 right-8 h-16 w-16 rounded-full bg-netflix-300' />
         </View>
 
         {/* Main content */}
@@ -32,7 +34,7 @@ export default function NotFoundScreen() {
             }}
             className='mb-8'
           >
-            <View className='h-24 w-24 items-center justify-center rounded-full bg-primary-500 shadow-lg'>
+            <View className='h-24 w-24 items-center justify-center rounded-full bg-netflix-500 shadow-lg'>
               <AppIcon size={48} style={{ borderRadius: 24 }} />
             </View>
           </MotiView>
@@ -42,7 +44,7 @@ export default function NotFoundScreen() {
             from={{ opacity: 0, translateY: 20 }}
             animate={{ opacity: 1, translateY: 0 }}
             transition={{ delay: 400 }}
-            className='mb-4 text-6xl font-bold text-primary-500'
+            className='mb-4 text-6xl font-bold text-netflix-500'
           >
             404
           </MotiText>
@@ -74,12 +76,15 @@ export default function NotFoundScreen() {
             transition={{ delay: 1000, type: 'spring' }}
           >
             <Link href='/' asChild>
-              <TouchableOpacity className='rounded-xl bg-primary-500 px-8 py-4 shadow-lg hover:bg-primary-600 active:bg-primary-700'>
-                <View className='flex-row items-center'>
-                  <Text className='mr-2 text-lg font-semibold text-white'>
+              <TouchableOpacity
+                style={getButtonBorderRadius()}
+                className='bg-netflix-500 px-8 py-4 shadow-lg active:bg-netflix-600'
+              >
+                <View className='flex-row items-center gap-2'>
+                  <Text className='text-lg font-semibold text-white'>
                     {t('notFound.backButton')}
                   </Text>
-                  <Text className='text-xl'>🏠</Text>
+                  <Ionicons name='home' size={20} color='white' />
                 </View>
               </TouchableOpacity>
             </Link>

@@ -1,5 +1,12 @@
+import { Ionicons } from '@expo/vector-icons';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { cn } from '@/utils/cn';
+import {
+  getNetflixGlow,
+  getPlaceholderColor,
+  getSquircle,
+  getButtonBorderRadius,
+} from '@/utils/designHelpers';
 import { Link } from 'expo-router';
 import { MotiView } from 'moti';
 import React, { useRef, useState, useEffect } from 'react';
@@ -11,6 +18,7 @@ import {
   Text,
   TextInput,
   TouchableOpacity,
+  useColorScheme,
   View,
 } from 'react-native';
 
@@ -31,6 +39,8 @@ export default function SearchForm({
 }: SearchFormProps) {
   const { t, getRandomPlaceholder } = useLanguage();
   const [placeholder, setPlaceholder] = useState('');
+  const colorScheme = useColorScheme();
+  const isDark = colorScheme === 'dark';
 
   // Generate a random placeholder when component mounts or language changes
   useEffect(() => {
@@ -77,21 +87,21 @@ export default function SearchForm({
         <View className='flex-1 justify-center px-6'>
           {/* Welcome Section */}
           <MotiView
-            from={{ opacity: 0, translateY: -20 }}
+            from={{ opacity: 0, translateY: -30 }}
             animate={{ opacity: 1, translateY: 0 }}
             transition={{
               type: 'timing',
-              duration: 800,
+              duration: 600,
             }}
-            className='mb-10'
+            className='mb-12'
           >
-            <Text className='mb-6 text-center text-3xl font-bold text-light-text dark:text-dark-text'>
+            <Text className='mb-4 text-5xl font-bold text-light-text dark:text-dark-text'>
               {t('welcome.title')}
             </Text>
-            <Text className='mb-4 text-justify text-base text-light-text dark:text-dark-text'>
+            <Text className='mb-4 text-lg text-light-textSecondary dark:text-dark-textSecondary'>
               {t('welcome.subtitle')}
             </Text>
-            <Text className='text-justify text-base leading-relaxed text-light-text dark:text-dark-text'>
+            <Text className='text-base leading-relaxed text-light-textMuted dark:text-dark-textMuted'>
               {t('welcome.description')}
             </Text>
           </MotiView>
@@ -105,16 +115,22 @@ export default function SearchForm({
               type: 'timing',
               duration: 600,
             }}
-            className='mb-6'
+            className='mb-8'
           >
-            <View className='rounded-lg border border-light-accent/20 bg-light-accent/5 p-4 dark:border-dark-accent/20 dark:bg-dark-accent/5'>
-              <Text className='mb-2 text-sm font-medium text-light-accent dark:text-dark-accent'>
-                ⚙️ {t('welcome.languageTip.title')}
-              </Text>
-              <Text className='text-xs leading-relaxed text-light-text/80 dark:text-dark-text/80'>
+            <View
+              style={getSquircle(18)}
+              className='border border-netflix-500/20 bg-netflix-500/5 p-4'
+            >
+              <View className='mb-2 flex-row items-center gap-2'>
+                <Ionicons name='settings-outline' size={16} color='#E50914' />
+                <Text className='text-sm font-semibold text-netflix-500'>
+                  {t('welcome.languageTip.title')}
+                </Text>
+              </View>
+              <Text className='text-xs leading-relaxed text-light-textSecondary dark:text-dark-textSecondary'>
                 {t('welcome.languageTip.description')}{' '}
                 <Link href='/profile' asChild>
-                  <Text className='text-xs font-medium text-light-primary underline dark:text-dark-primary'>
+                  <Text className='text-xs font-semibold text-netflix-500 underline'>
                     {t('welcome.languageTip.profileLink')}
                   </Text>
                 </Link>
@@ -134,20 +150,15 @@ export default function SearchForm({
             className='mb-6'
           >
             {/* Example Button */}
-            <View className='mb-2 flex-row justify-end'>
+            <View className='mb-3 flex-row justify-end'>
               <TouchableOpacity
                 onPress={fillWithRandomExample}
-                className='flex-row items-center rounded-lg bg-light-primary/10 px-3 py-1 shadow-sm shadow-light-primary/20 dark:bg-dark-primary/10 dark:shadow-dark-primary/20'
-                style={{
-                  shadowOffset: { width: 0, height: 2 },
-                  shadowOpacity: 0.3,
-                  shadowRadius: 4,
-                  elevation: 3,
-                }}
+                style={getSquircle(20)}
+                className='flex-row items-center gap-1 bg-netflix-500/10 px-4 py-2'
                 disabled={loading}
               >
-                <Text className='mr-1 text-sm'>💡</Text>
-                <Text className='text-xs font-medium text-light-primary dark:text-dark-primary'>
+                <Ionicons name='bulb-outline' size={16} color='#E50914' />
+                <Text className='text-xs font-semibold text-netflix-500'>
                   {t('welcome.exampleButton') || 'Exemple'}
                 </Text>
               </TouchableOpacity>
@@ -159,18 +170,26 @@ export default function SearchForm({
               onChangeText={setQuery}
               onFocus={handleInputFocus}
               placeholder={'e.g.: ' + placeholder}
-              placeholderTextColor='#9CA3AF'
-              className='rounded-xl border border-light-border bg-light-card p-4 text-base text-light-text dark:border-dark-border dark:bg-dark-card dark:text-dark-text'
+              placeholderTextColor={getPlaceholderColor(isDark)}
+              className='border-2 border-light-border bg-light-surface p-6 text-lg text-light-text focus:border-netflix-500 dark:border-dark-border dark:bg-dark-surface dark:text-dark-text'
               multiline
               textAlignVertical='top'
               scrollEnabled={false}
-              style={{ minHeight: 80, maxHeight: 120 }}
+              style={[
+                {
+                  borderRadius: 14,
+                  ...(Platform.OS === 'ios' && {
+                    borderCurve: 'continuous' as any,
+                  }),
+                },
+                { minHeight: 100, maxHeight: 140 },
+              ]}
             />
           </MotiView>
 
           {/* Search Button */}
           <MotiView
-            from={{ opacity: 0, scale: 0.9 }}
+            from={{ opacity: 0, scale: 0.95 }}
             animate={{ opacity: 1, scale: 1 }}
             transition={{
               delay: 400,
@@ -182,13 +201,17 @@ export default function SearchForm({
               onPress={onSearch}
               disabled={loading}
               className={cn(
-                'items-center rounded-xl p-4',
+                'items-center px-8 py-6',
                 loading
-                  ? 'bg-light-muted dark:bg-dark-muted'
-                  : 'bg-light-primary dark:bg-dark-primary'
+                  ? 'bg-cinematic-600'
+                  : 'bg-netflix-500 active:bg-netflix-600'
               )}
+              style={[
+                getButtonBorderRadius(),
+                !loading ? getNetflixGlow(isDark) : undefined,
+              ]}
             >
-              <Text className='text-base font-semibold text-light-background dark:text-dark-background'>
+              <Text className='text-lg font-semibold text-white'>
                 {loading ? t('welcome.generating') : t('welcome.searchButton')}
               </Text>
             </TouchableOpacity>

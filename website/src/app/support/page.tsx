@@ -45,7 +45,7 @@ export default function Support() {
   };
 
   return (
-    <div className='min-h-screen bg-gray-50 py-12'>
+    <div className='min-h-screen bg-gray-50 dark:bg-gray-900 py-12'>
       <div className='mx-auto max-w-4xl px-4 sm:px-6 lg:px-8'>
         {/* Header */}
         <div className='mb-8'>
@@ -56,13 +56,13 @@ export default function Support() {
             </Button>
           </Link>
           <div className='text-center'>
-            <div className='mb-4 inline-flex h-16 w-16 items-center justify-center rounded-full bg-green-100'>
-              <HelpCircle className='h-8 w-8 text-green-600' />
+            <div className='mb-4 inline-flex h-16 w-16 items-center justify-center rounded-full bg-netflix/10'>
+              <HelpCircle className='h-8 w-8 text-netflix' />
             </div>
-            <h1 className='mb-4 text-4xl font-bold text-gray-900'>
+            <h1 className='mb-4 text-4xl font-bold text-gray-900 dark:text-white'>
               {t('supportTitle')}
             </h1>
-            <p className='text-lg text-gray-600'>{t('supportSubtitle')}</p>
+            <p className='text-lg text-gray-600 dark:text-gray-400'>{t('supportSubtitle')}</p>
           </div>
         </div>
 
@@ -117,8 +117,8 @@ export default function Support() {
                 >
                   <CardContent className='p-6'>
                     <div className='flex items-start space-x-4'>
-                      <div className='flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-lg bg-blue-100'>
-                        <Icon className='h-6 w-6 text-blue-600' />
+                      <div className='flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-squircle bg-netflix/10'>
+                        <Icon className='h-6 w-6 text-netflix' />
                       </div>
                       <div className='flex-1'>
                         <h3 className='mb-2 text-lg font-semibold text-gray-900'>
@@ -137,12 +137,12 @@ export default function Support() {
         </div>
 
         {/* Quick Help */}
-        <Card className='border-blue-200 bg-gradient-to-r from-blue-50 to-purple-50'>
+        <Card className='border-netflix/20 bg-gradient-to-r from-red-50 to-orange-50 dark:from-gray-800 dark:to-gray-800'>
           <CardContent className='p-8 text-center'>
-            <h3 className='mb-4 text-xl font-semibold text-gray-900'>
+            <h3 className='mb-4 text-xl font-semibold text-gray-900 dark:text-white'>
               {t('needImmediateHelp')}
             </h3>
-            <p className='mb-6 text-gray-600'>
+            <p className='mb-6 text-gray-600 dark:text-gray-400'>
               Pour signaler un bug, demander une nouvelle fonctionnalité ou
               obtenir de l&apos;aide, contactez-nous par email.
             </p>

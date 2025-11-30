@@ -3,9 +3,11 @@
  * Displays Sign in with Apple button for user authentication
  */
 
+import { Ionicons } from '@expo/vector-icons';
 import { useAuth } from '@/contexts/AuthContext';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { cn } from '@/utils/cn';
+import { getSquircle } from '@/utils/designHelpers';
 import * as AppleAuthentication from 'expo-apple-authentication';
 import { useRouter } from 'expo-router';
 import { MotiView } from 'moti';
@@ -15,6 +17,7 @@ import {
   Platform,
   StatusBar,
   Text,
+  useColorScheme,
   View,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
@@ -23,6 +26,8 @@ export default function AuthScreen() {
   const { signInWithApple, isAuthenticated, isLoading } = useAuth();
   const { t } = useLanguage();
   const router = useRouter();
+  const colorScheme = useColorScheme();
+  const isDark = colorScheme === 'dark';
 
   // Redirect if already authenticated
   useEffect(() => {
@@ -58,7 +63,13 @@ export default function AuthScreen() {
           }}
           className='mb-12 items-center'
         >
-          <Text className='mb-4 text-center text-5xl'>🎬</Text>
+          <View className='mb-4 items-center justify-center'>
+            <Ionicons
+              name='film'
+              size={64}
+              color={isDark ? '#E50914' : '#E50914'}
+            />
+          </View>
           <Text className='mb-6 text-center text-4xl font-bold text-light-text dark:text-dark-text'>
             FastFlix
           </Text>
@@ -130,7 +141,10 @@ export default function AuthScreen() {
               duration: 600,
             }}
           >
-            <View className='rounded-xl border border-light-accent/20 bg-light-accent/5 p-4 dark:border-dark-accent/20 dark:bg-dark-accent/5'>
+            <View
+              style={getSquircle(14)}
+              className='border border-light-accent/20 bg-light-accent/5 p-4 dark:border-dark-accent/20 dark:bg-dark-accent/5'
+            >
               <Text className='text-center text-sm text-light-text dark:text-dark-text'>
                 {t('auth.platformNotSupported') ||
                   'Authentication is currently only available on iOS.'}

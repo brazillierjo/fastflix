@@ -1,4 +1,5 @@
 import { useLanguage } from '@/contexts/LanguageContext';
+import { getNetflixRed } from '@/utils/designHelpers';
 import { MotiView } from 'moti';
 import React from 'react';
 import { ActivityIndicator, Text, View } from 'react-native';
@@ -11,43 +12,41 @@ export default function LoadingState({ isSearching }: LoadingStateProps) {
   const { t } = useLanguage();
 
   return (
-    <View className='flex-1 items-center justify-center'>
+    <View className='flex-1 items-center justify-center bg-light-background dark:bg-dark-background'>
       {isSearching ? (
         <MotiView
-          from={{ opacity: 0, translateY: 20 }}
-          animate={{ opacity: 1, translateY: 0 }}
+          from={{ opacity: 0, scale: 0.9 }}
+          animate={{ opacity: 1, scale: 1 }}
           transition={{
             type: 'timing',
             duration: 600,
           }}
           className='items-center'
         >
-          <ActivityIndicator
-            size='large'
-            color='#0f172a'
-            className='text-light-primary dark:text-dark-primary'
-          />
-          <Text className='mt-4 text-center text-base text-light-muted dark:text-dark-muted'>
+          <ActivityIndicator size='large' color={getNetflixRed()} />
+          <Text className='mt-6 text-center text-lg font-medium text-light-text dark:text-dark-text'>
             {t('welcome.searching')}
+          </Text>
+          <Text className='mt-2 text-center text-sm text-light-textMuted dark:text-dark-textMuted'>
+            {t('welcome.pleaseWait') || 'Veuillez patienter...'}
           </Text>
         </MotiView>
       ) : (
         <MotiView
-          from={{ opacity: 0, translateY: 20 }}
-          animate={{ opacity: 1, translateY: 0 }}
+          from={{ opacity: 0, scale: 0.9 }}
+          animate={{ opacity: 1, scale: 1 }}
           transition={{
             type: 'timing',
             duration: 600,
           }}
           className='items-center'
         >
-          <ActivityIndicator
-            size='large'
-            color='#0f172a'
-            className='text-light-primary dark:text-dark-primary'
-          />
-          <Text className='mt-4 text-center text-base text-light-muted dark:text-dark-muted'>
+          <ActivityIndicator size='large' color={getNetflixRed()} />
+          <Text className='mt-6 text-center text-lg font-medium text-light-text dark:text-dark-text'>
             {t('welcome.generating')}
+          </Text>
+          <Text className='mt-2 text-center text-sm text-light-textMuted dark:text-dark-textMuted'>
+            {t('welcome.pleaseWait') || 'Veuillez patienter...'}
           </Text>
         </MotiView>
       )}

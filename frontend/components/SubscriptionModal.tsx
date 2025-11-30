@@ -1,3 +1,4 @@
+import { Ionicons } from '@expo/vector-icons';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { useSubscription } from '@/contexts/RevenueCatContext';
 import { cn } from '@/utils/cn';
@@ -7,6 +8,7 @@ import {
   formatPriceForCountry,
   getCurrencyForCountry,
 } from '@/utils/currency';
+import { getSquircle, getButtonBorderRadius } from '@/utils/designHelpers';
 import { MotiView } from 'moti';
 import React, { useState } from 'react';
 import {
@@ -17,6 +19,7 @@ import {
   ScrollView,
   Text,
   TouchableOpacity,
+  useColorScheme,
   View,
 } from 'react-native';
 import AppIcon from './AppIcon';
@@ -45,6 +48,8 @@ export default function SubscriptionModal({
     'annual'
   );
   const [purchasing, setPurchasing] = useState(false);
+  const colorScheme = useColorScheme();
+  const isDark = colorScheme === 'dark';
 
   const monthlyPackage = getMonthlyPackage();
   const annualPackage = getAnnualPackage();
@@ -137,7 +142,10 @@ export default function SubscriptionModal({
     return (
       <Modal visible={visible} transparent animationType='fade'>
         <View className='flex-1 items-center justify-center bg-black/50'>
-          <View className='rounded-2xl bg-light-background p-8 dark:bg-dark-surface'>
+          <View
+            style={getSquircle(18)}
+            className='bg-light-background p-8 dark:bg-dark-surface'
+          >
             <ActivityIndicator size='large' color='#3B82F6' />
             <Text className='mt-4 text-center text-light-muted dark:text-dark-muted'>
               {t('subscription.loading') || 'Loading subscription options...'}
@@ -178,7 +186,18 @@ export default function SubscriptionModal({
             transition={{ type: 'timing', duration: 600 }}
             className='p-6'
           >
-            <Text className='mb-4 text-center text-4xl'>🎬✨</Text>
+            <View className='mb-4 flex-row items-center justify-center gap-2'>
+              <Ionicons
+                name='film'
+                size={40}
+                color={isDark ? '#E50914' : '#E50914'}
+              />
+              <Ionicons
+                name='sparkles'
+                size={32}
+                color={isDark ? '#fbbf24' : '#f59e0b'}
+              />
+            </View>
             <Text className='mb-2 text-center text-xl font-semibold text-light-text dark:text-dark-text'>
               {t('subscription.hero.title') || 'Unlock Premium Features'}
             </Text>
@@ -202,8 +221,8 @@ export default function SubscriptionModal({
                 }}
                 className='mb-6 flex-row items-center'
               >
-                <View className='mr-4 h-12 w-12 items-center justify-center rounded-full bg-primary-100 dark:bg-primary-900/30'>
-                  <Text className='text-2xl'>🎬</Text>
+                <View className='mr-4 h-12 w-12 items-center justify-center rounded-full bg-netflix-500/10 dark:bg-netflix-500/20'>
+                  <Ionicons name='film' size={24} color='#E50914' />
                 </View>
                 <View className='flex-1'>
                   <Text className='mb-1 font-semibold text-light-text dark:text-dark-text'>
@@ -227,15 +246,16 @@ export default function SubscriptionModal({
             {annualPackage && (
               <TouchableOpacity
                 onPress={() => setSelectedPlan('annual')}
+                style={getSquircle(18)}
                 className={cn(
-                  'relative mb-4 rounded-2xl border-2 p-4',
+                  'relative mb-4 border-2 p-4',
                   selectedPlan === 'annual'
-                    ? 'border-primary-500 bg-primary-50 dark:bg-primary-900/20'
+                    ? 'border-netflix-500 bg-netflix-500/5 dark:bg-netflix-500/10'
                     : 'border-light-border bg-light-background dark:border-dark-border dark:bg-dark-surface'
                 )}
               >
                 {/* Popular Badge */}
-                <View className='absolute -top-2 left-4 rounded-full bg-primary-500 px-3 py-1'>
+                <View className='absolute -top-2 left-4 rounded-full bg-netflix-500 px-3 py-1'>
                   <Text className='text-xs font-semibold text-white'>
                     {t('subscription.popular') || 'POPULAR'}
                   </Text>
@@ -267,10 +287,11 @@ export default function SubscriptionModal({
             {monthlyPackage && (
               <TouchableOpacity
                 onPress={() => setSelectedPlan('monthly')}
+                style={getSquircle(18)}
                 className={cn(
-                  'rounded-2xl border-2 p-4',
+                  'border-2 p-4',
                   selectedPlan === 'monthly'
-                    ? 'border-primary-500 bg-primary-50 dark:bg-primary-900/20'
+                    ? 'border-netflix-500 bg-netflix-500/5 dark:bg-netflix-500/10'
                     : 'border-light-border bg-light-background dark:border-dark-border dark:bg-dark-surface'
                 )}
               >
@@ -303,8 +324,9 @@ export default function SubscriptionModal({
           <TouchableOpacity
             onPress={handlePurchase}
             disabled={purchasing || (!monthlyPackage && !annualPackage)}
+            style={getButtonBorderRadius()}
             className={cn(
-              'mb-4 rounded-2xl bg-primary-500 py-4',
+              'mb-4 bg-netflix-500 py-4',
               (purchasing || (!monthlyPackage && !annualPackage)) &&
                 'opacity-50'
             )}
@@ -323,7 +345,7 @@ export default function SubscriptionModal({
             disabled={purchasing}
             className='py-3'
           >
-            <Text className='text-center font-medium text-primary-500'>
+            <Text className='text-center font-medium text-netflix-500'>
               {t('subscription.restore') || 'Restore Purchases'}
             </Text>
           </TouchableOpacity>

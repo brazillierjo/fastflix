@@ -4,7 +4,7 @@ export const translations = {
     home: 'Home',
     privacyPolicy: 'Privacy Policy',
     termsOfUse: 'Terms of Use',
-    support: 'Support Center',
+    support: 'Support',
     language: 'Language',
 
     // Common
@@ -19,58 +19,58 @@ export const translations = {
       'Discover your next favorite movie or TV show with our intelligent recommendation system powered by AI.',
 
     // Hero section
-    heroBadge: 'FastFlix Pro',
+    heroBadge: 'Download the App',
     heroTitle: 'Your perfect movie,',
-    heroTitleHighlight: 'One prompt away 🎬',
+    heroTitleHighlight: 'one prompt away',
     heroDescription:
-      "Tell us what you're in the mood for, and our powerful backend API powered by Google Gemini AI will find the perfect movie or TV show for you. Just mention your streaming platform in your query, and we'll show you what's available.",
+      'FastFlix is an iOS mobile application that uses AI to find the perfect movie or TV show for you. Simply describe what you\'re in the mood for in natural language, and our intelligent system will provide personalized recommendations.',
     heroSubDescription:
-      'Whether you want "something funny but not too silly" or "a thriller that won\'t keep me up all night," FastFlix understands and delivers.',
-    downloadIOS: 'Download for iPhone & iPad',
+      'Download the app to unlock unlimited recommendations with a premium subscription.',
+    downloadIOS: 'Download for iOS',
     privacyStatement:
-      'Available exclusively on iOS • No account required • Complete privacy',
+      'Available exclusively on iOS • Premium subscription required for unlimited use',
 
     // Features section
-    featuresTitle: 'How FastFlix Works',
+    featuresTitle: 'Why Choose FastFlix',
     featuresDescription:
-      'Smart AI recommendations that respect your privacy and streaming subscriptions',
-    flexiblePrompts: 'Flexible Prompts',
+      'Professional AI-powered recommendations designed for your streaming experience',
+    flexiblePrompts: 'Natural Language Search',
     flexiblePromptsDesc:
-      'Describe your mood in natural language - no rigid categories',
-    aiPowered: 'Dedicated Backend API',
+      'Describe what you want in your own words - our AI understands context and nuance',
+    aiPowered: 'Powered by Google Gemini AI',
     aiPoweredDesc:
-      'Powered by our own API backend with Google Gemini AI integration for accurate, context-aware recommendations',
-    platformFiltering: 'Smart Platform Filtering',
+      'Advanced AI technology provides accurate, context-aware recommendations tailored to your preferences',
+    platformFiltering: 'Streaming Platform Integration',
     platformFilteringDesc:
-      'Mention streaming services in your query (e.g., "on Netflix") and our AI automatically filters results for that platform',
-    zeroDataCollection: 'Zero Data Collection',
+      'Automatically filters results based on your available streaming services for instant access',
+    zeroDataCollection: 'Privacy First',
     zeroDataCollectionDesc:
-      'Complete privacy - no accounts, no tracking, no data storage',
+      'Complete privacy with zero data collection - no accounts, no tracking, no stored history',
 
     // Platform section
-    platformTitle: 'Available on iOS',
+    platformTitle: 'Get Started with FastFlix',
     platformDescription:
-      'Download FastFlix for iPhone and iPad to start discovering your next favorite movie or show.',
+      'Download the FastFlix mobile app on the App Store to start discovering personalized recommendations.',
     iphoneSupport: 'iPhone',
-    iphoneRequirement: 'Requires iOS 15.0 or later',
+    iphoneRequirement: 'iOS 15.0 or later',
     ipadSupport: 'iPad',
-    ipadRequirement: 'Requires iPadOS 15.0 or later',
+    ipadRequirement: 'iPadOS 15.0 or later',
 
     // How it works
-    step1Title: 'Describe Your Mood',
-    step1Desc: "Tell us what you're feeling like watching",
-    step2Title: 'AI Finds Matches',
-    step2Desc: 'Our AI analyzes your request and finds perfect matches',
-    step3Title: 'Filter by Platform',
-    step3Desc: "See what's available on your streaming services",
+    step1Title: 'Download the App',
+    step1Desc: 'Get FastFlix from the App Store on your iPhone or iPad',
+    step2Title: 'Describe Your Mood',
+    step2Desc: 'Tell our AI what you feel like watching in natural language',
+    step3Title: 'Get Recommendations',
+    step3Desc: 'Receive personalized suggestions filtered by your streaming platforms',
 
     // CTA section
-    ctaTitle: 'Ready to Find Your Next Favorite?',
-    ctaSubtitle: 'Start Watching.',
-    downloadForIOS: 'Download for iOS',
+    ctaTitle: 'Ready to Discover Your Next Favorite?',
+    ctaSubtitle: 'Download FastFlix now',
+    downloadForIOS: 'Get the App',
     learnMore: 'Learn More',
     ctaPrivacy:
-      'Free download • Subscription: €2.99/month or €29.99/year • 3 free prompts included',
+      '3 free searches included • Premium: €2.99/month or €29.99/year for unlimited recommendations',
 
     // Privacy Policy
     privacyTitle: 'Privacy Policy',
@@ -129,7 +129,7 @@ export const translations = {
       'By downloading, installing, or using FastFlix, you agree to be bound by these Terms of Use. If you do not agree to these terms, please do not use the application.',
     useOfService: 'Use of Service',
     useOfServiceDesc:
-      'FastFlix is designed to provide AI-powered movie and TV show recommendations. You may use the service for personal, non-commercial purposes only.',
+      'FastFlix is a mobile application designed to provide AI-powered movie and TV show recommendations. You may use the service for personal, non-commercial purposes only.',
     useOfServiceItems: [
       'You must be at least 13 years old to use FastFlix',
       'You agree to use the service only for lawful purposes',
@@ -138,13 +138,14 @@ export const translations = {
     ],
     subscriptionTerms: 'Subscription Terms',
     subscriptionTermsDesc:
-      'FastFlix offers subscription-based premium features with the following terms:',
+      'FastFlix offers a premium subscription within the mobile app with the following terms:',
     subscriptionTermsItems: [
       'Subscriptions are auto-renewable and charged monthly (€2.99) or yearly (€29.99)',
       'Payment will be charged to your Apple ID account at confirmation of purchase',
       'Subscriptions automatically renew unless auto-renew is turned off at least 24 hours before the end of the current period',
       'You can manage and cancel subscriptions in your Apple ID Account Settings',
       'No refunds are provided for unused portions of subscription periods',
+      '3 free searches are provided to all users before requiring a subscription',
     ],
     intellectualProperty: 'Intellectual Property',
     intellectualPropertyDesc:
@@ -168,7 +169,7 @@ export const translations = {
       'These Terms of Use are effective as of December 2024 and apply to all users of FastFlix.',
 
     // Support
-    supportTitle: 'Support Center',
+    supportTitle: 'Support',
     supportSubtitle: 'How can we help you?',
     faq: 'Frequently Asked Questions',
     contactSupport: 'Contact Support',
@@ -199,34 +200,34 @@ export const translations = {
     // FAQ
     faqItems: [
       {
-        question: 'How does FastFlix generate recommendations?',
+        question: 'How do I use FastFlix?',
         answer:
-          'FastFlix uses a dedicated backend API powered by Google Gemini AI to analyze your preferences and mood descriptions. The API then enriches results with data from The Movie Database (TMDB), including detailed information and streaming availability for your country. If you mention a streaming platform in your query (e.g., "on Netflix"), our smart filtering system automatically shows only content available on that platform.',
+          'Download the FastFlix mobile app from the App Store. Once installed, you can describe what you want to watch in natural language, and our AI will provide personalized recommendations. The app includes 3 free searches, after which a premium subscription is required for unlimited access.',
       },
       {
-        question: 'Is FastFlix free to use?',
+        question: 'How much does FastFlix cost?',
         answer:
-          'FastFlix offers 3 free prompts to get you started. For unlimited access, subscribe to FastFlix for €2.99/month or €29.99/year for unlimited movie and TV show recommendations.',
+          'FastFlix includes 3 free searches to get started. For unlimited recommendations, subscribe to FastFlix Premium for €2.99/month or €29.99/year. All subscriptions are managed through the iOS app on your device.',
       },
       {
-        question: 'Which platforms are supported?',
+        question: 'Which devices are supported?',
         answer:
-          'FastFlix is available on iOS. You can access it from any iOS device with an internet connection.',
+          'FastFlix is available exclusively on iOS devices. You can download it from the App Store on iPhone (iOS 15.0+) or iPad (iPadOS 15.0+).',
       },
       {
-        question: 'How accurate are the recommendations?',
+        question: 'How do I subscribe to premium?',
         answer:
-          'Our AI-powered system continuously learns and improves. The more specific you are with your preferences and mood, the better the recommendations will be.',
+          'Download the FastFlix app from the App Store and subscribe directly within the app. All subscription management is handled through your Apple ID Account Settings.',
       },
       {
         question: 'Can I change the language?',
         answer:
-          'Yes, FastFlix supports both English and French. You can change the language in the app settings or profile section.',
+          'Yes, FastFlix supports both English and French. You can change the language in the app settings within the mobile application.',
       },
       {
         question: 'Do you store my search history?',
         answer:
-          'We only store minimal data necessary for the service. Your search queries are processed to generate recommendations but are not permanently stored or linked to your identity.',
+          'No. FastFlix does not store any personal data or search history. All queries are processed in real-time and immediately discarded after providing recommendations.',
       },
     ],
   },
@@ -236,7 +237,7 @@ export const translations = {
     home: 'Accueil',
     privacyPolicy: 'Politique de confidentialité',
     termsOfUse: "Conditions d'utilisation",
-    support: "Centre d'assistance",
+    support: 'Assistance',
     language: 'Langue',
 
     // Common
@@ -251,59 +252,58 @@ export const translations = {
       "Découvrez votre prochain film ou série préféré avec notre système de recommandation intelligent alimenté par l'IA.",
 
     // Hero section
-    heroBadge: 'FastFlix Pro',
+    heroBadge: "Téléchargez l'application",
     heroTitle: 'Votre film parfait,',
-    heroTitleHighlight: 'en une phrase 🎬',
+    heroTitleHighlight: 'en une phrase',
     heroDescription:
-      "Dites-nous ce que vous avez envie de regarder, et notre puissante API backend alimentée par l'IA Google Gemini trouvera le film ou la série parfait pour vous. Mentionnez simplement votre plateforme de streaming dans votre recherche, et nous vous montrerons ce qui est disponible.",
+      "FastFlix est une application mobile iOS qui utilise l'IA pour trouver le film ou la série parfait pour vous. Décrivez simplement ce que vous avez envie de regarder en langage naturel, et notre système intelligent fournira des recommandations personnalisées.",
     heroSubDescription:
-      'Que vous vouliez "quelque chose de drôle mais pas trop bête" ou "un thriller qui ne m\'empêchera pas de dormir", FastFlix comprend et livre.',
-    downloadIOS: 'Télécharger pour iPhone et iPad',
+      "Téléchargez l'application pour débloquer des recommandations illimitées avec un abonnement premium.",
+    downloadIOS: 'Télécharger pour iOS',
     privacyStatement:
-      'Disponible exclusivement sur iOS • Aucun compte requis • Confidentialité complète',
+      'Disponible exclusivement sur iOS • Abonnement premium requis pour une utilisation illimitée',
 
     // Features section
-    featuresTitle: 'Comment fonctionne FastFlix',
+    featuresTitle: 'Pourquoi choisir FastFlix',
     featuresDescription:
-      'Recommandations IA intelligentes qui respectent votre vie privée et vos abonnements streaming',
-    flexiblePrompts: 'Prompts flexibles',
+      "Recommandations IA professionnelles conçues pour votre expérience de streaming",
+    flexiblePrompts: 'Recherche en langage naturel',
     flexiblePromptsDesc:
-      'Décrivez votre humeur en langage naturel - aucune catégorie rigide',
-    aiPowered: "API Backend dédiée",
+      "Décrivez ce que vous voulez avec vos propres mots - notre IA comprend le contexte et les nuances",
+    aiPowered: "Propulsé par l'IA Google Gemini",
     aiPoweredDesc:
-      "Propulsé par notre propre backend API avec intégration de l'IA Google Gemini pour des recommandations précises et contextuelles",
-    platformFiltering: 'Filtrage intelligent par plateforme',
+      "Une technologie IA avancée fournit des recommandations précises et contextuelles adaptées à vos préférences",
+    platformFiltering: 'Intégration des plateformes de streaming',
     platformFilteringDesc:
-      'Mentionnez un service de streaming dans votre recherche (ex: "sur Netflix") et notre IA filtre automatiquement les résultats pour cette plateforme',
-    zeroDataCollection: 'Zéro collecte de données',
+      "Filtre automatiquement les résultats en fonction de vos services de streaming disponibles pour un accès instantané",
+    zeroDataCollection: 'Confidentialité d\'abord',
     zeroDataCollectionDesc:
-      'Confidentialité complète - pas de comptes, pas de suivi, pas de stockage de données',
+      "Confidentialité totale avec zéro collecte de données - pas de comptes, pas de suivi, pas d'historique stocké",
 
     // Platform section
-    platformTitle: 'Disponible sur iOS',
+    platformTitle: 'Démarrez avec FastFlix',
     platformDescription:
-      'Téléchargez FastFlix pour iPhone et iPad pour commencer à découvrir votre prochain film ou série préféré.',
+      "Téléchargez l'application mobile FastFlix sur l'App Store pour commencer à découvrir des recommandations personnalisées.",
     iphoneSupport: 'iPhone',
-    iphoneRequirement: 'Nécessite iOS 15.0 ou ultérieur',
+    iphoneRequirement: 'iOS 15.0 ou ultérieur',
     ipadSupport: 'iPad',
-    ipadRequirement: 'Nécessite iPadOS 15.0 ou ultérieur',
+    ipadRequirement: 'iPadOS 15.0 ou ultérieur',
 
     // How it works
-    step1Title: 'Décrivez votre humeur',
-    step1Desc: 'Dites-nous ce que vous avez envie de regarder',
-    step2Title: "L'IA trouve des correspondances",
-    step2Desc:
-      'Notre IA analyse votre demande et trouve des correspondances parfaites',
-    step3Title: 'Filtrez par plateforme',
-    step3Desc: 'Voyez ce qui est disponible sur vos services de streaming',
+    step1Title: "Téléchargez l'application",
+    step1Desc: "Obtenez FastFlix depuis l'App Store sur votre iPhone ou iPad",
+    step2Title: 'Décrivez votre humeur',
+    step2Desc: "Dites à notre IA ce que vous avez envie de regarder en langage naturel",
+    step3Title: 'Recevez des recommandations',
+    step3Desc: 'Obtenez des suggestions personnalisées filtrées par vos plateformes de streaming',
 
     // CTA section
-    ctaTitle: 'Prêt à trouver votre prochain favori ?',
-    ctaSubtitle: 'Commencez à regarder.',
-    downloadForIOS: 'Télécharger pour iOS',
+    ctaTitle: 'Prêt à découvrir votre prochain favori ?',
+    ctaSubtitle: 'Téléchargez FastFlix maintenant',
+    downloadForIOS: "Obtenir l'application",
     learnMore: 'En savoir plus',
     ctaPrivacy:
-      'Téléchargement gratuit • Abonnement FastFlix : 2,99€/mois ou 29,99€/an • 3 prompts gratuits inclus',
+      '3 recherches gratuites incluses • Premium : 2,99€/mois ou 29,99€/an pour des recommandations illimitées',
 
     // Privacy Policy
     privacyTitle: 'Politique de confidentialité',
@@ -364,7 +364,7 @@ export const translations = {
       "En téléchargeant, installant ou utilisant FastFlix, vous acceptez d'être lié par ces Conditions d'utilisation. Si vous n'acceptez pas ces conditions, veuillez ne pas utiliser l'application.",
     useOfService: 'Utilisation du service',
     useOfServiceDesc:
-      "FastFlix est conçu pour fournir des recommandations de films et séries TV alimentées par l'IA. Vous ne pouvez utiliser le service qu'à des fins personnelles et non commerciales.",
+      "FastFlix est une application mobile conçue pour fournir des recommandations de films et séries TV alimentées par l'IA. Vous ne pouvez utiliser le service qu'à des fins personnelles et non commerciales.",
     useOfServiceItems: [
       'Vous devez avoir au moins 13 ans pour utiliser FastFlix',
       "Vous acceptez d'utiliser le service uniquement à des fins légales",
@@ -373,13 +373,14 @@ export const translations = {
     ],
     subscriptionTerms: "Conditions d'abonnement",
     subscriptionTermsDesc:
-      'FastFlix propose des fonctionnalités premium par abonnement avec les conditions suivantes :',
+      "FastFlix propose un abonnement premium dans l'application mobile avec les conditions suivantes :",
     subscriptionTermsItems: [
       'Les abonnements sont auto-renouvelables et facturés mensuellement (2,99 €) ou annuellement (29,99 €)',
       "Le paiement sera débité de votre compte Apple ID lors de la confirmation d'achat",
       'Les abonnements se renouvellent automatiquement sauf si le renouvellement automatique est désactivé au moins 24 heures avant la fin de la période en cours',
       'Vous pouvez gérer et annuler les abonnements dans les paramètres de votre compte Apple ID',
       "Aucun remboursement n'est fourni pour les portions inutilisées des périodes d'abonnement",
+      "3 recherches gratuites sont fournies à tous les utilisateurs avant de nécessiter un abonnement",
     ],
     intellectualProperty: 'Propriété intellectuelle',
     intellectualPropertyDesc:
@@ -403,7 +404,7 @@ export const translations = {
       "Ces Conditions d'utilisation sont effectives depuis décembre 2024 et s'appliquent à tous les utilisateurs de FastFlix.",
 
     // Support
-    supportTitle: "Centre d'assistance",
+    supportTitle: 'Assistance',
     supportSubtitle: 'Comment pouvons-nous vous aider ?',
     faq: 'Questions fréquemment posées',
     contactSupport: 'Contacter le support',
@@ -436,34 +437,34 @@ export const translations = {
     // FAQ
     faqItems: [
       {
-        question: 'Comment FastFlix génère-t-il des recommandations ?',
+        question: 'Comment utiliser FastFlix ?',
         answer:
-          "FastFlix utilise une API backend dédiée alimentée par l'IA Google Gemini pour analyser vos préférences et descriptions d'humeur. L'API enrichit ensuite les résultats avec des données de The Movie Database (TMDB), incluant des informations détaillées et la disponibilité en streaming pour votre pays. Si vous mentionnez une plateforme de streaming dans votre recherche (ex: \"sur Netflix\"), notre système de filtrage intelligent affiche automatiquement uniquement le contenu disponible sur cette plateforme.",
+          "Téléchargez l'application mobile FastFlix depuis l'App Store. Une fois installée, vous pouvez décrire ce que vous voulez regarder en langage naturel, et notre IA fournira des recommandations personnalisées. L'application inclut 3 recherches gratuites, après quoi un abonnement premium est requis pour un accès illimité.",
       },
       {
-        question: 'FastFlix est-il gratuit ?',
+        question: 'Combien coûte FastFlix ?',
         answer:
-          'FastFlix offre 3 prompts gratuits pour commencer. Pour un accès illimité, abonnez-vous à FastFlix pour 2,99€/mois ou 29,99€/an pour des recommandations illimitées de films et séries.',
+          'FastFlix inclut 3 recherches gratuites pour commencer. Pour des recommandations illimitées, abonnez-vous à FastFlix Premium pour 2,99€/mois ou 29,99€/an. Tous les abonnements sont gérés via l\'application iOS sur votre appareil.',
       },
       {
-        question: 'Quelles plateformes sont supportées ?',
+        question: 'Quels appareils sont supportés ?',
         answer:
-          "FastFlix est disponible sur iOS. Vous pouvez y accéder depuis n'importe quel appareil iOS avec une connexion internet.",
+          "FastFlix est disponible exclusivement sur les appareils iOS. Vous pouvez le télécharger depuis l'App Store sur iPhone (iOS 15.0+) ou iPad (iPadOS 15.0+).",
       },
       {
-        question: 'Quelle est la précision des recommandations ?',
+        question: 'Comment m\'abonner à la version premium ?',
         answer:
-          "Notre système alimenté par l'IA apprend et s'améliore continuellement. Plus vous êtes spécifique avec vos préférences et votre humeur, meilleures seront les recommandations.",
+          "Téléchargez l'application FastFlix depuis l'App Store et abonnez-vous directement dans l'application. Toute la gestion des abonnements se fait via les paramètres de votre compte Apple ID.",
       },
       {
         question: 'Puis-je changer la langue ?',
         answer:
-          "Oui, FastFlix supporte l'anglais et le français. Vous pouvez changer la langue dans les paramètres de l'application ou la section profil.",
+          "Oui, FastFlix supporte l'anglais et le français. Vous pouvez changer la langue dans les paramètres de l'application mobile.",
       },
       {
         question: 'Stockez-vous mon historique de recherche ?',
         answer:
-          'Nous ne stockons que les données minimales nécessaires pour le service. Vos requêtes de recherche sont traitées pour générer des recommandations mais ne sont pas stockées de façon permanente ou liées à votre identité.',
+          "Non. FastFlix ne stocke aucune donnée personnelle ni historique de recherche. Toutes les requêtes sont traitées en temps réel et immédiatement supprimées après avoir fourni les recommandations.",
       },
     ],
   },

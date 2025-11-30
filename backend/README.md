@@ -466,18 +466,18 @@ vercel --prod
 
 Set these in Vercel dashboard:
 
-| Variable                    | Description                                              | Required |
-| --------------------------- | -------------------------------------------------------- | -------- |
-| `TURSO_DATABASE_URL`        | Turso database connection URL                            | Yes      |
-| `TURSO_AUTH_TOKEN`          | Turso authentication token                               | Yes      |
-| `JWT_SECRET`                | Secret key for JWT signing (use strong random string)   | Yes      |
-| `APPLE_CLIENT_ID`           | Apple Sign In client ID (Service ID)                     | Yes      |
-| `GOOGLE_CLIENT_ID`          | Google Sign In client ID                                 | No       |
-| `GOOGLE_API_KEY`            | Google AI API key (Gemini)                               | Yes      |
-| `TMDB_API_KEY`              | TMDB API key                                             | Yes      |
-| `TMDB_BASE_URL`             | `https://api.themoviedb.org/3`                           | Yes      |
-| `REVENUECAT_WEBHOOK_SECRET` | RevenueCat webhook secret (for signature verification)  | No       |
-| `NODE_ENV`                  | `production`                                             | Yes      |
+| Variable                    | Description                                            | Required |
+| --------------------------- | ------------------------------------------------------ | -------- |
+| `TURSO_DATABASE_URL`        | Turso database connection URL                          | Yes      |
+| `TURSO_AUTH_TOKEN`          | Turso authentication token                             | Yes      |
+| `JWT_SECRET`                | Secret key for JWT signing (use strong random string)  | Yes      |
+| `APPLE_CLIENT_ID`           | Apple Sign In client ID (Service ID)                   | Yes      |
+| `GOOGLE_CLIENT_ID`          | Google Sign In client ID                               | No       |
+| `GOOGLE_API_KEY`            | Google AI API key (Gemini)                             | Yes      |
+| `TMDB_API_KEY`              | TMDB API key                                           | Yes      |
+| `TMDB_BASE_URL`             | `https://api.themoviedb.org/3`                         | Yes      |
+| `REVENUECAT_WEBHOOK_SECRET` | RevenueCat webhook secret (for signature verification) | No       |
+| `NODE_ENV`                  | `production`                                           | Yes      |
 
 ## Troubleshooting
 
