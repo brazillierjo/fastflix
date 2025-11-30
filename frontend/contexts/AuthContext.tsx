@@ -113,10 +113,13 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       await linkUserToRevenueCat(authData.user.id);
 
       // Show success message
+      const welcomeMessage = t('auth.success.message')?.replace(
+        '{{name}}',
+        authData.user.name ? ` ${authData.user.name}` : ''
+      );
       Alert.alert(
         t('auth.success.title') || 'Welcome!',
-        t('auth.success.message') ||
-          `Welcome${authData.user.name ? ` ${authData.user.name}` : ''}!`
+        welcomeMessage || `Welcome${authData.user.name ? ` ${authData.user.name}` : ''}!`
       );
     } catch (error) {
       console.error('Sign in error:', error);
