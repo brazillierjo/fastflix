@@ -53,7 +53,7 @@ export default {
       output: 'static',
       favicon: './assets/playstore.png',
     },
-    plugins: ['expo-router', 'expo-secure-store'],
+    plugins: ['expo-router', 'expo-secure-store', 'expo-apple-authentication'],
     experiments: {
       typedRoutes: true,
     },
