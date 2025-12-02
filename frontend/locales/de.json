@@ -164,7 +164,10 @@
     "name": "Name",
     "email": "E-Mail",
     "signInMethod": "Anmeldemethode",
-    "signOut": "Abmelden"
+    "signOut": "Abmelden",
+    "preferences": "Einstellungen",
+    "noSubscription": "Nicht abonniert",
+    "signInRequired": "Anmelden zum Verwalten"
   },
   "auth": {
     "welcome": {
@@ -174,6 +177,8 @@
     "loading": "Anmeldung läuft...",
     "platformNotSupported": "Die Authentifizierung ist derzeit nur auf iOS verfügbar.",
     "footer": "Mit der Anmeldung akzeptierst du unsere Nutzungsbedingungen und Datenschutzerklärung.",
+    "signIn": "Anmelden",
+    "signInPrompt": "Melde dich an, um alle Funktionen zu nutzen",
     "success": {
       "title": "Willkommen 👋",
       "message": "Du bist jetzt angemeldet{{name}}. Entdecke deine personalisierten Empfehlungen!"
@@ -189,7 +194,8 @@
     }
   },
   "common": {
-    "cancel": "Abbrechen"
+    "cancel": "Abbrechen",
+    "done": "Fertig"
   },
   "tabs": {
     "movies": "Filme",

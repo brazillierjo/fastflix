@@ -210,8 +210,16 @@ export default function MovieResults({
       className='px-4'
     >
       <View className='relative flex-row items-center justify-center border-b border-light-border bg-light-background pb-4 dark:border-dark-border dark:bg-dark-background'>
-        <TouchableOpacity onPress={onGoBack} className='absolute left-4 z-10'>
-          <Text className='text-lg text-light-text dark:text-dark-text'>←</Text>
+        <TouchableOpacity
+          onPress={onGoBack}
+          className='absolute left-0 z-10 h-12 w-12 items-center justify-center rounded-full'
+          hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
+        >
+          <Ionicons
+            name='chevron-back'
+            size={28}
+            color={isDark ? '#ffffff' : '#0f172a'}
+          />
         </TouchableOpacity>
 
         <Text className='text-center text-lg font-semibold text-light-text dark:text-dark-text'>

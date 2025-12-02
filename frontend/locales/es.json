@@ -164,7 +164,10 @@
     "name": "Nombre",
     "email": "Correo electrónico",
     "signInMethod": "Método de inicio de sesión",
-    "signOut": "Cerrar sesión"
+    "signOut": "Cerrar sesión",
+    "preferences": "Preferencias",
+    "noSubscription": "Sin suscripción",
+    "signInRequired": "Inicia sesión para gestionar"
   },
   "auth": {
     "welcome": {
@@ -174,6 +177,8 @@
     "loading": "Iniciando sesión...",
     "platformNotSupported": "La autenticación solo está disponible actualmente en iOS.",
     "footer": "Al iniciar sesión, aceptas nuestros Términos de servicio y Política de privacidad.",
+    "signIn": "Iniciar sesión",
+    "signInPrompt": "Inicia sesión para acceder a todas las funciones",
     "success": {
       "title": "¡Bienvenido 👋",
       "message": "Has iniciado sesión{{name}}. ¡Descubre tus recomendaciones personalizadas!"
@@ -189,7 +194,8 @@
     }
   },
   "common": {
-    "cancel": "Cancelar"
+    "cancel": "Cancelar",
+    "done": "Listo"
   },
   "tabs": {
     "movies": "Películas",

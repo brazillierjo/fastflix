@@ -164,7 +164,10 @@
     "name": "名前",
     "email": "メール",
     "signInMethod": "サインイン方法",
-    "signOut": "サインアウト"
+    "signOut": "サインアウト",
+    "preferences": "設定",
+    "noSubscription": "未登録",
+    "signInRequired": "管理するにはサインイン"
   },
   "auth": {
     "welcome": {
@@ -174,6 +177,8 @@
     "loading": "サインイン中...",
     "platformNotSupported": "認証は現在iOSでのみ利用可能です。",
     "footer": "サインインすることで、利用規約とプライバシーポリシーに同意したものとみなされます。",
+    "signIn": "サインイン",
+    "signInPrompt": "すべての機能にアクセスするにはサインイン",
     "success": {
       "title": "ようこそ 👋",
       "message": "ログインしました{{name}}。パーソナライズされたおすすめをお楽しみください！"
@@ -189,7 +194,8 @@
     }
   },
   "common": {
-    "cancel": "キャンセル"
+    "cancel": "キャンセル",
+    "done": "完了"
   },
   "tabs": {
     "movies": "映画",

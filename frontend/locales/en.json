@@ -164,7 +164,10 @@
     "name": "Name",
     "email": "Email",
     "signInMethod": "Sign-in Method",
-    "signOut": "Sign Out"
+    "signOut": "Sign Out",
+    "preferences": "Preferences",
+    "noSubscription": "Not subscribed",
+    "signInRequired": "Sign in to manage"
   },
   "auth": {
     "welcome": {
@@ -174,6 +177,8 @@
     "loading": "Signing in...",
     "platformNotSupported": "Authentication is currently only available on iOS.",
     "footer": "By signing in, you agree to our Terms of Service and Privacy Policy.",
+    "signIn": "Sign In",
+    "signInPrompt": "Sign in to access all features",
     "success": {
       "title": "Welcome 👋",
       "message": "You're now signed in{{name}}. Discover your personalized recommendations!"
@@ -189,7 +194,8 @@
     }
   },
   "common": {
-    "cancel": "Cancel"
+    "cancel": "Cancel",
+    "done": "Done"
   },
   "tabs": {
     "movies": "Movies",

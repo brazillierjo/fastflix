@@ -164,7 +164,10 @@
     "name": "Nome",
     "email": "Email",
     "signInMethod": "Metodo di accesso",
-    "signOut": "Esci"
+    "signOut": "Esci",
+    "preferences": "Preferenze",
+    "noSubscription": "Non abbonato",
+    "signInRequired": "Accedi per gestire"
   },
   "auth": {
     "welcome": {
@@ -174,6 +177,8 @@
     "loading": "Accesso in corso...",
     "platformNotSupported": "L'autenticazione è attualmente disponibile solo su iOS.",
     "footer": "Effettuando l'accesso, accetti i nostri Termini di servizio e l'Informativa sulla privacy.",
+    "signIn": "Accedi",
+    "signInPrompt": "Accedi per sbloccare tutte le funzionalità",
     "success": {
       "title": "Benvenuto 👋",
       "message": "Accesso effettuato{{name}}. Scopri i tuoi consigli personalizzati!"
@@ -189,7 +194,8 @@
     }
   },
   "common": {
-    "cancel": "Annulla"
+    "cancel": "Annulla",
+    "done": "Fatto"
   },
   "tabs": {
     "movies": "Film",

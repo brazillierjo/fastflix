@@ -164,7 +164,10 @@
     "name": "Nom",
     "email": "Email",
     "signInMethod": "Méthode de connexion",
-    "signOut": "Se déconnecter"
+    "signOut": "Se déconnecter",
+    "preferences": "Préférences",
+    "noSubscription": "Non abonné",
+    "signInRequired": "Connectez-vous pour gérer"
   },
   "auth": {
     "welcome": {
@@ -174,6 +177,8 @@
     "loading": "Connexion en cours...",
     "platformNotSupported": "L'authentification n'est actuellement disponible que sur iOS.",
     "footer": "En vous connectant, vous acceptez nos Conditions d'utilisation et notre Politique de confidentialité.",
+    "signIn": "Se connecter",
+    "signInPrompt": "Connectez-vous pour accéder à toutes les fonctionnalités",
     "success": {
       "title": "Bienvenue 👋",
       "message": "Connexion réussie{{name}}. Découvrez vos recommandations personnalisées !"
@@ -189,7 +194,8 @@
     }
   },
   "common": {
-    "cancel": "Annuler"
+    "cancel": "Annuler",
+    "done": "OK"
   },
   "tabs": {
     "movies": "Films",
