@@ -178,6 +178,7 @@
     "platformNotSupported": "Authentication is currently only available on iOS.",
     "footer": "By signing in, you agree to our Terms of Service and Privacy Policy.",
     "signIn": "Sign In",
+    "signInWithGoogle": "Sign in with Google",
     "signInPrompt": "Sign in to access all features",
     "success": {
       "title": "Welcome 👋",

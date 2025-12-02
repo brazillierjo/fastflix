@@ -1,6 +1,6 @@
 /**
  * Authentication Screen
- * Displays Sign in with Apple button for user authentication
+ * Displays Sign in with Apple and Google buttons for user authentication
  */
 
 import { Ionicons } from '@expo/vector-icons';
@@ -9,25 +9,46 @@ import { useLanguage } from '@/contexts/LanguageContext';
 import { cn } from '@/utils/cn';
 import { getSquircle } from '@/utils/designHelpers';
 import * as AppleAuthentication from 'expo-apple-authentication';
+import * as Google from 'expo-auth-session/providers/google';
+import * as WebBrowser from 'expo-web-browser';
 import { useRouter } from 'expo-router';
 import { MotiView } from 'moti';
-import React, { useEffect } from 'react';
+import React, { useEffect, useCallback, useRef } from 'react';
 import {
   ActivityIndicator,
+  Image,
   Platform,
   StatusBar,
   Text,
+  TouchableOpacity,
   useColorScheme,
   View,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import Constants from 'expo-constants';
+
+// Complete auth session for web browser redirect
+WebBrowser.maybeCompleteAuthSession();
 
 export default function AuthScreen() {
-  const { signInWithApple, isAuthenticated, isLoading } = useAuth();
+  const { signInWithApple, signInWithGoogle, isAuthenticated, isLoading } =
+    useAuth();
   const { t } = useLanguage();
   const router = useRouter();
   const colorScheme = useColorScheme();
   const isDark = colorScheme === 'dark';
+
+  // Get Google iOS Client ID from config
+  const googleIosClientId =
+    Constants.expoConfig?.extra?.EXPO_PUBLIC_GOOGLE_IOS_CLIENT_ID;
+
+  // Setup Google Auth Request (using iOS native client)
+  const [request, response, promptAsync] = Google.useIdTokenAuthRequest({
+    iosClientId: googleIosClientId,
+  });
+
+  // Track processed response to prevent duplicate handling
+  const processedResponseRef = useRef<string | null>(null);
 
   // Redirect if already authenticated
   useEffect(() => {
@@ -39,12 +60,34 @@ export default function AuthScreen() {
   const handleAppleSignIn = async () => {
     try {
       await signInWithApple();
-      // Navigation will happen automatically via the useEffect above
     } catch (error) {
-      // Error is already handled in AuthContext with Alert
       console.error('Sign in failed:', error);
     }
   };
+
+  const handleGoogleSignIn = useCallback(
+    async (idToken: string) => {
+      try {
+        await signInWithGoogle(idToken);
+      } catch (error) {
+        console.error('Google sign in failed:', error);
+      }
+    },
+    [signInWithGoogle]
+  );
+
+  // Handle Google Sign In response
+  useEffect(() => {
+    if (response?.type === 'success') {
+      const { id_token } = response.params;
+
+      // Prevent processing the same response multiple times
+      if (id_token && processedResponseRef.current !== id_token) {
+        processedResponseRef.current = id_token;
+        handleGoogleSignIn(id_token);
+      }
+    }
+  }, [response, handleGoogleSignIn]);
 
   return (
     <SafeAreaView
@@ -96,62 +139,87 @@ export default function AuthScreen() {
           </Text>
         </MotiView>
 
-        {/* Sign in with Apple Button */}
-        {Platform.OS === 'ios' && (
-          <MotiView
-            from={{ opacity: 0, scale: 0.9 }}
-            animate={{ opacity: 1, scale: 1 }}
-            transition={{
-              delay: 400,
-              type: 'timing',
-              duration: 600,
-            }}
-          >
-            {isLoading ? (
-              <View className='items-center justify-center py-4'>
-                <ActivityIndicator size='large' color='#007AFF' />
-                <Text className='mt-2 text-sm text-light-text/70 dark:text-dark-text/70'>
-                  {t('auth.loading') || 'Signing in...'}
-                </Text>
-              </View>
-            ) : (
-              <AppleAuthentication.AppleAuthenticationButton
-                buttonType={
-                  AppleAuthentication.AppleAuthenticationButtonType.SIGN_IN
-                }
-                buttonStyle={
-                  AppleAuthentication.AppleAuthenticationButtonStyle.BLACK
-                }
-                cornerRadius={12}
-                style={{ width: '100%', height: 50 }}
-                onPress={handleAppleSignIn}
-              />
-            )}
-          </MotiView>
-        )}
-
-        {/* Platform not supported message */}
-        {Platform.OS !== 'ios' && (
-          <MotiView
-            from={{ opacity: 0, scale: 0.9 }}
-            animate={{ opacity: 1, scale: 1 }}
-            transition={{
-              delay: 400,
-              type: 'timing',
-              duration: 600,
-            }}
-          >
-            <View
-              style={getSquircle(14)}
-              className='border border-light-accent/20 bg-light-accent/5 p-4 dark:border-dark-accent/20 dark:bg-dark-accent/5'
-            >
-              <Text className='text-center text-sm text-light-text dark:text-dark-text'>
-                {t('auth.platformNotSupported') ||
-                  'Authentication is currently only available on iOS.'}
+        {/* Auth Buttons */}
+        <MotiView
+          from={{ opacity: 0, scale: 0.9 }}
+          animate={{ opacity: 1, scale: 1 }}
+          transition={{
+            delay: 400,
+            type: 'timing',
+            duration: 600,
+          }}
+        >
+          {isLoading ? (
+            <View className='items-center justify-center py-4'>
+              <ActivityIndicator size='large' color='#007AFF' />
+              <Text className='mt-2 text-sm text-light-text/70 dark:text-dark-text/70'>
+                {t('auth.loading') || 'Signing in...'}
               </Text>
             </View>
-          </MotiView>
-        )}
+          ) : (
+            <View className='gap-3'>
+              {/* Sign in with Apple Button - iOS only */}
+              {Platform.OS === 'ios' && (
+                <AppleAuthentication.AppleAuthenticationButton
+                  buttonType={
+                    AppleAuthentication.AppleAuthenticationButtonType.SIGN_IN
+                  }
+                  buttonStyle={
+                    AppleAuthentication.AppleAuthenticationButtonStyle.BLACK
+                  }
+                  cornerRadius={12}
+                  style={{ width: '100%', height: 50 }}
+                  onPress={handleAppleSignIn}
+                />
+              )}
+
+              {/* Sign in with Google Button - Official Google styling */}
+              {googleIosClientId && (
+                <TouchableOpacity
+                  onPress={() => promptAsync()}
+                  disabled={!request}
+                  style={[
+                    getSquircle(12),
+                    {
+                      shadowColor: '#000',
+                      shadowOffset: { width: 0, height: 1 },
+                      shadowOpacity: 0.1,
+                      shadowRadius: 2,
+                      elevation: 2,
+                    },
+                  ]}
+                  className={cn(
+                    'h-[50px] flex-row items-center justify-center border border-gray-200 bg-white',
+                    !request && 'opacity-50'
+                  )}
+                >
+                  <Image
+                    source={{
+                      uri: 'https://developers.google.com/identity/images/g-logo.png',
+                    }}
+                    style={{ width: 18, height: 18, marginRight: 10 }}
+                  />
+                  <Text className='text-[15px] font-medium text-[#1f1f1f]'>
+                    {t('auth.signInWithGoogle') || 'Sign in with Google'}
+                  </Text>
+                </TouchableOpacity>
+              )}
+
+              {/* Platform not supported message - only if no auth methods available */}
+              {Platform.OS !== 'ios' && !googleIosClientId && (
+                <View
+                  style={getSquircle(14)}
+                  className='border border-light-accent/20 bg-light-accent/5 p-4 dark:border-dark-accent/20 dark:bg-dark-accent/5'
+                >
+                  <Text className='text-center text-sm text-light-text dark:text-dark-text'>
+                    {t('auth.platformNotSupported') ||
+                      'Authentication is currently only available on iOS.'}
+                  </Text>
+                </View>
+              )}
+            </View>
+          )}
+        </MotiView>
 
         {/* Footer */}
         <MotiView

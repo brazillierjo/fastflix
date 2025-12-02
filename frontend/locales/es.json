@@ -178,6 +178,7 @@
     "platformNotSupported": "La autenticación solo está disponible actualmente en iOS.",
     "footer": "Al iniciar sesión, aceptas nuestros Términos de servicio y Política de privacidad.",
     "signIn": "Iniciar sesión",
+    "signInWithGoogle": "Iniciar sesión con Google",
     "signInPrompt": "Inicia sesión para acceder a todas las funciones",
     "success": {
       "title": "¡Bienvenido 👋",

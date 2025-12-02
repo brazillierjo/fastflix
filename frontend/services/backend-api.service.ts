@@ -280,6 +280,18 @@ class BackendAPIService {
   }
 
   /**
+   * Sign in with Google
+   */
+  async signInWithGoogle(data: {
+    idToken: string;
+  }): Promise<APIResponse<{ user: any; token: string }>> {
+    return await this.makeRequest('/api/auth/google', {
+      method: 'POST',
+      body: JSON.stringify(data),
+    });
+  }
+
+  /**
    * Get current authenticated user with subscription and trial status
    */
   async getCurrentUser(): Promise<

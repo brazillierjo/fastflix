@@ -178,6 +178,7 @@
     "platformNotSupported": "認証は現在iOSでのみ利用可能です。",
     "footer": "サインインすることで、利用規約とプライバシーポリシーに同意したものとみなされます。",
     "signIn": "サインイン",
+    "signInWithGoogle": "Googleでサインイン",
     "signInPrompt": "すべての機能にアクセスするにはサインイン",
     "success": {
       "title": "ようこそ 👋",

@@ -6,8 +6,10 @@
 import React, {
   createContext,
   ReactNode,
+  useCallback,
   useContext,
   useEffect,
+  useRef,
   useState,
 } from 'react';
 import { Alert, AppState, AppStateStatus } from 'react-native';
@@ -23,6 +25,7 @@ export interface AuthContextType {
 
   // Actions
   signInWithApple: () => Promise<void>;
+  signInWithGoogle: (idToken: string) => Promise<void>;
   signOut: () => Promise<void>;
   refreshUser: () => Promise<void>;
 }
@@ -38,6 +41,9 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   const { linkUserToRevenueCat } = useSubscription();
   const [user, setUser] = useState<User | null>(null);
   const [isLoading, setIsLoading] = useState(true);
+
+  // Ref to prevent multiple sign-in attempts
+  const isSigningIn = useRef(false);
 
   // Load user on mount
   useEffect(() => {
@@ -145,6 +151,58 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   };
 
   /**
+   * Sign in with Google
+   */
+  const signInWithGoogle = useCallback(
+    async (idToken: string) => {
+      // Prevent multiple simultaneous sign-in attempts
+      if (isSigningIn.current) {
+        console.log('Sign in already in progress, ignoring...');
+        return;
+      }
+
+      try {
+        isSigningIn.current = true;
+        setIsLoading(true);
+
+        const authData = await authService.signInWithGoogle(idToken);
+
+        setUser(authData.user);
+
+        // Link user to RevenueCat to associate purchases with userId
+        await linkUserToRevenueCat(authData.user.id);
+
+        // Show success message
+        const welcomeMessage = t('auth.success.message')?.replace(
+          '{{name}}',
+          authData.user.name ? ` ${authData.user.name}` : ''
+        );
+        Alert.alert(
+          t('auth.success.title') || 'Welcome!',
+          welcomeMessage ||
+            `Welcome${authData.user.name ? ` ${authData.user.name}` : ''}!`
+        );
+      } catch (error) {
+        console.error('Google sign in error:', error);
+
+        Alert.alert(
+          t('auth.error.title') || 'Sign In Failed',
+          t('auth.error.message') ||
+            (error instanceof Error
+              ? error.message
+              : 'Something went wrong. Please try again.')
+        );
+
+        throw error;
+      } finally {
+        isSigningIn.current = false;
+        setIsLoading(false);
+      }
+    },
+    [linkUserToRevenueCat, t]
+  );
+
+  /**
    * Sign out
    */
   const signOut = async () => {
@@ -188,6 +246,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     isAuthenticated: user !== null,
     isLoading,
     signInWithApple,
+    signInWithGoogle,
     signOut,
     refreshUser,
   };

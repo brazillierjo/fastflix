@@ -1,11 +1,17 @@
 /**
  * Authentication Service
- * Handles Apple Sign In and JWT token management
+ * Handles Apple/Google Sign In and JWT token management
  */
 
 import * as AppleAuthentication from 'expo-apple-authentication';
+import * as Google from 'expo-auth-session/providers/google';
 import * as SecureStore from 'expo-secure-store';
+import * as WebBrowser from 'expo-web-browser';
+import Constants from 'expo-constants';
 import { backendAPIService } from './backend-api.service';
+
+// Complete auth session for web browser
+WebBrowser.maybeCompleteAuthSession();
 
 // Storage keys
 const AUTH_TOKEN_KEY = 'fastflix_auth_token';
@@ -82,6 +88,37 @@ class AuthService {
         throw new Error('Apple Sign In was cancelled');
       }
 
+      throw error;
+    }
+  }
+
+  /**
+   * Get Google Client ID from config
+   */
+  getGoogleClientId(): string | undefined {
+    return Constants.expoConfig?.extra?.EXPO_PUBLIC_GOOGLE_CLIENT_ID;
+  }
+
+  /**
+   * Sign in with Google using ID token from expo-auth-session
+   */
+  async signInWithGoogle(idToken: string): Promise<AuthResponse> {
+    try {
+      // Call backend auth endpoint
+      const response = await backendAPIService.signInWithGoogle({ idToken });
+
+      if (!response.success || !response.data) {
+        throw new Error(response.error?.message || 'Google Sign In failed');
+      }
+
+      const authData = response.data;
+
+      // Store token and user data
+      await this.storeAuthData(authData.token, authData.user);
+
+      return authData;
+    } catch (error) {
+      console.error('Google Sign In error:', error);
       throw error;
     }
   }
