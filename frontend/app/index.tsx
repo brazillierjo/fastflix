@@ -4,11 +4,12 @@ import SearchForm from '@/components/SearchForm';
 import SubscriptionModal from '@/components/SubscriptionModal';
 import { useAuth } from '@/contexts/AuthContext';
 import { useLanguage } from '@/contexts/LanguageContext';
+import { useSubscription } from '@/contexts/RevenueCatContext';
 import { useAppState } from '@/hooks/useAppState';
 import { useBackendMovieSearch } from '@/hooks/useBackendMovieSearch';
 import { cn } from '@/utils/cn';
 import { Redirect } from 'expo-router';
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   Alert,
   KeyboardAvoidingView,
@@ -38,7 +39,15 @@ export default function HomeScreen() {
   const movieSearchMutation = useBackendMovieSearch();
   const { t } = useLanguage();
   const { isAuthenticated, isLoading } = useAuth();
+  const { isFreeUser, isLoading: isSubscriptionLoading } = useSubscription();
   const [showSubscriptionModal, setShowSubscriptionModal] = useState(false);
+
+  // Automatically show subscription modal if user has no access (no subscription, no trial)
+  useEffect(() => {
+    if (isAuthenticated && !isLoading && !isSubscriptionLoading && isFreeUser) {
+      setShowSubscriptionModal(true);
+    }
+  }, [isAuthenticated, isLoading, isSubscriptionLoading, isFreeUser]);
 
   const handleSearch = async () => {
     handleSearchStart();

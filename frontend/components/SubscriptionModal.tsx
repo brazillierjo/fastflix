@@ -346,26 +346,47 @@ export default function SubscriptionModal({
         <View className='border-t border-light-border p-6 dark:border-dark-border'>
           {/* Free Trial Button - Only shown if user hasn't used trial */}
           {canStartTrial && (
-            <TouchableOpacity
-              onPress={handleStartTrial}
-              disabled={purchasing}
-              style={getButtonBorderRadius()}
-              className={cn(
-                'mb-3 border-2 border-netflix-500 bg-transparent py-4',
-                purchasing && 'opacity-50'
-              )}
+            <MotiView
+              from={{ scale: 1 }}
+              animate={{ scale: [1, 1.02, 1] }}
+              transition={{
+                type: 'timing',
+                duration: 1500,
+                loop: true,
+              }}
             >
-              {purchasing ? (
-                <ActivityIndicator color='#E50914' />
-              ) : (
-                <View className='flex-row items-center justify-center gap-2'>
-                  <Ionicons name='gift-outline' size={20} color='#E50914' />
-                  <Text className='text-center text-lg font-semibold text-netflix-500'>
-                    {t('subscription.startTrial') || 'Start 7-Day Free Trial'}
-                  </Text>
-                </View>
-              )}
-            </TouchableOpacity>
+              <TouchableOpacity
+                onPress={handleStartTrial}
+                disabled={purchasing}
+                style={getButtonBorderRadius()}
+                className={cn(
+                  'mb-3 border-2 border-netflix-500 bg-netflix-500/10 py-4',
+                  purchasing && 'opacity-50'
+                )}
+              >
+                {purchasing ? (
+                  <ActivityIndicator color='#E50914' />
+                ) : (
+                  <View className='flex-row items-center justify-center gap-2'>
+                    <MotiView
+                      from={{ rotate: '0deg' }}
+                      animate={{ rotate: ['0deg', '-10deg', '10deg', '0deg'] }}
+                      transition={{
+                        type: 'timing',
+                        duration: 500,
+                        loop: true,
+                        delay: 2000,
+                      }}
+                    >
+                      <Ionicons name='gift-outline' size={22} color='#E50914' />
+                    </MotiView>
+                    <Text className='text-center text-lg font-semibold text-netflix-500'>
+                      {t('subscription.startTrial') || 'Start 7-Day Free Trial'}
+                    </Text>
+                  </View>
+                )}
+              </TouchableOpacity>
+            </MotiView>
           )}
 
           <TouchableOpacity

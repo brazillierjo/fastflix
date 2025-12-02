@@ -119,7 +119,8 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       );
       Alert.alert(
         t('auth.success.title') || 'Welcome!',
-        welcomeMessage || `Welcome${authData.user.name ? ` ${authData.user.name}` : ''}!`
+        welcomeMessage ||
+          `Welcome${authData.user.name ? ` ${authData.user.name}` : ''}!`
       );
     } catch (error) {
       console.error('Sign in error:', error);

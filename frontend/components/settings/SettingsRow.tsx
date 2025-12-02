@@ -1,11 +1,6 @@
 import { Ionicons } from '@expo/vector-icons';
 import React from 'react';
-import {
-  Text,
-  TouchableOpacity,
-  useColorScheme,
-  View,
-} from 'react-native';
+import { Text, TouchableOpacity, useColorScheme, View } from 'react-native';
 
 interface SettingsRowProps {
   icon: keyof typeof Ionicons.glyphMap;
@@ -37,15 +32,11 @@ export default function SettingsRow({
     <TouchableOpacity
       onPress={onPress}
       activeOpacity={0.6}
-      className={`
-        bg-light-card dark:bg-dark-card
-        ${isFirst ? 'rounded-t-xl' : ''}
-        ${isLast ? 'rounded-b-xl' : ''}
-      `}
+      className={`bg-light-card dark:bg-dark-card ${isFirst ? 'rounded-t-xl' : ''} ${isLast ? 'rounded-b-xl' : ''} `}
     >
-      <View className="flex-row items-center px-4 py-3">
+      <View className='flex-row items-center px-4 py-3'>
         {/* Icon */}
-        <View className="mr-3 h-8 w-8 items-center justify-center rounded-lg bg-light-background dark:bg-dark-background">
+        <View className='mr-3 h-8 w-8 items-center justify-center rounded-lg bg-light-background dark:bg-dark-background'>
           <Ionicons
             name={icon}
             size={18}
@@ -54,16 +45,16 @@ export default function SettingsRow({
         </View>
 
         {/* Content */}
-        <View className="flex-1 mr-2">
+        <View className='mr-2 flex-1'>
           <Text
-            className="text-base font-medium text-light-text dark:text-dark-text"
+            className='text-base font-medium text-light-text dark:text-dark-text'
             numberOfLines={1}
           >
             {title}
           </Text>
           {subtitle && (
             <Text
-              className="text-sm text-light-muted dark:text-dark-muted mt-0.5"
+              className='mt-0.5 text-sm text-light-muted dark:text-dark-muted'
               numberOfLines={1}
             >
               {subtitle}
@@ -74,7 +65,7 @@ export default function SettingsRow({
         {/* Chevron */}
         {showChevron && (
           <Ionicons
-            name="chevron-forward"
+            name='chevron-forward'
             size={20}
             color={isDark ? '#6b7280' : '#9ca3af'}
           />
@@ -83,7 +74,7 @@ export default function SettingsRow({
 
       {/* Separator */}
       {!isLast && (
-        <View className="ml-16 h-px bg-light-border dark:bg-dark-border" />
+        <View className='ml-16 h-px bg-light-border dark:bg-dark-border' />
       )}
     </TouchableOpacity>
   );

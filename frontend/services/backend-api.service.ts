@@ -282,11 +282,13 @@ class BackendAPIService {
   /**
    * Get current authenticated user with subscription and trial status
    */
-  async getCurrentUser(): Promise<APIResponse<{
-    user: any;
-    subscription: { isActive: boolean };
-    trial: TrialInfo;
-  }>> {
+  async getCurrentUser(): Promise<
+    APIResponse<{
+      user: any;
+      subscription: { isActive: boolean };
+      trial: TrialInfo;
+    }>
+  > {
     return await this.makeRequest('/api/auth/me', {
       method: 'GET',
     });
@@ -299,11 +301,13 @@ class BackendAPIService {
   /**
    * Start free trial for authenticated user
    */
-  async startFreeTrial(): Promise<APIResponse<{
-    success: boolean;
-    message: string;
-    trial: TrialInfo;
-  }>> {
+  async startFreeTrial(): Promise<
+    APIResponse<{
+      success: boolean;
+      message: string;
+      trial: TrialInfo;
+    }>
+  > {
     return await this.makeRequest('/api/trial', {
       method: 'POST',
     });

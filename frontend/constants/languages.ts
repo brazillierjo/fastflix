@@ -1,7 +1,14 @@
 // Configuration centralisée des langues et pays supportés
 
 // Langues supportées
-export const SUPPORTED_LANGUAGES = ['fr', 'en', 'ja', 'it', 'es', 'de'] as const;
+export const SUPPORTED_LANGUAGES = [
+  'fr',
+  'en',
+  'ja',
+  'it',
+  'es',
+  'de',
+] as const;
 export const DEFAULT_LANGUAGE = 'en' as const;
 
 export type SupportedLanguage = (typeof SUPPORTED_LANGUAGES)[number];
@@ -62,7 +69,14 @@ export const getTMDBFallbackLanguages = (
   const primaryTMDBLanguage = getLanguageForTMDB(primaryLanguage);
 
   // Ordre de priorité pour les langues de fallback basé sur la couverture TMDB
-  const fallbackPriority: SupportedLanguage[] = ['en', 'fr', 'de', 'es', 'it', 'ja'];
+  const fallbackPriority: SupportedLanguage[] = [
+    'en',
+    'fr',
+    'de',
+    'es',
+    'it',
+    'ja',
+  ];
 
   // Créer la liste des langues de fallback en excluant la langue principale
   const fallbackLanguages = fallbackPriority

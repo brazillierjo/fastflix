@@ -30,7 +30,8 @@ export default function ProfileScreen() {
 
   // Modal states
   const [showAccountModal, setShowAccountModal] = useState(false);
-  const [showSubscriptionDetailsModal, setShowSubscriptionDetailsModal] = useState(false);
+  const [showSubscriptionDetailsModal, setShowSubscriptionDetailsModal] =
+    useState(false);
   const [showPlansModal, setShowPlansModal] = useState(false);
   const [showAboutModal, setShowAboutModal] = useState(false);
 
@@ -117,9 +118,9 @@ export default function ProfileScreen() {
   };
 
   return (
-    <SafeAreaView className="flex-1 bg-light-background dark:bg-dark-background">
+    <SafeAreaView className='flex-1 bg-light-background dark:bg-dark-background'>
       <ScrollView
-        className="flex-1"
+        className='flex-1'
         contentContainerStyle={{ paddingBottom: 120 }}
       >
         {/* Header */}
@@ -127,12 +128,12 @@ export default function ProfileScreen() {
           from={{ opacity: 0, translateY: -20 }}
           animate={{ opacity: 1, translateY: 0 }}
           transition={{ type: 'timing', duration: 600 }}
-          className="px-6 pt-8 mb-6"
+          className='mb-6 px-6 pt-8'
         >
-          <Text className="text-3xl font-bold text-light-text dark:text-dark-text">
+          <Text className='text-3xl font-bold text-light-text dark:text-dark-text'>
             {t('modal.title')}
           </Text>
-          <Text className="mt-2 text-base text-light-muted dark:text-dark-muted">
+          <Text className='mt-2 text-base text-light-muted dark:text-dark-muted'>
             {t('profile.subtitle')}
           </Text>
         </MotiView>
@@ -142,9 +143,9 @@ export default function ProfileScreen() {
           from={{ opacity: 0, translateY: 20 }}
           animate={{ opacity: 1, translateY: 0 }}
           transition={{ delay: 100, type: 'timing', duration: 600 }}
-          className="px-4 mb-6"
+          className='mb-6 px-4'
         >
-          <View className="rounded-xl overflow-hidden">
+          <View className='overflow-hidden rounded-xl'>
             <SettingsRow
               icon={isAuthenticated ? 'person' : 'log-in'}
               iconColor={isAuthenticated ? undefined : '#E50914'}
@@ -177,11 +178,11 @@ export default function ProfileScreen() {
             from={{ opacity: 0, translateY: 20 }}
             animate={{ opacity: 1, translateY: 0 }}
             transition={{ delay: 150, type: 'timing', duration: 600 }}
-            className="px-4 mb-6"
+            className='mb-6 px-4'
           >
-            <View className="rounded-xl overflow-hidden">
+            <View className='overflow-hidden rounded-xl'>
               <SettingsRow
-                icon="star"
+                icon='star'
                 iconColor={hasUnlimitedAccess ? '#fbbf24' : undefined}
                 title={t('profile.premiumSubscription') || 'Subscription'}
                 subtitle={getSubscriptionSubtitle()}
@@ -198,14 +199,14 @@ export default function ProfileScreen() {
           from={{ opacity: 0, translateY: 20 }}
           animate={{ opacity: 1, translateY: 0 }}
           transition={{ delay: 200, type: 'timing', duration: 600 }}
-          className="px-4 mb-6"
+          className='mb-6 px-4'
         >
-          <Text className="text-sm font-medium text-light-muted dark:text-dark-muted mb-2 ml-3 uppercase">
+          <Text className='mb-2 ml-3 text-sm font-medium uppercase text-light-muted dark:text-dark-muted'>
             {t('profile.preferences') || 'Preferences'}
           </Text>
-          <View className="rounded-xl overflow-hidden">
+          <View className='overflow-hidden rounded-xl'>
             <SettingsRow
-              icon="globe"
+              icon='globe'
               title={t('profile.language') || 'Language'}
               subtitle={
                 currentLanguage
@@ -216,7 +217,7 @@ export default function ProfileScreen() {
               isFirst
             />
             <SettingsRow
-              icon="flag"
+              icon='flag'
               title={t('settings.country') || 'Search Country'}
               subtitle={
                 currentCountry
@@ -234,11 +235,11 @@ export default function ProfileScreen() {
           from={{ opacity: 0, translateY: 20 }}
           animate={{ opacity: 1, translateY: 0 }}
           transition={{ delay: 250, type: 'timing', duration: 600 }}
-          className="px-4 mb-6"
+          className='mb-6 px-4'
         >
-          <View className="rounded-xl overflow-hidden">
+          <View className='overflow-hidden rounded-xl'>
             <SettingsRow
-              icon="information-circle"
+              icon='information-circle'
               title={t('profile.aboutApp') || 'About'}
               subtitle={`${t('profile.version') || 'Version'} ${getAppVersion()}`}
               onPress={() => setShowAboutModal(true)}

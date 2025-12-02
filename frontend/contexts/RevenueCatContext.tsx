@@ -261,7 +261,10 @@ export const SubscriptionProvider: React.FC<SubscriptionProviderProps> = ({
         if (response.data.trial) {
           setTrialInfo(response.data.trial);
           if (response.data.trial.isActive) {
-            console.log('✅ User is in active trial, days remaining:', response.data.trial.daysRemaining);
+            console.log(
+              '✅ User is in active trial, days remaining:',
+              response.data.trial.daysRemaining
+            );
           }
         }
 
@@ -354,8 +357,9 @@ export const SubscriptionProvider: React.FC<SubscriptionProviderProps> = ({
       Alert.alert(
         t('trial.error.title') || 'Trial Unavailable',
         errorMessage === 'You have already used your free trial'
-          ? (t('trial.error.alreadyUsed') || 'You have already used your free trial.')
-          : (t('trial.error.message') || errorMessage)
+          ? t('trial.error.alreadyUsed') ||
+              'You have already used your free trial.'
+          : t('trial.error.message') || errorMessage
       );
 
       return false;
@@ -386,7 +390,10 @@ export const SubscriptionProvider: React.FC<SubscriptionProviderProps> = ({
       isInTrial ||
       subscriptionStatus === SubscriptionStatus.ACTIVE ||
       subscriptionStatus === SubscriptionStatus.GRACE_PERIOD,
-    isFreeUser: subscriptionStatus === SubscriptionStatus.FREE && !hasBackendSubscription && !isInTrial,
+    isFreeUser:
+      subscriptionStatus === SubscriptionStatus.FREE &&
+      !hasBackendSubscription &&
+      !isInTrial,
     purchasePackage,
     restorePurchases,
     linkUserToRevenueCat,
