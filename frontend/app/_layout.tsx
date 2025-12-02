@@ -83,7 +83,10 @@ function CustomTabBar({ state, descriptors, navigation }: any) {
                       type: 'timing',
                       duration: 200,
                     }}
-                    style={getTabStyle(isFocused, isDark)}
+                    style={[
+                      getTabStyle(isFocused, isDark),
+                      isFocused && styles.tabButtonActive,
+                    ]}
                   >
                     <View style={styles.tabContent}>
                       <View style={styles.tabIcon}>
@@ -96,20 +99,20 @@ function CustomTabBar({ state, descriptors, navigation }: any) {
                           focused: isFocused,
                         })}
                       </View>
-                      {isFocused && (
-                        <MotiView
-                          from={{ opacity: 0, translateX: -5 }}
-                          animate={{ opacity: 1, translateX: 0 }}
-                          transition={{
-                            type: 'timing',
-                            duration: 200,
-                          }}
-                        >
-                          <Text style={[styles.tabLabel, { color: '#fff' }]}>
-                            {label}
-                          </Text>
-                        </MotiView>
-                      )}
+                      <Text
+                        style={[
+                          styles.tabLabel,
+                          {
+                            color: isFocused
+                              ? '#fff'
+                              : isDark
+                                ? '#a3a3a3'
+                                : '#737373',
+                          },
+                        ]}
+                      >
+                        {label}
+                      </Text>
                     </View>
                   </MotiView>
                 </TouchableOpacity>
@@ -204,6 +207,9 @@ const styles = StyleSheet.create({
   tabButton: {
     flex: 1,
     alignItems: 'center',
+  },
+  tabButtonActive: {
+    width: '100%',
   },
   tabContent: {
     flexDirection: 'row',

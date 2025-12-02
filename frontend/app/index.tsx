@@ -26,7 +26,6 @@ export default function HomeScreen() {
     credits,
     detailedInfo,
     geminiResponse,
-    showWelcome,
     showResults,
     isSearching,
     setQuery,
@@ -124,28 +123,24 @@ export default function HomeScreen() {
         className={cn('flex-1')}
       >
         <View className={cn('flex-1')}>
-          {showWelcome &&
-          movies.length === 0 &&
-          !movieSearchMutation.isPending ? (
+          {movieSearchMutation.isPending ? (
+            <LoadingState isSearching={isSearching} />
+          ) : showResults && movies.length > 0 ? (
+            <MovieResults
+              movies={movies}
+              streamingProviders={streamingProviders}
+              credits={credits}
+              detailedInfo={detailedInfo}
+              geminiResponse={geminiResponse}
+              onGoBack={goBackToHome}
+            />
+          ) : (
             <SearchForm
               query={query}
               setQuery={setQuery}
               onSearch={handleSearch}
               loading={movieSearchMutation.isPending}
             />
-          ) : movieSearchMutation.isPending ? (
-            <LoadingState isSearching={isSearching} />
-          ) : (
-            showResults && (
-              <MovieResults
-                movies={movies}
-                streamingProviders={streamingProviders}
-                credits={credits}
-                detailedInfo={detailedInfo}
-                geminiResponse={geminiResponse}
-                onGoBack={goBackToHome}
-              />
-            )
           )}
         </View>
       </KeyboardAvoidingView>

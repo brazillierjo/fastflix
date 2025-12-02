@@ -175,8 +175,8 @@
     "platformNotSupported": "Authentication is currently only available on iOS.",
     "footer": "By signing in, you agree to our Terms of Service and Privacy Policy.",
     "success": {
-      "title": "Welcome!",
-      "message": "Welcome{{name}}!"
+      "title": "Welcome 👋",
+      "message": "You're now signed in{{name}}. Discover your personalized recommendations!"
     },
     "error": {
       "title": "Sign In Failed",

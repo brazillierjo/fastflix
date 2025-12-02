@@ -175,8 +175,8 @@
     "platformNotSupported": "Die Authentifizierung ist derzeit nur auf iOS verfügbar.",
     "footer": "Mit der Anmeldung akzeptierst du unsere Nutzungsbedingungen und Datenschutzerklärung.",
     "success": {
-      "title": "Willkommen!",
-      "message": "Willkommen{{name}}!"
+      "title": "Willkommen 👋",
+      "message": "Du bist jetzt angemeldet{{name}}. Entdecke deine personalisierten Empfehlungen!"
     },
     "error": {
       "title": "Anmeldung fehlgeschlagen",

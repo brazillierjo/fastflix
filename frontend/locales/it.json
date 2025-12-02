@@ -175,8 +175,8 @@
     "platformNotSupported": "L'autenticazione è attualmente disponibile solo su iOS.",
     "footer": "Effettuando l'accesso, accetti i nostri Termini di servizio e l'Informativa sulla privacy.",
     "success": {
-      "title": "Benvenuto!",
-      "message": "Benvenuto{{name}}!"
+      "title": "Benvenuto 👋",
+      "message": "Accesso effettuato{{name}}. Scopri i tuoi consigli personalizzati!"
     },
     "error": {
       "title": "Accesso fallito",

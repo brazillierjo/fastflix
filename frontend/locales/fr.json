@@ -175,8 +175,8 @@
     "platformNotSupported": "L'authentification n'est actuellement disponible que sur iOS.",
     "footer": "En vous connectant, vous acceptez nos Conditions d'utilisation et notre Politique de confidentialité.",
     "success": {
-      "title": "Bienvenue !",
-      "message": "Bienvenue{{name}} !"
+      "title": "Bienvenue 👋",
+      "message": "Connexion réussie{{name}}. Découvrez vos recommandations personnalisées !"
     },
     "error": {
       "title": "Échec de la connexion",
