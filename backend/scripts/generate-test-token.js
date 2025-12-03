@@ -15,11 +15,7 @@ if (!process.env.JWT_SECRET) {
   process.exit(1);
 }
 
-const token = jwt.sign(
-  { userId, email },
-  process.env.JWT_SECRET,
-  { expiresIn: '30d' }
-);
+const token = jwt.sign({ userId, email }, process.env.JWT_SECRET, { expiresIn: '30d' });
 
 console.log('🔐 Test JWT Token Generated');
 console.log('━'.repeat(50));
@@ -30,4 +26,6 @@ console.log('Usage with curl:');
 console.log(`curl -X POST http://localhost:3000/api/search \\`);
 console.log(`  -H "Content-Type: application/json" \\`);
 console.log(`  -H "Authorization: Bearer ${token.substring(0, 20)}..." \\`);
-console.log(`  -d '{"query": "comédie romantique moderne", "includeMovies": true, "includeTvShows": true}'`);
+console.log(
+  `  -d '{"query": "comédie romantique moderne", "includeMovies": true, "includeTvShows": true}'`
+);

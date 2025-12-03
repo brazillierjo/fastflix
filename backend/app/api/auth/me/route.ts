@@ -38,13 +38,16 @@ export async function GET(request: NextRequest) {
     const trialInfo = await db.getTrialInfo(payload.userId);
 
     // Step 6: Return user info with subscription and trial status
-    return NextResponse.json({
-      user,
-      subscription: {
-        isActive: hasActiveSubscription,
+    return NextResponse.json(
+      {
+        user,
+        subscription: {
+          isActive: hasActiveSubscription,
+        },
+        trial: trialInfo,
       },
-      trial: trialInfo,
-    }, { status: 200 });
+      { status: 200 }
+    );
   } catch (error) {
     console.error('❌ Error in GET /api/auth/me:', error);
 

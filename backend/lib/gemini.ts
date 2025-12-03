@@ -53,7 +53,7 @@ class GeminiService {
     }
   ): Promise<AIRecommendationResult> {
     const genAI = this.getClient();
-    const modelName = process.env.GEMINI_MODEL || 'gemini-2.0-flash-exp';
+    const modelName = process.env.GEMINI_MODEL || 'gemini-2.0-flash';
     const model = genAI.getGenerativeModel({ model: modelName });
 
     // Map language codes to full language names for clearer instructions

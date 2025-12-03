@@ -46,7 +46,8 @@ export async function POST(request: NextRequest) {
       return NextResponse.json(
         {
           error: 'Subscription required',
-          reason: 'An active subscription or free trial is required to access movie recommendations',
+          reason:
+            'An active subscription or free trial is required to access movie recommendations',
         },
         { status: 402 } // Payment Required
       );
@@ -119,7 +120,9 @@ export async function POST(request: NextRequest) {
       // Filter enriched results to only include titles with the selected actor(s)
       const filteredByActor = enrichedResults.filter((movie) => validTmdbIds.has(movie.tmdb_id));
 
-      console.log(`🎭 Filtered ${enrichedResults.length} -> ${filteredByActor.length} results by actor`);
+      console.log(
+        `🎭 Filtered ${enrichedResults.length} -> ${filteredByActor.length} results by actor`
+      );
 
       // If we have good results from filtering, use them
       // Otherwise, augment with actor's other popular films
