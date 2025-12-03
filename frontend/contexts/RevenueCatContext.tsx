@@ -58,6 +58,7 @@ export interface SubscriptionContextType {
   restorePurchases: () => Promise<boolean>;
   linkUserToRevenueCat: (userId: string) => Promise<void>;
   startFreeTrial: () => Promise<boolean>;
+  refreshSubscriptionStatus: () => Promise<void>;
 
   // Package helpers
   getMonthlyPackage: () => PurchasesPackage | null;
@@ -378,6 +379,11 @@ export const SubscriptionProvider: React.FC<SubscriptionProviderProps> = ({
   // Computed property for trial status
   const isInTrial = trialInfo?.isActive ?? false;
 
+  // Refresh subscription and trial status from backend
+  const refreshSubscriptionStatus = async (): Promise<void> => {
+    await checkBackendSubscription();
+  };
+
   const contextValue: SubscriptionContextType = {
     subscriptionStatus,
     isLoading,
@@ -398,6 +404,7 @@ export const SubscriptionProvider: React.FC<SubscriptionProviderProps> = ({
     restorePurchases,
     linkUserToRevenueCat,
     startFreeTrial,
+    refreshSubscriptionStatus,
     getMonthlyPackage,
     getAnnualPackage,
   };

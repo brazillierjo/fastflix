@@ -40,6 +40,9 @@ export interface SearchParams {
   query: string;
   includeMovies: boolean;
   includeTvShows: boolean;
+  yearFrom?: number;
+  yearTo?: number;
+  actorIds?: number[];
 }
 
 export interface DetailedInfo {
@@ -85,7 +88,7 @@ const searchMoviesWithBackend = async (
   language: string = 'fr-FR',
   country: string = 'FR'
 ): Promise<SearchResult> => {
-  const { query, includeMovies, includeTvShows } = params;
+  const { query, includeMovies, includeTvShows, yearFrom, yearTo, actorIds } = params;
 
   if (!query.trim()) {
     throw new Error('enterRequest');
@@ -98,6 +101,9 @@ const searchMoviesWithBackend = async (
       includeTvShows,
       language,
       country,
+      yearFrom,
+      yearTo,
+      actorIds,
     });
 
     if (!response.success || !response.data) {

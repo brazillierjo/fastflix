@@ -18,6 +18,11 @@ export const searchRequestSchema = z.object({
   appVersion: z.string().min(1).max(50).optional(), // Optional with auth
   language: z.string().optional().default('fr-FR'),
   country: z.string().optional().default('FR'),
+  // Advanced filters
+  yearFrom: z.number().min(1900).max(2030).optional(),
+  yearTo: z.number().min(1900).max(2030).optional(),
+  // Actor filter - array of TMDB person IDs
+  actorIds: z.array(z.number()).max(5).optional(),
 });
 
 /**

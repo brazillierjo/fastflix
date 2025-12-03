@@ -19,12 +19,7 @@ import {
   getSquircle,
   getSmallBorderRadius,
 } from '../utils/designHelpers';
-
-type SortOption = 'release_date' | 'vote_average';
-type FilterState = {
-  sortBy: SortOption;
-  selectedProviders: Set<string>;
-};
+import FilterModal, { FilterState } from './FilterModal';
 
 interface Movie {
   id: number;
@@ -67,6 +62,13 @@ interface MovieResultsProps {
   detailedInfo: { [key: number]: DetailedInfo };
   geminiResponse: string;
   onGoBack: () => void;
+  onRefineSearch?: (filters: {
+    includeMovies: boolean;
+    includeTvShows: boolean;
+    yearFrom?: number;
+    yearTo?: number;
+    actorIds?: number[];
+  }) => void;
 }
 
 export default function MovieResults({
@@ -76,14 +78,18 @@ export default function MovieResults({
   detailedInfo,
   geminiResponse,
   onGoBack,
+  onRefineSearch,
 }: MovieResultsProps) {
   const [expandedCards, setExpandedCards] = useState<Set<number>>(new Set());
   const [filters, setFilters] = useState<FilterState>({
     sortBy: 'vote_average',
     selectedProviders: new Set(),
+    contentType: 'all',
+    yearFrom: null,
+    yearTo: null,
+    selectedActors: [],
   });
-  const [showSortDropdown, setShowSortDropdown] = useState(false);
-  const [showProviderDropdown, setShowProviderDropdown] = useState(false);
+  const [showFilterModal, setShowFilterModal] = useState(false);
 
   const { t } = useLanguage();
   const colorScheme = useColorScheme();
@@ -120,6 +126,31 @@ export default function MovieResults({
   // Filter and sort movies based on current filters
   const filteredAndSortedMovies = useMemo(() => {
     let filtered = [...movies];
+
+    // Filter by content type
+    if (filters.contentType === 'movies') {
+      filtered = filtered.filter(movie => movie.media_type === 'movie');
+    } else if (filters.contentType === 'tvshows') {
+      filtered = filtered.filter(movie => movie.media_type === 'tv');
+    }
+
+    // Filter by year range (local filtering on existing results)
+    if (filters.yearFrom !== null) {
+      filtered = filtered.filter(movie => {
+        const releaseDate = movie.release_date || movie.first_air_date;
+        if (!releaseDate) return true;
+        const year = new Date(releaseDate).getFullYear();
+        return year >= filters.yearFrom!;
+      });
+    }
+    if (filters.yearTo !== null) {
+      filtered = filtered.filter(movie => {
+        const releaseDate = movie.release_date || movie.first_air_date;
+        if (!releaseDate) return true;
+        const year = new Date(releaseDate).getFullYear();
+        return year <= filters.yearTo!;
+      });
+    }
 
     // Filter by selected providers
     if (filters.selectedProviders.size > 0) {
@@ -173,30 +204,25 @@ export default function MovieResults({
 
   const isExpanded = (movieId: number) => expandedCards.has(movieId);
 
-  const handleSortChange = (sortOption: SortOption) => {
-    setFilters(prev => ({ ...prev, sortBy: sortOption }));
-    setShowSortDropdown(false);
-  };
+  // Count active filters for badge
+  const activeFiltersCount = useMemo(() => {
+    let count = 0;
+    if (filters.contentType !== 'all') count++;
+    if (filters.yearFrom !== null || filters.yearTo !== null) count++;
+    if (filters.selectedProviders.size > 0) count++;
+    if (filters.sortBy !== 'vote_average') count++;
+    return count;
+  }, [filters]);
 
-  const toggleProvider = (providerName: string) => {
-    setFilters(prev => {
-      const newProviders = new Set(prev.selectedProviders);
-      if (newProviders.has(providerName)) {
-        newProviders.delete(providerName);
-      } else {
-        newProviders.add(providerName);
-      }
-      return { ...prev, selectedProviders: newProviders };
-    });
-  };
-
-  const clearProviderFilters = () => {
-    setFilters(prev => ({ ...prev, selectedProviders: new Set() }));
-  };
-
-  const closeDropdowns = () => {
-    setShowSortDropdown(false);
-    setShowProviderDropdown(false);
+  const handleRefineSearch = (searchFilters: {
+    includeMovies: boolean;
+    includeTvShows: boolean;
+    yearFrom?: number;
+    yearTo?: number;
+  }) => {
+    if (onRefineSearch) {
+      onRefineSearch(searchFilters);
+    }
   };
 
   return (
@@ -227,181 +253,39 @@ export default function MovieResults({
         </Text>
       </View>
 
-      {/* Filters Section */}
-      <View className='bg-light-background py-3 dark:border-dark-border dark:bg-dark-background'>
-        <View className='flex-row gap-3'>
-          {/* Sort Filter */}
-          <View className='flex-1'>
-            <TouchableOpacity
-              onPress={() => setShowSortDropdown(!showSortDropdown)}
-              style={getSmallBorderRadius()}
-              className='flex-row items-center justify-between border border-light-border bg-light-surface px-3 py-2 dark:border-dark-border dark:bg-dark-surface'
-            >
-              <View className='flex-row items-center gap-1.5'>
-                <Ionicons
-                  name={filters.sortBy === 'release_date' ? 'calendar' : 'star'}
-                  size={14}
-                  color={isDark ? '#ffffff' : '#0f172a'}
-                />
-                <Text className='text-sm text-light-text dark:text-dark-text'>
-                  {filters.sortBy === 'release_date'
-                    ? t('movies.sortByDate')
-                    : t('movies.sortByRating')}
-                </Text>
-              </View>
-              <Text className='text-light-secondary dark:text-dark-secondary'>
-                {showSortDropdown ? '▲' : '▼'}
-              </Text>
-            </TouchableOpacity>
-
-            {showSortDropdown && (
-              <View
-                style={getSmallBorderRadius()}
-                className='absolute top-12 z-10 w-full border border-light-border bg-light-background shadow-lg dark:border-dark-border dark:bg-dark-background'
-              >
-                <TouchableOpacity
-                  onPress={() => handleSortChange('vote_average')}
-                  className={cn(
-                    'border-b border-light-border px-3 py-2 dark:border-dark-border',
-                    filters.sortBy === 'vote_average' && 'bg-netflix-500/10'
-                  )}
-                >
-                  <View className='flex-row items-center gap-2'>
-                    <Ionicons
-                      name='star'
-                      size={16}
-                      color={
-                        filters.sortBy === 'vote_average'
-                          ? '#E50914'
-                          : isDark
-                            ? '#ffffff'
-                            : '#0f172a'
-                      }
-                    />
-                    <Text
-                      className={cn(
-                        'text-sm',
-                        filters.sortBy === 'vote_average'
-                          ? 'font-semibold text-netflix-500'
-                          : 'text-light-text dark:text-dark-text'
-                      )}
-                    >
-                      {t('movies.sortByRating')}
-                    </Text>
-                  </View>
-                </TouchableOpacity>
-                <TouchableOpacity
-                  onPress={() => handleSortChange('release_date')}
-                  className={cn(
-                    'px-3 py-2',
-                    filters.sortBy === 'release_date' && 'bg-netflix-500/10'
-                  )}
-                >
-                  <View className='flex-row items-center gap-2'>
-                    <Ionicons
-                      name='calendar'
-                      size={16}
-                      color={
-                        filters.sortBy === 'release_date'
-                          ? '#E50914'
-                          : isDark
-                            ? '#ffffff'
-                            : '#0f172a'
-                      }
-                    />
-                    <Text
-                      className={cn(
-                        'text-sm',
-                        filters.sortBy === 'release_date'
-                          ? 'font-semibold text-netflix-500'
-                          : 'text-light-text dark:text-dark-text'
-                      )}
-                    >
-                      {t('movies.sortByDate')}
-                    </Text>
-                  </View>
-                </TouchableOpacity>
-              </View>
+      {/* Filters Button */}
+      <View className='bg-light-background py-3 dark:bg-dark-background'>
+        <TouchableOpacity
+          onPress={() => setShowFilterModal(true)}
+          style={getSmallBorderRadius()}
+          className='flex-row items-center justify-center gap-2 border border-light-border bg-light-surface px-4 py-2.5 dark:border-dark-border dark:bg-dark-surface'
+        >
+          <Ionicons
+            name='options-outline'
+            size={18}
+            color={activeFiltersCount > 0 ? '#E50914' : isDark ? '#ffffff' : '#0f172a'}
+          />
+          <Text
+            className={cn(
+              'text-sm font-medium',
+              activeFiltersCount > 0
+                ? 'text-netflix-500'
+                : 'text-light-text dark:text-dark-text'
             )}
-          </View>
-
-          {/* Provider Filter */}
-          <View className='flex-1'>
-            <TouchableOpacity
-              onPress={() => setShowProviderDropdown(!showProviderDropdown)}
-              style={getSmallBorderRadius()}
-              className='flex-row items-center justify-between border border-light-border bg-light-surface px-3 py-2 dark:border-dark-border dark:bg-dark-surface'
-            >
-              <Text className='text-sm text-light-text dark:text-dark-text'>
-                {filters.selectedProviders.size > 0
-                  ? `${filters.selectedProviders.size} ${filters.selectedProviders.size > 1 ? t('movies.platformsSelectedPlural') : t('movies.platformsSelected')}`
-                  : t('movies.allPlatforms')}
+          >
+            {t('filters.title') || 'Filters'}
+          </Text>
+          {activeFiltersCount > 0 && (
+            <View className='h-5 w-5 items-center justify-center rounded-full bg-netflix-500'>
+              <Text className='text-xs font-bold text-white'>
+                {activeFiltersCount}
               </Text>
-              <Text className='text-light-secondary dark:text-dark-secondary'>
-                {showProviderDropdown ? '▲' : '▼'}
-              </Text>
-            </TouchableOpacity>
-
-            {showProviderDropdown && (
-              <View
-                style={getSmallBorderRadius()}
-                className='absolute top-12 z-10 max-h-48 w-full border border-light-border bg-light-background shadow-lg dark:border-dark-border dark:bg-dark-background'
-              >
-                <ScrollView className='max-h-48'>
-                  {filters.selectedProviders.size > 0 && (
-                    <TouchableOpacity
-                      onPress={clearProviderFilters}
-                      className='border-b border-light-border px-3 py-2 dark:border-dark-border'
-                    >
-                      <Text className='text-sm font-medium text-netflix-500'>
-                        {t('movies.clearFilters')}
-                      </Text>
-                    </TouchableOpacity>
-                  )}
-                  {availableProviders.map(provider => (
-                    <TouchableOpacity
-                      key={provider}
-                      onPress={() => toggleProvider(provider)}
-                      className={cn(
-                        'flex-row items-center border-b border-light-border px-3 py-2 dark:border-dark-border',
-                        filters.selectedProviders.has(provider) &&
-                          'bg-netflix-500/10'
-                      )}
-                    >
-                      <View
-                        className={cn(
-                          'mr-2 h-4 w-4 rounded border',
-                          filters.selectedProviders.has(provider)
-                            ? 'border-netflix-500 bg-netflix-500'
-                            : 'border-light-border dark:border-dark-border'
-                        )}
-                      >
-                        {filters.selectedProviders.has(provider) && (
-                          <Text className='text-center text-xs leading-4 text-white'>
-                            ✓
-                          </Text>
-                        )}
-                      </View>
-                      <Text
-                        className={cn(
-                          'text-sm',
-                          filters.selectedProviders.has(provider)
-                            ? 'font-semibold text-netflix-500'
-                            : 'text-light-text dark:text-dark-text'
-                        )}
-                      >
-                        {provider}
-                      </Text>
-                    </TouchableOpacity>
-                  ))}
-                </ScrollView>
-              </View>
-            )}
-          </View>
-        </View>
+            </View>
+          )}
+        </TouchableOpacity>
       </View>
 
-      <ScrollView ref={scrollViewRef} onTouchStart={closeDropdowns}>
+      <ScrollView ref={scrollViewRef}>
         {/* Gemini Response Section */}
         {geminiResponse && (
           <View
@@ -424,7 +308,7 @@ export default function MovieResults({
         <View className='pb-32 pt-4'>
           {filteredAndSortedMovies.length === 0 ? (
             <MotiView
-              className='py-15 items-center justify-center'
+              className='items-center justify-center py-8'
               from={{ opacity: 0, translateY: 20 }}
               animate={{ opacity: 1, translateY: 0 }}
               transition={{
@@ -433,11 +317,40 @@ export default function MovieResults({
                 delay: 300,
               }}
             >
-              <Text className='text-light-text-muted dark:text-dark-text-muted text-center text-lg font-medium leading-6'>
+              <Ionicons
+                name='film-outline'
+                size={48}
+                color={isDark ? '#a3a3a3' : '#737373'}
+                style={{ marginBottom: 16 }}
+              />
+              <Text className='mb-4 text-center text-lg font-medium leading-6 text-light-textMuted dark:text-dark-textMuted'>
                 {movies.length === 0
                   ? t('movies.noRecommendations')
-                  : 'Aucun film ne correspond aux filtres sélectionnés'}
+                  : t('filters.noResults') || 'No results match your filters'}
               </Text>
+              {movies.length > 0 && onRefineSearch && (
+                <TouchableOpacity
+                  onPress={() => {
+                    onRefineSearch({
+                      includeMovies:
+                        filters.contentType === 'all' ||
+                        filters.contentType === 'movies',
+                      includeTvShows:
+                        filters.contentType === 'all' ||
+                        filters.contentType === 'tvshows',
+                      yearFrom: filters.yearFrom ?? undefined,
+                      yearTo: filters.yearTo ?? undefined,
+                    });
+                  }}
+                  style={getSmallBorderRadius()}
+                  className='flex-row items-center gap-2 bg-netflix-500 px-6 py-3'
+                >
+                  <Ionicons name='search' size={18} color='#ffffff' />
+                  <Text className='text-base font-semibold text-white'>
+                    {t('filters.searchWithFilters') || 'Search with these filters'}
+                  </Text>
+                </TouchableOpacity>
+              )}
             </MotiView>
           ) : (
             filteredAndSortedMovies.map((movie, index) => {
@@ -908,6 +821,16 @@ export default function MovieResults({
           )}
         </View>
       </ScrollView>
+
+      {/* Filter Modal */}
+      <FilterModal
+        visible={showFilterModal}
+        onClose={() => setShowFilterModal(false)}
+        filters={filters}
+        onFiltersChange={setFilters}
+        availableProviders={availableProviders}
+        onRefineSearch={handleRefineSearch}
+      />
     </MotiView>
   );
 }

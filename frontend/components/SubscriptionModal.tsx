@@ -344,65 +344,80 @@ export default function SubscriptionModal({
 
         {/* Bottom Actions */}
         <View className='border-t border-light-border p-6 dark:border-dark-border'>
-          {/* Free Trial Button - Only shown if user hasn't used trial */}
+          {/* Free Trial Button - PRIMARY CTA - Only shown if user hasn't used trial */}
           {canStartTrial && (
-            <MotiView
-              from={{ scale: 1 }}
-              animate={{ scale: [1, 1.02, 1] }}
-              transition={{
-                type: 'timing',
-                duration: 1500,
-                loop: true,
-              }}
-            >
-              <TouchableOpacity
-                onPress={handleStartTrial}
-                disabled={purchasing}
-                style={getButtonBorderRadius()}
-                className={cn(
-                  'mb-3 border-2 border-netflix-500 bg-netflix-500/10 py-4',
-                  purchasing && 'opacity-50'
-                )}
+            <>
+              <MotiView
+                from={{ scale: 1 }}
+                animate={{ scale: [1, 1.02, 1] }}
+                transition={{
+                  type: 'timing',
+                  duration: 1500,
+                  loop: true,
+                }}
               >
-                {purchasing ? (
-                  <ActivityIndicator color='#E50914' />
-                ) : (
-                  <View className='flex-row items-center justify-center gap-2'>
-                    <MotiView
-                      from={{ rotate: '0deg' }}
-                      animate={{ rotate: ['0deg', '-10deg', '10deg', '0deg'] }}
-                      transition={{
-                        type: 'timing',
-                        duration: 500,
-                        loop: true,
-                        delay: 2000,
-                      }}
-                    >
-                      <Ionicons name='gift-outline' size={22} color='#E50914' />
-                    </MotiView>
-                    <Text className='text-center text-lg font-semibold text-netflix-500'>
-                      {t('subscription.startTrial') || 'Start 7-Day Free Trial'}
-                    </Text>
-                  </View>
-                )}
-              </TouchableOpacity>
-            </MotiView>
+                <TouchableOpacity
+                  onPress={handleStartTrial}
+                  disabled={purchasing}
+                  style={getButtonBorderRadius()}
+                  className={cn(
+                    'bg-netflix-500 py-4',
+                    purchasing && 'opacity-50'
+                  )}
+                >
+                  {purchasing ? (
+                    <ActivityIndicator color='white' />
+                  ) : (
+                    <View className='flex-row items-center justify-center gap-2'>
+                      <MotiView
+                        from={{ rotate: '0deg' }}
+                        animate={{ rotate: ['0deg', '-10deg', '10deg', '0deg'] }}
+                        transition={{
+                          type: 'timing',
+                          duration: 500,
+                          loop: true,
+                          delay: 2000,
+                        }}
+                      >
+                        <Ionicons name='gift-outline' size={22} color='white' />
+                      </MotiView>
+                      <Text className='text-center text-lg font-semibold text-white'>
+                        {t('subscription.startTrial') || 'Start 7-Day Free Trial'}
+                      </Text>
+                    </View>
+                  )}
+                </TouchableOpacity>
+              </MotiView>
+              <Text className='mb-4 mt-2 text-center text-sm text-light-muted dark:text-dark-muted'>
+                {t('subscription.trialReassurance') ||
+                  'No payment now. Cancel anytime.'}
+              </Text>
+            </>
           )}
 
+          {/* Subscribe Button - Secondary when trial available, Primary otherwise */}
           <TouchableOpacity
             onPress={handlePurchase}
             disabled={purchasing || (!monthlyPackage && !annualPackage)}
             style={getButtonBorderRadius()}
             className={cn(
-              'mb-4 bg-netflix-500 py-4',
+              'mb-4 py-4',
+              canStartTrial
+                ? 'border-2 border-netflix-500 bg-transparent'
+                : 'bg-netflix-500',
               (purchasing || (!monthlyPackage && !annualPackage)) &&
                 'opacity-50'
             )}
           >
             {purchasing ? (
-              <ActivityIndicator color='white' />
+              <ActivityIndicator color={canStartTrial ? '#E50914' : 'white'} />
             ) : (
-              <Text className='text-center text-lg font-semibold text-white'>
+              <Text
+                className={cn(
+                  'text-center text-lg font-semibold',
+                  canStartTrial ? 'text-netflix-500' : 'text-white'
+                )}
+              >
                 {t('subscription.subscribe') || 'Subscribe Now'}
               </Text>
             )}

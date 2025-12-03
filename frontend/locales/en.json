@@ -69,6 +69,26 @@
   "modal": {
     "title": "User profile"
   },
+  "filters": {
+    "title": "Filters",
+    "reset": "Reset",
+    "apply": "Apply Filters",
+    "refineSearch": "Search with these filters",
+    "noResults": "No results match your filters",
+    "searchWithFilters": "Search with these filters",
+    "contentType": "Content Type",
+    "all": "All",
+    "moviesOnly": "Movies",
+    "tvShowsOnly": "TV Shows",
+    "yearRange": "Release Year",
+    "from": "From",
+    "to": "To",
+    "sortBy": "Sort By",
+    "platforms": "Platforms",
+    "actor": "Actor",
+    "searchActor": "Search for an actor...",
+    "maxActors": "Maximum 3 actors selected"
+  },
   "subscription": {
     "title": "Go FastFlix Pro",
     "loading": "Loading subscription options...",
@@ -104,6 +124,11 @@
     },
     "subscribe": "Subscribe Now",
     "startTrial": "Start 7-Day Free Trial",
+    "trialReassurance": "No credit card required. Cancel anytime.",
+    "trialBanner": {
+      "title": "Try FastFlix Pro free for 7 days",
+      "cta": "Start Free Trial"
+    },
     "restore": "Restore Purchases",
     "terms": "Subscription automatically renews unless cancelled. Terms and conditions apply.",
     "success": {

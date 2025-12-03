@@ -69,6 +69,26 @@
   "modal": {
     "title": "Profilo utente"
   },
+  "filters": {
+    "title": "Filtri",
+    "reset": "Reimposta",
+    "apply": "Applica",
+    "refineSearch": "Cerca con questi filtri",
+    "noResults": "Nessun risultato corrisponde ai tuoi filtri",
+    "searchWithFilters": "Cerca con questi filtri",
+    "contentType": "Tipo di contenuto",
+    "all": "Tutto",
+    "moviesOnly": "Film",
+    "tvShowsOnly": "Serie TV",
+    "yearRange": "Anno di uscita",
+    "from": "Da",
+    "to": "A",
+    "sortBy": "Ordina per",
+    "platforms": "Piattaforme",
+    "actor": "Attore",
+    "searchActor": "Cerca un attore...",
+    "maxActors": "Massimo 3 attori selezionati"
+  },
   "subscription": {
     "title": "Passa a FastFlix Pro",
     "loading": "Caricamento opzioni abbonamento...",
@@ -104,6 +124,11 @@
     },
     "subscribe": "Abbonati ora",
     "startTrial": "Prova gratuita di 7 giorni",
+    "trialReassurance": "Nessuna carta di credito richiesta. Annulla quando vuoi.",
+    "trialBanner": {
+      "title": "Prova FastFlix Pro gratis per 7 giorni",
+      "cta": "Inizia la prova"
+    },
     "restore": "Ripristina acquisti",
     "terms": "L'abbonamento si rinnova automaticamente salvo cancellazione. Si applicano i termini e condizioni.",
     "success": {

@@ -10,6 +10,8 @@ import type {
   TMDBTVShow,
   TMDBWatchProviderResponse,
   StreamingProvider,
+  TMDBPersonSearchResponse,
+  PersonResult,
 } from './types';
 
 interface CachedData<T> {
@@ -290,6 +292,76 @@ class TMDBService {
 
     await Promise.all(promises);
     return result;
+  }
+
+  /**
+   * Search for a person/actor by name
+   */
+  async searchPerson(query: string, language: string = 'en-US'): Promise<PersonResult[]> {
+    try {
+      const data = await this.makeRequest<TMDBPersonSearchResponse>('/search/person', {
+        query,
+        language,
+        include_adult: 'false',
+      });
+
+      if (data.results && data.results.length > 0) {
+        // Filter to only include actors (known_for_department === 'Acting')
+        // and sort by popularity
+        return data.results
+          .filter((person) => person.known_for_department === 'Acting')
+          .slice(0, 10)
+          .map((person) => ({
+            id: person.id,
+            name: person.name,
+            profile_path: person.profile_path,
+            known_for_department: person.known_for_department,
+            popularity: person.popularity,
+          }));
+      }
+
+      return [];
+    } catch (error) {
+      console.error(`❌ Failed to search person: ${query}`, error);
+      return [];
+    }
+  }
+
+  /**
+   * Get movies/TV shows for a specific actor using TMDB person credits
+   */
+  async getPersonCredits(
+    personId: number,
+    mediaType: 'movie' | 'tv' | 'both' = 'both',
+    language: string = 'en-US'
+  ): Promise<MovieResult[]> {
+    try {
+      const endpoint = `/person/${personId}/combined_credits`;
+      const data = await this.makeRequest<{
+        cast: (TMDBMovie | TMDBTVShow)[];
+        crew: (TMDBMovie | TMDBTVShow)[];
+      }>(endpoint, { language });
+
+      let results = data.cast || [];
+
+      // Filter by media type if specified
+      if (mediaType === 'movie') {
+        results = results.filter((item) => 'title' in item);
+      } else if (mediaType === 'tv') {
+        results = results.filter((item) => 'name' in item);
+      }
+
+      // Sort by popularity and vote count, take top results
+      results = results
+        .filter((item) => item.vote_count > 50) // Filter out obscure titles
+        .sort((a, b) => b.popularity - a.popularity)
+        .slice(0, 30);
+
+      return results.map((item) => this.convertToMovieResult(item));
+    } catch (error) {
+      console.error(`❌ Failed to get person credits for ID ${personId}:`, error);
+      return [];
+    }
   }
 }
 

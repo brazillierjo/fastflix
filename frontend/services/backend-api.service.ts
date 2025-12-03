@@ -48,6 +48,19 @@ export interface HealthCheckResponse {
   ai: string;
 }
 
+export interface PersonResult {
+  id: number;
+  name: string;
+  profile_path: string | null;
+  known_for_department: string;
+  popularity: number;
+}
+
+export interface ActorSearchResponse {
+  actors: PersonResult[];
+  totalResults: number;
+}
+
 class BackendAPIService {
   private baseUrl: string;
   private timeout: number = 30000; // 30 seconds
@@ -189,17 +202,32 @@ class BackendAPIService {
     includeTvShows: boolean;
     language?: string;
     country?: string;
+    yearFrom?: number;
+    yearTo?: number;
+    actorIds?: number[];
   }): Promise<APIResponse<SearchResponse>> {
     try {
       // Authentication is now required - no deviceId needed
       // JWT token is automatically included by makeRequest()
-      const requestBody = {
+      const requestBody: Record<string, unknown> = {
         query: params.query,
         includeMovies: params.includeMovies,
         includeTvShows: params.includeTvShows,
         language: params.language || 'fr-FR',
         country: params.country || 'FR',
       };
+
+      // Only include year filters if they are defined
+      if (params.yearFrom !== undefined) {
+        requestBody.yearFrom = params.yearFrom;
+      }
+      if (params.yearTo !== undefined) {
+        requestBody.yearTo = params.yearTo;
+      }
+      // Include actor IDs if provided
+      if (params.actorIds && params.actorIds.length > 0) {
+        requestBody.actorIds = params.actorIds;
+      }
 
       return await this.makeRequest<SearchResponse>('/api/search', {
         method: 'POST',
@@ -217,6 +245,42 @@ class BackendAPIService {
         error: {
           code: 'SEARCH_ERROR',
           message: 'Failed to execute search',
+          details: { error: (error as Error).message },
+        },
+      };
+    }
+  }
+
+  /**
+   * Search for actors by name
+   * Requires authentication - JWT token must be present
+   */
+  async searchActors(params: {
+    query: string;
+    language?: string;
+  }): Promise<APIResponse<ActorSearchResponse>> {
+    try {
+      const searchParams = new URLSearchParams({
+        query: params.query,
+        language: params.language || 'en-US',
+      });
+
+      return await this.makeRequest<ActorSearchResponse>(
+        `/api/actors?${searchParams.toString()}`,
+        {
+          method: 'GET',
+        }
+      );
+    } catch (error) {
+      return {
+        success: false,
+        data: {
+          actors: [],
+          totalResults: 0,
+        },
+        error: {
+          code: 'ACTOR_SEARCH_ERROR',
+          message: 'Failed to search actors',
           details: { error: (error as Error).message },
         },
       };

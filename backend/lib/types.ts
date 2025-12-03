@@ -219,3 +219,31 @@ export interface TrialInfo {
   endsAt: string | null;
   used: boolean;
 }
+
+// ============================================================================
+// Person/Actor Types
+// ============================================================================
+
+export interface TMDBPerson {
+  id: number;
+  name: string;
+  profile_path: string | null;
+  known_for_department: string;
+  popularity: number;
+  known_for?: (TMDBMovie | TMDBTVShow)[];
+}
+
+export interface TMDBPersonSearchResponse {
+  page: number;
+  results: TMDBPerson[];
+  total_pages: number;
+  total_results: number;
+}
+
+export interface PersonResult {
+  id: number;
+  name: string;
+  profile_path: string | null;
+  known_for_department: string;
+  popularity: number;
+}

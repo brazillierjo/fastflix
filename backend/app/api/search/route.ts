@@ -36,7 +36,8 @@ export async function POST(request: NextRequest) {
       return rateLimitResponse;
     }
 
-    const { query, includeMovies, includeTvShows, language, country } = validatedData;
+    const { query, includeMovies, includeTvShows, language, country, yearFrom, yearTo, actorIds } =
+      validatedData;
 
     // Step 2: Check access (subscription OR active trial)
     const hasAccess = await db.hasAccess(userId);
@@ -72,16 +73,67 @@ export async function POST(request: NextRequest) {
     const aiResult = await gemini.generateRecommendationsWithResponse(
       query,
       contentTypes,
-      language
+      language,
+      { yearFrom, yearTo }
     );
 
     // Step 5: Enrich recommendations with TMDB data
-    const enrichedResults = await tmdb.enrichRecommendations(
+    let enrichedResults = await tmdb.enrichRecommendations(
       aiResult.recommendations,
       includeMovies,
       includeTvShows,
       language
     );
+
+    // Step 5b: Filter by actor if actorIds provided
+    if (actorIds && actorIds.length > 0) {
+      console.log(`🎭 Filtering results by ${actorIds.length} actor(s)`);
+
+      // Get credits for all selected actors
+      const actorCreditsPromises = actorIds.map((actorId) =>
+        tmdb.getPersonCredits(
+          actorId,
+          includeMovies && includeTvShows ? 'both' : includeMovies ? 'movie' : 'tv',
+          language
+        )
+      );
+      const allActorCredits = await Promise.all(actorCreditsPromises);
+
+      // Create a set of TMDB IDs that appear in ALL selected actors' filmographies (AND logic)
+      // For single actor, this is just their filmography
+      // For multiple actors, we find the intersection
+      const actorTmdbIdSets = allActorCredits.map(
+        (credits) => new Set(credits.map((c) => c.tmdb_id))
+      );
+
+      let validTmdbIds: Set<number>;
+      if (actorTmdbIdSets.length === 1) {
+        validTmdbIds = actorTmdbIdSets[0];
+      } else {
+        // Intersection of all sets
+        validTmdbIds = actorTmdbIdSets.reduce((acc, set) => {
+          return new Set([...acc].filter((id) => set.has(id)));
+        });
+      }
+
+      // Filter enriched results to only include titles with the selected actor(s)
+      const filteredByActor = enrichedResults.filter((movie) => validTmdbIds.has(movie.tmdb_id));
+
+      console.log(`🎭 Filtered ${enrichedResults.length} -> ${filteredByActor.length} results by actor`);
+
+      // If we have good results from filtering, use them
+      // Otherwise, augment with actor's other popular films
+      if (filteredByActor.length >= 5) {
+        enrichedResults = filteredByActor;
+      } else {
+        // Add popular films from the first actor to fill the results
+        const actorFilms = allActorCredits[0]
+          .filter((film) => !filteredByActor.some((f) => f.tmdb_id === film.tmdb_id))
+          .slice(0, 20 - filteredByActor.length);
+        enrichedResults = [...filteredByActor, ...actorFilms];
+        console.log(`🎭 Augmented with ${actorFilms.length} additional actor films`);
+      }
+    }
 
     // Step 6: Fetch streaming providers for enriched results
     const streamingProviders = await tmdb.getBatchWatchProviders(enrichedResults, country);

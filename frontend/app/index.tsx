@@ -9,7 +9,7 @@ import { useAppState } from '@/hooks/useAppState';
 import { useBackendMovieSearch } from '@/hooks/useBackendMovieSearch';
 import { cn } from '@/utils/cn';
 import { Redirect } from 'expo-router';
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import {
   Alert,
   KeyboardAvoidingView,
@@ -36,27 +36,30 @@ export default function HomeScreen() {
     handleSearchEnd,
   } = useAppState();
 
+  const [showSubscriptionModal, setShowSubscriptionModal] = useState(false);
+
   const movieSearchMutation = useBackendMovieSearch();
   const { t } = useLanguage();
   const { isAuthenticated, isLoading } = useAuth();
-  const { isFreeUser, isLoading: isSubscriptionLoading } = useSubscription();
-  const [showSubscriptionModal, setShowSubscriptionModal] = useState(false);
+  useSubscription();
 
-  // Automatically show subscription modal if user has no access (no subscription, no trial)
-  useEffect(() => {
-    if (isAuthenticated && !isLoading && !isSubscriptionLoading && isFreeUser) {
-      setShowSubscriptionModal(true);
-    }
-  }, [isAuthenticated, isLoading, isSubscriptionLoading, isFreeUser]);
-
-  const handleSearch = async () => {
+  const handleSearch = async (filters?: {
+    includeMovies?: boolean;
+    includeTvShows?: boolean;
+    yearFrom?: number;
+    yearTo?: number;
+    actorIds?: number[];
+  }) => {
     handleSearchStart();
 
     movieSearchMutation.mutate(
       {
         query,
-        includeMovies: true,
-        includeTvShows: true,
+        includeMovies: filters?.includeMovies ?? true,
+        includeTvShows: filters?.includeTvShows ?? true,
+        yearFrom: filters?.yearFrom,
+        yearTo: filters?.yearTo,
+        actorIds: filters?.actorIds,
       },
       {
         onSuccess: async data => {
@@ -90,6 +93,16 @@ export default function HomeScreen() {
         },
       }
     );
+  };
+
+  const handleRefineSearch = (filters: {
+    includeMovies: boolean;
+    includeTvShows: boolean;
+    yearFrom?: number;
+    yearTo?: number;
+    actorIds?: number[];
+  }) => {
+    handleSearch(filters);
   };
 
   const handleSubscriptionSuccess = () => {
@@ -142,6 +155,7 @@ export default function HomeScreen() {
               detailedInfo={detailedInfo}
               geminiResponse={geminiResponse}
               onGoBack={goBackToHome}
+              onRefineSearch={handleRefineSearch}
             />
           ) : (
             <SearchForm

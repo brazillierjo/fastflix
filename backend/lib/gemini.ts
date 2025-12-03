@@ -46,7 +46,11 @@ class GeminiService {
   async generateRecommendationsWithResponse(
     query: string,
     contentTypes: string[],
-    language: string = 'fr-FR'
+    language: string = 'fr-FR',
+    filters?: {
+      yearFrom?: number;
+      yearTo?: number;
+    }
   ): Promise<AIRecommendationResult> {
     const genAI = this.getClient();
     const modelName = process.env.GEMINI_MODEL || 'gemini-2.0-flash-exp';
@@ -70,7 +74,36 @@ class GeminiService {
     const languageName = languageMap[language] || 'English';
 
     const contentTypeText = contentTypes.join(' and ');
-    const prompt = `You are an expert AI assistant specializing in cinema and television with encyclopedic knowledge of films and series from around the world. A user asks you: "${query}".
+    const currentYear = new Date().getFullYear();
+
+    // Build year constraint text if filters are provided
+    let yearConstraint = '';
+    if (filters?.yearFrom && filters?.yearTo) {
+      yearConstraint = `\n\nYEAR CONSTRAINT: Only include ${contentTypeText} released between ${filters.yearFrom} and ${filters.yearTo}. This is a STRICT requirement - do not include anything outside this range.`;
+    } else if (filters?.yearFrom) {
+      yearConstraint = `\n\nYEAR CONSTRAINT: Only include ${contentTypeText} released from ${filters.yearFrom} onwards. This is a STRICT requirement - do not include anything released before ${filters.yearFrom}.`;
+    } else if (filters?.yearTo) {
+      yearConstraint = `\n\nYEAR CONSTRAINT: Only include ${contentTypeText} released up to ${filters.yearTo}. This is a STRICT requirement - do not include anything released after ${filters.yearTo}.`;
+    }
+
+    // Build temporal vocabulary section
+    const temporalVocabulary = `
+TEMPORAL AWARENESS (CRITICAL - Today is ${new Date().toISOString().split('T')[0]}, current year is ${currentYear}):
+When the user uses temporal terms, interpret them STRICTLY as follows:
+- "modern", "moderne", "recent", "récent", "new", "nouveau", "latest", "dernier" → ONLY films from ${currentYear - 5} to ${currentYear} (last 5 years)
+- "contemporary", "contemporain", "current" → films from ${currentYear - 10} to ${currentYear}
+- "2020s" → 2020-${currentYear}
+- "2010s" → 2010-2019
+- "2000s" → 2000-2009
+- "90s", "années 90", "90er" → 1990-1999
+- "80s", "années 80", "80er" → 1980-1989
+- "70s", "années 70" → 1970-1979
+- "classic", "classique", "old", "vieux", "ancien" → before 2000
+- "vintage", "retro" → 1950-1989
+
+If the user says "comédie romantique moderne" or "modern romantic comedy", you MUST ONLY suggest films released between ${currentYear - 5} and ${currentYear}. DO NOT suggest films from the 80s, 90s, or 2000s for "modern" queries.`;
+
+    const prompt = `You are an expert AI assistant specializing in cinema and television with encyclopedic knowledge of films and series from around the world. A user asks you: "${query}".${temporalVocabulary}${yearConstraint}
 
 ADVANCED SEARCH STRATEGY:
 

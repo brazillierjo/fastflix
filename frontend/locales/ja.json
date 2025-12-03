@@ -69,6 +69,26 @@
   "modal": {
     "title": "ユーザープロフィール"
   },
+  "filters": {
+    "title": "フィルター",
+    "reset": "リセット",
+    "apply": "適用",
+    "refineSearch": "このフィルターで検索",
+    "noResults": "フィルターに一致する結果がありません",
+    "searchWithFilters": "このフィルターで検索",
+    "contentType": "コンテンツタイプ",
+    "all": "すべて",
+    "moviesOnly": "映画",
+    "tvShowsOnly": "テレビ番組",
+    "yearRange": "公開年",
+    "from": "から",
+    "to": "まで",
+    "sortBy": "並び替え",
+    "platforms": "プラットフォーム",
+    "actor": "俳優",
+    "searchActor": "俳優を検索...",
+    "maxActors": "最大3人の俳優が選択されています"
+  },
   "subscription": {
     "title": "FastFlix Proにアップグレード",
     "loading": "サブスクリプションオプションを読み込み中...",
@@ -104,6 +124,11 @@
     },
     "subscribe": "今すぐ購読",
     "startTrial": "7日間無料トライアル",
+    "trialReassurance": "クレジットカード不要。いつでもキャンセル可能。",
+    "trialBanner": {
+      "title": "FastFlix Proを7日間無料でお試し",
+      "cta": "無料トライアル開始"
+    },
     "restore": "購入を復元",
     "terms": "キャンセルしない限り、サブスクリプションは自動更新されます。利用規約が適用されます。",
     "success": {
