@@ -62,6 +62,7 @@ export interface SubscriptionContextType {
 
   // Package helpers
   getMonthlyPackage: () => PurchasesPackage | null;
+  getQuarterlyPackage: () => PurchasesPackage | null;
   getAnnualPackage: () => PurchasesPackage | null;
 }
 
@@ -321,6 +322,18 @@ export const SubscriptionProvider: React.FC<SubscriptionProviderProps> = ({
     return monthlyPackage || null;
   };
 
+  const getQuarterlyPackage = (): PurchasesPackage | null => {
+    if (!offerings || offerings.length === 0) return null;
+
+    const quarterlyPackage = offerings[0].availablePackages.find(
+      pkg =>
+        pkg.identifier === '$rc_three_month' ||
+        pkg.packageType === 'THREE_MONTH'
+    );
+
+    return quarterlyPackage || null;
+  };
+
   const getAnnualPackage = (): PurchasesPackage | null => {
     if (!offerings || offerings.length === 0) return null;
 
@@ -406,6 +419,7 @@ export const SubscriptionProvider: React.FC<SubscriptionProviderProps> = ({
     startFreeTrial,
     refreshSubscriptionStatus,
     getMonthlyPackage,
+    getQuarterlyPackage,
     getAnnualPackage,
   };
 

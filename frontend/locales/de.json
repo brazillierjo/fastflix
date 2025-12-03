@@ -129,14 +129,19 @@
     },
     "popular": "BELIEBT",
     "annual": {
-      "title": "Jahresplan",
-      "description": "Bester Wert - 2 Monate gratis",
-      "period": "pro Jahr"
+      "title": "Jährlich",
+      "description": "Bester Preis",
+      "period": "/Jahr"
+    },
+    "quarterly": {
+      "title": "3 Monate",
+      "description": "Mehr sparen",
+      "period": "/3 Monate"
     },
     "monthly": {
-      "title": "Monatsplan",
-      "description": "Flexible monatliche Abrechnung",
-      "period": "pro Monat"
+      "title": "Monatlich",
+      "description": "Flexible Abrechnung",
+      "period": "/Monat"
     },
     "subscribe": "Jetzt abonnieren",
     "startTrial": "7-tägige kostenlose Testversion",

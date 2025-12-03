@@ -22,6 +22,7 @@ import {
   useColorScheme,
   View,
 } from 'react-native';
+import { PurchasesPackage } from 'react-native-purchases';
 import AppIcon from './AppIcon';
 
 interface SubscriptionModalProps {
@@ -29,6 +30,8 @@ interface SubscriptionModalProps {
   onClose: () => void;
   onSubscriptionSuccess?: () => void;
 }
+
+type PlanType = 'monthly' | 'quarterly' | 'annual';
 
 export default function SubscriptionModal({
   visible,
@@ -41,48 +44,102 @@ export default function SubscriptionModal({
     purchasePackage,
     restorePurchases,
     getMonthlyPackage,
+    getQuarterlyPackage,
     getAnnualPackage,
     trialInfo,
     startFreeTrial,
   } = useSubscription();
 
-  const [selectedPlan, setSelectedPlan] = useState<'monthly' | 'annual'>(
-    'annual'
-  );
+  const [selectedPlan, setSelectedPlan] = useState<PlanType>('quarterly');
   const [purchasing, setPurchasing] = useState(false);
   const colorScheme = useColorScheme();
   const isDark = colorScheme === 'dark';
 
   const monthlyPackage = getMonthlyPackage();
+  const quarterlyPackage = getQuarterlyPackage();
   const annualPackage = getAnnualPackage();
 
-  // Fonction pour formater le prix selon la devise du pays de l'utilisateur
+  // Extract numeric price from RevenueCat price string
+  const getNumericPrice = (priceString: string): number => {
+    const price = extractPriceFromString(priceString);
+    return price ?? 0;
+  };
+
+  // Format price according to user's country currency
   const formatPrice = (priceString: string): string => {
-    // Extraire le prix numérique de la chaîne RevenueCat
     const numericPrice = extractPriceFromString(priceString);
 
     if (numericPrice === null) {
-      // Si on ne peut pas extraire le prix, retourner la chaîne originale
       return priceString;
     }
 
-    // Détecter la devise actuelle du prix
     const currentCurrency = detectCurrencyFromPriceString(priceString);
     const targetCurrency = getCurrencyForCountry(country);
 
-    // Si la devise est déjà la bonne, formater selon les conventions locales
     if (currentCurrency === targetCurrency) {
       return formatPriceForCountry(numericPrice, country);
     }
 
-    // Pour l'instant, on garde le prix original si les devises diffèrent
-    // Dans une vraie app, on ferait une conversion avec des taux de change réels
     return priceString;
   };
 
+  // Format a numeric price
+  const formatNumericPrice = (price: number): string => {
+    return formatPriceForCountry(price, country);
+  };
+
+  // Calculate savings percentage
+  const calculateSavings = (
+    actualPrice: number,
+    comparedToMonthlyPrice: number,
+    months: number
+  ): number => {
+    const wouldBe = comparedToMonthlyPrice * months;
+    if (wouldBe === 0) return 0;
+    return Math.round(((wouldBe - actualPrice) / wouldBe) * 100);
+  };
+
+  // Get monthly price for comparison
+  const monthlyPrice = monthlyPackage
+    ? getNumericPrice(monthlyPackage.product.priceString)
+    : 0;
+
+  // Calculate comparison prices
+  const quarterlyComparisonPrice = monthlyPrice * 3;
+  const annualComparisonPrice = monthlyPrice * 12;
+
+  // Calculate savings
+  const quarterlySavings = quarterlyPackage
+    ? calculateSavings(
+        getNumericPrice(quarterlyPackage.product.priceString),
+        monthlyPrice,
+        3
+      )
+    : 0;
+
+  const annualSavings = annualPackage
+    ? calculateSavings(
+        getNumericPrice(annualPackage.product.priceString),
+        monthlyPrice,
+        12
+      )
+    : 0;
+
+  const getSelectedPackage = (): PurchasesPackage | null => {
+    switch (selectedPlan) {
+      case 'monthly':
+        return monthlyPackage;
+      case 'quarterly':
+        return quarterlyPackage;
+      case 'annual':
+        return annualPackage;
+      default:
+        return null;
+    }
+  };
+
   const handlePurchase = async () => {
-    const packageToPurchase =
-      selectedPlan === 'monthly' ? monthlyPackage : annualPackage;
+    const packageToPurchase = getSelectedPackage();
 
     if (!packageToPurchase) {
       console.error('No package selected');
@@ -98,7 +155,6 @@ export default function SubscriptionModal({
       setPurchasing(true);
       await purchasePackage(packageToPurchase);
 
-      // Call success callback before closing (if provided)
       if (onSubscriptionSuccess) {
         onSubscriptionSuccess();
       }
@@ -116,7 +172,6 @@ export default function SubscriptionModal({
       setPurchasing(true);
       const restored = await restorePurchases();
 
-      // If restore was successful and callback is provided, call it
       if (restored && onSubscriptionSuccess) {
         onSubscriptionSuccess();
         onClose();
@@ -146,7 +201,6 @@ export default function SubscriptionModal({
     }
   };
 
-  // Check if user can start trial (hasn't used it yet)
   const canStartTrial = !trialInfo?.used;
 
   const features = [
@@ -161,6 +215,13 @@ export default function SubscriptionModal({
     },
   ];
 
+  // Green color scheme
+  const greenPrimary = '#10B981'; // emerald-500
+  const greenDark = '#059669'; // emerald-600
+  const greenBg = isDark
+    ? 'rgba(16, 185, 129, 0.15)'
+    : 'rgba(16, 185, 129, 0.1)';
+
   if (isLoading) {
     return (
       <Modal visible={visible} transparent animationType='fade'>
@@ -169,7 +230,7 @@ export default function SubscriptionModal({
             style={getSquircle(18)}
             className='bg-light-background p-8 dark:bg-dark-surface'
           >
-            <ActivityIndicator size='large' color='#3B82F6' />
+            <ActivityIndicator size='large' color={greenPrimary} />
             <Text className='mt-4 text-center text-light-muted dark:text-dark-muted'>
               {t('subscription.loading') || 'Loading subscription options...'}
             </Text>
@@ -210,11 +271,7 @@ export default function SubscriptionModal({
             className='p-6'
           >
             <View className='mb-4 flex-row items-center justify-center gap-2'>
-              <Ionicons
-                name='film'
-                size={40}
-                color={isDark ? '#E50914' : '#E50914'}
-              />
+              <Ionicons name='film' size={40} color={greenPrimary} />
               <Ionicons
                 name='sparkles'
                 size={32}
@@ -244,8 +301,11 @@ export default function SubscriptionModal({
                 }}
                 className='mb-6 flex-row items-center'
               >
-                <View className='mr-4 h-12 w-12 items-center justify-center rounded-full bg-netflix-500/10 dark:bg-netflix-500/20'>
-                  <Ionicons name='film' size={24} color='#E50914' />
+                <View
+                  className='mr-4 h-12 w-12 items-center justify-center rounded-full'
+                  style={{ backgroundColor: greenBg }}
+                >
+                  <Ionicons name='film' size={24} color={greenPrimary} />
                 </View>
                 <View className='flex-1'>
                   <Text className='mb-1 font-semibold text-light-text dark:text-dark-text'>
@@ -265,63 +325,22 @@ export default function SubscriptionModal({
               {t('subscription.plans.title') || 'Choose Your Plan'}
             </Text>
 
-            {/* Annual Plan */}
-            {annualPackage && (
-              <TouchableOpacity
-                onPress={() => setSelectedPlan('annual')}
-                style={getSquircle(18)}
-                className={cn(
-                  'relative mb-4 border-2 p-4',
-                  selectedPlan === 'annual'
-                    ? 'border-netflix-500 bg-netflix-500/5 dark:bg-netflix-500/10'
-                    : 'border-light-border bg-light-background dark:border-dark-border dark:bg-dark-surface'
-                )}
-              >
-                {/* Popular Badge */}
-                <View className='absolute -top-2 left-4 rounded-full bg-netflix-500 px-3 py-1'>
-                  <Text className='text-xs font-semibold text-white'>
-                    {t('subscription.popular') || 'POPULAR'}
-                  </Text>
-                </View>
-
-                <View className='mt-2 flex-row items-center justify-between'>
-                  <View>
-                    <Text className='font-semibold text-light-text dark:text-dark-text'>
-                      {t('subscription.annual.title') || 'Annual Plan'}
-                    </Text>
-                    <Text className='text-sm text-light-muted dark:text-dark-muted'>
-                      {t('subscription.annual.description') ||
-                        'Best value - Save 50%'}
-                    </Text>
-                  </View>
-                  <View className='items-end'>
-                    <Text className='text-xl font-bold text-light-text dark:text-dark-text'>
-                      {formatPrice(annualPackage.product.priceString)}
-                    </Text>
-                    <Text className='text-sm text-light-muted dark:text-dark-muted'>
-                      {t('subscription.annual.period') || 'per year'}
-                    </Text>
-                  </View>
-                </View>
-              </TouchableOpacity>
-            )}
-
             {/* Monthly Plan */}
             {monthlyPackage && (
               <TouchableOpacity
                 onPress={() => setSelectedPlan('monthly')}
                 style={getSquircle(18)}
                 className={cn(
-                  'border-2 p-4',
+                  'mb-3 border-2 p-4',
                   selectedPlan === 'monthly'
-                    ? 'border-netflix-500 bg-netflix-500/5 dark:bg-netflix-500/10'
+                    ? 'border-emerald-500 bg-emerald-500/5 dark:bg-emerald-500/10'
                     : 'border-light-border bg-light-background dark:border-dark-border dark:bg-dark-surface'
                 )}
               >
                 <View className='flex-row items-center justify-between'>
-                  <View>
+                  <View className='flex-1'>
                     <Text className='font-semibold text-light-text dark:text-dark-text'>
-                      {t('subscription.monthly.title') || 'Monthly Plan'}
+                      {t('subscription.monthly.title') || 'Monthly'}
                     </Text>
                     <Text className='text-sm text-light-muted dark:text-dark-muted'>
                       {t('subscription.monthly.description') ||
@@ -329,11 +348,136 @@ export default function SubscriptionModal({
                     </Text>
                   </View>
                   <View className='items-end'>
-                    <Text className='text-xl font-bold text-light-text dark:text-dark-text'>
+                    <Text
+                      className='text-xl font-bold'
+                      style={{ color: greenPrimary }}
+                    >
                       {formatPrice(monthlyPackage.product.priceString)}
                     </Text>
                     <Text className='text-sm text-light-muted dark:text-dark-muted'>
-                      {t('subscription.monthly.period') || 'per month'}
+                      {t('subscription.monthly.period') || '/month'}
+                    </Text>
+                  </View>
+                </View>
+              </TouchableOpacity>
+            )}
+
+            {/* Quarterly Plan - POPULAR */}
+            {quarterlyPackage && (
+              <TouchableOpacity
+                onPress={() => setSelectedPlan('quarterly')}
+                style={getSquircle(18)}
+                className={cn(
+                  'relative mb-3 border-2 p-4',
+                  selectedPlan === 'quarterly'
+                    ? 'border-emerald-500 bg-emerald-500/5 dark:bg-emerald-500/10'
+                    : 'border-light-border bg-light-background dark:border-dark-border dark:bg-dark-surface'
+                )}
+              >
+                {/* Popular Badge */}
+                <View
+                  className='absolute -top-2 left-4 rounded-full px-3 py-1'
+                  style={{ backgroundColor: greenPrimary }}
+                >
+                  <Text className='text-xs font-semibold text-white'>
+                    {t('subscription.popular') || 'POPULAR'}
+                  </Text>
+                </View>
+
+                <View className='mt-2 flex-row items-center justify-between'>
+                  <View className='flex-1'>
+                    <Text className='font-semibold text-light-text dark:text-dark-text'>
+                      {t('subscription.quarterly.title') || '3 Months'}
+                    </Text>
+                    <View className='flex-row items-center gap-2'>
+                      {quarterlySavings > 0 && (
+                        <View
+                          className='rounded-full px-2 py-0.5'
+                          style={{ backgroundColor: greenBg }}
+                        >
+                          <Text
+                            className='text-xs font-semibold'
+                            style={{ color: greenDark }}
+                          >
+                            -{quarterlySavings}%
+                          </Text>
+                        </View>
+                      )}
+                      <Text className='text-sm text-light-muted dark:text-dark-muted'>
+                        {t('subscription.quarterly.description') || 'Save more'}
+                      </Text>
+                    </View>
+                  </View>
+                  <View className='items-end'>
+                    {monthlyPrice > 0 && (
+                      <Text className='text-sm text-light-muted line-through dark:text-dark-muted'>
+                        {formatNumericPrice(quarterlyComparisonPrice)}
+                      </Text>
+                    )}
+                    <Text
+                      className='text-xl font-bold'
+                      style={{ color: greenPrimary }}
+                    >
+                      {formatPrice(quarterlyPackage.product.priceString)}
+                    </Text>
+                    <Text className='text-sm text-light-muted dark:text-dark-muted'>
+                      {t('subscription.quarterly.period') || '/3 months'}
+                    </Text>
+                  </View>
+                </View>
+              </TouchableOpacity>
+            )}
+
+            {/* Annual Plan */}
+            {annualPackage && (
+              <TouchableOpacity
+                onPress={() => setSelectedPlan('annual')}
+                style={getSquircle(18)}
+                className={cn(
+                  'mb-3 border-2 p-4',
+                  selectedPlan === 'annual'
+                    ? 'border-emerald-500 bg-emerald-500/5 dark:bg-emerald-500/10'
+                    : 'border-light-border bg-light-background dark:border-dark-border dark:bg-dark-surface'
+                )}
+              >
+                <View className='flex-row items-center justify-between'>
+                  <View className='flex-1'>
+                    <Text className='font-semibold text-light-text dark:text-dark-text'>
+                      {t('subscription.annual.title') || 'Annual'}
+                    </Text>
+                    <View className='flex-row items-center gap-2'>
+                      {annualSavings > 0 && (
+                        <View
+                          className='rounded-full px-2 py-0.5'
+                          style={{ backgroundColor: greenBg }}
+                        >
+                          <Text
+                            className='text-xs font-semibold'
+                            style={{ color: greenDark }}
+                          >
+                            -{annualSavings}%
+                          </Text>
+                        </View>
+                      )}
+                      <Text className='text-sm text-light-muted dark:text-dark-muted'>
+                        {t('subscription.annual.description') || 'Best value'}
+                      </Text>
+                    </View>
+                  </View>
+                  <View className='items-end'>
+                    {monthlyPrice > 0 && (
+                      <Text className='text-sm text-light-muted line-through dark:text-dark-muted'>
+                        {formatNumericPrice(annualComparisonPrice)}
+                      </Text>
+                    )}
+                    <Text
+                      className='text-xl font-bold'
+                      style={{ color: greenPrimary }}
+                    >
+                      {formatPrice(annualPackage.product.priceString)}
+                    </Text>
+                    <Text className='text-sm text-light-muted dark:text-dark-muted'>
+                      {t('subscription.annual.period') || '/year'}
                     </Text>
                   </View>
                 </View>
@@ -359,11 +503,11 @@ export default function SubscriptionModal({
                 <TouchableOpacity
                   onPress={handleStartTrial}
                   disabled={purchasing}
-                  style={getButtonBorderRadius()}
-                  className={cn(
-                    'bg-netflix-500 py-4',
-                    purchasing && 'opacity-50'
-                  )}
+                  style={[
+                    getButtonBorderRadius(),
+                    { backgroundColor: greenPrimary },
+                  ]}
+                  className={cn('py-4', purchasing && 'opacity-50')}
                 >
                   {purchasing ? (
                     <ActivityIndicator color='white' />
@@ -398,28 +542,29 @@ export default function SubscriptionModal({
             </>
           )}
 
-          {/* Subscribe Button - Secondary when trial available, Primary otherwise */}
+          {/* Subscribe Button */}
           <TouchableOpacity
             onPress={handlePurchase}
-            disabled={purchasing || (!monthlyPackage && !annualPackage)}
-            style={getButtonBorderRadius()}
+            disabled={purchasing || !getSelectedPackage()}
+            style={[
+              getButtonBorderRadius(),
+              canStartTrial
+                ? { borderWidth: 2, borderColor: greenPrimary }
+                : { backgroundColor: greenPrimary },
+            ]}
             className={cn(
               'mb-4 py-4',
-              canStartTrial
-                ? 'border-2 border-netflix-500 bg-transparent'
-                : 'bg-netflix-500',
-              (purchasing || (!monthlyPackage && !annualPackage)) &&
-                'opacity-50'
+              (purchasing || !getSelectedPackage()) && 'opacity-50'
             )}
           >
             {purchasing ? (
-              <ActivityIndicator color={canStartTrial ? '#E50914' : 'white'} />
+              <ActivityIndicator
+                color={canStartTrial ? greenPrimary : 'white'}
+              />
             ) : (
               <Text
-                className={cn(
-                  'text-center text-lg font-semibold',
-                  canStartTrial ? 'text-netflix-500' : 'text-white'
-                )}
+                className={cn('text-center text-lg font-semibold')}
+                style={{ color: canStartTrial ? greenPrimary : 'white' }}
               >
                 {t('subscription.subscribe') || 'Subscribe Now'}
               </Text>
@@ -431,7 +576,10 @@ export default function SubscriptionModal({
             disabled={purchasing}
             className='py-3'
           >
-            <Text className='text-center font-medium text-netflix-500'>
+            <Text
+              className='text-center font-medium'
+              style={{ color: greenPrimary }}
+            >
               {t('subscription.restore') || 'Restore Purchases'}
             </Text>
           </TouchableOpacity>

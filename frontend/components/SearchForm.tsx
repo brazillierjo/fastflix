@@ -171,8 +171,7 @@ export default function SearchForm({
       // Type character by character
       typewriterRef.current = setInterval(() => {
         if (currentIndexRef.current < targetTextRef.current.length) {
-          const nextChar =
-            targetTextRef.current[currentIndexRef.current] || '';
+          const nextChar = targetTextRef.current[currentIndexRef.current] || '';
           currentTextRef.current = currentTextRef.current + nextChar;
           setQuery(currentTextRef.current);
 

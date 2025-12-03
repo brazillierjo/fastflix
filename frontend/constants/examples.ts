@@ -79,8 +79,8 @@ export const PLACEHOLDER_EXAMPLES: PlaceholderExample[] = [
   // 😢 EMOTIONAL MOMENTS
   // ============================================
   {
-    fr: "Un film qui va me faire pleurer toutes les larmes de mon corps",
-    en: "A movie that will make me cry my eyes out",
+    fr: 'Un film qui va me faire pleurer toutes les larmes de mon corps',
+    en: 'A movie that will make me cry my eyes out',
     ja: '号泣できる映画',
     it: 'Un film che mi farà piangere tutte le lacrime',
     es: 'Una película que me hará llorar a mares',
@@ -111,10 +111,10 @@ export const PLACEHOLDER_EXAMPLES: PlaceholderExample[] = [
     de: 'Eine nachdenkliche Vater-Sohn Geschichte',
   },
   {
-    fr: "Un film sur le premier amour qui rend nostalgique",
-    en: "A first love movie that makes you nostalgic",
+    fr: 'Un film sur le premier amour qui rend nostalgique',
+    en: 'A first love movie that makes you nostalgic',
     ja: '懐かしくなる初恋映画',
-    it: "Un film sul primo amore che rende nostalgici",
+    it: 'Un film sul primo amore che rende nostalgici',
     es: 'Una película sobre el primer amor que da nostalgia',
     de: 'Ein Film über erste Liebe der nostalgisch macht',
   },
@@ -134,7 +134,7 @@ export const PLACEHOLDER_EXAMPLES: PlaceholderExample[] = [
     fr: 'Les films de mon enfance des années 90',
     en: 'Movies from my 90s childhood',
     ja: '90年代の子供時代の映画',
-    it: "I film della mia infanzia negli anni 90",
+    it: 'I film della mia infanzia negli anni 90',
     es: 'Películas de mi infancia de los 90',
     de: 'Filme aus meiner 90er Kindheit',
   },
@@ -155,7 +155,7 @@ export const PLACEHOLDER_EXAMPLES: PlaceholderExample[] = [
     de: 'Kultige amerikanische Serien der 2000er',
   },
   {
-    fr: "Les comédies françaises que tout le monde cite",
+    fr: 'Les comédies françaises que tout le monde cite',
     en: 'French comedies everyone quotes',
     ja: 'みんなが引用するフランスコメディ',
     it: 'Commedie francesi che tutti citano',
@@ -199,7 +199,7 @@ export const PLACEHOLDER_EXAMPLES: PlaceholderExample[] = [
     de: 'Ein sicherer Film fürs erste Date',
   },
   {
-    fr: "Un film à regarder avec ma grand-mère",
+    fr: 'Un film à regarder avec ma grand-mère',
     en: 'A movie to watch with my grandmother',
     ja: 'おばあちゃんと見る映画',
     it: 'Un film da guardare con mia nonna',
@@ -303,7 +303,7 @@ export const PLACEHOLDER_EXAMPLES: PlaceholderExample[] = [
     de: 'Ein koreanischer Thriller mit krankem Twist',
   },
   {
-    fr: "Bollywood avec des chorés de malade",
+    fr: 'Bollywood avec des chorés de malade',
     en: 'Bollywood with insane choreography',
     ja: 'すごい振付のボリウッド',
     it: 'Bollywood con coreografie pazzesche',
@@ -355,7 +355,7 @@ export const PLACEHOLDER_EXAMPLES: PlaceholderExample[] = [
     de: 'Christopher Nolans bester Film',
   },
   {
-    fr: 'Un Tarantino que je n\'ai pas encore vu',
+    fr: "Un Tarantino que je n'ai pas encore vu",
     en: "A Tarantino I haven't seen yet",
     ja: 'まだ見ていないタランティーノ作品',
     it: 'Un Tarantino che non ho ancora visto',
@@ -478,7 +478,7 @@ export const PLACEHOLDER_EXAMPLES: PlaceholderExample[] = [
     fr: "Un film d'été qui donne envie de partir en vacances",
     en: 'A summer movie that makes you want to travel',
     ja: '旅行したくなる夏映画',
-    it: "Un film estivo che fa venire voglia di partire",
+    it: 'Un film estivo che fa venire voglia di partire',
     es: 'Una película de verano que da ganas de viajar',
     de: 'Ein Sommerfilm der Reiselust macht',
   },
@@ -519,7 +519,7 @@ export const PLACEHOLDER_EXAMPLES: PlaceholderExample[] = [
     de: 'Ein unabhängiger Film der in Cannes ausgezeichnet wurde',
   },
   {
-    fr: 'Un film expérimental qui sort de l\'ordinaire',
+    fr: "Un film expérimental qui sort de l'ordinaire",
     en: 'An experimental film that breaks conventions',
     ja: '常識を覆す実験映画',
     it: 'Un film sperimentale fuori dagli schemi',
@@ -643,7 +643,7 @@ export const PLACEHOLDER_EXAMPLES: PlaceholderExample[] = [
   // 💪 ACTION & ADVENTURE
   // ============================================
   {
-    fr: 'Un film d\'action avec des explosions partout',
+    fr: "Un film d'action avec des explosions partout",
     en: 'An action movie with explosions everywhere',
     ja: '爆発だらけのアクション映画',
     it: "Un film d'azione con esplosioni ovunque",
@@ -710,7 +710,7 @@ export const PLACEHOLDER_EXAMPLES: PlaceholderExample[] = [
     fr: "N'importe quoi tant que c'est bien",
     en: "Anything as long as it's good",
     ja: '良ければ何でもいい',
-    it: "Qualsiasi cosa basta che sia bello",
+    it: 'Qualsiasi cosa basta che sia bello',
     es: 'Lo que sea mientras sea bueno',
     de: 'Egal was Hauptsache es ist gut',
   },

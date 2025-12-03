@@ -129,14 +129,19 @@
     },
     "popular": "人気",
     "annual": {
-      "title": "年間プラン",
-      "description": "最高の価値 - 2ヶ月分お得",
-      "period": "年間"
+      "title": "年間",
+      "description": "最高の価格",
+      "period": "/年"
+    },
+    "quarterly": {
+      "title": "3ヶ月",
+      "description": "もっとお得",
+      "period": "/3ヶ月"
     },
     "monthly": {
-      "title": "月間プラン",
-      "description": "柔軟な月額請求",
-      "period": "月間"
+      "title": "月間",
+      "description": "柔軟な請求",
+      "period": "/月"
     },
     "subscribe": "今すぐ購読",
     "startTrial": "7日間無料トライアル",

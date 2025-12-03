@@ -129,14 +129,19 @@
     },
     "popular": "POPULAR",
     "annual": {
-      "title": "Annual Plan",
-      "description": "Best value - 2 months free",
-      "period": "per year"
+      "title": "Annual",
+      "description": "Best value",
+      "period": "/year"
+    },
+    "quarterly": {
+      "title": "3 Months",
+      "description": "Save more",
+      "period": "/3 months"
     },
     "monthly": {
-      "title": "Monthly Plan",
-      "description": "Flexible monthly billing",
-      "period": "per month"
+      "title": "Monthly",
+      "description": "Flexible billing",
+      "period": "/month"
     },
     "subscribe": "Subscribe Now",
     "startTrial": "Start 7-Day Free Trial",

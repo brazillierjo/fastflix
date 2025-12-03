@@ -129,14 +129,19 @@
     },
     "popular": "POPOLARE",
     "annual": {
-      "title": "Formula Annuale",
-      "description": "Miglior valore - 2 mesi gratis",
-      "period": "all'anno"
+      "title": "Annuale",
+      "description": "Miglior prezzo",
+      "period": "/anno"
+    },
+    "quarterly": {
+      "title": "3 Mesi",
+      "description": "Risparmia di più",
+      "period": "/3 mesi"
     },
     "monthly": {
-      "title": "Formula Mensile",
-      "description": "Fatturazione mensile flessibile",
-      "period": "al mese"
+      "title": "Mensile",
+      "description": "Fatturazione flessibile",
+      "period": "/mese"
     },
     "subscribe": "Abbonati ora",
     "startTrial": "Prova gratuita di 7 giorni",
