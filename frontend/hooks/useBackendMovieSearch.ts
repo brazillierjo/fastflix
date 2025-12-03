@@ -43,9 +43,6 @@ export interface SearchParams {
   query: string;
   includeMovies: boolean;
   includeTvShows: boolean;
-  yearFrom?: number;
-  yearTo?: number;
-  actorIds?: number[];
   // Platform/Provider filters (override user preferences if provided)
   platforms?: number[];
   includeFlatrate?: boolean;
@@ -100,9 +97,6 @@ const searchMoviesWithBackend = async (
     query,
     includeMovies,
     includeTvShows,
-    yearFrom,
-    yearTo,
-    actorIds,
     platforms,
     includeFlatrate,
     includeRent,
@@ -120,9 +114,6 @@ const searchMoviesWithBackend = async (
       includeTvShows,
       language,
       country,
-      yearFrom,
-      yearTo,
-      actorIds,
       platforms,
       includeFlatrate,
       includeRent,

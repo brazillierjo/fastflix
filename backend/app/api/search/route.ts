@@ -1,6 +1,11 @@
 /**
  * FastFlix Backend - Search Endpoint
  * Main endpoint for AI-powered movie/TV show recommendations
+ *
+ * Simplified filter logic:
+ * - Platform/availability filters are applied but with smart fallback
+ * - If filters result in < 5 results, we include unfiltered results
+ * - Always returns at least 10 results when possible
  */
 
 import { NextRequest, NextResponse } from 'next/server';
@@ -10,7 +15,9 @@ import { tmdb } from '@/lib/tmdb';
 import { db } from '@/lib/db';
 import { applyRateLimit } from '@/lib/api-helpers';
 import { requireAuth } from '@/lib/middleware';
-import type { SearchResponse } from '@/lib/types';
+import type { SearchResponse, MovieResult, StreamingProvider } from '@/lib/types';
+
+const MIN_RESULTS = 5;
 
 export async function POST(request: NextRequest) {
   const startTime = Date.now();
@@ -42,9 +49,6 @@ export async function POST(request: NextRequest) {
       includeTvShows,
       language,
       country,
-      yearFrom,
-      yearTo,
-      actorIds,
       platforms,
       includeFlatrate,
       includeRent,
@@ -86,69 +90,18 @@ export async function POST(request: NextRequest) {
     const aiResult = await gemini.generateRecommendationsWithResponse(
       query,
       contentTypes,
-      language,
-      { yearFrom, yearTo }
+      language
     );
 
     // Step 5: Enrich recommendations with TMDB data
-    let enrichedResults = await tmdb.enrichRecommendations(
+    const enrichedResults = await tmdb.enrichRecommendations(
       aiResult.recommendations,
       includeMovies,
       includeTvShows,
       language
     );
 
-    // Step 5b: Filter by actor if actorIds provided
-    if (actorIds && actorIds.length > 0) {
-      console.log(`🎭 Filtering results by ${actorIds.length} actor(s)`);
-
-      // Get credits for all selected actors
-      const actorCreditsPromises = actorIds.map((actorId) =>
-        tmdb.getPersonCredits(
-          actorId,
-          includeMovies && includeTvShows ? 'both' : includeMovies ? 'movie' : 'tv',
-          language
-        )
-      );
-      const allActorCredits = await Promise.all(actorCreditsPromises);
-
-      // Create a set of TMDB IDs that appear in ALL selected actors' filmographies (AND logic)
-      // For single actor, this is just their filmography
-      // For multiple actors, we find the intersection
-      const actorTmdbIdSets = allActorCredits.map(
-        (credits) => new Set(credits.map((c) => c.tmdb_id))
-      );
-
-      let validTmdbIds: Set<number>;
-      if (actorTmdbIdSets.length === 1) {
-        validTmdbIds = actorTmdbIdSets[0];
-      } else {
-        // Intersection of all sets
-        validTmdbIds = actorTmdbIdSets.reduce((acc, set) => {
-          return new Set([...acc].filter((id) => set.has(id)));
-        });
-      }
-
-      // Filter enriched results to only include titles with the selected actor(s)
-      const filteredByActor = enrichedResults.filter((movie) => validTmdbIds.has(movie.tmdb_id));
-
-      console.log(
-        `🎭 Filtered ${enrichedResults.length} -> ${filteredByActor.length} results by actor`
-      );
-
-      // If we have good results from filtering, use them
-      // Otherwise, augment with actor's other popular films
-      if (filteredByActor.length >= 5) {
-        enrichedResults = filteredByActor;
-      } else {
-        // Add popular films from the first actor to fill the results
-        const actorFilms = allActorCredits[0]
-          .filter((film) => !filteredByActor.some((f) => f.tmdb_id === film.tmdb_id))
-          .slice(0, 20 - filteredByActor.length);
-        enrichedResults = [...filteredByActor, ...actorFilms];
-        console.log(`🎭 Augmented with ${actorFilms.length} additional actor films`);
-      }
-    }
+    console.log(`🎬 Got ${enrichedResults.length} enriched results from TMDB`);
 
     // Step 6: Fetch streaming providers and detailed info in parallel
     const [rawStreamingProviders, { credits, detailedInfo }] = await Promise.all([
@@ -156,72 +109,28 @@ export async function POST(request: NextRequest) {
       tmdb.getBatchDetailsAndCredits(enrichedResults, language),
     ]);
 
-    // Step 6b: Filter streaming providers by availability type preferences
-    let streamingProviders = rawStreamingProviders;
-    const hasAvailabilityFilters =
-      includeFlatrate !== undefined || includeRent !== undefined || includeBuy !== undefined;
-
-    if (hasAvailabilityFilters) {
-      // Default to true if not specified (backward compatibility)
-      const allowFlatrate = includeFlatrate !== false;
-      const allowRent = includeRent === true;
-      const allowBuy = includeBuy === true;
-
-      console.log(
-        `🔍 Filtering availability: flatrate=${allowFlatrate}, rent=${allowRent}, buy=${allowBuy}`
-      );
-
-      streamingProviders = {};
-      for (const [movieId, providers] of Object.entries(rawStreamingProviders)) {
-        const filteredProviders = providers.filter((provider) => {
-          if (provider.availability_type === 'flatrate' && allowFlatrate) return true;
-          if (provider.availability_type === 'rent' && allowRent) return true;
-          if (provider.availability_type === 'buy' && allowBuy) return true;
-          if (provider.availability_type === 'ads' && allowFlatrate) return true; // Ads = free with ads, similar to flatrate
-          return false;
-        });
-        if (filteredProviders.length > 0) {
-          streamingProviders[Number(movieId)] = filteredProviders;
-        }
+    // Step 7: Smart filtering with fallback
+    // Apply filters but ensure we always have enough results
+    const { filteredResults, filteredProviders } = applySmartFilters(
+      enrichedResults,
+      rawStreamingProviders,
+      {
+        platforms,
+        includeFlatrate,
+        includeRent,
+        includeBuy,
       }
-    }
+    );
 
-    // Step 6c: Filter by specific platform IDs if provided
-    if (platforms && platforms.length > 0) {
-      console.log(`🔍 Filtering by ${platforms.length} platform(s): ${platforms.join(', ')}`);
+    // Step 8: Handle AI-detected platforms (from user query like "sur Netflix")
+    let finalResults = filteredResults;
+    const finalProviders = filteredProviders;
 
-      const platformSet = new Set(platforms);
-      const filteredByPlatform: typeof streamingProviders = {};
-
-      for (const [movieId, providers] of Object.entries(streamingProviders)) {
-        const matchingProviders = providers.filter((provider) =>
-          platformSet.has(provider.provider_id)
-        );
-        if (matchingProviders.length > 0) {
-          filteredByPlatform[Number(movieId)] = matchingProviders;
-        }
-      }
-
-      streamingProviders = filteredByPlatform;
-    }
-
-    // Step 6d: Filter enriched results to only include movies with matching providers
-    if ((platforms && platforms.length > 0) || hasAvailabilityFilters) {
-      const movieIdsWithProviders = new Set(Object.keys(streamingProviders).map(Number));
-      const originalCount = enrichedResults.length;
-      enrichedResults = enrichedResults.filter((movie) => movieIdsWithProviders.has(movie.tmdb_id));
-      console.log(
-        `🎬 Filtered ${originalCount} -> ${enrichedResults.length} results by platform/availability preferences`
-      );
-    }
-
-    // Step 7: Filter results if specific platforms were requested
-    let finalResults = enrichedResults;
     if (aiResult.detectedPlatforms && aiResult.detectedPlatforms.length > 0) {
-      console.log(`🔍 Filtering results for platforms: ${aiResult.detectedPlatforms.join(', ')}`);
+      console.log(`🔍 AI detected platforms in query: ${aiResult.detectedPlatforms.join(', ')}`);
 
-      const filteredResults = enrichedResults.filter((movie) => {
-        const movieProviders = streamingProviders[movie.tmdb_id] || [];
+      const platformFilteredResults = filteredResults.filter((movie) => {
+        const movieProviders = filteredProviders[movie.tmdb_id] || [];
         return aiResult.detectedPlatforms.some((requestedPlatform) => {
           const normalizedRequested = requestedPlatform.toLowerCase().replace(/\s+/g, '');
           return movieProviders.some((provider) => {
@@ -234,30 +143,29 @@ export async function POST(request: NextRequest) {
         });
       });
 
-      // Smart filtering: only apply filter if we retain at least 30% of results
-      // This prevents returning empty results when content isn't available on the requested platform
-      const retentionRate =
-        enrichedResults.length > 0 ? filteredResults.length / enrichedResults.length : 0;
-
-      if (filteredResults.length === 0 || retentionRate < 0.3) {
+      // Only use platform-filtered results if we have enough
+      if (platformFilteredResults.length >= MIN_RESULTS) {
         console.log(
-          `⚠️  Platform filtering would remove too many results (${enrichedResults.length} -> ${filteredResults.length}). Keeping original results.`
+          `✅ Platform filter: ${filteredResults.length} -> ${platformFilteredResults.length} results`
         );
-        finalResults = enrichedResults;
+        finalResults = platformFilteredResults;
       } else {
-        console.log(`✅ Filtered ${enrichedResults.length} -> ${filteredResults.length} results`);
-        finalResults = filteredResults;
+        console.log(
+          `⚠️ Platform filter would give only ${platformFilteredResults.length} results, keeping ${filteredResults.length}`
+        );
       }
     }
 
-    // Step 8: Log the prompt for analytics
+    // Step 9: Log the prompt for analytics
     const responseTimeMs = Date.now() - startTime;
     await db.logPromptWithUserId(userId, query, finalResults.length, responseTimeMs);
 
-    // Step 9: Return successful response
+    console.log(`📊 Final: ${finalResults.length} results in ${responseTimeMs}ms`);
+
+    // Step 10: Return successful response
     const response: SearchResponse = {
       recommendations: finalResults,
-      streamingProviders,
+      streamingProviders: finalProviders,
       credits,
       detailedInfo,
       conversationalResponse: aiResult.conversationalResponse,
@@ -278,4 +186,108 @@ export async function POST(request: NextRequest) {
       { status: 500 }
     );
   }
+}
+
+/**
+ * Apply filters with smart fallback to ensure minimum results
+ */
+function applySmartFilters(
+  results: MovieResult[],
+  providers: { [key: number]: StreamingProvider[] },
+  filters: {
+    platforms?: number[];
+    includeFlatrate?: boolean;
+    includeRent?: boolean;
+    includeBuy?: boolean;
+  }
+): { filteredResults: MovieResult[]; filteredProviders: { [key: number]: StreamingProvider[] } } {
+  const { platforms, includeFlatrate, includeRent, includeBuy } = filters;
+
+  // Check if any filters are active
+  const hasAvailabilityFilters =
+    includeFlatrate !== undefined || includeRent !== undefined || includeBuy !== undefined;
+  const hasPlatformFilters = platforms && platforms.length > 0;
+
+  if (!hasAvailabilityFilters && !hasPlatformFilters) {
+    console.log('📋 No filters active, returning all results');
+    return { filteredResults: results, filteredProviders: providers };
+  }
+
+  // Step 1: Filter providers by availability type
+  let filteredProviders: { [key: number]: StreamingProvider[] } = { ...providers };
+
+  if (hasAvailabilityFilters) {
+    const allowFlatrate = includeFlatrate !== false;
+    const allowRent = includeRent === true;
+    const allowBuy = includeBuy === true;
+
+    console.log(
+      `🔍 Availability filters: flatrate=${allowFlatrate}, rent=${allowRent}, buy=${allowBuy}`
+    );
+
+    filteredProviders = {};
+    for (const [movieId, movieProviders] of Object.entries(providers)) {
+      const filtered = movieProviders.filter((provider) => {
+        if (provider.availability_type === 'flatrate' && allowFlatrate) return true;
+        if (provider.availability_type === 'rent' && allowRent) return true;
+        if (provider.availability_type === 'buy' && allowBuy) return true;
+        if (provider.availability_type === 'ads' && allowFlatrate) return true;
+        return false;
+      });
+      if (filtered.length > 0) {
+        filteredProviders[Number(movieId)] = filtered;
+      }
+    }
+  }
+
+  // Step 2: Filter by specific platforms if provided
+  if (hasPlatformFilters) {
+    console.log(`🔍 Platform filters: ${platforms!.join(', ')}`);
+    const platformSet = new Set(platforms);
+
+    const platformFilteredProviders: { [key: number]: StreamingProvider[] } = {};
+    for (const [movieId, movieProviders] of Object.entries(filteredProviders)) {
+      const matching = movieProviders.filter((p) => platformSet.has(p.provider_id));
+      if (matching.length > 0) {
+        platformFilteredProviders[Number(movieId)] = matching;
+      }
+    }
+    filteredProviders = platformFilteredProviders;
+  }
+
+  // Step 3: Filter results to only include movies with matching providers
+  const movieIdsWithProviders = new Set(Object.keys(filteredProviders).map(Number));
+  const strictlyFilteredResults = results.filter((movie) =>
+    movieIdsWithProviders.has(movie.tmdb_id)
+  );
+
+  console.log(`📊 Filter result: ${results.length} -> ${strictlyFilteredResults.length} results`);
+
+  // Step 4: Smart fallback - if too few results, include some unfiltered results
+  if (strictlyFilteredResults.length >= MIN_RESULTS) {
+    return { filteredResults: strictlyFilteredResults, filteredProviders };
+  }
+
+  console.log(
+    `⚠️ Only ${strictlyFilteredResults.length} results after filtering, adding fallback results`
+  );
+
+  // Add unfiltered results that aren't already included
+  const filteredIds = new Set(strictlyFilteredResults.map((m) => m.tmdb_id));
+  const additionalResults = results
+    .filter((movie) => !filteredIds.has(movie.tmdb_id))
+    .slice(0, MIN_RESULTS - strictlyFilteredResults.length);
+
+  // Merge providers for additional results
+  const mergedProviders = { ...filteredProviders };
+  for (const movie of additionalResults) {
+    if (providers[movie.tmdb_id]) {
+      mergedProviders[movie.tmdb_id] = providers[movie.tmdb_id];
+    }
+  }
+
+  const finalResults = [...strictlyFilteredResults, ...additionalResults];
+  console.log(`✅ After fallback: ${finalResults.length} results`);
+
+  return { filteredResults: finalResults, filteredProviders: mergedProviders };
 }

@@ -1,7 +1,7 @@
 import { Ionicons } from '@expo/vector-icons';
 import { LinearGradient } from 'expo-linear-gradient';
 import { MotiView } from 'moti';
-import React, { useMemo, useRef, useState } from 'react';
+import React, { useRef, useState } from 'react';
 import {
   Image,
   Linking,
@@ -19,7 +19,6 @@ import {
   getSquircle,
   getSmallBorderRadius,
 } from '../utils/designHelpers';
-import FilterModal, { FilterState } from './FilterModal';
 
 interface Movie {
   id: number;
@@ -63,13 +62,6 @@ interface MovieResultsProps {
   detailedInfo: { [key: number]: DetailedInfo };
   geminiResponse: string;
   onGoBack: () => void;
-  onRefineSearch?: (filters: {
-    includeMovies: boolean;
-    includeTvShows: boolean;
-    yearFrom?: number;
-    yearTo?: number;
-    actorIds?: number[];
-  }) => void;
 }
 
 export default function MovieResults({
@@ -79,18 +71,8 @@ export default function MovieResults({
   detailedInfo,
   geminiResponse,
   onGoBack,
-  onRefineSearch,
 }: MovieResultsProps) {
   const [expandedCards, setExpandedCards] = useState<Set<number>>(new Set());
-  const [filters, setFilters] = useState<FilterState>({
-    sortBy: 'vote_average',
-    selectedProviders: new Set(),
-    contentType: 'all',
-    yearFrom: null,
-    yearTo: null,
-    selectedActors: [],
-  });
-  const [showFilterModal, setShowFilterModal] = useState(false);
 
   const { t } = useLanguage();
   const colorScheme = useColorScheme();
@@ -153,74 +135,6 @@ export default function MovieResults({
     }
   };
 
-  // Extract all available providers from the results
-  const availableProviders = useMemo(() => {
-    const providers = new Set<string>();
-    Object.values(streamingProviders).forEach(providerList => {
-      providerList.forEach(provider => {
-        providers.add(provider.provider_name);
-      });
-    });
-    return Array.from(providers).sort();
-  }, [streamingProviders]);
-
-  // Filter and sort movies based on current filters
-  const filteredAndSortedMovies = useMemo(() => {
-    let filtered = [...movies];
-
-    // Filter by content type
-    if (filters.contentType === 'movies') {
-      filtered = filtered.filter(movie => movie.media_type === 'movie');
-    } else if (filters.contentType === 'tvshows') {
-      filtered = filtered.filter(movie => movie.media_type === 'tv');
-    }
-
-    // Filter by year range (local filtering on existing results)
-    if (filters.yearFrom !== null) {
-      filtered = filtered.filter(movie => {
-        const releaseDate = movie.release_date || movie.first_air_date;
-        if (!releaseDate) return true;
-        const year = new Date(releaseDate).getFullYear();
-        return year >= filters.yearFrom!;
-      });
-    }
-    if (filters.yearTo !== null) {
-      filtered = filtered.filter(movie => {
-        const releaseDate = movie.release_date || movie.first_air_date;
-        if (!releaseDate) return true;
-        const year = new Date(releaseDate).getFullYear();
-        return year <= filters.yearTo!;
-      });
-    }
-
-    // Filter by selected providers
-    if (filters.selectedProviders.size > 0) {
-      filtered = filtered.filter(movie => {
-        const movieProviders = streamingProviders[movie.id] || [];
-        return movieProviders.some(provider =>
-          filters.selectedProviders.has(provider.provider_name)
-        );
-      });
-    }
-
-    // Sort movies
-    filtered.sort((a, b) => {
-      if (filters.sortBy === 'release_date') {
-        const dateA = new Date(
-          a.release_date || a.first_air_date || '1900-01-01'
-        );
-        const dateB = new Date(
-          b.release_date || b.first_air_date || '1900-01-01'
-        );
-        return dateB.getTime() - dateA.getTime(); // Most recent first
-      } else {
-        return b.vote_average - a.vote_average; // Highest rating first
-      }
-    });
-
-    return filtered;
-  }, [movies, filters, streamingProviders]);
-
   const toggleCardExpansion = (movieId: number) => {
     const wasExpanded = expandedCards.has(movieId);
 
@@ -244,27 +158,6 @@ export default function MovieResults({
   };
 
   const isExpanded = (movieId: number) => expandedCards.has(movieId);
-
-  // Count active filters for badge
-  const activeFiltersCount = useMemo(() => {
-    let count = 0;
-    if (filters.contentType !== 'all') count++;
-    if (filters.yearFrom !== null || filters.yearTo !== null) count++;
-    if (filters.selectedProviders.size > 0) count++;
-    if (filters.sortBy !== 'vote_average') count++;
-    return count;
-  }, [filters]);
-
-  const handleRefineSearch = (searchFilters: {
-    includeMovies: boolean;
-    includeTvShows: boolean;
-    yearFrom?: number;
-    yearTo?: number;
-  }) => {
-    if (onRefineSearch) {
-      onRefineSearch(searchFilters);
-    }
-  };
 
   return (
     <MotiView
@@ -294,50 +187,12 @@ export default function MovieResults({
         </Text>
       </View>
 
-      {/* Filters Button */}
-      <View className='bg-light-background py-3 dark:bg-dark-background'>
-        <TouchableOpacity
-          onPress={() => setShowFilterModal(true)}
-          style={getSmallBorderRadius()}
-          className='flex-row items-center justify-center gap-2 border border-light-border bg-light-surface px-4 py-2.5 dark:border-dark-border dark:bg-dark-surface'
-        >
-          <Ionicons
-            name='options-outline'
-            size={18}
-            color={
-              activeFiltersCount > 0
-                ? '#E50914'
-                : isDark
-                  ? '#ffffff'
-                  : '#0f172a'
-            }
-          />
-          <Text
-            className={cn(
-              'text-sm font-medium',
-              activeFiltersCount > 0
-                ? 'text-netflix-500'
-                : 'text-light-text dark:text-dark-text'
-            )}
-          >
-            {t('filters.title') || 'Filters'}
-          </Text>
-          {activeFiltersCount > 0 && (
-            <View className='h-5 w-5 items-center justify-center rounded-full bg-netflix-500'>
-              <Text className='text-xs font-bold text-white'>
-                {activeFiltersCount}
-              </Text>
-            </View>
-          )}
-        </TouchableOpacity>
-      </View>
-
       <ScrollView ref={scrollViewRef}>
         {/* Gemini Response Section */}
         {geminiResponse && (
           <View
             style={getSquircle(18)}
-            className='mb-4 border border-netflix-500/20 bg-netflix-500/10 p-4'
+            className='mb-4 mt-4 border border-netflix-500/20 bg-netflix-500/10 p-4'
           >
             <View className='mb-2 flex-row items-center gap-2'>
               <Ionicons name='sparkles' size={20} color='#E50914' />
@@ -353,7 +208,7 @@ export default function MovieResults({
         )}
 
         <View className='pb-32 pt-4'>
-          {filteredAndSortedMovies.length === 0 ? (
+          {movies.length === 0 ? (
             <MotiView
               className='items-center justify-center py-8'
               from={{ opacity: 0, translateY: 20 }}
@@ -371,37 +226,11 @@ export default function MovieResults({
                 style={{ marginBottom: 16 }}
               />
               <Text className='mb-4 text-center text-lg font-medium leading-6 text-light-textMuted dark:text-dark-textMuted'>
-                {movies.length === 0
-                  ? t('movies.noRecommendations')
-                  : t('filters.noResults') || 'No results match your filters'}
+                {t('movies.noRecommendations')}
               </Text>
-              {movies.length > 0 && onRefineSearch && (
-                <TouchableOpacity
-                  onPress={() => {
-                    onRefineSearch({
-                      includeMovies:
-                        filters.contentType === 'all' ||
-                        filters.contentType === 'movies',
-                      includeTvShows:
-                        filters.contentType === 'all' ||
-                        filters.contentType === 'tvshows',
-                      yearFrom: filters.yearFrom ?? undefined,
-                      yearTo: filters.yearTo ?? undefined,
-                    });
-                  }}
-                  style={getSmallBorderRadius()}
-                  className='flex-row items-center gap-2 bg-netflix-500 px-6 py-3'
-                >
-                  <Ionicons name='search' size={18} color='#ffffff' />
-                  <Text className='text-base font-semibold text-white'>
-                    {t('filters.searchWithFilters') ||
-                      'Search with these filters'}
-                  </Text>
-                </TouchableOpacity>
-              )}
             </MotiView>
           ) : (
-            filteredAndSortedMovies.map((movie, index) => {
+            movies.map((movie, index) => {
               // Security check
               if (!movie || !movie.id || (!movie.title && !movie.name))
                 return null;
@@ -892,16 +721,6 @@ export default function MovieResults({
           )}
         </View>
       </ScrollView>
-
-      {/* Filter Modal */}
-      <FilterModal
-        visible={showFilterModal}
-        onClose={() => setShowFilterModal(false)}
-        filters={filters}
-        onFiltersChange={setFilters}
-        availableProviders={availableProviders}
-        onRefineSearch={handleRefineSearch}
-      />
     </MotiView>
   );
 }

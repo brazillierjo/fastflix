@@ -43,23 +43,14 @@ export default function HomeScreen() {
   const { isAuthenticated, isLoading } = useAuth();
   useSubscription();
 
-  const handleSearch = async (filters?: {
-    includeMovies?: boolean;
-    includeTvShows?: boolean;
-    yearFrom?: number;
-    yearTo?: number;
-    actorIds?: number[];
-  }) => {
+  const handleSearch = async () => {
     handleSearchStart();
 
     movieSearchMutation.mutate(
       {
         query,
-        includeMovies: filters?.includeMovies ?? true,
-        includeTvShows: filters?.includeTvShows ?? true,
-        yearFrom: filters?.yearFrom,
-        yearTo: filters?.yearTo,
-        actorIds: filters?.actorIds,
+        includeMovies: true,
+        includeTvShows: true,
       },
       {
         onSuccess: async data => {
@@ -93,16 +84,6 @@ export default function HomeScreen() {
         },
       }
     );
-  };
-
-  const handleRefineSearch = (filters: {
-    includeMovies: boolean;
-    includeTvShows: boolean;
-    yearFrom?: number;
-    yearTo?: number;
-    actorIds?: number[];
-  }) => {
-    handleSearch(filters);
   };
 
   const handleSubscriptionSuccess = () => {
@@ -155,7 +136,6 @@ export default function HomeScreen() {
               detailedInfo={detailedInfo}
               geminiResponse={geminiResponse}
               onGoBack={goBackToHome}
-              onRefineSearch={handleRefineSearch}
             />
           ) : (
             <SearchForm
