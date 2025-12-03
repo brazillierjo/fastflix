@@ -672,39 +672,36 @@ export default function MovieResults({
                               </>
                             )}
 
-                            {/* External Links */}
-                            <View className='flex-row items-center gap-2'>
-                              <Ionicons
-                                name='link'
-                                size={16}
-                                color={isDark ? '#ffffff' : '#0f172a'}
-                              />
-                              <Text className='text-sm font-semibold text-light-text dark:text-dark-text'>
-                                {t('movies.externalLinks')}
-                              </Text>
-                              <TouchableOpacity
-                                onPress={() => {
-                                  const tmdbUrl =
-                                    movie.media_type === 'tv'
-                                      ? `https://www.themoviedb.org/tv/${movie.id}`
-                                      : `https://www.themoviedb.org/movie/${movie.id}`;
-                                  Linking.openURL(tmdbUrl);
-                                }}
-                                className='rounded-md bg-netflix-500/15 px-2 py-1'
-                              >
-                                <Text className='text-xs font-semibold text-netflix-500'>
-                                  {t('movies.viewOnTMDB')}
-                                </Text>
-                              </TouchableOpacity>
-                            </View>
                           </View>
+
+                          {/* TMDB CTA Button */}
+                          <TouchableOpacity
+                            onPress={() => {
+                              const tmdbUrl =
+                                movie.media_type === 'tv'
+                                  ? `https://www.themoviedb.org/tv/${movie.id}`
+                                  : `https://www.themoviedb.org/movie/${movie.id}`;
+                              Linking.openURL(tmdbUrl);
+                            }}
+                            style={getSmallBorderRadius()}
+                            className='mt-4 flex-row items-center justify-center gap-2 border-2 border-[#01d277] bg-[#01d277]/10 py-3'
+                          >
+                            <Ionicons
+                              name='open-outline'
+                              size={18}
+                              color='#01d277'
+                            />
+                            <Text className='text-sm font-semibold text-[#01d277]'>
+                              {t('movies.viewOnTMDB')}
+                            </Text>
+                          </TouchableOpacity>
 
                           {/* See less button */}
                           <TouchableOpacity
                             onPress={() => toggleCardExpansion(movie.id)}
-                            className='mt-2 self-start'
+                            className='mt-3 self-center'
                           >
-                            <Text className='text-sm font-semibold text-netflix-500'>
+                            <Text className='text-sm font-semibold text-light-muted dark:text-dark-muted'>
                               {t('movies.seeLess')}
                             </Text>
                           </TouchableOpacity>

@@ -12,6 +12,9 @@ import type {
   StreamingProvider,
   TMDBPersonSearchResponse,
   PersonResult,
+  Cast,
+  DetailedInfo,
+  Genre,
 } from './types';
 
 interface CachedData<T> {
@@ -376,6 +379,151 @@ class TMDBService {
       console.error(`❌ Failed to get person credits for ID ${personId}:`, error);
       return [];
     }
+  }
+
+  /**
+   * Get detailed information for a movie
+   */
+  async getMovieDetails(tmdbId: number, language: string = 'fr-FR'): Promise<DetailedInfo | null> {
+    try {
+      const data = await this.makeRequest<{
+        genres: Genre[];
+        runtime: number | null;
+        release_date: string;
+        tagline: string;
+      }>(`/movie/${tmdbId}`, { language });
+
+      const releaseYear = data.release_date ? new Date(data.release_date).getFullYear() : undefined;
+
+      return {
+        genres: data.genres || [],
+        runtime: data.runtime || undefined,
+        release_year: releaseYear,
+        tagline: data.tagline || undefined,
+      };
+    } catch (error) {
+      console.error(`❌ Failed to get movie details for ID ${tmdbId}:`, error);
+      return null;
+    }
+  }
+
+  /**
+   * Get detailed information for a TV show
+   */
+  async getTVDetails(tmdbId: number, language: string = 'fr-FR'): Promise<DetailedInfo | null> {
+    try {
+      const data = await this.makeRequest<{
+        genres: Genre[];
+        number_of_seasons: number;
+        number_of_episodes: number;
+        episode_run_time: number[];
+        status: string;
+        first_air_date: string;
+        tagline: string;
+      }>(`/tv/${tmdbId}`, { language });
+
+      const firstAirYear = data.first_air_date
+        ? new Date(data.first_air_date).getFullYear()
+        : undefined;
+      const avgEpisodeRunTime =
+        data.episode_run_time && data.episode_run_time.length > 0
+          ? Math.round(
+              data.episode_run_time.reduce((a, b) => a + b, 0) / data.episode_run_time.length
+            )
+          : undefined;
+
+      return {
+        genres: data.genres || [],
+        number_of_seasons: data.number_of_seasons,
+        number_of_episodes: data.number_of_episodes,
+        episode_run_time: avgEpisodeRunTime,
+        status: data.status,
+        first_air_year: firstAirYear,
+        tagline: data.tagline || undefined,
+      };
+    } catch (error) {
+      console.error(`❌ Failed to get TV details for ID ${tmdbId}:`, error);
+      return null;
+    }
+  }
+
+  /**
+   * Get credits (cast) for a movie or TV show
+   */
+  async getCredits(
+    tmdbId: number,
+    mediaType: 'movie' | 'tv',
+    language: string = 'fr-FR'
+  ): Promise<Cast[]> {
+    try {
+      const endpoint = `/${mediaType}/${tmdbId}/credits`;
+      const data = await this.makeRequest<{
+        cast: Array<{
+          id: number;
+          name: string;
+          character: string;
+          profile_path: string | null;
+          order: number;
+        }>;
+      }>(endpoint, { language });
+
+      if (!data.cast || data.cast.length === 0) {
+        return [];
+      }
+
+      // Return top 10 cast members sorted by order
+      return data.cast
+        .sort((a, b) => a.order - b.order)
+        .slice(0, 10)
+        .map((actor) => ({
+          id: actor.id,
+          name: actor.name,
+          character: actor.character,
+          profile_path: actor.profile_path,
+        }));
+    } catch (error) {
+      console.error(`❌ Failed to get credits for ${mediaType} ${tmdbId}:`, error);
+      return [];
+    }
+  }
+
+  /**
+   * Get detailed info and credits for multiple movies/TV shows in parallel
+   */
+  async getBatchDetailsAndCredits(
+    items: MovieResult[],
+    language: string = 'fr-FR'
+  ): Promise<{
+    credits: { [key: number]: Cast[] };
+    detailedInfo: { [key: number]: DetailedInfo };
+  }> {
+    const credits: { [key: number]: Cast[] } = {};
+    const detailedInfo: { [key: number]: DetailedInfo } = {};
+
+    const promises = items.map(async (item) => {
+      // Fetch details and credits in parallel for each item
+      const [details, cast] = await Promise.all([
+        item.media_type === 'movie'
+          ? this.getMovieDetails(item.tmdb_id, language)
+          : this.getTVDetails(item.tmdb_id, language),
+        this.getCredits(item.tmdb_id, item.media_type, language),
+      ]);
+
+      if (details) {
+        detailedInfo[item.tmdb_id] = details;
+      }
+      if (cast.length > 0) {
+        credits[item.tmdb_id] = cast;
+      }
+    });
+
+    await Promise.all(promises);
+
+    console.log(
+      `📊 Fetched details for ${Object.keys(detailedInfo).length} items, credits for ${Object.keys(credits).length} items`
+    );
+
+    return { credits, detailedInfo };
   }
 }
 

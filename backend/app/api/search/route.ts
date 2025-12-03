@@ -138,8 +138,11 @@ export async function POST(request: NextRequest) {
       }
     }
 
-    // Step 6: Fetch streaming providers for enriched results
-    const streamingProviders = await tmdb.getBatchWatchProviders(enrichedResults, country);
+    // Step 6: Fetch streaming providers and detailed info in parallel
+    const [streamingProviders, { credits, detailedInfo }] = await Promise.all([
+      tmdb.getBatchWatchProviders(enrichedResults, country),
+      tmdb.getBatchDetailsAndCredits(enrichedResults, language),
+    ]);
 
     // Step 7: Filter results if specific platforms were requested
     let finalResults = enrichedResults;
@@ -184,6 +187,8 @@ export async function POST(request: NextRequest) {
     const response: SearchResponse = {
       recommendations: finalResults,
       streamingProviders,
+      credits,
+      detailedInfo,
       conversationalResponse: aiResult.conversationalResponse,
       totalResults: finalResults.length,
     };

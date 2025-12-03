@@ -13,6 +13,8 @@ import {
   MovieResult,
   SearchResponse,
   StreamingProvider,
+  Cast as BackendCast,
+  DetailedInfo as BackendDetailedInfo,
 } from '../services/backend-api.service';
 import { APP_CONFIG } from '@/constants/app';
 import { getLanguageForTMDB } from '@/constants/languages';
@@ -123,12 +125,35 @@ const searchMoviesWithBackend = async (
     // Get streaming providers from backend response
     const streamingProviders = data.streamingProviders || {};
 
-    // Credits and detailed info are still empty (TODO: add to backend)
+    // Transform credits from backend format to frontend format
     const credits: { [key: number]: Cast[] } = {};
-    const detailedInfo: { [key: number]: DetailedInfo } = {};
+    if (data.credits) {
+      Object.entries(data.credits).forEach(([id, castList]) => {
+        credits[Number(id)] = castList.map((c: BackendCast) => ({
+          id: c.id,
+          name: c.name,
+          character: c.character,
+          profile_path: c.profile_path || undefined,
+        }));
+      });
+    }
 
-    // You can enhance this by calling TMDB for additional details if needed
-    // For now, we'll just use what the backend provides
+    // Transform detailed info from backend format to frontend format
+    const detailedInfo: { [key: number]: DetailedInfo } = {};
+    if (data.detailedInfo) {
+      Object.entries(data.detailedInfo).forEach(([id, info]) => {
+        const backendInfo = info as BackendDetailedInfo;
+        detailedInfo[Number(id)] = {
+          genres: backendInfo.genres || [],
+          runtime: backendInfo.runtime,
+          release_year: backendInfo.release_year,
+          number_of_seasons: backendInfo.number_of_seasons,
+          number_of_episodes: backendInfo.number_of_episodes,
+          status: backendInfo.status,
+          first_air_year: backendInfo.first_air_year,
+        };
+      });
+    }
 
     return {
       movies,

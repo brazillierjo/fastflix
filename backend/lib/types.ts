@@ -35,9 +35,35 @@ export interface MovieResult {
   adult?: boolean;
 }
 
+export interface Cast {
+  id: number;
+  name: string;
+  character: string;
+  profile_path: string | null;
+}
+
+export interface Genre {
+  id: number;
+  name: string;
+}
+
+export interface DetailedInfo {
+  genres: Genre[];
+  runtime?: number; // For movies (in minutes)
+  release_year?: number; // For movies
+  number_of_seasons?: number; // For TV shows
+  number_of_episodes?: number; // For TV shows
+  episode_run_time?: number; // For TV shows (average episode duration)
+  status?: string; // For TV shows (Returning Series, Ended, etc.)
+  first_air_year?: number; // For TV shows
+  tagline?: string;
+}
+
 export interface SearchResponse {
   recommendations: MovieResult[];
   streamingProviders: { [key: number]: StreamingProvider[] };
+  credits: { [key: number]: Cast[] };
+  detailedInfo: { [key: number]: DetailedInfo };
   conversationalResponse: string;
   totalResults: number;
 }

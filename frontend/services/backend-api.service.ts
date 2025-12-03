@@ -34,9 +34,35 @@ export interface StreamingProvider {
   display_priority: number;
 }
 
+export interface Cast {
+  id: number;
+  name: string;
+  character: string;
+  profile_path: string | null;
+}
+
+export interface Genre {
+  id: number;
+  name: string;
+}
+
+export interface DetailedInfo {
+  genres: Genre[];
+  runtime?: number;
+  release_year?: number;
+  number_of_seasons?: number;
+  number_of_episodes?: number;
+  episode_run_time?: number;
+  status?: string;
+  first_air_year?: number;
+  tagline?: string;
+}
+
 export interface SearchResponse {
   recommendations: MovieResult[];
   streamingProviders: { [key: number]: StreamingProvider[] };
+  credits: { [key: number]: Cast[] };
+  detailedInfo: { [key: number]: DetailedInfo };
   conversationalResponse: string;
   totalResults: number;
 }
@@ -239,6 +265,8 @@ class BackendAPIService {
         data: {
           recommendations: [],
           streamingProviders: {},
+          credits: {},
+          detailedInfo: {},
           conversationalResponse: '',
           totalResults: 0,
         },
