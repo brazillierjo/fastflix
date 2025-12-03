@@ -15,6 +15,7 @@ import type {
   Cast,
   DetailedInfo,
   Genre,
+  AvailableProvider,
 } from './types';
 
 interface CachedData<T> {
@@ -251,6 +252,7 @@ class TMDBService {
 
   /**
    * Get watch providers for a movie or TV show
+   * Returns all availability types: flatrate (subscription), rent, buy, ads
    */
   async getWatchProviders(
     tmdbId: number,
@@ -265,17 +267,40 @@ class TMDBService {
       // Get providers for the specific region
       const regionData = response.results[country];
 
-      if (!regionData || !regionData.flatrate) {
+      if (!regionData) {
         return [];
       }
 
-      // Return only flatrate (streaming) providers
-      return regionData.flatrate.map((provider) => ({
-        provider_id: provider.provider_id,
-        provider_name: provider.provider_name,
-        logo_path: provider.logo_path,
-        display_priority: provider.display_priority,
-      }));
+      const providers: StreamingProvider[] = [];
+      const seenProviders = new Set<number>();
+
+      // Helper to add providers with availability type
+      const addProviders = (
+        list: typeof regionData.flatrate | undefined,
+        type: 'flatrate' | 'rent' | 'buy' | 'ads'
+      ) => {
+        if (!list) return;
+        for (const provider of list) {
+          // Avoid duplicates (same provider might be in multiple lists)
+          if (!seenProviders.has(provider.provider_id)) {
+            seenProviders.add(provider.provider_id);
+            providers.push({
+              provider_id: provider.provider_id,
+              provider_name: provider.provider_name,
+              logo_path: provider.logo_path,
+              display_priority: provider.display_priority,
+              availability_type: type,
+            });
+          }
+        }
+      };
+
+      // Add providers in priority order (flatrate first, then rent, then buy)
+      addProviders(regionData.flatrate, 'flatrate');
+      addProviders(regionData.rent, 'rent');
+      addProviders(regionData.buy, 'buy');
+
+      return providers;
     } catch (error) {
       console.error(`❌ Failed to get watch providers for ${mediaType} ${tmdbId}:`, error);
       return [];
@@ -524,6 +549,47 @@ class TMDBService {
     );
 
     return { credits, detailedInfo };
+  }
+
+  /**
+   * Get list of available streaming providers for a country
+   * Returns providers sorted by popularity (display_priority)
+   */
+  async getAvailableProviders(country: string = 'FR'): Promise<AvailableProvider[]> {
+    try {
+      // TMDB provides a list of all available watch providers
+      const data = await this.makeRequest<{
+        results: Array<{
+          provider_id: number;
+          provider_name: string;
+          logo_path: string;
+          display_priorities: { [country: string]: number };
+        }>;
+      }>('/watch/providers/movie', {
+        watch_region: country,
+      });
+
+      if (!data.results || data.results.length === 0) {
+        return [];
+      }
+
+      // Filter to only include providers available in the specified country
+      // and sort by display priority
+      return data.results
+        .filter((provider) => provider.display_priorities && provider.display_priorities[country])
+        .sort(
+          (a, b) => (a.display_priorities[country] || 999) - (b.display_priorities[country] || 999)
+        )
+        .map((provider) => ({
+          provider_id: provider.provider_id,
+          provider_name: provider.provider_name,
+          logo_path: provider.logo_path,
+          display_priorities: provider.display_priorities,
+        }));
+    } catch (error) {
+      console.error(`❌ Failed to get available providers for ${country}:`, error);
+      return [];
+    }
   }
 }
 

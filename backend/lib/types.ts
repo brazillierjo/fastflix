@@ -73,6 +73,7 @@ export interface StreamingProvider {
   provider_name: string;
   logo_path: string;
   display_priority: number;
+  availability_type: 'flatrate' | 'rent' | 'buy' | 'ads'; // How content is available
 }
 
 // ============================================================================
@@ -244,6 +245,26 @@ export interface TrialInfo {
   startsAt: string | null;
   endsAt: string | null;
   used: boolean;
+}
+
+// ============================================================================
+// User Preferences Types
+// ============================================================================
+
+export interface UserPreferences {
+  country: string;
+  contentType: 'all' | 'movies' | 'tvshows';
+  platforms: number[]; // TMDB provider IDs
+  includeFlatrate: boolean; // Subscription-based
+  includeRent: boolean; // Rental
+  includeBuy: boolean; // Purchase
+}
+
+export interface AvailableProvider {
+  provider_id: number;
+  provider_name: string;
+  logo_path: string;
+  display_priorities: { [country: string]: number };
 }
 
 // ============================================================================

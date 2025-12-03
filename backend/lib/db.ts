@@ -4,7 +4,7 @@
  */
 
 import { createClient, Client, Row } from '@libsql/client';
-import type { Subscription, User, TrialInfo } from './types';
+import type { Subscription, User, TrialInfo, UserPreferences } from './types';
 
 /**
  * Helper function to safely convert a database row to a specific type
@@ -659,6 +659,133 @@ class DatabaseService {
 
     const isInTrial = await this.isInFreeTrial(userId);
     return isInTrial;
+  }
+
+  // ==========================================================================
+  // User Preferences Methods
+  // ==========================================================================
+
+  /**
+   * Get user preferences
+   */
+  async getUserPreferences(userId: string): Promise<UserPreferences> {
+    this.initialize();
+
+    try {
+      const result = await this.client!.execute({
+        sql: `SELECT pref_country, pref_content_type, pref_platforms,
+                     pref_include_flatrate, pref_include_rent, pref_include_buy
+              FROM users WHERE id = ?`,
+        args: [userId],
+      });
+
+      if (result.rows.length === 0) {
+        // Return defaults
+        return {
+          country: 'FR',
+          contentType: 'all',
+          platforms: [],
+          includeFlatrate: true,
+          includeRent: false,
+          includeBuy: false,
+        };
+      }
+
+      const row = result.rows[0];
+
+      // Parse platforms JSON
+      let platforms: number[] = [];
+      try {
+        const platformsStr = row.pref_platforms as string;
+        if (platformsStr) {
+          platforms = JSON.parse(platformsStr);
+        }
+      } catch {
+        platforms = [];
+      }
+
+      return {
+        country: (row.pref_country as string) || 'FR',
+        contentType: (row.pref_content_type as 'all' | 'movies' | 'tvshows') || 'all',
+        platforms,
+        includeFlatrate: Number(row.pref_include_flatrate) === 1,
+        includeRent: Number(row.pref_include_rent) === 1,
+        includeBuy: Number(row.pref_include_buy) === 1,
+      };
+    } catch (error) {
+      console.error('❌ Database error in getUserPreferences:', error);
+      // Return defaults on error
+      return {
+        country: 'FR',
+        contentType: 'all',
+        platforms: [],
+        includeFlatrate: true,
+        includeRent: false,
+        includeBuy: false,
+      };
+    }
+  }
+
+  /**
+   * Update user preferences
+   */
+  async updateUserPreferences(
+    userId: string,
+    preferences: Partial<UserPreferences>
+  ): Promise<UserPreferences> {
+    this.initialize();
+
+    try {
+      const updates: string[] = [];
+      const args: (string | number)[] = [];
+
+      if (preferences.country !== undefined) {
+        updates.push('pref_country = ?');
+        args.push(preferences.country);
+      }
+
+      if (preferences.contentType !== undefined) {
+        updates.push('pref_content_type = ?');
+        args.push(preferences.contentType);
+      }
+
+      if (preferences.platforms !== undefined) {
+        updates.push('pref_platforms = ?');
+        args.push(JSON.stringify(preferences.platforms));
+      }
+
+      if (preferences.includeFlatrate !== undefined) {
+        updates.push('pref_include_flatrate = ?');
+        args.push(preferences.includeFlatrate ? 1 : 0);
+      }
+
+      if (preferences.includeRent !== undefined) {
+        updates.push('pref_include_rent = ?');
+        args.push(preferences.includeRent ? 1 : 0);
+      }
+
+      if (preferences.includeBuy !== undefined) {
+        updates.push('pref_include_buy = ?');
+        args.push(preferences.includeBuy ? 1 : 0);
+      }
+
+      if (updates.length > 0) {
+        updates.push("updated_at = datetime('now')");
+        args.push(userId);
+
+        await this.client!.execute({
+          sql: `UPDATE users SET ${updates.join(', ')} WHERE id = ?`,
+          args,
+        });
+
+        console.log(`✅ User preferences updated for ${userId}`);
+      }
+
+      return this.getUserPreferences(userId);
+    } catch (error) {
+      console.error('❌ Database error in updateUserPreferences:', error);
+      throw error;
+    }
   }
 }
 
