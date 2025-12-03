@@ -2,12 +2,14 @@ import { Ionicons } from '@expo/vector-icons';
 import Slider from '@react-native-community/slider';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { cn } from '@/utils/cn';
-import { getButtonBorderRadius, getSmallBorderRadius } from '@/utils/designHelpers';
-import React, { useState, useEffect, useCallback } from 'react';
+import { getButtonBorderRadius } from '@/utils/designHelpers';
+import React, { useState, useEffect, useCallback, useRef } from 'react';
 import {
   ActivityIndicator,
   Image,
+  KeyboardAvoidingView,
   Modal,
+  Platform,
   ScrollView,
   Text,
   TextInput,
@@ -67,6 +69,10 @@ export default function FilterModal({
   const { t } = useLanguage();
   const colorScheme = useColorScheme();
   const isDark = colorScheme === 'dark';
+
+  // Refs for keyboard handling
+  const scrollViewRef = useRef<ScrollView>(null);
+  const actorSectionY = useRef<number>(0);
 
   // Local state for editing
   const [localFilters, setLocalFilters] = useState<FilterState>(filters);
@@ -154,6 +160,17 @@ export default function FilterModal({
     }));
   };
 
+  // Scroll to actor section when input is focused
+  const handleActorInputFocus = () => {
+    // Small delay to let the keyboard start appearing
+    setTimeout(() => {
+      scrollViewRef.current?.scrollTo({
+        y: actorSectionY.current - 20, // 20px padding from top
+        animated: true,
+      });
+    }, 100);
+  };
+
   const handleSortChange = (sortOption: SortOption) => {
     setLocalFilters(prev => ({ ...prev, sortBy: sortOption }));
   };
@@ -175,15 +192,10 @@ export default function FilterModal({
   };
 
   const handleApplyFilters = () => {
-    onFiltersChange(localFilters);
-    onClose();
-  };
-
-  const handleRefineSearch = () => {
-    // Apply local filters first
+    // Apply local filters
     onFiltersChange(localFilters);
 
-    // Then trigger refine search with backend filters
+    // Always trigger search with the new filters
     onRefineSearch({
       includeMovies:
         localFilters.contentType === 'all' ||
@@ -215,20 +227,18 @@ export default function FilterModal({
     setActorSuggestions([]);
   };
 
-  const hasActiveFilters =
-    localFilters.contentType !== 'all' ||
-    localFilters.yearFrom !== null ||
-    localFilters.yearTo !== null ||
-    localFilters.selectedProviders.size > 0 ||
-    localFilters.selectedActors.length > 0;
-
   return (
     <Modal
       visible={visible}
       animationType="slide"
       presentationStyle="pageSheet"
+      onRequestClose={onClose}
     >
-      <View className="flex-1 bg-light-background dark:bg-dark-background">
+      <KeyboardAvoidingView
+        behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+        className="flex-1"
+      >
+        <View className="flex-1 bg-light-background dark:bg-dark-background">
         {/* Header */}
         <View className="flex-row items-center justify-between border-b border-light-border p-4 dark:border-dark-border">
           <TouchableOpacity onPress={onClose}>
@@ -246,7 +256,11 @@ export default function FilterModal({
           </TouchableOpacity>
         </View>
 
-        <ScrollView className="flex-1 p-4">
+        <ScrollView
+          ref={scrollViewRef}
+          className="flex-1 p-4"
+          keyboardShouldPersistTaps="handled"
+        >
           {/* Content Type Section */}
           <View className="mb-6">
             <Text className="mb-3 text-base font-semibold text-light-text dark:text-dark-text">
@@ -367,7 +381,12 @@ export default function FilterModal({
           </View>
 
           {/* Actor Search Section */}
-          <View className="mb-6">
+          <View
+            className="mb-6"
+            onLayout={(event) => {
+              actorSectionY.current = event.nativeEvent.layout.y;
+            }}
+          >
             <Text className="mb-3 text-base font-semibold text-light-text dark:text-dark-text">
               {t('filters.actor') || 'Actor'}
             </Text>
@@ -422,6 +441,7 @@ export default function FilterModal({
                   <TextInput
                     value={actorSearchQuery}
                     onChangeText={handleActorSearch}
+                    onFocus={handleActorInputFocus}
                     placeholder={t('filters.searchActor') || 'Search for an actor...'}
                     placeholderTextColor={isDark ? '#a3a3a3' : '#737373'}
                     className="ml-2 flex-1 py-3 text-base text-light-text dark:text-dark-text"
@@ -589,32 +609,18 @@ export default function FilterModal({
 
         {/* Bottom Actions */}
         <View className="border-t border-light-border p-4 dark:border-dark-border">
-          {/* Apply Filters Button */}
           <TouchableOpacity
             onPress={handleApplyFilters}
             style={getButtonBorderRadius()}
-            className="mb-3 bg-netflix-500 py-4"
+            className="bg-netflix-500 py-4"
           >
             <Text className="text-center text-base font-semibold text-white">
               {t('filters.apply') || 'Apply Filters'}
             </Text>
           </TouchableOpacity>
-
-          {/* Refine Search Button */}
-          {hasActiveFilters && (
-            <TouchableOpacity
-              onPress={handleRefineSearch}
-              style={getButtonBorderRadius()}
-              className="flex-row items-center justify-center gap-2 border-2 border-netflix-500 py-4"
-            >
-              <Ionicons name="search" size={20} color="#E50914" />
-              <Text className="text-center text-base font-semibold text-netflix-500">
-                {t('filters.refineSearch') || 'Search with these filters'}
-              </Text>
-            </TouchableOpacity>
-          )}
         </View>
       </View>
+      </KeyboardAvoidingView>
     </Modal>
   );
 }

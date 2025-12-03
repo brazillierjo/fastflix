@@ -225,14 +225,19 @@ class TMDBService {
 
     const results = await Promise.all(promises);
 
-    // Filter out nulls and add to enriched results
+    // Filter out nulls and deduplicate by tmdb_id
+    const seenIds = new Set<number>();
     results.forEach((result) => {
-      if (result) {
+      if (result && !seenIds.has(result.tmdb_id)) {
+        seenIds.add(result.tmdb_id);
         enrichedResults.push(result);
       }
     });
 
-    console.log(`✅ Enriched ${enrichedResults.length}/${titles.length} titles`);
+    const duplicatesRemoved = results.filter(Boolean).length - enrichedResults.length;
+    console.log(
+      `✅ Enriched ${enrichedResults.length}/${titles.length} titles${duplicatesRemoved > 0 ? ` (${duplicatesRemoved} duplicates removed)` : ''}`
+    );
 
     if (errors.length > 0) {
       console.log(`⚠️ Failed to enrich ${errors.length} titles:`, errors.slice(0, 5));
@@ -354,10 +359,19 @@ class TMDBService {
       // Sort by popularity and vote count, take top results
       results = results
         .filter((item) => item.vote_count > 50) // Filter out obscure titles
-        .sort((a, b) => b.popularity - a.popularity)
+        .sort((a, b) => b.popularity - a.popularity);
+
+      // Deduplicate by ID (actor may appear multiple times in same film)
+      const seenIds = new Set<number>();
+      const uniqueResults = results
+        .filter((item) => {
+          if (seenIds.has(item.id)) return false;
+          seenIds.add(item.id);
+          return true;
+        })
         .slice(0, 30);
 
-      return results.map((item) => this.convertToMovieResult(item));
+      return uniqueResults.map((item) => this.convertToMovieResult(item));
     } catch (error) {
       console.error(`❌ Failed to get person credits for ID ${personId}:`, error);
       return [];
