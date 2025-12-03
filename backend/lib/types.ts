@@ -77,36 +77,6 @@ export interface StreamingProvider {
 }
 
 // ============================================================================
-// Database Types
-// ============================================================================
-
-export interface Subscription {
-  device_id: string;
-  revenuecat_user_id: string | null;
-  status: 'active' | 'expired' | 'cancelled' | 'billing_issue';
-  expires_at: string | null;
-  product_id: string | null;
-  created_at: string;
-  last_updated: string;
-}
-
-export interface PromptLog {
-  id?: number;
-  device_id: string;
-  query: string | null;
-  results_count: number | null;
-  created_at?: string;
-  response_time_ms: number | null;
-}
-
-export interface BlockedDevice {
-  device_id: string;
-  reason: string | null;
-  blocked_at: string;
-  blocked_until: string | null;
-}
-
-// ============================================================================
 // Service Response Types
 // ============================================================================
 
@@ -265,32 +235,4 @@ export interface AvailableProvider {
   provider_name: string;
   logo_path: string;
   display_priorities: { [country: string]: number };
-}
-
-// ============================================================================
-// Person/Actor Types
-// ============================================================================
-
-export interface TMDBPerson {
-  id: number;
-  name: string;
-  profile_path: string | null;
-  known_for_department: string;
-  popularity: number;
-  known_for?: (TMDBMovie | TMDBTVShow)[];
-}
-
-export interface TMDBPersonSearchResponse {
-  page: number;
-  results: TMDBPerson[];
-  total_pages: number;
-  total_results: number;
-}
-
-export interface PersonResult {
-  id: number;
-  name: string;
-  profile_path: string | null;
-  known_for_department: string;
-  popularity: number;
 }
