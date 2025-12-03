@@ -36,6 +36,7 @@ interface Movie {
 interface StreamingProvider {
   provider_name: string;
   logo_path: string;
+  availability_type?: 'flatrate' | 'rent' | 'buy' | 'ads';
 }
 
 interface Cast {
@@ -110,6 +111,46 @@ export default function MovieResults({
       Pilot: t('movies.statusPilot'),
     };
     return statusMap[status] || status;
+  };
+
+  // Helper function to get availability type badge info
+  const getAvailabilityBadge = (availabilityType?: string) => {
+    switch (availabilityType) {
+      case 'flatrate':
+        return {
+          label: t('availability.subscription') || 'Subscription',
+          bgColor: 'bg-green-500/20',
+          textColor: 'text-green-500',
+          icon: 'checkmark-circle' as const,
+          iconColor: '#22c55e',
+        };
+      case 'rent':
+        return {
+          label: t('availability.rent') || 'Rent',
+          bgColor: 'bg-blue-500/20',
+          textColor: 'text-blue-500',
+          icon: 'time' as const,
+          iconColor: '#3b82f6',
+        };
+      case 'buy':
+        return {
+          label: t('availability.buy') || 'Buy',
+          bgColor: 'bg-amber-500/20',
+          textColor: 'text-amber-500',
+          icon: 'cart' as const,
+          iconColor: '#f59e0b',
+        };
+      case 'ads':
+        return {
+          label: t('availability.ads') || 'Free (Ads)',
+          bgColor: 'bg-purple-500/20',
+          textColor: 'text-purple-500',
+          icon: 'play-circle' as const,
+          iconColor: '#a855f7',
+        };
+      default:
+        return null;
+    }
   };
 
   // Extract all available providers from the results
@@ -263,7 +304,13 @@ export default function MovieResults({
           <Ionicons
             name='options-outline'
             size={18}
-            color={activeFiltersCount > 0 ? '#E50914' : isDark ? '#ffffff' : '#0f172a'}
+            color={
+              activeFiltersCount > 0
+                ? '#E50914'
+                : isDark
+                  ? '#ffffff'
+                  : '#0f172a'
+            }
           />
           <Text
             className={cn(
@@ -347,7 +394,8 @@ export default function MovieResults({
                 >
                   <Ionicons name='search' size={18} color='#ffffff' />
                   <Text className='text-base font-semibold text-white'>
-                    {t('filters.searchWithFilters') || 'Search with these filters'}
+                    {t('filters.searchWithFilters') ||
+                      'Search with these filters'}
                   </Text>
                 </TouchableOpacity>
               )}
@@ -460,25 +508,52 @@ export default function MovieResults({
                                 <Text className='mb-2 text-sm font-semibold text-light-text dark:text-dark-text'>
                                   {t('movies.availableOn')}
                                 </Text>
-                                <View className='gap-1'>
+                                <View className='gap-1.5'>
                                   {streamingProviders[movie.id].map(
-                                    (provider, idx) => (
-                                      <View
-                                        key={`provider-${movie.id}-${idx}-${provider.provider_name}`}
-                                        className='flex-row items-center py-0.5'
-                                      >
-                                        <Image
-                                          source={{
-                                            uri: `https://image.tmdb.org/t/p/w92${provider.logo_path}`,
-                                          }}
-                                          className='h-[30px] w-[30px] rounded-md bg-dark-surface p-1 dark:bg-light-surface'
-                                          resizeMode='contain'
-                                        />
-                                        <Text className='ml-2.5 text-sm font-medium text-light-text dark:text-dark-text'>
-                                          {provider.provider_name}
-                                        </Text>
-                                      </View>
-                                    )
+                                    (provider, idx) => {
+                                      const badge = getAvailabilityBadge(
+                                        provider.availability_type
+                                      );
+                                      return (
+                                        <View
+                                          key={`provider-${movie.id}-${idx}-${provider.provider_name}`}
+                                          className='flex-row items-center py-0.5'
+                                        >
+                                          <Image
+                                            source={{
+                                              uri: `https://image.tmdb.org/t/p/w92${provider.logo_path}`,
+                                            }}
+                                            className='h-[30px] w-[30px] rounded-md bg-dark-surface p-1 dark:bg-light-surface'
+                                            resizeMode='contain'
+                                          />
+                                          <Text className='ml-2.5 flex-1 text-sm font-medium text-light-text dark:text-dark-text'>
+                                            {provider.provider_name}
+                                          </Text>
+                                          {badge && (
+                                            <View
+                                              className={cn(
+                                                'flex-row items-center gap-1 rounded-full px-2 py-0.5',
+                                                badge.bgColor
+                                              )}
+                                            >
+                                              <Ionicons
+                                                name={badge.icon}
+                                                size={12}
+                                                color={badge.iconColor}
+                                              />
+                                              <Text
+                                                className={cn(
+                                                  'text-xs font-medium',
+                                                  badge.textColor
+                                                )}
+                                              >
+                                                {badge.label}
+                                              </Text>
+                                            </View>
+                                          )}
+                                        </View>
+                                      );
+                                    }
                                   )}
                                 </View>
                               </View>
@@ -671,7 +746,6 @@ export default function MovieResults({
                                 )}
                               </>
                             )}
-
                           </View>
 
                           {/* TMDB CTA Button */}

@@ -18,6 +18,7 @@ import {
 } from '../services/backend-api.service';
 import { APP_CONFIG } from '@/constants/app';
 import { getLanguageForTMDB } from '@/constants/languages';
+import { useUserPreferences } from './useUserPreferences';
 
 export interface Movie {
   id: number;
@@ -45,6 +46,11 @@ export interface SearchParams {
   yearFrom?: number;
   yearTo?: number;
   actorIds?: number[];
+  // Platform/Provider filters (override user preferences if provided)
+  platforms?: number[];
+  includeFlatrate?: boolean;
+  includeRent?: boolean;
+  includeBuy?: boolean;
 }
 
 export interface DetailedInfo {
@@ -90,7 +96,18 @@ const searchMoviesWithBackend = async (
   language: string = 'fr-FR',
   country: string = 'FR'
 ): Promise<SearchResult> => {
-  const { query, includeMovies, includeTvShows, yearFrom, yearTo, actorIds } = params;
+  const {
+    query,
+    includeMovies,
+    includeTvShows,
+    yearFrom,
+    yearTo,
+    actorIds,
+    platforms,
+    includeFlatrate,
+    includeRent,
+    includeBuy,
+  } = params;
 
   if (!query.trim()) {
     throw new Error('enterRequest');
@@ -106,6 +123,10 @@ const searchMoviesWithBackend = async (
       yearFrom,
       yearTo,
       actorIds,
+      platforms,
+      includeFlatrate,
+      includeRent,
+      includeBuy,
     });
 
     if (!response.success || !response.data) {
@@ -176,16 +197,41 @@ const searchMoviesWithBackend = async (
 /**
  * Hook for searching movies using the backend API
  * Backend automatically checks subscription status via database (updated by RevenueCat webhook)
+ * Automatically applies user preferences (platforms, availability types) to searches
  */
 export const useBackendMovieSearch = () => {
   const { t, country, language } = useLanguage();
+  const { preferences } = useUserPreferences();
 
   // Convert language format using TMDB mapping (e.g., 'fr' -> 'fr-FR', 'it' -> 'it-IT')
   const tmdbLanguage = getLanguageForTMDB(language);
 
   return useMutation({
-    mutationFn: (params: SearchParams) =>
-      searchMoviesWithBackend(params, tmdbLanguage, country),
+    mutationFn: (params: SearchParams) => {
+      // Apply user preferences for platform/availability filters
+      // These can be overridden by explicit params (e.g., when refining search)
+      const includeMovies =
+        params.includeMovies ??
+        (preferences.contentType === 'all' ||
+          preferences.contentType === 'movies');
+      const includeTvShows =
+        params.includeTvShows ??
+        (preferences.contentType === 'all' ||
+          preferences.contentType === 'tvshows');
+
+      const mergedParams: SearchParams = {
+        ...params,
+        includeMovies,
+        includeTvShows,
+        // Use user preferences if not explicitly provided in params
+        platforms: params.platforms ?? preferences.platforms,
+        includeFlatrate: params.includeFlatrate ?? preferences.includeFlatrate,
+        includeRent: params.includeRent ?? preferences.includeRent,
+        includeBuy: params.includeBuy ?? preferences.includeBuy,
+      };
+
+      return searchMoviesWithBackend(mergedParams, tmdbLanguage, country);
+    },
     onError: (error: Error) => {
       // Don't show alert for subscriptionRequired - it's handled in the component
       if (error.message === 'subscriptionRequired') {

@@ -371,7 +371,9 @@ export default function SubscriptionModal({
                     <View className='flex-row items-center justify-center gap-2'>
                       <MotiView
                         from={{ rotate: '0deg' }}
-                        animate={{ rotate: ['0deg', '-10deg', '10deg', '0deg'] }}
+                        animate={{
+                          rotate: ['0deg', '-10deg', '10deg', '0deg'],
+                        }}
                         transition={{
                           type: 'timing',
                           duration: 500,
@@ -382,7 +384,8 @@ export default function SubscriptionModal({
                         <Ionicons name='gift-outline' size={22} color='white' />
                       </MotiView>
                       <Text className='text-center text-lg font-semibold text-white'>
-                        {t('subscription.startTrial') || 'Start 7-Day Free Trial'}
+                        {t('subscription.startTrial') ||
+                          'Start 7-Day Free Trial'}
                       </Text>
                     </View>
                   )}

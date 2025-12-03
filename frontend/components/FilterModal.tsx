@@ -81,7 +81,9 @@ export default function FilterModal({
   const [actorSearchQuery, setActorSearchQuery] = useState('');
   const [actorSuggestions, setActorSuggestions] = useState<PersonResult[]>([]);
   const [isSearchingActors, setIsSearchingActors] = useState(false);
-  const [searchTimeout, setSearchTimeout] = useState<ReturnType<typeof setTimeout> | null>(null);
+  const [searchTimeout, setSearchTimeout] = useState<ReturnType<
+    typeof setTimeout
+  > | null>(null);
 
   // Sync local state when modal opens
   useEffect(() => {
@@ -230,396 +232,402 @@ export default function FilterModal({
   return (
     <Modal
       visible={visible}
-      animationType="slide"
-      presentationStyle="pageSheet"
+      animationType='slide'
+      presentationStyle='pageSheet'
       onRequestClose={onClose}
     >
       <KeyboardAvoidingView
         behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-        className="flex-1"
+        className='flex-1'
       >
-        <View className="flex-1 bg-light-background dark:bg-dark-background">
-        {/* Header */}
-        <View className="flex-row items-center justify-between border-b border-light-border p-4 dark:border-dark-border">
-          <TouchableOpacity onPress={onClose}>
-            <Text className="text-base text-light-muted dark:text-dark-muted">
-              {t('common.cancel') || 'Cancel'}
+        <View className='flex-1 bg-light-background dark:bg-dark-background'>
+          {/* Header */}
+          <View className='flex-row items-center justify-between border-b border-light-border p-4 dark:border-dark-border'>
+            <TouchableOpacity onPress={onClose}>
+              <Text className='text-base text-light-muted dark:text-dark-muted'>
+                {t('common.cancel') || 'Cancel'}
+              </Text>
+            </TouchableOpacity>
+            <Text className='text-lg font-semibold text-light-text dark:text-dark-text'>
+              {t('filters.title') || 'Filters'}
             </Text>
-          </TouchableOpacity>
-          <Text className="text-lg font-semibold text-light-text dark:text-dark-text">
-            {t('filters.title') || 'Filters'}
-          </Text>
-          <TouchableOpacity onPress={handleReset}>
-            <Text className="text-base text-netflix-500">
-              {t('filters.reset') || 'Reset'}
-            </Text>
-          </TouchableOpacity>
-        </View>
-
-        <ScrollView
-          ref={scrollViewRef}
-          className="flex-1 p-4"
-          keyboardShouldPersistTaps="handled"
-        >
-          {/* Content Type Section */}
-          <View className="mb-6">
-            <Text className="mb-3 text-base font-semibold text-light-text dark:text-dark-text">
-              {t('filters.contentType') || 'Content Type'}
-            </Text>
-            <View className="flex-row gap-2">
-              {[
-                { key: 'all', label: t('filters.all') || 'All' },
-                { key: 'movies', label: t('filters.moviesOnly') || 'Movies' },
-                {
-                  key: 'tvshows',
-                  label: t('filters.tvShowsOnly') || 'TV Shows',
-                },
-              ].map(option => (
-                <TouchableOpacity
-                  key={option.key}
-                  onPress={() =>
-                    handleContentTypeChange(option.key as ContentType)
-                  }
-                  style={getButtonBorderRadius()}
-                  className={cn(
-                    'flex-1 items-center border-2 py-3',
-                    localFilters.contentType === option.key
-                      ? 'border-netflix-500 bg-netflix-500/10'
-                      : 'border-light-border bg-light-surface dark:border-dark-border dark:bg-dark-surface'
-                  )}
-                >
-                  <Text
-                    className={cn(
-                      'text-sm font-medium',
-                      localFilters.contentType === option.key
-                        ? 'text-netflix-500'
-                        : 'text-light-text dark:text-dark-text'
-                    )}
-                  >
-                    {option.label}
-                  </Text>
-                </TouchableOpacity>
-              ))}
-            </View>
+            <TouchableOpacity onPress={handleReset}>
+              <Text className='text-base text-netflix-500'>
+                {t('filters.reset') || 'Reset'}
+              </Text>
+            </TouchableOpacity>
           </View>
 
-          {/* Year Range Section */}
-          <View className="mb-6">
-            <Text className="mb-3 text-base font-semibold text-light-text dark:text-dark-text">
-              {t('filters.yearRange') || 'Release Year'}
-            </Text>
-
-            {/* From Year Slider */}
-            <View className="mb-4">
-              <View className="mb-2 flex-row items-center justify-between">
-                <Text className="text-sm text-light-muted dark:text-dark-muted">
-                  {t('filters.from') || 'From'}
-                </Text>
-                <Text className="text-base font-semibold text-netflix-500">
-                  {localFilters.yearFrom ?? MIN_YEAR}
-                </Text>
-              </View>
-              <Slider
-                value={localFilters.yearFrom ?? MIN_YEAR}
-                onValueChange={value =>
-                  setLocalFilters(prev => ({
-                    ...prev,
-                    yearFrom: Math.round(value),
-                  }))
-                }
-                minimumValue={MIN_YEAR}
-                maximumValue={localFilters.yearTo ?? MAX_YEAR}
-                step={1}
-                minimumTrackTintColor="#E50914"
-                maximumTrackTintColor={isDark ? '#374151' : '#d1d5db'}
-                thumbTintColor="#E50914"
-              />
-              <View className="flex-row justify-between">
-                <Text className="text-xs text-light-muted dark:text-dark-muted">
-                  {MIN_YEAR}
-                </Text>
-                <Text className="text-xs text-light-muted dark:text-dark-muted">
-                  {localFilters.yearTo ?? MAX_YEAR}
-                </Text>
-              </View>
-            </View>
-
-            {/* To Year Slider */}
-            <View>
-              <View className="mb-2 flex-row items-center justify-between">
-                <Text className="text-sm text-light-muted dark:text-dark-muted">
-                  {t('filters.to') || 'To'}
-                </Text>
-                <Text className="text-base font-semibold text-netflix-500">
-                  {localFilters.yearTo ?? MAX_YEAR}
-                </Text>
-              </View>
-              <Slider
-                value={localFilters.yearTo ?? MAX_YEAR}
-                onValueChange={value =>
-                  setLocalFilters(prev => ({
-                    ...prev,
-                    yearTo: Math.round(value),
-                  }))
-                }
-                minimumValue={localFilters.yearFrom ?? MIN_YEAR}
-                maximumValue={MAX_YEAR}
-                step={1}
-                minimumTrackTintColor="#E50914"
-                maximumTrackTintColor={isDark ? '#374151' : '#d1d5db'}
-                thumbTintColor="#E50914"
-              />
-              <View className="flex-row justify-between">
-                <Text className="text-xs text-light-muted dark:text-dark-muted">
-                  {localFilters.yearFrom ?? MIN_YEAR}
-                </Text>
-                <Text className="text-xs text-light-muted dark:text-dark-muted">
-                  {MAX_YEAR}
-                </Text>
-              </View>
-            </View>
-          </View>
-
-          {/* Actor Search Section */}
-          <View
-            className="mb-6"
-            onLayout={(event) => {
-              actorSectionY.current = event.nativeEvent.layout.y;
-            }}
+          <ScrollView
+            ref={scrollViewRef}
+            className='flex-1 p-4'
+            keyboardShouldPersistTaps='handled'
           >
-            <Text className="mb-3 text-base font-semibold text-light-text dark:text-dark-text">
-              {t('filters.actor') || 'Actor'}
-            </Text>
-
-            {/* Selected Actors */}
-            {localFilters.selectedActors.length > 0 && (
-              <View className="mb-3 flex-row flex-wrap gap-2">
-                {localFilters.selectedActors.map(actor => (
-                  <View
-                    key={actor.id}
-                    className="flex-row items-center gap-2 rounded-full bg-netflix-500/20 py-1 pl-1 pr-3"
-                  >
-                    {actor.profile_path ? (
-                      <Image
-                        source={{
-                          uri: `https://image.tmdb.org/t/p/w92${actor.profile_path}`,
-                        }}
-                        className="h-6 w-6 rounded-full"
-                      />
-                    ) : (
-                      <View className="h-6 w-6 items-center justify-center rounded-full bg-light-border dark:bg-dark-border">
-                        <Ionicons
-                          name="person"
-                          size={14}
-                          color={isDark ? '#a3a3a3' : '#737373'}
-                        />
-                      </View>
-                    )}
-                    <Text className="text-sm font-medium text-netflix-500">
-                      {actor.name}
-                    </Text>
-                    <TouchableOpacity
-                      onPress={() => removeActor(actor.id)}
-                      hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
-                    >
-                      <Ionicons name="close-circle" size={18} color="#E50914" />
-                    </TouchableOpacity>
-                  </View>
-                ))}
-              </View>
-            )}
-
-            {/* Search Input */}
-            {localFilters.selectedActors.length < 3 && (
-              <View className="relative">
-                <View className="flex-row items-center rounded-xl border-2 border-light-border bg-light-surface px-3 dark:border-dark-border dark:bg-dark-surface">
-                  <Ionicons
-                    name="search"
-                    size={18}
-                    color={isDark ? '#a3a3a3' : '#737373'}
-                  />
-                  <TextInput
-                    value={actorSearchQuery}
-                    onChangeText={handleActorSearch}
-                    onFocus={handleActorInputFocus}
-                    placeholder={t('filters.searchActor') || 'Search for an actor...'}
-                    placeholderTextColor={isDark ? '#a3a3a3' : '#737373'}
-                    className="ml-2 flex-1 py-3 text-base text-light-text dark:text-dark-text"
-                  />
-                  {isSearchingActors && (
-                    <ActivityIndicator size="small" color="#E50914" />
-                  )}
-                </View>
-
-                {/* Suggestions Dropdown */}
-                {actorSuggestions.length > 0 && (
-                  <View className="absolute left-0 right-0 top-14 z-50 rounded-xl border-2 border-light-border bg-light-background shadow-lg dark:border-dark-border dark:bg-dark-background">
-                    {actorSuggestions.slice(0, 5).map(actor => (
-                      <TouchableOpacity
-                        key={actor.id}
-                        onPress={() => addActor(actor)}
-                        className="flex-row items-center gap-3 border-b border-light-border px-3 py-2 last:border-b-0 dark:border-dark-border"
-                      >
-                        {actor.profile_path ? (
-                          <Image
-                            source={{
-                              uri: `https://image.tmdb.org/t/p/w92${actor.profile_path}`,
-                            }}
-                            className="h-10 w-10 rounded-full"
-                          />
-                        ) : (
-                          <View className="h-10 w-10 items-center justify-center rounded-full bg-light-border dark:bg-dark-border">
-                            <Ionicons
-                              name="person"
-                              size={20}
-                              color={isDark ? '#a3a3a3' : '#737373'}
-                            />
-                          </View>
-                        )}
-                        <Text className="flex-1 text-base text-light-text dark:text-dark-text">
-                          {actor.name}
-                        </Text>
-                        <Ionicons
-                          name="add-circle-outline"
-                          size={22}
-                          color="#E50914"
-                        />
-                      </TouchableOpacity>
-                    ))}
-                  </View>
-                )}
-              </View>
-            )}
-
-            {localFilters.selectedActors.length >= 3 && (
-              <Text className="text-sm text-light-muted dark:text-dark-muted">
-                {t('filters.maxActors') || 'Maximum 3 actors selected'}
+            {/* Content Type Section */}
+            <View className='mb-6'>
+              <Text className='mb-3 text-base font-semibold text-light-text dark:text-dark-text'>
+                {t('filters.contentType') || 'Content Type'}
               </Text>
-            )}
-          </View>
-
-          {/* Sort Section */}
-          <View className="mb-6">
-            <Text className="mb-3 text-base font-semibold text-light-text dark:text-dark-text">
-              {t('filters.sortBy') || 'Sort By'}
-            </Text>
-            <View className="flex-row gap-2">
-              <TouchableOpacity
-                onPress={() => handleSortChange('vote_average')}
-                style={getButtonBorderRadius()}
-                className={cn(
-                  'flex-1 flex-row items-center justify-center gap-2 border-2 py-3',
-                  localFilters.sortBy === 'vote_average'
-                    ? 'border-netflix-500 bg-netflix-500/10'
-                    : 'border-light-border bg-light-surface dark:border-dark-border dark:bg-dark-surface'
-                )}
-              >
-                <Ionicons
-                  name="star"
-                  size={18}
-                  color={
-                    localFilters.sortBy === 'vote_average'
-                      ? '#E50914'
-                      : isDark
-                        ? '#ffffff'
-                        : '#0f172a'
-                  }
-                />
-                <Text
-                  className={cn(
-                    'text-sm font-medium',
-                    localFilters.sortBy === 'vote_average'
-                      ? 'text-netflix-500'
-                      : 'text-light-text dark:text-dark-text'
-                  )}
-                >
-                  {t('movies.sortByRating') || 'Rating'}
-                </Text>
-              </TouchableOpacity>
-              <TouchableOpacity
-                onPress={() => handleSortChange('release_date')}
-                style={getButtonBorderRadius()}
-                className={cn(
-                  'flex-1 flex-row items-center justify-center gap-2 border-2 py-3',
-                  localFilters.sortBy === 'release_date'
-                    ? 'border-netflix-500 bg-netflix-500/10'
-                    : 'border-light-border bg-light-surface dark:border-dark-border dark:bg-dark-surface'
-                )}
-              >
-                <Ionicons
-                  name="calendar"
-                  size={18}
-                  color={
-                    localFilters.sortBy === 'release_date'
-                      ? '#E50914'
-                      : isDark
-                        ? '#ffffff'
-                        : '#0f172a'
-                  }
-                />
-                <Text
-                  className={cn(
-                    'text-sm font-medium',
-                    localFilters.sortBy === 'release_date'
-                      ? 'text-netflix-500'
-                      : 'text-light-text dark:text-dark-text'
-                  )}
-                >
-                  {t('movies.sortByDate') || 'Date'}
-                </Text>
-              </TouchableOpacity>
-            </View>
-          </View>
-
-          {/* Platforms Section */}
-          {availableProviders.length > 0 && (
-            <View className="mb-6">
-              <Text className="mb-3 text-base font-semibold text-light-text dark:text-dark-text">
-                {t('filters.platforms') || 'Platforms'}
-              </Text>
-              <View className="flex-row flex-wrap gap-2">
-                {availableProviders.map(provider => (
+              <View className='flex-row gap-2'>
+                {[
+                  { key: 'all', label: t('filters.all') || 'All' },
+                  { key: 'movies', label: t('filters.moviesOnly') || 'Movies' },
+                  {
+                    key: 'tvshows',
+                    label: t('filters.tvShowsOnly') || 'TV Shows',
+                  },
+                ].map(option => (
                   <TouchableOpacity
-                    key={provider}
-                    onPress={() => toggleProvider(provider)}
+                    key={option.key}
+                    onPress={() =>
+                      handleContentTypeChange(option.key as ContentType)
+                    }
                     style={getButtonBorderRadius()}
                     className={cn(
-                      'border-2 px-4 py-2',
-                      localFilters.selectedProviders.has(provider)
+                      'flex-1 items-center border-2 py-3',
+                      localFilters.contentType === option.key
                         ? 'border-netflix-500 bg-netflix-500/10'
                         : 'border-light-border bg-light-surface dark:border-dark-border dark:bg-dark-surface'
                     )}
                   >
                     <Text
                       className={cn(
-                        'text-sm',
-                        localFilters.selectedProviders.has(provider)
-                          ? 'font-semibold text-netflix-500'
+                        'text-sm font-medium',
+                        localFilters.contentType === option.key
+                          ? 'text-netflix-500'
                           : 'text-light-text dark:text-dark-text'
                       )}
                     >
-                      {provider}
+                      {option.label}
                     </Text>
                   </TouchableOpacity>
                 ))}
               </View>
             </View>
-          )}
-        </ScrollView>
 
-        {/* Bottom Actions */}
-        <View className="border-t border-light-border p-4 dark:border-dark-border">
-          <TouchableOpacity
-            onPress={handleApplyFilters}
-            style={getButtonBorderRadius()}
-            className="bg-netflix-500 py-4"
-          >
-            <Text className="text-center text-base font-semibold text-white">
-              {t('filters.apply') || 'Apply Filters'}
-            </Text>
-          </TouchableOpacity>
+            {/* Year Range Section */}
+            <View className='mb-6'>
+              <Text className='mb-3 text-base font-semibold text-light-text dark:text-dark-text'>
+                {t('filters.yearRange') || 'Release Year'}
+              </Text>
+
+              {/* From Year Slider */}
+              <View className='mb-4'>
+                <View className='mb-2 flex-row items-center justify-between'>
+                  <Text className='text-sm text-light-muted dark:text-dark-muted'>
+                    {t('filters.from') || 'From'}
+                  </Text>
+                  <Text className='text-base font-semibold text-netflix-500'>
+                    {localFilters.yearFrom ?? MIN_YEAR}
+                  </Text>
+                </View>
+                <Slider
+                  value={localFilters.yearFrom ?? MIN_YEAR}
+                  onValueChange={value =>
+                    setLocalFilters(prev => ({
+                      ...prev,
+                      yearFrom: Math.round(value),
+                    }))
+                  }
+                  minimumValue={MIN_YEAR}
+                  maximumValue={localFilters.yearTo ?? MAX_YEAR}
+                  step={1}
+                  minimumTrackTintColor='#E50914'
+                  maximumTrackTintColor={isDark ? '#374151' : '#d1d5db'}
+                  thumbTintColor='#E50914'
+                />
+                <View className='flex-row justify-between'>
+                  <Text className='text-xs text-light-muted dark:text-dark-muted'>
+                    {MIN_YEAR}
+                  </Text>
+                  <Text className='text-xs text-light-muted dark:text-dark-muted'>
+                    {localFilters.yearTo ?? MAX_YEAR}
+                  </Text>
+                </View>
+              </View>
+
+              {/* To Year Slider */}
+              <View>
+                <View className='mb-2 flex-row items-center justify-between'>
+                  <Text className='text-sm text-light-muted dark:text-dark-muted'>
+                    {t('filters.to') || 'To'}
+                  </Text>
+                  <Text className='text-base font-semibold text-netflix-500'>
+                    {localFilters.yearTo ?? MAX_YEAR}
+                  </Text>
+                </View>
+                <Slider
+                  value={localFilters.yearTo ?? MAX_YEAR}
+                  onValueChange={value =>
+                    setLocalFilters(prev => ({
+                      ...prev,
+                      yearTo: Math.round(value),
+                    }))
+                  }
+                  minimumValue={localFilters.yearFrom ?? MIN_YEAR}
+                  maximumValue={MAX_YEAR}
+                  step={1}
+                  minimumTrackTintColor='#E50914'
+                  maximumTrackTintColor={isDark ? '#374151' : '#d1d5db'}
+                  thumbTintColor='#E50914'
+                />
+                <View className='flex-row justify-between'>
+                  <Text className='text-xs text-light-muted dark:text-dark-muted'>
+                    {localFilters.yearFrom ?? MIN_YEAR}
+                  </Text>
+                  <Text className='text-xs text-light-muted dark:text-dark-muted'>
+                    {MAX_YEAR}
+                  </Text>
+                </View>
+              </View>
+            </View>
+
+            {/* Actor Search Section */}
+            <View
+              className='mb-6'
+              onLayout={event => {
+                actorSectionY.current = event.nativeEvent.layout.y;
+              }}
+            >
+              <Text className='mb-3 text-base font-semibold text-light-text dark:text-dark-text'>
+                {t('filters.actor') || 'Actor'}
+              </Text>
+
+              {/* Selected Actors */}
+              {localFilters.selectedActors.length > 0 && (
+                <View className='mb-3 flex-row flex-wrap gap-2'>
+                  {localFilters.selectedActors.map(actor => (
+                    <View
+                      key={actor.id}
+                      className='flex-row items-center gap-2 rounded-full bg-netflix-500/20 py-1 pl-1 pr-3'
+                    >
+                      {actor.profile_path ? (
+                        <Image
+                          source={{
+                            uri: `https://image.tmdb.org/t/p/w92${actor.profile_path}`,
+                          }}
+                          className='h-6 w-6 rounded-full'
+                        />
+                      ) : (
+                        <View className='h-6 w-6 items-center justify-center rounded-full bg-light-border dark:bg-dark-border'>
+                          <Ionicons
+                            name='person'
+                            size={14}
+                            color={isDark ? '#a3a3a3' : '#737373'}
+                          />
+                        </View>
+                      )}
+                      <Text className='text-sm font-medium text-netflix-500'>
+                        {actor.name}
+                      </Text>
+                      <TouchableOpacity
+                        onPress={() => removeActor(actor.id)}
+                        hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
+                      >
+                        <Ionicons
+                          name='close-circle'
+                          size={18}
+                          color='#E50914'
+                        />
+                      </TouchableOpacity>
+                    </View>
+                  ))}
+                </View>
+              )}
+
+              {/* Search Input */}
+              {localFilters.selectedActors.length < 3 && (
+                <View className='relative'>
+                  <View className='flex-row items-center rounded-xl border-2 border-light-border bg-light-surface px-3 dark:border-dark-border dark:bg-dark-surface'>
+                    <Ionicons
+                      name='search'
+                      size={18}
+                      color={isDark ? '#a3a3a3' : '#737373'}
+                    />
+                    <TextInput
+                      value={actorSearchQuery}
+                      onChangeText={handleActorSearch}
+                      onFocus={handleActorInputFocus}
+                      placeholder={
+                        t('filters.searchActor') || 'Search for an actor...'
+                      }
+                      placeholderTextColor={isDark ? '#a3a3a3' : '#737373'}
+                      className='ml-2 flex-1 py-3 text-base text-light-text dark:text-dark-text'
+                    />
+                    {isSearchingActors && (
+                      <ActivityIndicator size='small' color='#E50914' />
+                    )}
+                  </View>
+
+                  {/* Suggestions Dropdown */}
+                  {actorSuggestions.length > 0 && (
+                    <View className='absolute left-0 right-0 top-14 z-50 rounded-xl border-2 border-light-border bg-light-background shadow-lg dark:border-dark-border dark:bg-dark-background'>
+                      {actorSuggestions.slice(0, 5).map(actor => (
+                        <TouchableOpacity
+                          key={actor.id}
+                          onPress={() => addActor(actor)}
+                          className='flex-row items-center gap-3 border-b border-light-border px-3 py-2 last:border-b-0 dark:border-dark-border'
+                        >
+                          {actor.profile_path ? (
+                            <Image
+                              source={{
+                                uri: `https://image.tmdb.org/t/p/w92${actor.profile_path}`,
+                              }}
+                              className='h-10 w-10 rounded-full'
+                            />
+                          ) : (
+                            <View className='h-10 w-10 items-center justify-center rounded-full bg-light-border dark:bg-dark-border'>
+                              <Ionicons
+                                name='person'
+                                size={20}
+                                color={isDark ? '#a3a3a3' : '#737373'}
+                              />
+                            </View>
+                          )}
+                          <Text className='flex-1 text-base text-light-text dark:text-dark-text'>
+                            {actor.name}
+                          </Text>
+                          <Ionicons
+                            name='add-circle-outline'
+                            size={22}
+                            color='#E50914'
+                          />
+                        </TouchableOpacity>
+                      ))}
+                    </View>
+                  )}
+                </View>
+              )}
+
+              {localFilters.selectedActors.length >= 3 && (
+                <Text className='text-sm text-light-muted dark:text-dark-muted'>
+                  {t('filters.maxActors') || 'Maximum 3 actors selected'}
+                </Text>
+              )}
+            </View>
+
+            {/* Sort Section */}
+            <View className='mb-6'>
+              <Text className='mb-3 text-base font-semibold text-light-text dark:text-dark-text'>
+                {t('filters.sortBy') || 'Sort By'}
+              </Text>
+              <View className='flex-row gap-2'>
+                <TouchableOpacity
+                  onPress={() => handleSortChange('vote_average')}
+                  style={getButtonBorderRadius()}
+                  className={cn(
+                    'flex-1 flex-row items-center justify-center gap-2 border-2 py-3',
+                    localFilters.sortBy === 'vote_average'
+                      ? 'border-netflix-500 bg-netflix-500/10'
+                      : 'border-light-border bg-light-surface dark:border-dark-border dark:bg-dark-surface'
+                  )}
+                >
+                  <Ionicons
+                    name='star'
+                    size={18}
+                    color={
+                      localFilters.sortBy === 'vote_average'
+                        ? '#E50914'
+                        : isDark
+                          ? '#ffffff'
+                          : '#0f172a'
+                    }
+                  />
+                  <Text
+                    className={cn(
+                      'text-sm font-medium',
+                      localFilters.sortBy === 'vote_average'
+                        ? 'text-netflix-500'
+                        : 'text-light-text dark:text-dark-text'
+                    )}
+                  >
+                    {t('movies.sortByRating') || 'Rating'}
+                  </Text>
+                </TouchableOpacity>
+                <TouchableOpacity
+                  onPress={() => handleSortChange('release_date')}
+                  style={getButtonBorderRadius()}
+                  className={cn(
+                    'flex-1 flex-row items-center justify-center gap-2 border-2 py-3',
+                    localFilters.sortBy === 'release_date'
+                      ? 'border-netflix-500 bg-netflix-500/10'
+                      : 'border-light-border bg-light-surface dark:border-dark-border dark:bg-dark-surface'
+                  )}
+                >
+                  <Ionicons
+                    name='calendar'
+                    size={18}
+                    color={
+                      localFilters.sortBy === 'release_date'
+                        ? '#E50914'
+                        : isDark
+                          ? '#ffffff'
+                          : '#0f172a'
+                    }
+                  />
+                  <Text
+                    className={cn(
+                      'text-sm font-medium',
+                      localFilters.sortBy === 'release_date'
+                        ? 'text-netflix-500'
+                        : 'text-light-text dark:text-dark-text'
+                    )}
+                  >
+                    {t('movies.sortByDate') || 'Date'}
+                  </Text>
+                </TouchableOpacity>
+              </View>
+            </View>
+
+            {/* Platforms Section */}
+            {availableProviders.length > 0 && (
+              <View className='mb-6'>
+                <Text className='mb-3 text-base font-semibold text-light-text dark:text-dark-text'>
+                  {t('filters.platforms') || 'Platforms'}
+                </Text>
+                <View className='flex-row flex-wrap gap-2'>
+                  {availableProviders.map(provider => (
+                    <TouchableOpacity
+                      key={provider}
+                      onPress={() => toggleProvider(provider)}
+                      style={getButtonBorderRadius()}
+                      className={cn(
+                        'border-2 px-4 py-2',
+                        localFilters.selectedProviders.has(provider)
+                          ? 'border-netflix-500 bg-netflix-500/10'
+                          : 'border-light-border bg-light-surface dark:border-dark-border dark:bg-dark-surface'
+                      )}
+                    >
+                      <Text
+                        className={cn(
+                          'text-sm',
+                          localFilters.selectedProviders.has(provider)
+                            ? 'font-semibold text-netflix-500'
+                            : 'text-light-text dark:text-dark-text'
+                        )}
+                      >
+                        {provider}
+                      </Text>
+                    </TouchableOpacity>
+                  ))}
+                </View>
+              </View>
+            )}
+          </ScrollView>
+
+          {/* Bottom Actions */}
+          <View className='border-t border-light-border p-4 dark:border-dark-border'>
+            <TouchableOpacity
+              onPress={handleApplyFilters}
+              style={getButtonBorderRadius()}
+              className='bg-netflix-500 py-4'
+            >
+              <Text className='text-center text-base font-semibold text-white'>
+                {t('filters.apply') || 'Apply Filters'}
+              </Text>
+            </TouchableOpacity>
+          </View>
         </View>
-      </View>
       </KeyboardAvoidingView>
     </Modal>
   );

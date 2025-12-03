@@ -1,3 +1,4 @@
+import FiltersBottomSheet from '@/components/FiltersBottomSheet';
 import AboutModal from '@/components/settings/AboutModal';
 import AccountModal from '@/components/settings/AccountModal';
 import SettingsRow from '@/components/settings/SettingsRow';
@@ -22,8 +23,7 @@ import {
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 export default function ProfileScreen() {
-  const { language, setLanguage, country, setCountry, t, availableCountries } =
-    useLanguage();
+  const { language, setLanguage, t } = useLanguage();
   const { hasUnlimitedAccess, trialInfo, isInTrial } = useSubscription();
   const { user, isAuthenticated } = useAuth();
   const router = useRouter();
@@ -34,10 +34,10 @@ export default function ProfileScreen() {
     useState(false);
   const [showPlansModal, setShowPlansModal] = useState(false);
   const [showAboutModal, setShowAboutModal] = useState(false);
+  const [showFiltersModal, setShowFiltersModal] = useState(false);
 
   const languages = AVAILABLE_LANGUAGES;
   const currentLanguage = languages.find(lang => lang.code === language);
-  const currentCountry = availableCountries.find(c => c.code === country);
 
   // Get subscription status text
   const getSubscriptionSubtitle = () => {
@@ -82,36 +82,6 @@ export default function ProfileScreen() {
         ...languages.map(lang => ({
           text: `${lang.flag} ${lang.name}`,
           onPress: () => setLanguage(lang.code),
-        })),
-      ]);
-    }
-  };
-
-  // Country picker
-  const showCountryPicker = () => {
-    if (Platform.OS === 'ios') {
-      ActionSheetIOS.showActionSheetWithOptions(
-        {
-          options: [
-            t('common.cancel'),
-            ...availableCountries.map(c => `${c.flag} ${c.name}`),
-          ],
-          cancelButtonIndex: 0,
-          title: t('profile.chooseCountry'),
-        },
-        buttonIndex => {
-          if (buttonIndex > 0) {
-            const selectedCountry = availableCountries[buttonIndex - 1];
-            setCountry(selectedCountry.code);
-          }
-        }
-      );
-    } else {
-      Alert.alert(t('profile.chooseCountry'), '', [
-        { text: t('common.cancel'), style: 'cancel' },
-        ...availableCountries.map(countryItem => ({
-          text: `${countryItem.flag} ${countryItem.name}`,
-          onPress: () => setCountry(countryItem.code),
         })),
       ]);
     }
@@ -194,6 +164,43 @@ export default function ProfileScreen() {
           </MotiView>
         )}
 
+        {/* Default Filters Section */}
+        <MotiView
+          from={{ opacity: 0, translateY: 20 }}
+          animate={{ opacity: 1, translateY: 0 }}
+          transition={{ delay: 175, type: 'timing', duration: 600 }}
+          className='mb-6 px-4'
+        >
+          <Text className='mb-2 ml-3 text-sm font-medium uppercase text-light-muted dark:text-dark-muted'>
+            {t('profile.defaultFiltersSection') || 'Search Filters'}
+          </Text>
+          <View className='overflow-hidden rounded-xl'>
+            {isAuthenticated ? (
+              <SettingsRow
+                icon='options'
+                iconColor='#E50914'
+                title={t('profile.defaultFilters') || 'Default Filters'}
+                subtitle={
+                  t('profile.defaultFiltersSubtitle') ||
+                  'Country, platforms, content type'
+                }
+                onPress={() => setShowFiltersModal(true)}
+                isFirst
+                isLast
+              />
+            ) : (
+              <SettingsRow
+                icon='options'
+                title={t('profile.defaultFilters') || 'Default Filters'}
+                subtitle={t('profile.signInRequired') || 'Sign in to access'}
+                onPress={() => router.push('/auth')}
+                isFirst
+                isLast
+              />
+            )}
+          </View>
+        </MotiView>
+
         {/* Preferences Section */}
         <MotiView
           from={{ opacity: 0, translateY: 20 }}
@@ -215,16 +222,6 @@ export default function ProfileScreen() {
               }
               onPress={showLanguagePicker}
               isFirst
-            />
-            <SettingsRow
-              icon='flag'
-              title={t('settings.country') || 'Search Country'}
-              subtitle={
-                currentCountry
-                  ? `${currentCountry.flag} ${currentCountry.name}`
-                  : undefined
-              }
-              onPress={showCountryPicker}
               isLast
             />
           </View>
@@ -271,6 +268,11 @@ export default function ProfileScreen() {
       <AboutModal
         visible={showAboutModal}
         onClose={() => setShowAboutModal(false)}
+      />
+      <FiltersBottomSheet
+        visible={showFiltersModal}
+        onClose={() => setShowFiltersModal(false)}
+        saveAsDefault
       />
     </SafeAreaView>
   );

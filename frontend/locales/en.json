@@ -71,8 +71,11 @@
   },
   "filters": {
     "title": "Filters",
+    "button": "Filters",
+    "defaultFilters": "My Filters",
     "reset": "Reset",
     "apply": "Apply Filters",
+    "saveDefaults": "Save as Default",
     "refineSearch": "Search with these filters",
     "noResults": "No results match your filters",
     "searchWithFilters": "Search with these filters",
@@ -85,9 +88,20 @@
     "to": "To",
     "sortBy": "Sort By",
     "platforms": "Platforms",
+    "platformsHint": "Select platforms to filter (leave empty for all)",
+    "availabilityTypes": "Availability",
+    "subscription": "Included in subscription",
+    "rent": "Rent",
+    "buy": "Purchase",
     "actor": "Actor",
     "searchActor": "Search for an actor...",
     "maxActors": "Maximum 3 actors selected"
+  },
+  "availability": {
+    "subscription": "Subscription",
+    "rent": "Rent",
+    "buy": "Buy",
+    "ads": "Free (Ads)"
   },
   "subscription": {
     "title": "Go FastFlix Pro",
@@ -192,7 +206,10 @@
     "signOut": "Sign Out",
     "preferences": "Preferences",
     "noSubscription": "Not subscribed",
-    "signInRequired": "Sign in to manage"
+    "signInRequired": "Sign in to manage",
+    "defaultFilters": "Default Filters",
+    "defaultFiltersSubtitle": "Country, platforms, content type",
+    "defaultFiltersSection": "Search Filters"
   },
   "auth": {
     "welcome": {

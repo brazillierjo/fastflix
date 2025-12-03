@@ -71,8 +71,11 @@
   },
   "filters": {
     "title": "フィルター",
+    "button": "フィルター",
+    "defaultFilters": "マイフィルター",
     "reset": "リセット",
     "apply": "適用",
+    "saveDefaults": "デフォルトとして保存",
     "refineSearch": "このフィルターで検索",
     "noResults": "フィルターに一致する結果がありません",
     "searchWithFilters": "このフィルターで検索",
@@ -85,9 +88,20 @@
     "to": "まで",
     "sortBy": "並び替え",
     "platforms": "プラットフォーム",
+    "platformsHint": "プラットフォームを選択（すべての場合は空のまま）",
+    "availabilityTypes": "利用可能状況",
+    "subscription": "サブスクリプションに含まれる",
+    "rent": "レンタル",
+    "buy": "購入",
     "actor": "俳優",
     "searchActor": "俳優を検索...",
     "maxActors": "最大3人の俳優が選択されています"
+  },
+  "availability": {
+    "subscription": "サブスク",
+    "rent": "レンタル",
+    "buy": "購入",
+    "ads": "無料（広告あり）"
   },
   "subscription": {
     "title": "FastFlix Proにアップグレード",
@@ -192,7 +206,10 @@
     "signOut": "サインアウト",
     "preferences": "設定",
     "noSubscription": "未登録",
-    "signInRequired": "管理するにはサインイン"
+    "signInRequired": "管理するにはサインイン",
+    "defaultFilters": "デフォルトフィルター",
+    "defaultFiltersSubtitle": "国、プラットフォーム、コンテンツタイプ",
+    "defaultFiltersSection": "検索フィルター"
   },
   "auth": {
     "welcome": {

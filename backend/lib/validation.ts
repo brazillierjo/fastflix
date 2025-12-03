@@ -23,6 +23,11 @@ export const searchRequestSchema = z.object({
   yearTo: z.number().min(1900).max(2030).optional(),
   // Actor filter - array of TMDB person IDs
   actorIds: z.array(z.number()).max(5).optional(),
+  // Platform/Provider filters (from user preferences)
+  platforms: z.array(z.number()).optional(), // Array of provider IDs (e.g., Netflix=8, Prime=119)
+  includeFlatrate: z.boolean().optional(), // Include content available via subscription
+  includeRent: z.boolean().optional(), // Include content available for rent
+  includeBuy: z.boolean().optional(), // Include content available for purchase
 });
 
 /**

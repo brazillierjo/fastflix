@@ -71,8 +71,11 @@
   },
   "filters": {
     "title": "Filtri",
+    "button": "Filtri",
+    "defaultFilters": "I miei filtri",
     "reset": "Reimposta",
     "apply": "Applica",
+    "saveDefaults": "Salva come predefinito",
     "refineSearch": "Cerca con questi filtri",
     "noResults": "Nessun risultato corrisponde ai tuoi filtri",
     "searchWithFilters": "Cerca con questi filtri",
@@ -85,9 +88,20 @@
     "to": "A",
     "sortBy": "Ordina per",
     "platforms": "Piattaforme",
+    "platformsHint": "Seleziona piattaforme (lascia vuoto per tutte)",
+    "availabilityTypes": "Disponibilità",
+    "subscription": "Incluso nell'abbonamento",
+    "rent": "Noleggio",
+    "buy": "Acquisto",
     "actor": "Attore",
     "searchActor": "Cerca un attore...",
     "maxActors": "Massimo 3 attori selezionati"
+  },
+  "availability": {
+    "subscription": "Abbonamento",
+    "rent": "Noleggio",
+    "buy": "Acquisto",
+    "ads": "Gratis (con pubblicità)"
   },
   "subscription": {
     "title": "Passa a FastFlix Pro",
@@ -192,7 +206,10 @@
     "signOut": "Esci",
     "preferences": "Preferenze",
     "noSubscription": "Non abbonato",
-    "signInRequired": "Accedi per gestire"
+    "signInRequired": "Accedi per gestire",
+    "defaultFilters": "Filtri predefiniti",
+    "defaultFiltersSubtitle": "Paese, piattaforme, tipo di contenuto",
+    "defaultFiltersSection": "Filtri di ricerca"
   },
   "auth": {
     "welcome": {

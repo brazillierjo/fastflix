@@ -32,6 +32,23 @@ export interface StreamingProvider {
   provider_name: string;
   logo_path: string;
   display_priority: number;
+  availability_type: 'flatrate' | 'rent' | 'buy' | 'ads';
+}
+
+export interface UserPreferences {
+  country: string;
+  contentType: 'all' | 'movies' | 'tvshows';
+  platforms: number[];
+  includeFlatrate: boolean;
+  includeRent: boolean;
+  includeBuy: boolean;
+}
+
+export interface AvailableProvider {
+  provider_id: number;
+  provider_name: string;
+  logo_path: string;
+  display_priorities: { [country: string]: number };
 }
 
 export interface Cast {
@@ -231,6 +248,11 @@ class BackendAPIService {
     yearFrom?: number;
     yearTo?: number;
     actorIds?: number[];
+    // Platform/Provider filters
+    platforms?: number[];
+    includeFlatrate?: boolean;
+    includeRent?: boolean;
+    includeBuy?: boolean;
   }): Promise<APIResponse<SearchResponse>> {
     try {
       // Authentication is now required - no deviceId needed
@@ -253,6 +275,19 @@ class BackendAPIService {
       // Include actor IDs if provided
       if (params.actorIds && params.actorIds.length > 0) {
         requestBody.actorIds = params.actorIds;
+      }
+      // Include platform/availability filters if provided
+      if (params.platforms && params.platforms.length > 0) {
+        requestBody.platforms = params.platforms;
+      }
+      if (params.includeFlatrate !== undefined) {
+        requestBody.includeFlatrate = params.includeFlatrate;
+      }
+      if (params.includeRent !== undefined) {
+        requestBody.includeRent = params.includeRent;
+      }
+      if (params.includeBuy !== undefined) {
+        requestBody.includeBuy = params.includeBuy;
       }
 
       return await this.makeRequest<SearchResponse>('/api/search', {
@@ -422,6 +457,44 @@ class BackendAPIService {
    */
   async getTrialStatus(): Promise<APIResponse<{ trial: TrialInfo }>> {
     return await this.makeRequest('/api/trial', {
+      method: 'GET',
+    });
+  }
+
+  // ==========================================================================
+  // User Preferences Methods
+  // ==========================================================================
+
+  /**
+   * Get current user's search preferences
+   */
+  async getUserPreferences(): Promise<
+    APIResponse<{ preferences: UserPreferences }>
+  > {
+    return await this.makeRequest('/api/user/preferences', {
+      method: 'GET',
+    });
+  }
+
+  /**
+   * Update current user's search preferences
+   */
+  async updateUserPreferences(
+    preferences: Partial<UserPreferences>
+  ): Promise<APIResponse<{ preferences: UserPreferences }>> {
+    return await this.makeRequest('/api/user/preferences', {
+      method: 'PUT',
+      body: JSON.stringify(preferences),
+    });
+  }
+
+  /**
+   * Get available streaming providers for a country
+   */
+  async getAvailableProviders(
+    country: string = 'FR'
+  ): Promise<APIResponse<{ providers: AvailableProvider[] }>> {
+    return await this.makeRequest(`/api/providers?country=${country}`, {
       method: 'GET',
     });
   }

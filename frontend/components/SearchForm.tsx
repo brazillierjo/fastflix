@@ -1,4 +1,5 @@
 import { Ionicons } from '@expo/vector-icons';
+import FiltersBottomSheet from '@/components/FiltersBottomSheet';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { cn } from '@/utils/cn';
 import {
@@ -7,15 +8,12 @@ import {
   getSquircle,
   getButtonBorderRadius,
 } from '@/utils/designHelpers';
-import { Link } from 'expo-router';
 import { MotiView } from 'moti';
 import React, { useRef, useState, useEffect } from 'react';
 import {
   KeyboardAvoidingView,
-  Modal,
   PanResponder,
   Platform,
-  Pressable,
   ScrollView,
   Text,
   TextInput,
@@ -41,7 +39,7 @@ export default function SearchForm({
 }: SearchFormProps) {
   const { t, getRandomPlaceholder } = useLanguage();
   const [placeholder, setPlaceholder] = useState('');
-  const [showInfoModal, setShowInfoModal] = useState(false);
+  const [showFiltersModal, setShowFiltersModal] = useState(false);
   const colorScheme = useColorScheme();
   const isDark = colorScheme === 'dark';
 
@@ -122,17 +120,21 @@ export default function SearchForm({
           >
             {/* Action Buttons Row */}
             <View className='mb-3 flex-row items-center justify-end gap-2'>
-              {/* Info Button */}
+              {/* Filters Button */}
               <TouchableOpacity
-                onPress={() => setShowInfoModal(true)}
+                onPress={() => setShowFiltersModal(true)}
                 style={getSquircle(20)}
-                className='items-center justify-center bg-cinematic-200 px-3 py-2 dark:bg-cinematic-700'
+                className='flex-row items-center gap-1 bg-cinematic-200 px-4 py-2 dark:bg-cinematic-700'
+                disabled={loading}
               >
                 <Ionicons
-                  name='information-circle-outline'
-                  size={18}
+                  name='options-outline'
+                  size={16}
                   color={isDark ? '#a3a3a3' : '#525252'}
                 />
+                <Text className='text-xs font-semibold text-light-muted dark:text-dark-muted'>
+                  {t('filters.button') || 'Filters'}
+                </Text>
               </TouchableOpacity>
 
               {/* Example Button */}
@@ -204,57 +206,11 @@ export default function SearchForm({
         </View>
       </ScrollView>
 
-      {/* Info Modal */}
-      <Modal
-        visible={showInfoModal}
-        transparent
-        animationType='fade'
-        onRequestClose={() => setShowInfoModal(false)}
-      >
-        <Pressable
-          className='flex-1 items-center justify-center bg-black/60'
-          onPress={() => setShowInfoModal(false)}
-        >
-          <Pressable
-            onPress={e => e.stopPropagation()}
-            style={getSquircle(20)}
-            className='mx-6 max-w-md bg-light-surface p-6 dark:bg-dark-surface'
-          >
-            <View className='mb-4 flex-row items-center gap-3'>
-              <View
-                style={getSquircle(12)}
-                className='items-center justify-center bg-netflix-500/10 p-2'
-              >
-                <Ionicons name='settings-outline' size={20} color='#E50914' />
-              </View>
-              <Text className='flex-1 text-lg font-semibold text-light-text dark:text-dark-text'>
-                {t('welcome.languageTip.title')}
-              </Text>
-            </View>
-
-            <Text className='mb-5 text-sm leading-relaxed text-light-textSecondary dark:text-dark-textSecondary'>
-              {t('welcome.languageTip.description')}{' '}
-              <Link
-                href='/profile'
-                onPress={() => setShowInfoModal(false)}
-                asChild
-              >
-                <Text className='text-sm font-semibold text-netflix-500 underline'>
-                  {t('welcome.languageTip.profileLink')}
-                </Text>
-              </Link>
-            </Text>
-
-            <TouchableOpacity
-              onPress={() => setShowInfoModal(false)}
-              style={getSquircle(12)}
-              className='items-center bg-netflix-500 py-3'
-            >
-              <Text className='font-semibold text-white'>OK</Text>
-            </TouchableOpacity>
-          </Pressable>
-        </Pressable>
-      </Modal>
+      {/* Filters Bottom Sheet */}
+      <FiltersBottomSheet
+        visible={showFiltersModal}
+        onClose={() => setShowFiltersModal(false)}
+      />
     </KeyboardAvoidingView>
   );
 }

@@ -36,8 +36,20 @@ export async function POST(request: NextRequest) {
       return rateLimitResponse;
     }
 
-    const { query, includeMovies, includeTvShows, language, country, yearFrom, yearTo, actorIds } =
-      validatedData;
+    const {
+      query,
+      includeMovies,
+      includeTvShows,
+      language,
+      country,
+      yearFrom,
+      yearTo,
+      actorIds,
+      platforms,
+      includeFlatrate,
+      includeRent,
+      includeBuy,
+    } = validatedData;
 
     // Step 2: Check access (subscription OR active trial)
     const hasAccess = await db.hasAccess(userId);
@@ -139,10 +151,69 @@ export async function POST(request: NextRequest) {
     }
 
     // Step 6: Fetch streaming providers and detailed info in parallel
-    const [streamingProviders, { credits, detailedInfo }] = await Promise.all([
+    const [rawStreamingProviders, { credits, detailedInfo }] = await Promise.all([
       tmdb.getBatchWatchProviders(enrichedResults, country),
       tmdb.getBatchDetailsAndCredits(enrichedResults, language),
     ]);
+
+    // Step 6b: Filter streaming providers by availability type preferences
+    let streamingProviders = rawStreamingProviders;
+    const hasAvailabilityFilters =
+      includeFlatrate !== undefined || includeRent !== undefined || includeBuy !== undefined;
+
+    if (hasAvailabilityFilters) {
+      // Default to true if not specified (backward compatibility)
+      const allowFlatrate = includeFlatrate !== false;
+      const allowRent = includeRent === true;
+      const allowBuy = includeBuy === true;
+
+      console.log(
+        `🔍 Filtering availability: flatrate=${allowFlatrate}, rent=${allowRent}, buy=${allowBuy}`
+      );
+
+      streamingProviders = {};
+      for (const [movieId, providers] of Object.entries(rawStreamingProviders)) {
+        const filteredProviders = providers.filter((provider) => {
+          if (provider.availability_type === 'flatrate' && allowFlatrate) return true;
+          if (provider.availability_type === 'rent' && allowRent) return true;
+          if (provider.availability_type === 'buy' && allowBuy) return true;
+          if (provider.availability_type === 'ads' && allowFlatrate) return true; // Ads = free with ads, similar to flatrate
+          return false;
+        });
+        if (filteredProviders.length > 0) {
+          streamingProviders[Number(movieId)] = filteredProviders;
+        }
+      }
+    }
+
+    // Step 6c: Filter by specific platform IDs if provided
+    if (platforms && platforms.length > 0) {
+      console.log(`🔍 Filtering by ${platforms.length} platform(s): ${platforms.join(', ')}`);
+
+      const platformSet = new Set(platforms);
+      const filteredByPlatform: typeof streamingProviders = {};
+
+      for (const [movieId, providers] of Object.entries(streamingProviders)) {
+        const matchingProviders = providers.filter((provider) =>
+          platformSet.has(provider.provider_id)
+        );
+        if (matchingProviders.length > 0) {
+          filteredByPlatform[Number(movieId)] = matchingProviders;
+        }
+      }
+
+      streamingProviders = filteredByPlatform;
+    }
+
+    // Step 6d: Filter enriched results to only include movies with matching providers
+    if ((platforms && platforms.length > 0) || hasAvailabilityFilters) {
+      const movieIdsWithProviders = new Set(Object.keys(streamingProviders).map(Number));
+      const originalCount = enrichedResults.length;
+      enrichedResults = enrichedResults.filter((movie) => movieIdsWithProviders.has(movie.tmdb_id));
+      console.log(
+        `🎬 Filtered ${originalCount} -> ${enrichedResults.length} results by platform/availability preferences`
+      );
+    }
 
     // Step 7: Filter results if specific platforms were requested
     let finalResults = enrichedResults;
