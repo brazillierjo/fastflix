@@ -43,6 +43,9 @@ export const translations = {
     platformFiltering: 'Streaming Platform Integration',
     platformFilteringDesc:
       'Automatically filters results based on your available streaming services for instant access',
+    watchlist: 'Personal Watchlist',
+    watchlistDesc:
+      'Save movies and TV shows to watch later with real-time streaming availability updates',
     zeroDataCollection: 'Privacy First',
     zeroDataCollectionDesc:
       'Complete privacy with zero data collection - no accounts, no tracking, no stored history',
@@ -276,6 +279,9 @@ export const translations = {
     platformFiltering: 'Intégration des plateformes de streaming',
     platformFilteringDesc:
       "Filtre automatiquement les résultats en fonction de vos services de streaming disponibles pour un accès instantané",
+    watchlist: 'Liste personnelle',
+    watchlistDesc:
+      'Sauvegardez films et séries pour plus tard avec des mises à jour en temps réel de la disponibilité',
     zeroDataCollection: 'Confidentialité d\'abord',
     zeroDataCollectionDesc:
       "Confidentialité totale avec zéro collecte de données - pas de comptes, pas de suivi, pas d'historique stocké",
@@ -513,6 +519,9 @@ export const translations = {
     platformFiltering: 'Integrazione piattaforme streaming',
     platformFilteringDesc:
       'Filtra automaticamente i risultati in base ai tuoi servizi di streaming disponibili per un accesso immediato',
+    watchlist: 'Lista personale',
+    watchlistDesc:
+      'Salva film e serie TV per dopo con aggiornamenti in tempo reale sulla disponibilità streaming',
     zeroDataCollection: 'Privacy al primo posto',
     zeroDataCollectionDesc:
       'Privacy completa con zero raccolta dati - nessun account, nessun tracciamento, nessuno storico salvato',
@@ -746,6 +755,9 @@ export const translations = {
     platformFiltering: 'ストリーミングプラットフォーム統合',
     platformFilteringDesc:
       '利用可能なストリーミングサービスに基づいて結果を自動的にフィルタリングし、即座にアクセス',
+    watchlist: 'ウォッチリスト',
+    watchlistDesc:
+      '映画やTV番組を後で見るために保存し、リアルタイムで配信状況を更新',
     zeroDataCollection: 'プライバシー第一',
     zeroDataCollectionDesc:
       'データ収集ゼロで完全なプライバシー - アカウント不要、追跡なし、履歴保存なし',
@@ -979,6 +991,9 @@ export const translations = {
     platformFiltering: 'Integración de plataformas de streaming',
     platformFilteringDesc:
       'Filtra automáticamente los resultados según tus servicios de streaming disponibles para acceso instantáneo',
+    watchlist: 'Lista personal',
+    watchlistDesc:
+      'Guarda películas y series para ver más tarde con actualizaciones en tiempo real de disponibilidad',
     zeroDataCollection: 'Privacidad primero',
     zeroDataCollectionDesc:
       'Privacidad completa con cero recopilación de datos - sin cuentas, sin seguimiento, sin historial almacenado',
@@ -1212,6 +1227,9 @@ export const translations = {
     platformFiltering: 'Streaming-Plattform-Integration',
     platformFilteringDesc:
       'Filtert Ergebnisse automatisch basierend auf deinen verfügbaren Streaming-Diensten für sofortigen Zugriff',
+    watchlist: 'Persönliche Merkliste',
+    watchlistDesc:
+      'Speichere Filme und Serien für später mit Echtzeit-Updates zur Streaming-Verfügbarkeit',
     zeroDataCollection: 'Datenschutz zuerst',
     zeroDataCollectionDesc:
       'Vollständiger Datenschutz mit null Datenerfassung - keine Konten, kein Tracking, kein gespeicherter Verlauf',

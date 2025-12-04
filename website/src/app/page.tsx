@@ -13,6 +13,7 @@ import {
   MessageSquare,
   Filter,
   Shield,
+  Bookmark,
   Download,
   Sparkles,
 } from 'lucide-react';
@@ -35,6 +36,11 @@ export default function Home() {
       icon: Filter,
       title: t('platformFiltering'),
       description: t('platformFilteringDesc'),
+    },
+    {
+      icon: Bookmark,
+      title: t('watchlist'),
+      description: t('watchlistDesc'),
     },
     {
       icon: Shield,
@@ -97,7 +103,7 @@ export default function Home() {
               {t('featuresDescription')}
             </p>
           </div>
-          <div className='mt-16 grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-4'>
+          <div className='mt-16 grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-5'>
             {features.map((feature, index) => {
               const Icon = feature.icon;
               return (
