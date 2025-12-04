@@ -243,9 +243,26 @@
       "message": "Du wurdest erfolgreich abgemeldet."
     }
   },
+  "watchlist": {
+    "title": "Merkliste",
+    "empty": "Deine Merkliste ist leer",
+    "emptyShort": "Keine Einträge",
+    "emptyHint": "Speichere Filme und Serien für später, indem du auf das Lesezeichen-Symbol tippst",
+    "add": "Zur Merkliste",
+    "remove": "Entfernen",
+    "inWatchlist": "In der Merkliste",
+    "item": "Eintrag",
+    "items": "Einträge",
+    "addedOn": "Hinzugefügt",
+    "notAvailable": "Nicht zum Streaming verfügbar",
+    "providersStale": "Möglicherweise veraltet",
+    "availableOn": "Verfügbar auf",
+    "lastChecked": "Zuletzt geprüft"
+  },
   "common": {
     "cancel": "Abbrechen",
-    "done": "Fertig"
+    "done": "Fertig",
+    "close": "Schließen"
   },
   "tabs": {
     "movies": "Filme",

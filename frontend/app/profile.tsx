@@ -8,6 +8,7 @@ import { AVAILABLE_LANGUAGES } from '@/constants/languages';
 import { useAuth } from '@/contexts/AuthContext';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { useSubscription } from '@/contexts/RevenueCatContext';
+import { useWatchlistCount } from '@/hooks/useWatchlist';
 import { getAppVersion } from '@/utils/appVersion';
 import { useRouter } from 'expo-router';
 import { MotiView } from 'moti';
@@ -26,6 +27,7 @@ export default function ProfileScreen() {
   const { language, setLanguage, t } = useLanguage();
   const { hasUnlimitedAccess, trialInfo, isInTrial } = useSubscription();
   const { user, isAuthenticated } = useAuth();
+  const { count: watchlistCount } = useWatchlistCount();
   const router = useRouter();
 
   // Modal states
@@ -157,6 +159,32 @@ export default function ProfileScreen() {
                 title={t('profile.premiumSubscription') || 'Subscription'}
                 subtitle={getSubscriptionSubtitle()}
                 onPress={() => setShowSubscriptionDetailsModal(true)}
+                isFirst
+                isLast
+              />
+            </View>
+          </MotiView>
+        )}
+
+        {/* Watchlist Section */}
+        {isAuthenticated && (
+          <MotiView
+            from={{ opacity: 0, translateY: 20 }}
+            animate={{ opacity: 1, translateY: 0 }}
+            transition={{ delay: 160, type: 'timing', duration: 600 }}
+            className='mb-6 px-4'
+          >
+            <View className='overflow-hidden rounded-xl'>
+              <SettingsRow
+                icon='bookmark'
+                iconColor='#E50914'
+                title={t('watchlist.title') || 'Watchlist'}
+                subtitle={
+                  watchlistCount > 0
+                    ? `${watchlistCount} ${watchlistCount === 1 ? t('watchlist.item') || 'item' : t('watchlist.items') || 'items'}`
+                    : t('watchlist.emptyShort') || 'No items saved'
+                }
+                onPress={() => router.push('/watchlist')}
                 isFirst
                 isLast
               />

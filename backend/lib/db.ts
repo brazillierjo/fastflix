@@ -4,7 +4,7 @@
  */
 
 import { createClient, Client, Row } from '@libsql/client';
-import type { User, TrialInfo, UserPreferences } from './types';
+import type { User, TrialInfo, UserPreferences, WatchlistItem, StreamingProvider } from './types';
 
 /**
  * Helper function to safely convert a database row to a specific type
@@ -620,6 +620,271 @@ class DatabaseService {
       console.error('❌ Database error in updateUserPreferences:', error);
       throw error;
     }
+  }
+
+  // ==========================================================================
+  // Watchlist Methods
+  // ==========================================================================
+
+  /**
+   * Add an item to user's watchlist
+   */
+  async addToWatchlist(
+    userId: string,
+    item: {
+      tmdbId: number;
+      mediaType: 'movie' | 'tv';
+      title: string;
+      posterPath: string | null;
+      providers: StreamingProvider[];
+      country: string;
+    }
+  ): Promise<WatchlistItem> {
+    this.initialize();
+
+    try {
+      // Generate UUID for the watchlist item
+      const id = crypto.randomUUID();
+      const providersJson = JSON.stringify(item.providers);
+
+      await this.client!.execute({
+        sql: `INSERT INTO watchlist (id, user_id, tmdb_id, media_type, title, poster_path, providers_json, country, last_provider_check)
+              VALUES (?, ?, ?, ?, ?, ?, ?, ?, datetime('now'))`,
+        args: [id, userId, item.tmdbId, item.mediaType, item.title, item.posterPath, providersJson, item.country],
+      });
+
+      console.log(`✅ Added to watchlist: ${item.title} (${item.mediaType}) for user ${userId}`);
+
+      // Return the created item
+      const watchlistItem = await this.getWatchlistItemById(id);
+      if (!watchlistItem) {
+        throw new Error('Failed to retrieve created watchlist item');
+      }
+
+      return watchlistItem;
+    } catch (error) {
+      // Check for unique constraint violation (item already exists)
+      if (error instanceof Error && error.message.includes('UNIQUE constraint failed')) {
+        console.log(`⚠️ Item already in watchlist: ${item.title} for user ${userId}`);
+        // Return existing item
+        const existing = await this.getWatchlistItemByTmdbId(userId, item.tmdbId, item.mediaType);
+        if (existing) {
+          return existing;
+        }
+      }
+      console.error('❌ Database error in addToWatchlist:', error);
+      throw error;
+    }
+  }
+
+  /**
+   * Remove an item from user's watchlist
+   */
+  async removeFromWatchlist(userId: string, itemId: string): Promise<boolean> {
+    this.initialize();
+
+    try {
+      const result = await this.client!.execute({
+        sql: 'DELETE FROM watchlist WHERE id = ? AND user_id = ?',
+        args: [itemId, userId],
+      });
+
+      const deleted = result.rowsAffected > 0;
+      if (deleted) {
+        console.log(`✅ Removed from watchlist: ${itemId} for user ${userId}`);
+      } else {
+        console.log(`⚠️ Watchlist item not found: ${itemId} for user ${userId}`);
+      }
+
+      return deleted;
+    } catch (error) {
+      console.error('❌ Database error in removeFromWatchlist:', error);
+      throw error;
+    }
+  }
+
+  /**
+   * Get user's watchlist
+   */
+  async getWatchlist(userId: string, mediaType?: 'movie' | 'tv'): Promise<WatchlistItem[]> {
+    this.initialize();
+
+    try {
+      let sql = 'SELECT * FROM watchlist WHERE user_id = ?';
+      const args: (string | number)[] = [userId];
+
+      if (mediaType) {
+        sql += ' AND media_type = ?';
+        args.push(mediaType);
+      }
+
+      sql += ' ORDER BY added_at DESC';
+
+      const result = await this.client!.execute({ sql, args });
+
+      return result.rows.map((row) => this.rowToWatchlistItem(row));
+    } catch (error) {
+      console.error('❌ Database error in getWatchlist:', error);
+      return [];
+    }
+  }
+
+  /**
+   * Check if an item is in user's watchlist
+   */
+  async isInWatchlist(userId: string, tmdbId: number, mediaType: 'movie' | 'tv'): Promise<{ inWatchlist: boolean; itemId: string | null }> {
+    this.initialize();
+
+    try {
+      const result = await this.client!.execute({
+        sql: 'SELECT id FROM watchlist WHERE user_id = ? AND tmdb_id = ? AND media_type = ?',
+        args: [userId, tmdbId, mediaType],
+      });
+
+      if (result.rows.length > 0) {
+        return { inWatchlist: true, itemId: result.rows[0].id as string };
+      }
+
+      return { inWatchlist: false, itemId: null };
+    } catch (error) {
+      console.error('❌ Database error in isInWatchlist:', error);
+      return { inWatchlist: false, itemId: null };
+    }
+  }
+
+  /**
+   * Get watchlist item by ID
+   */
+  async getWatchlistItemById(id: string): Promise<WatchlistItem | null> {
+    this.initialize();
+
+    try {
+      const result = await this.client!.execute({
+        sql: 'SELECT * FROM watchlist WHERE id = ?',
+        args: [id],
+      });
+
+      if (result.rows.length === 0) {
+        return null;
+      }
+
+      return this.rowToWatchlistItem(result.rows[0]);
+    } catch (error) {
+      console.error('❌ Database error in getWatchlistItemById:', error);
+      return null;
+    }
+  }
+
+  /**
+   * Get watchlist item by TMDB ID
+   */
+  async getWatchlistItemByTmdbId(userId: string, tmdbId: number, mediaType: 'movie' | 'tv'): Promise<WatchlistItem | null> {
+    this.initialize();
+
+    try {
+      const result = await this.client!.execute({
+        sql: 'SELECT * FROM watchlist WHERE user_id = ? AND tmdb_id = ? AND media_type = ?',
+        args: [userId, tmdbId, mediaType],
+      });
+
+      if (result.rows.length === 0) {
+        return null;
+      }
+
+      return this.rowToWatchlistItem(result.rows[0]);
+    } catch (error) {
+      console.error('❌ Database error in getWatchlistItemByTmdbId:', error);
+      return null;
+    }
+  }
+
+  /**
+   * Update providers for a watchlist item
+   */
+  async updateWatchlistProviders(itemId: string, providers: StreamingProvider[]): Promise<void> {
+    this.initialize();
+
+    try {
+      const providersJson = JSON.stringify(providers);
+
+      await this.client!.execute({
+        sql: `UPDATE watchlist SET providers_json = ?, last_provider_check = datetime('now') WHERE id = ?`,
+        args: [providersJson, itemId],
+      });
+
+      console.log(`✅ Updated providers for watchlist item: ${itemId}`);
+    } catch (error) {
+      console.error('❌ Database error in updateWatchlistProviders:', error);
+      throw error;
+    }
+  }
+
+  /**
+   * Get watchlist items that need provider refresh (last check > 24h ago)
+   */
+  async getWatchlistItemsNeedingRefresh(userId: string): Promise<WatchlistItem[]> {
+    this.initialize();
+
+    try {
+      const result = await this.client!.execute({
+        sql: `SELECT * FROM watchlist
+              WHERE user_id = ?
+              AND (last_provider_check IS NULL OR datetime(last_provider_check) < datetime('now', '-24 hours'))`,
+        args: [userId],
+      });
+
+      return result.rows.map((row) => this.rowToWatchlistItem(row));
+    } catch (error) {
+      console.error('❌ Database error in getWatchlistItemsNeedingRefresh:', error);
+      return [];
+    }
+  }
+
+  /**
+   * Get watchlist count for a user
+   */
+  async getWatchlistCount(userId: string): Promise<number> {
+    this.initialize();
+
+    try {
+      const result = await this.client!.execute({
+        sql: 'SELECT COUNT(*) as count FROM watchlist WHERE user_id = ?',
+        args: [userId],
+      });
+
+      return Number(result.rows[0]?.count || 0);
+    } catch (error) {
+      console.error('❌ Database error in getWatchlistCount:', error);
+      return 0;
+    }
+  }
+
+  /**
+   * Helper: Convert database row to WatchlistItem
+   */
+  private rowToWatchlistItem(row: Row): WatchlistItem {
+    let providers: StreamingProvider[] = [];
+    try {
+      const providersStr = row.providers_json as string;
+      if (providersStr) {
+        providers = JSON.parse(providersStr);
+      }
+    } catch {
+      providers = [];
+    }
+
+    return {
+      id: row.id as string,
+      user_id: row.user_id as string,
+      tmdb_id: Number(row.tmdb_id),
+      media_type: row.media_type as 'movie' | 'tv',
+      title: row.title as string,
+      poster_path: row.poster_path as string | null,
+      added_at: row.added_at as string,
+      last_provider_check: row.last_provider_check as string | null,
+      providers,
+      country: row.country as string,
+    };
   }
 }
 

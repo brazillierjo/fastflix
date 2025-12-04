@@ -243,9 +243,26 @@
       "message": "Vous avez été déconnecté avec succès."
     }
   },
+  "watchlist": {
+    "title": "Ma liste",
+    "empty": "Votre liste est vide",
+    "emptyShort": "Aucun élément",
+    "emptyHint": "Sauvegardez des films et séries pour plus tard en appuyant sur l'icône de marque-page",
+    "add": "Ajouter à ma liste",
+    "remove": "Retirer",
+    "inWatchlist": "Dans ma liste",
+    "item": "élément",
+    "items": "éléments",
+    "addedOn": "Ajouté le",
+    "notAvailable": "Non disponible en streaming",
+    "providersStale": "Peut être obsolète",
+    "availableOn": "Disponible sur",
+    "lastChecked": "Dernière vérification"
+  },
   "common": {
     "cancel": "Annuler",
-    "done": "OK"
+    "done": "OK",
+    "close": "Fermer"
   },
   "tabs": {
     "movies": "Films",

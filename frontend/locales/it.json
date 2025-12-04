@@ -243,9 +243,26 @@
       "message": "Sei stato disconnesso con successo."
     }
   },
+  "watchlist": {
+    "title": "La mia lista",
+    "empty": "La tua lista è vuota",
+    "emptyShort": "Nessun elemento",
+    "emptyHint": "Salva film e serie TV per dopo toccando l'icona del segnalibro",
+    "add": "Aggiungi alla lista",
+    "remove": "Rimuovi",
+    "inWatchlist": "Nella lista",
+    "item": "elemento",
+    "items": "elementi",
+    "addedOn": "Aggiunto",
+    "notAvailable": "Non disponibile in streaming",
+    "providersStale": "Potrebbe essere obsoleto",
+    "availableOn": "Disponibile su",
+    "lastChecked": "Ultimo controllo"
+  },
   "common": {
     "cancel": "Annulla",
-    "done": "Fatto"
+    "done": "Fatto",
+    "close": "Chiudi"
   },
   "tabs": {
     "movies": "Film",

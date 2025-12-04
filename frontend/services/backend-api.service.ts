@@ -5,7 +5,15 @@
 
 import Constants from 'expo-constants';
 import * as SecureStore from 'expo-secure-store';
-import { APIResponse, APIError, TrialInfo } from '@/types/api';
+import {
+  APIResponse,
+  TrialInfo,
+  WatchlistItem,
+  WatchlistResponse,
+  WatchlistCheckResponse,
+  WatchlistRefreshResponse,
+  AddToWatchlistParams,
+} from '@/types/api';
 
 // Storage key for auth token
 const AUTH_TOKEN_KEY = 'fastflix_auth_token';
@@ -433,6 +441,66 @@ class BackendAPIService {
   ): Promise<APIResponse<{ providers: AvailableProvider[] }>> {
     return await this.makeRequest(`/api/providers?country=${country}`, {
       method: 'GET',
+    });
+  }
+
+  // ==========================================================================
+  // Watchlist Methods
+  // ==========================================================================
+
+  /**
+   * Get user's watchlist
+   */
+  async getWatchlist(
+    mediaType?: 'movie' | 'tv'
+  ): Promise<APIResponse<WatchlistResponse>> {
+    const params = mediaType ? `?mediaType=${mediaType}` : '';
+    return await this.makeRequest(`/api/watchlist${params}`, {
+      method: 'GET',
+    });
+  }
+
+  /**
+   * Add an item to watchlist
+   */
+  async addToWatchlist(
+    item: AddToWatchlistParams
+  ): Promise<APIResponse<{ item: WatchlistItem }>> {
+    return await this.makeRequest('/api/watchlist', {
+      method: 'POST',
+      body: JSON.stringify(item),
+    });
+  }
+
+  /**
+   * Remove an item from watchlist
+   */
+  async removeFromWatchlist(
+    itemId: string
+  ): Promise<APIResponse<{ deleted: boolean }>> {
+    return await this.makeRequest(`/api/watchlist/${itemId}`, {
+      method: 'DELETE',
+    });
+  }
+
+  /**
+   * Check if an item is in watchlist
+   */
+  async checkInWatchlist(
+    tmdbId: number,
+    mediaType: 'movie' | 'tv'
+  ): Promise<APIResponse<WatchlistCheckResponse>> {
+    return await this.makeRequest(`/api/watchlist/check/${tmdbId}/${mediaType}`, {
+      method: 'GET',
+    });
+  }
+
+  /**
+   * Refresh streaming providers for watchlist items
+   */
+  async refreshWatchlistProviders(): Promise<APIResponse<WatchlistRefreshResponse>> {
+    return await this.makeRequest('/api/watchlist/refresh-providers', {
+      method: 'POST',
     });
   }
 }

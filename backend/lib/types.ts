@@ -236,3 +236,29 @@ export interface AvailableProvider {
   logo_path: string;
   display_priorities: { [country: string]: number };
 }
+
+// ============================================================================
+// Watchlist Types
+// ============================================================================
+
+export interface WatchlistItem {
+  id: string;
+  user_id: string;
+  tmdb_id: number;
+  media_type: 'movie' | 'tv';
+  title: string;
+  poster_path: string | null;
+  added_at: string;
+  last_provider_check: string | null;
+  providers: StreamingProvider[];
+  country: string;
+}
+
+export interface AddToWatchlistRequest {
+  tmdbId: number;
+  mediaType: 'movie' | 'tv';
+  title: string;
+  posterPath: string | null;
+  providers: StreamingProvider[];
+  country: string;
+}

@@ -243,9 +243,26 @@
       "message": "Has cerrado sesión correctamente."
     }
   },
+  "watchlist": {
+    "title": "Mi lista",
+    "empty": "Tu lista está vacía",
+    "emptyShort": "Sin elementos",
+    "emptyHint": "Guarda películas y series para ver más tarde tocando el icono de marcador",
+    "add": "Añadir a mi lista",
+    "remove": "Eliminar",
+    "inWatchlist": "En mi lista",
+    "item": "elemento",
+    "items": "elementos",
+    "addedOn": "Añadido",
+    "notAvailable": "No disponible en streaming",
+    "providersStale": "Puede estar desactualizado",
+    "availableOn": "Disponible en",
+    "lastChecked": "Última comprobación"
+  },
   "common": {
     "cancel": "Cancelar",
-    "done": "Listo"
+    "done": "Listo",
+    "close": "Cerrar"
   },
   "tabs": {
     "movies": "Películas",

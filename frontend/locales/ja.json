@@ -243,9 +243,26 @@
       "message": "サインアウトに成功しました。"
     }
   },
+  "watchlist": {
+    "title": "ウォッチリスト",
+    "empty": "ウォッチリストは空です",
+    "emptyShort": "アイテムなし",
+    "emptyHint": "ブックマークアイコンをタップして、後で見る映画やドラマを保存しましょう",
+    "add": "リストに追加",
+    "remove": "削除",
+    "inWatchlist": "リストに追加済み",
+    "item": "件",
+    "items": "件",
+    "addedOn": "追加日",
+    "notAvailable": "ストリーミング配信なし",
+    "providersStale": "情報が古い可能性があります",
+    "availableOn": "視聴可能",
+    "lastChecked": "最終確認"
+  },
   "common": {
     "cancel": "キャンセル",
-    "done": "完了"
+    "done": "完了",
+    "close": "閉じる"
   },
   "tabs": {
     "movies": "映画",

@@ -37,6 +37,8 @@ interface SearchFormProps {
   setQuery: (query: string) => void;
   onSearch: () => void;
   loading: boolean;
+  watchlistCount?: number;
+  onWatchlistPress?: () => void;
 }
 
 // Typewriter speed in ms per character
@@ -49,6 +51,8 @@ export default function SearchForm({
   setQuery,
   onSearch,
   loading,
+  watchlistCount = 0,
+  onWatchlistPress,
 }: SearchFormProps) {
   const { t, getRandomPlaceholder } = useLanguage();
   const [placeholder, setPlaceholder] = useState('');
@@ -304,22 +308,50 @@ export default function SearchForm({
           >
             {/* Action Buttons Row */}
             <View className='mb-3 flex-row items-center justify-between'>
-              {/* Filters Button */}
-              <TouchableOpacity
-                onPress={() => setShowFiltersModal(true)}
-                style={getSquircle(20)}
-                className='flex-row items-center gap-1 bg-cinematic-200 px-4 py-2 dark:bg-cinematic-700'
-                disabled={loading || isTyping}
-              >
-                <Ionicons
-                  name='options-outline'
-                  size={16}
-                  color={isDark ? '#a3a3a3' : '#525252'}
-                />
-                <Text className='text-xs font-semibold text-light-muted dark:text-dark-muted'>
-                  {t('filters.button') || 'Filters'}
-                </Text>
-              </TouchableOpacity>
+              <View className='flex-row items-center gap-2'>
+                {/* Filters Button */}
+                <TouchableOpacity
+                  onPress={() => setShowFiltersModal(true)}
+                  style={getSquircle(20)}
+                  className='flex-row items-center gap-1 bg-cinematic-200 px-4 py-2 dark:bg-cinematic-700'
+                  disabled={loading || isTyping}
+                >
+                  <Ionicons
+                    name='options-outline'
+                    size={16}
+                    color={isDark ? '#a3a3a3' : '#525252'}
+                  />
+                  <Text className='text-xs font-semibold text-light-muted dark:text-dark-muted'>
+                    {t('filters.button') || 'Filters'}
+                  </Text>
+                </TouchableOpacity>
+
+                {/* Watchlist Button */}
+                {onWatchlistPress && (
+                  <TouchableOpacity
+                    onPress={onWatchlistPress}
+                    style={getSquircle(20)}
+                    className='relative flex-row items-center gap-1 bg-cinematic-200 px-4 py-2 dark:bg-cinematic-700'
+                    disabled={loading || isTyping}
+                  >
+                    <Ionicons
+                      name='bookmark-outline'
+                      size={16}
+                      color={isDark ? '#a3a3a3' : '#525252'}
+                    />
+                    <Text className='text-xs font-semibold text-light-muted dark:text-dark-muted'>
+                      {t('watchlist.title') || 'Watchlist'}
+                    </Text>
+                    {watchlistCount > 0 && (
+                      <View className='absolute -right-1 -top-1 h-4 w-4 items-center justify-center rounded-full bg-netflix-500'>
+                        <Text className='text-[10px] font-bold text-white'>
+                          {watchlistCount > 9 ? '9+' : watchlistCount}
+                        </Text>
+                      </View>
+                    )}
+                  </TouchableOpacity>
+                )}
+              </View>
 
               {/* "No idea" Magic Button */}
               <Animated.View style={buttonAnimatedStyle}>

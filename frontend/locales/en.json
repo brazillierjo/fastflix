@@ -243,9 +243,26 @@
       "message": "You have been signed out successfully."
     }
   },
+  "watchlist": {
+    "title": "Watchlist",
+    "empty": "Your watchlist is empty",
+    "emptyShort": "No items saved",
+    "emptyHint": "Save movies and TV shows to watch later by tapping the bookmark icon",
+    "add": "Add to Watchlist",
+    "remove": "Remove",
+    "inWatchlist": "In Watchlist",
+    "item": "item",
+    "items": "items",
+    "addedOn": "Added",
+    "notAvailable": "Not available for streaming",
+    "providersStale": "May be outdated",
+    "availableOn": "Available on",
+    "lastChecked": "Last checked"
+  },
   "common": {
     "cancel": "Cancel",
-    "done": "Done"
+    "done": "Done",
+    "close": "Close"
   },
   "tabs": {
     "movies": "Movies",

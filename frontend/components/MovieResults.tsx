@@ -19,6 +19,7 @@ import {
   getSquircle,
   getSmallBorderRadius,
 } from '../utils/designHelpers';
+import AddToWatchlistButton from './AddToWatchlistButton';
 
 interface Movie {
   id: number;
@@ -33,8 +34,10 @@ interface Movie {
 }
 
 interface StreamingProvider {
+  provider_id?: number;
   provider_name: string;
   logo_path: string;
+  display_priority?: number;
   availability_type?: 'flatrate' | 'rent' | 'buy' | 'ads';
 }
 
@@ -74,7 +77,7 @@ export default function MovieResults({
 }: MovieResultsProps) {
   const [expandedCards, setExpandedCards] = useState<Set<number>>(new Set());
 
-  const { t } = useLanguage();
+  const { t, country } = useLanguage();
   const colorScheme = useColorScheme();
   const isDark = colorScheme === 'dark';
 
@@ -577,27 +580,46 @@ export default function MovieResults({
                             )}
                           </View>
 
-                          {/* TMDB CTA Button */}
-                          <TouchableOpacity
-                            onPress={() => {
-                              const tmdbUrl =
-                                movie.media_type === 'tv'
-                                  ? `https://www.themoviedb.org/tv/${movie.id}`
-                                  : `https://www.themoviedb.org/movie/${movie.id}`;
-                              Linking.openURL(tmdbUrl);
-                            }}
-                            style={getSmallBorderRadius()}
-                            className='mt-4 flex-row items-center justify-center gap-2 border-2 border-[#01d277] bg-[#01d277]/10 py-3'
-                          >
-                            <Ionicons
-                              name='open-outline'
-                              size={18}
-                              color='#01d277'
-                            />
-                            <Text className='text-sm font-semibold text-[#01d277]'>
-                              {t('movies.viewOnTMDB')}
-                            </Text>
-                          </TouchableOpacity>
+                          {/* Action Buttons Row */}
+                          <View className='mt-4 flex-row gap-2'>
+                            {/* Add to Watchlist Button */}
+                            <View className='flex-1'>
+                              <AddToWatchlistButton
+                                tmdbId={movie.id}
+                                mediaType={movie.media_type === 'tv' ? 'tv' : 'movie'}
+                                title={movie.title || movie.name || ''}
+                                posterPath={movie.poster_path}
+                                providers={(streamingProviders[movie.id] || []).map(p => ({
+                                  provider_id: p.provider_id ?? 0,
+                                  provider_name: p.provider_name || '',
+                                  logo_path: p.logo_path || '',
+                                  display_priority: p.display_priority ?? 0,
+                                  availability_type: p.availability_type || 'flatrate',
+                                }))}
+                                country={country || 'FR'}
+                                variant='button'
+                              />
+                            </View>
+
+                            {/* TMDB CTA Button */}
+                            <TouchableOpacity
+                              onPress={() => {
+                                const tmdbUrl =
+                                  movie.media_type === 'tv'
+                                    ? `https://www.themoviedb.org/tv/${movie.id}`
+                                    : `https://www.themoviedb.org/movie/${movie.id}`;
+                                Linking.openURL(tmdbUrl);
+                              }}
+                              style={getSmallBorderRadius()}
+                              className='flex-row items-center justify-center gap-2 border-2 border-[#01d277] bg-[#01d277]/10 px-4 py-3'
+                            >
+                              <Ionicons
+                                name='open-outline'
+                                size={18}
+                                color='#01d277'
+                              />
+                            </TouchableOpacity>
+                          </View>
 
                           {/* See less button */}
                           <TouchableOpacity

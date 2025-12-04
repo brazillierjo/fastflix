@@ -47,7 +47,8 @@ function CustomTabBar({ state, descriptors, navigation }: any) {
               (route: any) =>
                 route.name !== 'auth' &&
                 route.name !== '+not-found' &&
-                route.name !== '_sitemap'
+                route.name !== '_sitemap' &&
+                route.name !== 'watchlist'
             )
             .map((route: any, index: number) => {
               const { options } = descriptors[route.key];
@@ -158,6 +159,12 @@ function TabsLayout() {
               color={color}
             />
           ),
+        }}
+      />
+      <Tabs.Screen
+        name='watchlist'
+        options={{
+          href: null,
         }}
       />
       <Tabs.Screen

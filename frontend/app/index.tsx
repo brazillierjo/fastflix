@@ -2,11 +2,13 @@ import LoadingState from '@/components/LoadingState';
 import MovieResults from '@/components/MovieResults';
 import SearchForm from '@/components/SearchForm';
 import SubscriptionModal from '@/components/SubscriptionModal';
+import WatchlistBottomSheet from '@/components/WatchlistBottomSheet';
 import { useAuth } from '@/contexts/AuthContext';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { useSubscription } from '@/contexts/RevenueCatContext';
 import { useAppState } from '@/hooks/useAppState';
 import { useBackendMovieSearch } from '@/hooks/useBackendMovieSearch';
+import { useWatchlistCount } from '@/hooks/useWatchlist';
 import { cn } from '@/utils/cn';
 import { Redirect } from 'expo-router';
 import React, { useState } from 'react';
@@ -37,10 +39,12 @@ export default function HomeScreen() {
   } = useAppState();
 
   const [showSubscriptionModal, setShowSubscriptionModal] = useState(false);
+  const [showWatchlistModal, setShowWatchlistModal] = useState(false);
 
   const movieSearchMutation = useBackendMovieSearch();
   const { t } = useLanguage();
   const { isAuthenticated, isLoading } = useAuth();
+  const { count: watchlistCount } = useWatchlistCount();
   useSubscription();
 
   const handleSearch = async () => {
@@ -143,6 +147,8 @@ export default function HomeScreen() {
               setQuery={setQuery}
               onSearch={handleSearch}
               loading={movieSearchMutation.isPending}
+              watchlistCount={watchlistCount}
+              onWatchlistPress={() => setShowWatchlistModal(true)}
             />
           )}
         </View>
@@ -153,6 +159,12 @@ export default function HomeScreen() {
         visible={showSubscriptionModal}
         onClose={() => setShowSubscriptionModal(false)}
         onSubscriptionSuccess={handleSubscriptionSuccess}
+      />
+
+      {/* Watchlist Bottom Sheet */}
+      <WatchlistBottomSheet
+        visible={showWatchlistModal}
+        onClose={() => setShowWatchlistModal(false)}
       />
     </SafeAreaView>
   );
