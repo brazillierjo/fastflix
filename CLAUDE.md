@@ -79,6 +79,13 @@ npm run format:check     # Prettier check
 4. Backend filters results by: platforms (Netflix, Prime, etc.), availability types (subscription/rent/buy)
 5. Only matching content is returned
 
+### Watchlist System
+1. Users can add movies/TV shows to their personal watchlist from search results
+2. Each watchlist item stores: TMDB ID, media type, title, poster, streaming providers, and country
+3. Providers are stored as JSON and can be refreshed via `/api/watchlist/refresh-providers`
+4. Frontend uses TanStack Query for caching with `useWatchlist`, `useIsInWatchlist`, and `useWatchlistToggle` hooks
+5. The `useWatchlistToggle` hook provides a convenient toggle pattern for add/remove functionality
+
 ### Backend Structure
 - **`/backend/app/api/`**: Next.js API routes
   - `auth/apple/route.ts`: Apple Sign In callback
@@ -89,6 +96,10 @@ npm run format:check     # Prettier check
   - `user/preferences/route.ts`: User search preferences CRUD
   - `providers/route.ts`: Available streaming providers by country
   - `subscription/webhook/route.ts`: RevenueCat webhook handler
+  - `watchlist/route.ts`: GET/POST watchlist items
+  - `watchlist/[id]/route.ts`: DELETE watchlist item by ID
+  - `watchlist/check/[tmdbId]/[mediaType]/route.ts`: Check if item is in watchlist
+  - `watchlist/refresh-providers/route.ts`: Refresh streaming providers for all watchlist items
 - **`/backend/lib/`**: Core services
   - `db.ts`: Turso SQLite client and queries
   - `auth.ts`: JWT generation/validation
@@ -112,6 +123,7 @@ npm run format:check     # Prettier check
   - `useBackendMovieSearch.ts`: Search with auto-applied user preferences
   - `useUserPreferences.ts`: Fetch/update user's default filters
   - `useAppState.ts`: App state management
+  - `useWatchlist.ts`: Watchlist management (useWatchlist, useIsInWatchlist, useWatchlistToggle, useWatchlistCount)
 - **`/frontend/components/`**: Key components
   - `FiltersBottomSheet.tsx`: Configure default filters (country, platforms, availability)
   - `FilterModal.tsx`: Refine search results with filters
@@ -128,6 +140,7 @@ Key tables:
 - `subscriptions`: RevenueCat subscription status per user
 - `prompt_logs`: Analytics for search queries
 - `blocked_devices`: Anti-abuse device blocking
+- `watchlist`: User watchlist items (tmdb_id, media_type, title, poster_path, providers_json, country)
 
 ### Key Integrations
 - **Google Gemini 2.0 Flash**: AI recommendations in `/backend/lib/gemini.ts`
