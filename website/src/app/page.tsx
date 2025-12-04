@@ -214,7 +214,7 @@ export default function Home() {
                 <Button
                   size='lg'
                   variant='outline'
-                  className='border-white px-8 py-3 text-white hover:bg-white hover:text-netflix'
+                  className='border-white bg-white/20 px-8 py-3 text-white hover:bg-white hover:text-netflix'
                 >
                   {t('learnMore')}
                 </Button>
