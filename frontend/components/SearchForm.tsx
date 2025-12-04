@@ -37,7 +37,6 @@ interface SearchFormProps {
   setQuery: (query: string) => void;
   onSearch: () => void;
   loading: boolean;
-  watchlistCount?: number;
   onWatchlistPress?: () => void;
 }
 
@@ -51,7 +50,6 @@ export default function SearchForm({
   setQuery,
   onSearch,
   loading,
-  watchlistCount = 0,
   onWatchlistPress,
 }: SearchFormProps) {
   const { t, getRandomPlaceholder } = useLanguage();
@@ -331,7 +329,7 @@ export default function SearchForm({
                   <TouchableOpacity
                     onPress={onWatchlistPress}
                     style={getSquircle(20)}
-                    className='relative flex-row items-center gap-1 bg-cinematic-200 px-4 py-2 dark:bg-cinematic-700'
+                    className='flex-row items-center gap-1 bg-cinematic-200 px-4 py-2 dark:bg-cinematic-700'
                     disabled={loading || isTyping}
                   >
                     <Ionicons
@@ -342,13 +340,6 @@ export default function SearchForm({
                     <Text className='text-xs font-semibold text-light-muted dark:text-dark-muted'>
                       {t('watchlist.title') || 'Watchlist'}
                     </Text>
-                    {watchlistCount > 0 && (
-                      <View className='absolute -right-1 -top-1 h-4 w-4 items-center justify-center rounded-full bg-netflix-500'>
-                        <Text className='text-[10px] font-bold text-white'>
-                          {watchlistCount > 9 ? '9+' : watchlistCount}
-                        </Text>
-                      </View>
-                    )}
                   </TouchableOpacity>
                 )}
               </View>

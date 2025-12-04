@@ -257,7 +257,9 @@
     "notAvailable": "Non disponibile in streaming",
     "providersStale": "Potrebbe essere obsoleto",
     "availableOn": "Disponibile su",
-    "lastChecked": "Ultimo controllo"
+    "lastChecked": "Ultimo controllo",
+    "showMore": "Mostra di più",
+    "showLess": "Mostra meno"
   },
   "common": {
     "cancel": "Annulla",

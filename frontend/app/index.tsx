@@ -8,7 +8,6 @@ import { useLanguage } from '@/contexts/LanguageContext';
 import { useSubscription } from '@/contexts/RevenueCatContext';
 import { useAppState } from '@/hooks/useAppState';
 import { useBackendMovieSearch } from '@/hooks/useBackendMovieSearch';
-import { useWatchlistCount } from '@/hooks/useWatchlist';
 import { cn } from '@/utils/cn';
 import { Redirect } from 'expo-router';
 import React, { useState } from 'react';
@@ -44,7 +43,6 @@ export default function HomeScreen() {
   const movieSearchMutation = useBackendMovieSearch();
   const { t } = useLanguage();
   const { isAuthenticated, isLoading } = useAuth();
-  const { count: watchlistCount } = useWatchlistCount();
   useSubscription();
 
   const handleSearch = async () => {
@@ -147,7 +145,6 @@ export default function HomeScreen() {
               setQuery={setQuery}
               onSearch={handleSearch}
               loading={movieSearchMutation.isPending}
-              watchlistCount={watchlistCount}
               onWatchlistPress={() => setShowWatchlistModal(true)}
             />
           )}

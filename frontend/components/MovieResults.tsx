@@ -610,12 +610,11 @@ export default function MovieResults({
                                     : `https://www.themoviedb.org/movie/${movie.id}`;
                                 Linking.openURL(tmdbUrl);
                               }}
-                              style={getSmallBorderRadius()}
-                              className='flex-row items-center justify-center gap-2 border-2 border-[#01d277] bg-[#01d277]/10 px-4 py-3'
+                              className='flex-row items-center justify-center rounded-xl border-2 border-[#01d277] bg-[#01d277]/10 px-4 py-3'
                             >
                               <Ionicons
                                 name='open-outline'
-                                size={18}
+                                size={20}
                                 color='#01d277'
                               />
                             </TouchableOpacity>

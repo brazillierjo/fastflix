@@ -257,7 +257,9 @@
     "notAvailable": "ストリーミング配信なし",
     "providersStale": "情報が古い可能性があります",
     "availableOn": "視聴可能",
-    "lastChecked": "最終確認"
+    "lastChecked": "最終確認",
+    "showMore": "もっと見る",
+    "showLess": "閉じる"
   },
   "common": {
     "cancel": "キャンセル",
