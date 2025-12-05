@@ -16,6 +16,7 @@ import React, { useState } from 'react';
 import {
   ActionSheetIOS,
   Alert,
+  Linking,
   Platform,
   ScrollView,
   Text,
@@ -57,6 +58,33 @@ export default function ProfileScreen() {
       return t('profile.activeSubscription') || 'Active';
     }
     return t('profile.noSubscription') || 'Not subscribed';
+  };
+
+  // Report handlers
+  const openMailto = async (subject: string, body: string) => {
+    const url = `mailto:j.brazillier@gmail.com?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+    const canOpen = await Linking.canOpenURL(url);
+    if (canOpen) {
+      Linking.openURL(url);
+    } else {
+      Alert.alert(
+        t('report.errorTitle') || 'Cannot Open Mail',
+        t('report.errorMessage') ||
+          'Please send an email to j.brazillier@gmail.com'
+      );
+    }
+  };
+
+  const openBugReport = () => {
+    const subject = t('report.bugSubject') || '[FastFlix Bug Report]';
+    const body = `${t('report.bugBody') || 'Please describe the bug you encountered:'}\n\n---\nApp Version: ${getAppVersion()}\nPlatform: ${Platform.OS}\nLanguage: ${language}`;
+    openMailto(subject, body);
+  };
+
+  const openFeedback = () => {
+    const subject = t('report.feedbackSubject') || '[FastFlix Feedback]';
+    const body = `${t('report.feedbackBody') || 'Share your feedback or suggestions:'}\n\n---\nApp Version: ${getAppVersion()}\nPlatform: ${Platform.OS}\nLanguage: ${language}`;
+    openMailto(subject, body);
   };
 
   // Language picker
@@ -255,11 +283,43 @@ export default function ProfileScreen() {
           </View>
         </MotiView>
 
+        {/* Report Section */}
+        <MotiView
+          from={{ opacity: 0, translateY: 20 }}
+          animate={{ opacity: 1, translateY: 0 }}
+          transition={{ delay: 225, type: 'timing', duration: 600 }}
+          className='mb-6 px-4'
+        >
+          <Text className='mb-2 ml-3 text-sm font-medium uppercase text-light-muted dark:text-dark-muted'>
+            {t('report.title') || 'Report'}
+          </Text>
+          <View className='overflow-hidden rounded-xl'>
+            <SettingsRow
+              icon='bug'
+              iconColor='#ef4444'
+              title={t('report.bugReport') || 'Bug Report'}
+              subtitle={t('report.bugReportSubtitle') || 'Report an issue'}
+              onPress={openBugReport}
+              isFirst
+            />
+            <SettingsRow
+              icon='chatbubble-ellipses'
+              iconColor='#3b82f6'
+              title={t('report.feedback') || 'Feedback'}
+              subtitle={
+                t('report.feedbackSubtitle') || 'Share your suggestions'
+              }
+              onPress={openFeedback}
+              isLast
+            />
+          </View>
+        </MotiView>
+
         {/* About Section */}
         <MotiView
           from={{ opacity: 0, translateY: 20 }}
           animate={{ opacity: 1, translateY: 0 }}
-          transition={{ delay: 250, type: 'timing', duration: 600 }}
+          transition={{ delay: 275, type: 'timing', duration: 600 }}
           className='mb-6 px-4'
         >
           <View className='overflow-hidden rounded-xl'>

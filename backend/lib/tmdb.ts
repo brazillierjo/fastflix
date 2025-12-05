@@ -32,9 +32,7 @@ class TMDBService {
     this.apiKey = process.env.TMDB_API_KEY || '';
 
     if (!this.apiKey) {
-      console.error('⚠️ TMDB_API_KEY not found in environment variables');
-    } else {
-      console.log('✅ TMDB service initialized');
+      throw new Error('TMDB_API_KEY not found in environment variables');
     }
   }
 
@@ -47,7 +45,6 @@ class TMDBService {
     // Check cache
     const cached = this.cache.get(cacheKey);
     if (cached && Date.now() - cached.timestamp < this.cacheTTL) {
-      console.log(`📦 Cache hit: ${endpoint}`);
       return cached.data as T;
     }
 
@@ -72,7 +69,6 @@ class TMDBService {
 
       return data as T;
     } catch (error) {
-      console.error(`❌ TMDB request failed for ${endpoint}:`, error);
       throw error;
     }
   }
@@ -94,8 +90,7 @@ class TMDBService {
       }
 
       return null;
-    } catch (error) {
-      console.error(`❌ Failed to search movie: ${title}`, error);
+    } catch {
       return null;
     }
   }
@@ -117,8 +112,7 @@ class TMDBService {
       }
 
       return null;
-    } catch (error) {
-      console.error(`❌ Failed to search TV show: ${title}`, error);
+    } catch {
       return null;
     }
   }
@@ -150,8 +144,7 @@ class TMDBService {
       }
 
       return null;
-    } catch (error) {
-      console.error(`❌ Failed to search multi: ${title}`, error);
+    } catch {
       return null;
     }
   }
@@ -190,8 +183,6 @@ class TMDBService {
     includeTvShows: boolean,
     language: string = 'fr-FR'
   ): Promise<MovieResult[]> {
-    console.log(`🔍 Enriching ${titles.length} titles with TMDB metadata...`);
-
     const enrichedResults: MovieResult[] = [];
     const errors: string[] = [];
 
@@ -218,8 +209,7 @@ class TMDBService {
           errors.push(title);
           return null;
         }
-      } catch (error) {
-        console.error(`❌ Error enriching title "${title}":`, error);
+      } catch {
         errors.push(title);
         return null;
       }
@@ -235,15 +225,6 @@ class TMDBService {
         enrichedResults.push(result);
       }
     });
-
-    const duplicatesRemoved = results.filter(Boolean).length - enrichedResults.length;
-    console.log(
-      `✅ Enriched ${enrichedResults.length}/${titles.length} titles${duplicatesRemoved > 0 ? ` (${duplicatesRemoved} duplicates removed)` : ''}`
-    );
-
-    if (errors.length > 0) {
-      console.log(`⚠️ Failed to enrich ${errors.length} titles:`, errors.slice(0, 5));
-    }
 
     return enrichedResults;
   }
@@ -299,8 +280,7 @@ class TMDBService {
       addProviders(regionData.buy, 'buy');
 
       return providers;
-    } catch (error) {
-      console.error(`❌ Failed to get watch providers for ${mediaType} ${tmdbId}:`, error);
+    } catch {
       return [];
     }
   }
@@ -345,8 +325,7 @@ class TMDBService {
         release_year: releaseYear,
         tagline: data.tagline || undefined,
       };
-    } catch (error) {
-      console.error(`❌ Failed to get movie details for ID ${tmdbId}:`, error);
+    } catch {
       return null;
     }
   }
@@ -385,8 +364,7 @@ class TMDBService {
         first_air_year: firstAirYear,
         tagline: data.tagline || undefined,
       };
-    } catch (error) {
-      console.error(`❌ Failed to get TV details for ID ${tmdbId}:`, error);
+    } catch {
       return null;
     }
   }
@@ -425,8 +403,7 @@ class TMDBService {
           character: actor.character,
           profile_path: actor.profile_path,
         }));
-    } catch (error) {
-      console.error(`❌ Failed to get credits for ${mediaType} ${tmdbId}:`, error);
+    } catch {
       return [];
     }
   }
@@ -462,10 +439,6 @@ class TMDBService {
     });
 
     await Promise.all(promises);
-
-    console.log(
-      `📊 Fetched details for ${Object.keys(detailedInfo).length} items, credits for ${Object.keys(credits).length} items`
-    );
 
     return { credits, detailedInfo };
   }
@@ -505,8 +478,7 @@ class TMDBService {
           logo_path: provider.logo_path,
           display_priorities: provider.display_priorities,
         }));
-    } catch (error) {
-      console.error(`❌ Failed to get available providers for ${country}:`, error);
+    } catch {
       return [];
     }
   }

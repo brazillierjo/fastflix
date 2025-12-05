@@ -26,7 +26,6 @@ class GeminiService {
 
     this.genAI = new GoogleGenerativeAI(apiKey);
     this.isInitialized = true;
-    console.log('✅ Gemini client initialized');
   }
 
   /**
@@ -206,7 +205,6 @@ MESSAGE: [your conversational message]`;
                 // Validate that this looks like a platform name (not a sentence)
                 // A platform name should be short (< 30 chars) and not contain ':' or '.'
                 if (platform.length > 30 || platform.includes(':') || platform.includes('.')) {
-                  console.log(`⚠️  Ignoring invalid platform: "${platform}"`);
                   return false;
                 }
                 // Check if it matches a known platform
@@ -214,11 +212,7 @@ MESSAGE: [your conversational message]`;
                 const isKnown = knownPlatforms.some(
                   (known) => normalized.includes(known) || known.includes(normalized)
                 );
-                if (!isKnown) {
-                  console.log(`⚠️  Unknown platform detected: "${platform}" - ignoring`);
-                  return false;
-                }
-                return true;
+                return isKnown;
               })
           : [];
 
@@ -226,20 +220,12 @@ MESSAGE: [your conversational message]`;
         ? messageMatch[1].trim()
         : 'Here are my recommendations for you!';
 
-      console.log(
-        `🎬 Gemini generated ${recommendations.length} recommendations, ${detectedPlatforms.length} valid platforms + conversational response`
-      );
-      if (detectedPlatforms.length > 0) {
-        console.log(`📺 Detected platforms: ${detectedPlatforms.join(', ')}`);
-      }
-
       return {
         recommendations,
         conversationalResponse,
         detectedPlatforms,
       };
-    } catch (error) {
-      console.error('❌ Gemini error in generateRecommendationsWithResponse:', error);
+    } catch {
       throw new Error('Failed to generate AI recommendations');
     }
   }

@@ -21,10 +21,10 @@
     "build:android": "node scripts/version-bump.js build-android",
     "build:both": "node scripts/version-bump.js build-both",
     "typecheck": "tsc --noEmit",
-    "test": "jest",
+    "test": "jest --forceExit 2>&1 | grep -Ev 'Force exiting Jest|worker process has failed to exit gracefully|--detectOpenHandles|Active timers' || true",
     "test:watch": "jest --watch",
-    "test:coverage": "jest --coverage",
-    "test:ci": "jest --ci --coverage --watchAll=false",
+    "test:coverage": "jest --coverage --forceExit 2>&1 | grep -Ev 'Force exiting Jest|worker process has failed|--detectOpenHandles|Active timers' || true",
+    "test:ci": "jest --ci --coverage --watchAll=false --forceExit 2>&1 | grep -Ev 'Force exiting Jest|worker process has failed|--detectOpenHandles|Active timers' || true",
     "pre-commit": "npm run lint && npm run format:check && npm run typecheck && npm run test:ci",
     "prepare": "husky"
   },

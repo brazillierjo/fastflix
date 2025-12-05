@@ -34,24 +34,19 @@ export async function POST(request: NextRequest) {
       });
     }
 
-    console.log(`🔄 Refreshing providers for ${itemsToRefresh.length} watchlist items`);
-
     // Refresh providers in parallel
     const refreshPromises = itemsToRefresh.map(async (item) => {
       try {
         const providers = await tmdb.getWatchProviders(item.tmdb_id, item.media_type, item.country);
         await db.updateWatchlistProviders(item.id, providers);
         return { id: item.id, success: true };
-      } catch (error) {
-        console.error(`❌ Failed to refresh providers for ${item.title}:`, error);
+      } catch {
         return { id: item.id, success: false };
       }
     });
 
     const results = await Promise.all(refreshPromises);
     const successCount = results.filter((r) => r.success).length;
-
-    console.log(`✅ Refreshed providers for ${successCount}/${itemsToRefresh.length} items`);
 
     return NextResponse.json({
       success: true,
@@ -61,8 +56,7 @@ export async function POST(request: NextRequest) {
         message: `Refreshed ${successCount} of ${itemsToRefresh.length} items`,
       },
     });
-  } catch (error) {
-    console.error('❌ Error in POST /api/watchlist/refresh-providers:', error);
+  } catch {
     return NextResponse.json({ error: 'Failed to refresh providers' }, { status: 500 });
   }
 }

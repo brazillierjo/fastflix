@@ -1,6 +1,7 @@
 import { Ionicons } from '@expo/vector-icons';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { useSubscription } from '@/contexts/RevenueCatContext';
+import * as Sentry from '@sentry/react-native';
 import React, { useState } from 'react';
 import {
   ActivityIndicator,
@@ -39,7 +40,9 @@ export default function SubscriptionDetailsModal({
       setRestoring(true);
       await restorePurchases();
     } catch (error) {
-      console.error('Restore error:', error);
+      Sentry.captureException(error, {
+        tags: { context: 'restore-purchases' },
+      });
       Alert.alert(
         t('subscription.restoration.error.title') || 'Restore Failed',
         t('subscription.restoration.error.message') ||

@@ -278,5 +278,18 @@
     "it": "Italiano",
     "es": "Español",
     "de": "Deutsch"
+  },
+  "report": {
+    "title": "報告",
+    "bugReport": "バグを報告",
+    "bugReportSubtitle": "問題を報告する",
+    "feedback": "フィードバック",
+    "feedbackSubtitle": "ご提案をお聞かせください",
+    "bugSubject": "[FastFlix バグ報告]",
+    "bugBody": "発生したバグを説明してください：",
+    "feedbackSubject": "[FastFlix フィードバック]",
+    "feedbackBody": "ご意見やご提案をお聞かせください：",
+    "errorTitle": "メールを開けません",
+    "errorMessage": "j.brazillier@gmail.com にメールを送信してください"
   }
 }

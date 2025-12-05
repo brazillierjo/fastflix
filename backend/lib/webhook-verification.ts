@@ -5,15 +5,19 @@
 
 import crypto from 'crypto';
 
+// Check if we're in production
+const isProduction =
+  process.env.NODE_ENV === 'production' || process.env.VERCEL_ENV === 'production';
+
 /**
  * Verify RevenueCat webhook signature
  *
  * @param payload - The raw request body as a string
  * @param signature - The X-Revenuecat-Signature header value
- * @param secret - Your RevenueCat webhook secret (optional)
+ * @param secret - Your RevenueCat webhook secret
  * @returns true if signature is valid, false otherwise
  *
- * Note: Signature verification is optional but recommended for production.
+ * Note: Signature verification is REQUIRED in production.
  * Configure your webhook secret in RevenueCat dashboard > Integrations > Webhooks
  */
 export function verifyRevenueCatSignature(
@@ -21,9 +25,18 @@ export function verifyRevenueCatSignature(
   signature: string | null,
   secret?: string
 ): boolean {
-  // If no secret is configured, skip verification (development mode)
+  // In production, webhook secret is required
   if (!secret) {
-    console.warn('⚠️ RevenueCat webhook secret not configured - skipping signature verification');
+    if (isProduction) {
+      console.error(
+        '[SECURITY] RevenueCat webhook secret not configured in production - rejecting request'
+      );
+      return false;
+    }
+    // Only allow skipping in development
+    console.warn(
+      '[DEV] RevenueCat webhook secret not configured - skipping signature verification'
+    );
     return true;
   }
 

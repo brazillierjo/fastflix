@@ -9,6 +9,7 @@ import {
   getCurrencyForCountry,
 } from '@/utils/currency';
 import { getSquircle, getButtonBorderRadius } from '@/utils/designHelpers';
+import * as Sentry from '@sentry/react-native';
 import { MotiView } from 'moti';
 import React, { useState } from 'react';
 import {
@@ -142,7 +143,7 @@ export default function SubscriptionModal({
     const packageToPurchase = getSelectedPackage();
 
     if (!packageToPurchase) {
-      console.error('No package selected');
+      Sentry.captureMessage('No package selected for purchase', 'warning');
       Alert.alert(
         t('subscription.error.title') || 'Error',
         t('subscription.error.noPackage') ||
@@ -161,7 +162,7 @@ export default function SubscriptionModal({
 
       onClose();
     } catch (error) {
-      console.error('Purchase error:', error);
+      Sentry.captureException(error, { tags: { context: 'purchase' } });
     } finally {
       setPurchasing(false);
     }
@@ -177,7 +178,9 @@ export default function SubscriptionModal({
         onClose();
       }
     } catch (error) {
-      console.error('Restore error:', error);
+      Sentry.captureException(error, {
+        tags: { context: 'restore-purchases' },
+      });
     } finally {
       setPurchasing(false);
     }
@@ -195,7 +198,7 @@ export default function SubscriptionModal({
         onClose();
       }
     } catch (error) {
-      console.error('Start trial error:', error);
+      Sentry.captureException(error, { tags: { context: 'start-trial' } });
     } finally {
       setPurchasing(false);
     }

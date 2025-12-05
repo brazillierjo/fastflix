@@ -3,10 +3,11 @@
  * POST /api/auth/google
  */
 
-import { NextRequest, NextResponse } from 'next/server';
+import { NextRequest } from 'next/server';
 import { randomUUID } from 'crypto';
 import { verifyGoogleToken, generateJWT } from '@/lib/auth';
 import { db } from '@/lib/db';
+import { jsonResponse, errorResponse, maskEmail } from '@/lib/api-helpers';
 import type { AuthResponse, GoogleAuthRequest } from '@/lib/types';
 
 export async function POST(request: NextRequest) {
@@ -15,11 +16,11 @@ export async function POST(request: NextRequest) {
     const { idToken } = body;
 
     if (!idToken) {
-      return NextResponse.json({ error: 'Missing idToken' }, { status: 400 });
+      return errorResponse('Missing idToken', { status: 400, publicMessage: 'Invalid request' });
     }
 
     // Step 1: Verify Google token
-    console.log('🔵 Verifying Google ID token...');
+    console.log('[Auth] Verifying Google ID token...');
     const googlePayload = await verifyGoogleToken(idToken);
 
     // Step 2: Extract user info
@@ -27,7 +28,7 @@ export async function POST(request: NextRequest) {
     const email = googlePayload.email;
 
     if (!email) {
-      return NextResponse.json({ error: 'Email is required for authentication' }, { status: 400 });
+      return errorResponse('Email is required for authentication', { status: 400 });
     }
 
     // Step 3: Check if user exists (by provider ID or email)
@@ -41,11 +42,11 @@ export async function POST(request: NextRequest) {
 
     if (existingUser) {
       // User exists, return existing user
-      console.log(`✅ Existing user found: ${email}`);
+      console.log(`[Auth] Existing user found: ${maskEmail(email)}`);
       dbUser = existingUser;
     } else {
       // Step 4: Create new user
-      console.log(`🆕 Creating new user: ${email}`);
+      console.log(`[Auth] Creating new user: ${maskEmail(email)}`);
 
       dbUser = await db.createUser({
         id: randomUUID(),
@@ -66,20 +67,14 @@ export async function POST(request: NextRequest) {
       token,
     };
 
-    console.log(`✅ Google Sign In successful: ${email}`);
+    console.log(`[Auth] Google Sign In successful: ${maskEmail(email)}`);
 
-    return NextResponse.json(response, { status: 200 });
+    return jsonResponse(response);
   } catch (error) {
-    console.error('❌ Error in Google Sign In:', error);
-
-    const errorMessage = error instanceof Error ? error.message : 'Authentication failed';
-
-    return NextResponse.json(
-      {
-        error: 'Google Sign In failed',
-        message: errorMessage,
-      },
-      { status: 500 }
-    );
+    console.error('[Auth] Error in Google Sign In:', error);
+    return errorResponse(error instanceof Error ? error.message : 'Authentication failed', {
+      status: 500,
+      publicMessage: 'Google Sign In failed',
+    });
   }
 }

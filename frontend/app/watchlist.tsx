@@ -10,6 +10,7 @@ import { useLanguage } from '@/contexts/LanguageContext';
 import { useWatchlist } from '@/hooks/useWatchlist';
 import { cn } from '@/utils/cn';
 import { getButtonBorderRadius } from '@/utils/designHelpers';
+import * as Sentry from '@sentry/react-native';
 import { Redirect, useRouter } from 'expo-router';
 import { MotiView } from 'moti';
 import React, { useState } from 'react';
@@ -51,7 +52,10 @@ export default function WatchlistScreen() {
     try {
       await removeFromWatchlistAsync(itemId);
     } catch (error) {
-      console.error('Failed to remove from watchlist:', error);
+      Sentry.captureException(error, {
+        tags: { context: 'watchlist-remove' },
+        extra: { itemId },
+      });
     } finally {
       setRemovingItemId(null);
     }

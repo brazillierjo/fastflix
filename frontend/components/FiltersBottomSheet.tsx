@@ -15,6 +15,7 @@ import {
 } from '@/services/backend-api.service';
 import { cn } from '@/utils/cn';
 import { getButtonBorderRadius } from '@/utils/designHelpers';
+import * as Sentry from '@sentry/react-native';
 import React, { useState, useEffect } from 'react';
 import {
   ActionSheetIOS,
@@ -128,7 +129,7 @@ export default function FiltersBottomSheet({
       });
       onClose();
     } catch (error) {
-      console.error('Failed to save preferences:', error);
+      Sentry.captureException(error, { tags: { context: 'save-preferences' } });
     }
   };
 

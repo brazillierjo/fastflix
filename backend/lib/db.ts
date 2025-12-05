@@ -42,7 +42,6 @@ class DatabaseService {
     });
 
     this.isInitialized = true;
-    console.log('✅ Turso client initialized');
   }
 
   /**
@@ -81,8 +80,6 @@ class DatabaseService {
         args: [id, email, name, avatar_url, auth_provider, provider_user_id],
       });
 
-      console.log(`✅ User created: ${email} (${auth_provider})`);
-
       // Return the created user
       const user = await this.getUserById(id);
       if (!user) {
@@ -91,7 +88,6 @@ class DatabaseService {
 
       return user;
     } catch (error) {
-      console.error('❌ Database error in createUser:', error);
       throw error;
     }
   }
@@ -114,7 +110,6 @@ class DatabaseService {
 
       return rowToObject<User>(result.rows[0]);
     } catch (error) {
-      console.error('❌ Database error in getUserById:', error);
       throw error;
     }
   }
@@ -137,7 +132,6 @@ class DatabaseService {
 
       return rowToObject<User>(result.rows[0]);
     } catch (error) {
-      console.error('❌ Database error in getUserByEmail:', error);
       throw error;
     }
   }
@@ -163,7 +157,6 @@ class DatabaseService {
 
       return rowToObject<User>(result.rows[0]);
     } catch (error) {
-      console.error('❌ Database error in getUserByProvider:', error);
       throw error;
     }
   }
@@ -211,8 +204,6 @@ class DatabaseService {
         args,
       });
 
-      console.log(`✅ User updated: ${id}`);
-
       const user = await this.getUserById(id);
       if (!user) {
         throw new Error('Failed to retrieve updated user');
@@ -220,7 +211,6 @@ class DatabaseService {
 
       return user;
     } catch (error) {
-      console.error('❌ Database error in updateUser:', error);
       throw error;
     }
   }
@@ -242,8 +232,7 @@ class DatabaseService {
 
       const count = Number(result.rows[0]?.count || 0);
       return count > 0;
-    } catch (error) {
-      console.error('❌ Database error in hasActiveSubscriptionByUserId:', error);
+    } catch {
       return false;
     }
   }
@@ -290,10 +279,7 @@ class DatabaseService {
           args: [user_id, revenuecat_user_id, status, expires_at, product_id],
         });
       }
-
-      console.log(`✅ Subscription upserted for user_id: ${user_id}`);
     } catch (error) {
-      console.error('❌ Database error in upsertSubscriptionByUserId:', error);
       throw error;
     }
   }
@@ -315,8 +301,7 @@ class DatabaseService {
               VALUES (?, 'authenticated', ?, ?, ?)`,
         args: [userId, query, resultsCount, responseTimeMs],
       });
-    } catch (error) {
-      console.error('❌ Database error in logPromptWithUserId:', error);
+    } catch {
       // Don't throw - logging should not break the request
     }
   }
@@ -348,7 +333,6 @@ class DatabaseService {
       if (checkResult.rows.length > 0) {
         const trialUsed = Number(checkResult.rows[0].trial_used) === 1;
         if (trialUsed) {
-          console.log(`⚠️ User ${userId} has already used their free trial`);
           return null;
         }
       }
@@ -364,12 +348,9 @@ class DatabaseService {
         args: [userId],
       });
 
-      console.log(`🎉 Free trial started for user ${userId}`);
-
       // Return the trial info
       return this.getTrialInfo(userId);
     } catch (error) {
-      console.error('❌ Database error in startFreeTrial:', error);
       throw error;
     }
   }
@@ -391,8 +372,7 @@ class DatabaseService {
       }
 
       return Number(result.rows[0].trial_used) === 1;
-    } catch (error) {
-      console.error('❌ Database error in hasUsedFreeTrial:', error);
+    } catch {
       return false;
     }
   }
@@ -414,8 +394,7 @@ class DatabaseService {
       });
 
       return result.rows.length > 0;
-    } catch (error) {
-      console.error('❌ Database error in isInFreeTrial:', error);
+    } catch {
       return false;
     }
   }
@@ -470,8 +449,7 @@ class DatabaseService {
         endsAt: trialEndsAt,
         used: trialUsed,
       };
-    } catch (error) {
-      console.error('❌ Database error in getTrialInfo:', error);
+    } catch {
       return {
         isActive: false,
         daysRemaining: 0,
@@ -546,8 +524,7 @@ class DatabaseService {
         includeRent: Number(row.pref_include_rent) === 1,
         includeBuy: Number(row.pref_include_buy) === 1,
       };
-    } catch (error) {
-      console.error('❌ Database error in getUserPreferences:', error);
+    } catch {
       // Return defaults on error
       return {
         country: 'FR',
@@ -611,13 +588,10 @@ class DatabaseService {
           sql: `UPDATE users SET ${updates.join(', ')} WHERE id = ?`,
           args,
         });
-
-        console.log(`✅ User preferences updated for ${userId}`);
       }
 
       return this.getUserPreferences(userId);
     } catch (error) {
-      console.error('❌ Database error in updateUserPreferences:', error);
       throw error;
     }
   }
@@ -662,8 +636,6 @@ class DatabaseService {
         ],
       });
 
-      console.log(`✅ Added to watchlist: ${item.title} (${item.mediaType}) for user ${userId}`);
-
       // Return the created item
       const watchlistItem = await this.getWatchlistItemById(id);
       if (!watchlistItem) {
@@ -674,14 +646,12 @@ class DatabaseService {
     } catch (error) {
       // Check for unique constraint violation (item already exists)
       if (error instanceof Error && error.message.includes('UNIQUE constraint failed')) {
-        console.log(`⚠️ Item already in watchlist: ${item.title} for user ${userId}`);
         // Return existing item
         const existing = await this.getWatchlistItemByTmdbId(userId, item.tmdbId, item.mediaType);
         if (existing) {
           return existing;
         }
       }
-      console.error('❌ Database error in addToWatchlist:', error);
       throw error;
     }
   }
@@ -699,15 +669,9 @@ class DatabaseService {
       });
 
       const deleted = result.rowsAffected > 0;
-      if (deleted) {
-        console.log(`✅ Removed from watchlist: ${itemId} for user ${userId}`);
-      } else {
-        console.log(`⚠️ Watchlist item not found: ${itemId} for user ${userId}`);
-      }
 
       return deleted;
     } catch (error) {
-      console.error('❌ Database error in removeFromWatchlist:', error);
       throw error;
     }
   }
@@ -732,8 +696,7 @@ class DatabaseService {
       const result = await this.client!.execute({ sql, args });
 
       return result.rows.map((row) => this.rowToWatchlistItem(row));
-    } catch (error) {
-      console.error('❌ Database error in getWatchlist:', error);
+    } catch {
       return [];
     }
   }
@@ -759,8 +722,7 @@ class DatabaseService {
       }
 
       return { inWatchlist: false, itemId: null };
-    } catch (error) {
-      console.error('❌ Database error in isInWatchlist:', error);
+    } catch {
       return { inWatchlist: false, itemId: null };
     }
   }
@@ -782,8 +744,7 @@ class DatabaseService {
       }
 
       return this.rowToWatchlistItem(result.rows[0]);
-    } catch (error) {
-      console.error('❌ Database error in getWatchlistItemById:', error);
+    } catch {
       return null;
     }
   }
@@ -809,8 +770,7 @@ class DatabaseService {
       }
 
       return this.rowToWatchlistItem(result.rows[0]);
-    } catch (error) {
-      console.error('❌ Database error in getWatchlistItemByTmdbId:', error);
+    } catch {
       return null;
     }
   }
@@ -828,10 +788,7 @@ class DatabaseService {
         sql: `UPDATE watchlist SET providers_json = ?, last_provider_check = datetime('now') WHERE id = ?`,
         args: [providersJson, itemId],
       });
-
-      console.log(`✅ Updated providers for watchlist item: ${itemId}`);
     } catch (error) {
-      console.error('❌ Database error in updateWatchlistProviders:', error);
       throw error;
     }
   }
@@ -851,8 +808,7 @@ class DatabaseService {
       });
 
       return result.rows.map((row) => this.rowToWatchlistItem(row));
-    } catch (error) {
-      console.error('❌ Database error in getWatchlistItemsNeedingRefresh:', error);
+    } catch {
       return [];
     }
   }
@@ -870,8 +826,7 @@ class DatabaseService {
       });
 
       return Number(result.rows[0]?.count || 0);
-    } catch (error) {
-      console.error('❌ Database error in getWatchlistCount:', error);
+    } catch {
       return 0;
     }
   }

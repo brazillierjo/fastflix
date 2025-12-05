@@ -3,10 +3,11 @@
  * POST /api/auth/apple
  */
 
-import { NextRequest, NextResponse } from 'next/server';
+import { NextRequest } from 'next/server';
 import { randomUUID } from 'crypto';
 import { verifyAppleToken, generateJWT } from '@/lib/auth';
 import { db } from '@/lib/db';
+import { jsonResponse, errorResponse, maskEmail } from '@/lib/api-helpers';
 import type { AuthResponse, AppleAuthRequest } from '@/lib/types';
 
 export async function POST(request: NextRequest) {
@@ -15,11 +16,14 @@ export async function POST(request: NextRequest) {
     const { identityToken, user } = body;
 
     if (!identityToken) {
-      return NextResponse.json({ error: 'Missing identityToken' }, { status: 400 });
+      return errorResponse('Missing identityToken', {
+        status: 400,
+        publicMessage: 'Invalid request',
+      });
     }
 
     // Step 1: Verify Apple token
-    console.log('🍎 Verifying Apple identity token...');
+    console.log('[Auth] Verifying Apple identity token...');
     const applePayload = await verifyAppleToken(identityToken);
 
     // Step 2: Extract user info
@@ -27,7 +31,7 @@ export async function POST(request: NextRequest) {
     const email = applePayload.email || user?.email;
 
     if (!email) {
-      return NextResponse.json({ error: 'Email is required for authentication' }, { status: 400 });
+      return errorResponse('Email is required for authentication', { status: 400 });
     }
 
     // Step 3: Check if user exists (by provider ID or email)
@@ -41,11 +45,11 @@ export async function POST(request: NextRequest) {
 
     if (existingUser) {
       // User exists, return existing user
-      console.log(`✅ Existing user found: ${email}`);
+      console.log(`[Auth] Existing user found: ${maskEmail(email)}`);
       dbUser = existingUser;
     } else {
       // Step 4: Create new user
-      console.log(`🆕 Creating new user: ${email}`);
+      console.log(`[Auth] Creating new user: ${maskEmail(email)}`);
 
       const userName = user?.name
         ? `${user.name.firstName || ''} ${user.name.lastName || ''}`.trim()
@@ -70,20 +74,14 @@ export async function POST(request: NextRequest) {
       token,
     };
 
-    console.log(`✅ Apple Sign In successful: ${email}`);
+    console.log(`[Auth] Apple Sign In successful: ${maskEmail(email)}`);
 
-    return NextResponse.json(response, { status: 200 });
+    return jsonResponse(response);
   } catch (error) {
-    console.error('❌ Error in Apple Sign In:', error);
-
-    const errorMessage = error instanceof Error ? error.message : 'Authentication failed';
-
-    return NextResponse.json(
-      {
-        error: 'Apple Sign In failed',
-        message: errorMessage,
-      },
-      { status: 500 }
-    );
+    console.error('[Auth] Error in Apple Sign In:', error);
+    return errorResponse(error instanceof Error ? error.message : 'Authentication failed', {
+      status: 500,
+      publicMessage: 'Apple Sign In failed',
+    });
   }
 }

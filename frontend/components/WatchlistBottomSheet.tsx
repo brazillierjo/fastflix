@@ -8,6 +8,7 @@ import { useLanguage } from '@/contexts/LanguageContext';
 import { useWatchlist } from '@/hooks/useWatchlist';
 import { cn } from '@/utils/cn';
 import { getButtonBorderRadius } from '@/utils/designHelpers';
+import * as Sentry from '@sentry/react-native';
 import React, { useState } from 'react';
 import {
   ActivityIndicator,
@@ -51,7 +52,10 @@ export default function WatchlistBottomSheet({
     try {
       await removeFromWatchlistAsync(itemId);
     } catch (error) {
-      console.error('Failed to remove from watchlist:', error);
+      Sentry.captureException(error, {
+        tags: { context: 'watchlist-remove' },
+        extra: { itemId },
+      });
     } finally {
       setRemovingItemId(null);
     }

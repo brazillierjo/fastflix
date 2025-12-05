@@ -1,5 +1,6 @@
 import '@/global.css';
 
+import { BottomTabBarProps } from '@react-navigation/bottom-tabs';
 import { Ionicons } from '@expo/vector-icons';
 import { BlurView } from 'expo-blur';
 import { isRunningInExpoGo } from 'expo';
@@ -64,7 +65,7 @@ Sentry.init({
 });
 
 // Custom Tab Bar with Glassmorphism
-function CustomTabBar({ state, descriptors, navigation }: any) {
+function CustomTabBar({ state, descriptors, navigation }: BottomTabBarProps) {
   const colorScheme = useColorScheme();
   const isDark = colorScheme === 'dark';
 
@@ -79,13 +80,13 @@ function CustomTabBar({ state, descriptors, navigation }: any) {
           <View style={[styles.tabBarContent, getGlassTabStyle(isDark)]}>
             {state.routes
               .filter(
-                (route: any) =>
+                route =>
                   route.name !== 'auth' &&
                   route.name !== '+not-found' &&
                   route.name !== '_sitemap' &&
                   route.name !== 'watchlist'
               )
-              .map((route: any, index: number) => {
+              .map(route => {
                 const { options } = descriptors[route.key];
                 const label = options.title;
                 const isFocused = state.routes[state.index].name === route.name;
@@ -133,6 +134,7 @@ function CustomTabBar({ state, descriptors, navigation }: any) {
                                 ? '#a3a3a3'
                                 : '#737373',
                             focused: isFocused,
+                            size: 24,
                           })}
                         </View>
                         <Text
@@ -296,7 +298,9 @@ export default Sentry.wrap(function RootLayout() {
           await Updates.reloadAsync();
         }
       } catch (error) {
-        console.log('Error fetching latest Expo update:', error);
+        Sentry.captureException(error, {
+          tags: { context: 'expo-updates' },
+        });
       }
     }
 

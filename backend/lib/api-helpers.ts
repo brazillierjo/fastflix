@@ -5,6 +5,110 @@
 
 import { NextRequest, NextResponse } from 'next/server';
 import { rateLimiter, RATE_LIMITS } from './rate-limiter';
+import { isProductionEnv } from './env';
+
+/**
+ * Security headers for all API responses
+ */
+export const SECURITY_HEADERS = {
+  'X-Content-Type-Options': 'nosniff',
+  'X-Frame-Options': 'DENY',
+  'X-XSS-Protection': '1; mode=block',
+  'Referrer-Policy': 'strict-origin-when-cross-origin',
+  'Permissions-Policy': 'camera=(), microphone=(), geolocation=()',
+} as const;
+
+/**
+ * Create a JSON response with security headers
+ */
+export function jsonResponse<T>(
+  data: T,
+  options: { status?: number; headers?: Record<string, string> } = {}
+): NextResponse<T> {
+  const { status = 200, headers = {} } = options;
+  return NextResponse.json(data, {
+    status,
+    headers: {
+      ...SECURITY_HEADERS,
+      ...headers,
+    },
+  });
+}
+
+/**
+ * Create an error response with sanitized message
+ * In production, detailed error messages are hidden from clients
+ */
+export function errorResponse(
+  message: string,
+  options: {
+    status?: number;
+    publicMessage?: string;
+    headers?: Record<string, string>;
+  } = {}
+): NextResponse {
+  const { status = 500, publicMessage, headers = {} } = options;
+
+  // Log the full error for debugging (server-side only)
+  if (status >= 500) {
+    console.error(`[API Error ${status}] ${message}`);
+  }
+
+  // In production, use a generic message unless a public one is provided
+  const clientMessage = isProductionEnv()
+    ? publicMessage || getGenericErrorMessage(status)
+    : message;
+
+  return NextResponse.json(
+    { error: clientMessage },
+    {
+      status,
+      headers: {
+        ...SECURITY_HEADERS,
+        ...headers,
+      },
+    }
+  );
+}
+
+/**
+ * Get a generic error message based on status code
+ */
+function getGenericErrorMessage(status: number): string {
+  switch (status) {
+    case 400:
+      return 'Invalid request';
+    case 401:
+      return 'Authentication required';
+    case 403:
+      return 'Access denied';
+    case 404:
+      return 'Not found';
+    case 429:
+      return 'Too many requests';
+    case 500:
+    default:
+      return 'An unexpected error occurred';
+  }
+}
+
+/**
+ * Mask sensitive data for logging
+ */
+export function maskEmail(email: string): string {
+  const [local, domain] = email.split('@');
+  if (!domain) return '***@***';
+  const maskedLocal = local.length > 2 ? `${local[0]}***${local[local.length - 1]}` : '***';
+  return `${maskedLocal}@${domain}`;
+}
+
+/**
+ * Mask user ID for logging
+ */
+export function maskUserId(id: string): string {
+  if (id.length <= 8) return '***';
+  return `${id.slice(0, 4)}...${id.slice(-4)}`;
+}
 
 /**
  * Extract client IP from request
@@ -46,12 +150,12 @@ export async function applyRateLimit(
     return NextResponse.json(
       {
         error: 'Rate limit exceeded',
-        reason: 'Too many requests from your IP address',
         retryAfter: resetTime,
       },
       {
         status: 429,
         headers: {
+          ...SECURITY_HEADERS,
           'Retry-After': resetTime.toString(),
           'X-RateLimit-Limit': ipLimit.maxRequests.toString(),
           'X-RateLimit-Remaining': '0',
@@ -76,12 +180,12 @@ export async function applyRateLimit(
       return NextResponse.json(
         {
           error: 'Rate limit exceeded',
-          reason: 'Too many requests from your device',
           retryAfter: resetTime,
         },
         {
           status: 429,
           headers: {
+            ...SECURITY_HEADERS,
             'Retry-After': resetTime.toString(),
             'X-RateLimit-Limit': deviceLimit.maxRequests.toString(),
             'X-RateLimit-Remaining': '0',

@@ -53,8 +53,6 @@ export async function POST(request: NextRequest) {
     // Add to watchlist
     const watchlistItem = await db.addToWatchlist(authResult.userId, validatedData);
 
-    console.log(`✅ Added to watchlist: ${validatedData.title} for user ${authResult.userId}`);
-
     return NextResponse.json({
       success: true,
       data: { item: watchlistItem },
@@ -67,7 +65,6 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    console.error('❌ Error in POST /api/watchlist:', error);
     return NextResponse.json({ error: 'Failed to add to watchlist' }, { status: 500 });
   }
 }
@@ -103,8 +100,7 @@ export async function GET(request: NextRequest) {
         mediaType: mediaType || 'all',
       },
     });
-  } catch (error) {
-    console.error('❌ Error in GET /api/watchlist:', error);
+  } catch {
     return NextResponse.json({ error: 'Failed to fetch watchlist' }, { status: 500 });
   }
 }

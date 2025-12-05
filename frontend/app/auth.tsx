@@ -8,6 +8,7 @@ import { useAuth } from '@/contexts/AuthContext';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { cn } from '@/utils/cn';
 import { getSquircle } from '@/utils/designHelpers';
+import * as Sentry from '@sentry/react-native';
 import * as AppleAuthentication from 'expo-apple-authentication';
 import * as Google from 'expo-auth-session/providers/google';
 import * as WebBrowser from 'expo-web-browser';
@@ -61,7 +62,7 @@ export default function AuthScreen() {
     try {
       await signInWithApple();
     } catch (error) {
-      console.error('Sign in failed:', error);
+      Sentry.captureException(error, { tags: { context: 'apple-sign-in' } });
     }
   };
 
@@ -70,7 +71,7 @@ export default function AuthScreen() {
       try {
         await signInWithGoogle(idToken);
       } catch (error) {
-        console.error('Google sign in failed:', error);
+        Sentry.captureException(error, { tags: { context: 'google-sign-in' } });
       }
     },
     [signInWithGoogle]

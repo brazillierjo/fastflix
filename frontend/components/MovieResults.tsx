@@ -450,8 +450,10 @@ export default function MovieResults({
                             </View>
 
                             {/* Genres */}
-                            {detailedInfo[movie.id]?.genres &&
-                              detailedInfo[movie.id].genres!.length > 0 && (
+                            {(() => {
+                              const genres = detailedInfo[movie.id]?.genres;
+                              if (!genres || genres.length === 0) return null;
+                              return (
                                 <View className='mb-2 flex-row items-center gap-2'>
                                   <Ionicons
                                     name='musical-notes'
@@ -459,17 +461,16 @@ export default function MovieResults({
                                     color={isDark ? '#ffffff' : '#0f172a'}
                                   />
                                   <Text className='text-sm font-semibold text-light-text dark:text-dark-text'>
-                                    {detailedInfo[movie.id].genres!.length > 1
+                                    {genres.length > 1
                                       ? t('movies.genres')
                                       : t('movies.genre')}
                                   </Text>
                                   <Text className='flex-1 text-sm text-light-text dark:text-dark-text'>
-                                    {detailedInfo[movie.id]
-                                      .genres!.map(genre => genre.name)
-                                      .join(', ')}
+                                    {genres.map(genre => genre.name).join(', ')}
                                   </Text>
                                 </View>
-                              )}
+                              );
+                            })()}
 
                             {/* Movie specific info */}
                             {movie.media_type === 'movie' && (
@@ -544,23 +545,25 @@ export default function MovieResults({
                                     </Text>
                                   </View>
                                 )}
-                                {detailedInfo[movie.id]?.status && (
-                                  <View className='mb-2 flex-row items-center gap-2'>
-                                    <Ionicons
-                                      name='stats-chart'
-                                      size={16}
-                                      color={isDark ? '#ffffff' : '#0f172a'}
-                                    />
-                                    <Text className='text-sm font-semibold text-light-text dark:text-dark-text'>
-                                      {t('movies.status')}
-                                    </Text>
-                                    <Text className='text-sm text-light-text dark:text-dark-text'>
-                                      {formatTvStatus(
-                                        detailedInfo[movie.id].status!
-                                      )}
-                                    </Text>
-                                  </View>
-                                )}
+                                {(() => {
+                                  const status = detailedInfo[movie.id]?.status;
+                                  if (!status) return null;
+                                  return (
+                                    <View className='mb-2 flex-row items-center gap-2'>
+                                      <Ionicons
+                                        name='stats-chart'
+                                        size={16}
+                                        color={isDark ? '#ffffff' : '#0f172a'}
+                                      />
+                                      <Text className='text-sm font-semibold text-light-text dark:text-dark-text'>
+                                        {t('movies.status')}
+                                      </Text>
+                                      <Text className='text-sm text-light-text dark:text-dark-text'>
+                                        {formatTvStatus(status)}
+                                      </Text>
+                                    </View>
+                                  );
+                                })()}
                                 {detailedInfo[movie.id]?.first_air_year && (
                                   <View className='mb-2 flex-row items-center gap-2'>
                                     <Ionicons

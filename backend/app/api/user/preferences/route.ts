@@ -37,8 +37,7 @@ export async function GET(request: NextRequest) {
       success: true,
       data: { preferences },
     });
-  } catch (error) {
-    console.error('❌ Error in GET /api/user/preferences:', error);
+  } catch {
     return NextResponse.json({ error: 'Failed to fetch preferences' }, { status: 500 });
   }
 }
@@ -63,8 +62,6 @@ export async function PUT(request: NextRequest) {
     // Update preferences
     const updatedPreferences = await db.updateUserPreferences(authResult.userId, validatedData);
 
-    console.log(`✅ Preferences updated for user ${authResult.userId}`);
-
     return NextResponse.json({
       success: true,
       data: { preferences: updatedPreferences },
@@ -77,7 +74,6 @@ export async function PUT(request: NextRequest) {
       );
     }
 
-    console.error('❌ Error in PUT /api/user/preferences:', error);
     return NextResponse.json({ error: 'Failed to update preferences' }, { status: 500 });
   }
 }

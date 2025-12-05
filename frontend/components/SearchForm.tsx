@@ -408,7 +408,7 @@ export default function SearchForm({
                   value={query}
                   onChangeText={handleManualInput}
                   onFocus={handleInputFocus}
-                  placeholder={'e.g.: ' + placeholder}
+                  placeholder={`e.g.: ${placeholder}`}
                   placeholderTextColor={getPlaceholderColor(isDark)}
                   className='border-2 bg-light-surface p-6 text-lg text-light-text focus:border-netflix-500 dark:bg-dark-surface dark:text-dark-text'
                   multiline
@@ -419,7 +419,7 @@ export default function SearchForm({
                     {
                       borderRadius: 14,
                       ...(Platform.OS === 'ios' && {
-                        borderCurve: 'continuous' as any,
+                        borderCurve: 'continuous' as const,
                       }),
                     },
                     { minHeight: 100, maxHeight: 140 },

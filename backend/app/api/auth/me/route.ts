@@ -49,8 +49,6 @@ export async function GET(request: NextRequest) {
       { status: 200 }
     );
   } catch (error) {
-    console.error('❌ Error in GET /api/auth/me:', error);
-
     return NextResponse.json(
       {
         error: 'Failed to get user info',

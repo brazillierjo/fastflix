@@ -313,9 +313,7 @@ export default function WatchlistItem({
                 {isRemoving ? (
                   <ActivityIndicator size='small' color='#ef4444' />
                 ) : (
-                  <>
-                    <Ionicons name='trash-outline' size={20} color='#ef4444' />
-                  </>
+                  <Ionicons name='trash-outline' size={20} color='#ef4444' />
                 )}
               </TouchableOpacity>
             </View>

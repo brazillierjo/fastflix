@@ -28,8 +28,6 @@ export async function GET(request: NextRequest) {
       trial: trialInfo,
     });
   } catch (error) {
-    console.error('❌ Error getting trial status:', error);
-
     return NextResponse.json(
       {
         error: 'Failed to get trial status',
@@ -53,7 +51,6 @@ export async function POST(request: NextRequest) {
     }
 
     const userId = authResult.userId;
-    const user = authResult.user!;
 
     // Check if user already has an active subscription
     const hasSubscription = await db.hasActiveSubscriptionByUserId(userId);
@@ -81,16 +78,12 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    console.log(`🎉 Free trial started for ${user.email}`);
-
     return NextResponse.json({
       success: true,
       message: 'Free trial started successfully',
       trial: trialInfo,
     });
   } catch (error) {
-    console.error('❌ Error starting trial:', error);
-
     return NextResponse.json(
       {
         error: 'Failed to start trial',

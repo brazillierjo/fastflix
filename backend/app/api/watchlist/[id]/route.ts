@@ -37,14 +37,11 @@ export async function DELETE(request: NextRequest, { params }: RouteParams) {
       return NextResponse.json({ error: 'Item not found in watchlist' }, { status: 404 });
     }
 
-    console.log(`✅ Removed from watchlist: ${id} for user ${authResult.userId}`);
-
     return NextResponse.json({
       success: true,
       data: { deleted: true },
     });
-  } catch (error) {
-    console.error('❌ Error in DELETE /api/watchlist/:id:', error);
+  } catch {
     return NextResponse.json({ error: 'Failed to remove from watchlist' }, { status: 500 });
   }
 }

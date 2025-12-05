@@ -278,5 +278,18 @@
     "it": "Italiano",
     "es": "Español",
     "de": "Deutsch"
+  },
+  "report": {
+    "title": "Melden",
+    "bugReport": "Fehler melden",
+    "bugReportSubtitle": "Ein Problem melden",
+    "feedback": "Feedback",
+    "feedbackSubtitle": "Teilen Sie Ihre Vorschläge",
+    "bugSubject": "[FastFlix Fehlerbericht]",
+    "bugBody": "Bitte beschreiben Sie den aufgetretenen Fehler:",
+    "feedbackSubject": "[FastFlix Feedback]",
+    "feedbackBody": "Teilen Sie Ihr Feedback oder Ihre Vorschläge:",
+    "errorTitle": "Mail kann nicht geöffnet werden",
+    "errorMessage": "Bitte senden Sie eine E-Mail an j.brazillier@gmail.com"
   }
 }
