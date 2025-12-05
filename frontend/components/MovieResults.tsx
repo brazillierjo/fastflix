@@ -586,15 +586,20 @@ export default function MovieResults({
                             <View className='flex-1'>
                               <AddToWatchlistButton
                                 tmdbId={movie.id}
-                                mediaType={movie.media_type === 'tv' ? 'tv' : 'movie'}
+                                mediaType={
+                                  movie.media_type === 'tv' ? 'tv' : 'movie'
+                                }
                                 title={movie.title || movie.name || ''}
                                 posterPath={movie.poster_path}
-                                providers={(streamingProviders[movie.id] || []).map(p => ({
+                                providers={(
+                                  streamingProviders[movie.id] || []
+                                ).map(p => ({
                                   provider_id: p.provider_id ?? 0,
                                   provider_name: p.provider_name || '',
                                   logo_path: p.logo_path || '',
                                   display_priority: p.display_priority ?? 0,
-                                  availability_type: p.availability_type || 'flatrate',
+                                  availability_type:
+                                    p.availability_type || 'flatrate',
                                 }))}
                                 country={country || 'FR'}
                                 variant='button'

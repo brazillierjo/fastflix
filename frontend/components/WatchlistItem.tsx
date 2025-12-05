@@ -238,11 +238,14 @@ export default function WatchlistItem({
             {item.providers && item.providers.length > 0 && (
               <View className='mb-3'>
                 <Text className='mb-2 text-xs font-semibold uppercase text-light-muted dark:text-dark-muted'>
-                  {t('movies.streamingAvailability') || 'Streaming Availability'}
+                  {t('movies.streamingAvailability') ||
+                    'Streaming Availability'}
                 </Text>
                 <View className='flex-row flex-wrap gap-2'>
                   {item.providers.map((provider, idx) => {
-                    const badge = getAvailabilityBadge(provider.availability_type);
+                    const badge = getAvailabilityBadge(
+                      provider.availability_type
+                    );
                     return (
                       <View
                         key={`${item.id}-provider-detail-${idx}`}
@@ -269,7 +272,9 @@ export default function WatchlistItem({
                                 size={10}
                                 color={badge.iconColor}
                               />
-                              <Text className={`text-[10px] ${badge.textColor}`}>
+                              <Text
+                                className={`text-[10px] ${badge.textColor}`}
+                              >
                                 {badge.label}
                               </Text>
                             </View>

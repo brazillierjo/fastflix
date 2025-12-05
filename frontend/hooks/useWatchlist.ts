@@ -49,7 +49,9 @@ export function useWatchlist(mediaType?: 'movie' | 'tv') {
     mutationFn: async (item: AddToWatchlistParams) => {
       const response = await backendAPIService.addToWatchlist(item);
       if (!response.success) {
-        throw new Error(response.error?.message || 'Failed to add to watchlist');
+        throw new Error(
+          response.error?.message || 'Failed to add to watchlist'
+        );
       }
       return response.data?.item;
     },
@@ -66,7 +68,9 @@ export function useWatchlist(mediaType?: 'movie' | 'tv') {
     mutationFn: async (itemId: string) => {
       const response = await backendAPIService.removeFromWatchlist(itemId);
       if (!response.success) {
-        throw new Error(response.error?.message || 'Failed to remove from watchlist');
+        throw new Error(
+          response.error?.message || 'Failed to remove from watchlist'
+        );
       }
       return response.data?.deleted;
     },
@@ -83,7 +87,9 @@ export function useWatchlist(mediaType?: 'movie' | 'tv') {
     mutationFn: async () => {
       const response = await backendAPIService.refreshWatchlistProviders();
       if (!response.success) {
-        throw new Error(response.error?.message || 'Failed to refresh providers');
+        throw new Error(
+          response.error?.message || 'Failed to refresh providers'
+        );
       }
       return response.data;
     },
@@ -136,7 +142,10 @@ export function useIsInWatchlist(tmdbId: number, mediaType: 'movie' | 'tv') {
   } = useQuery({
     queryKey: [...WATCHLIST_CHECK_QUERY_KEY, tmdbId, mediaType],
     queryFn: async (): Promise<WatchlistCheckResponse> => {
-      const response = await backendAPIService.checkInWatchlist(tmdbId, mediaType);
+      const response = await backendAPIService.checkInWatchlist(
+        tmdbId,
+        mediaType
+      );
       if (response.success && response.data) {
         return response.data;
       }
@@ -167,12 +176,20 @@ export function useWatchlistToggle(
 ) {
   const { isAuthenticated } = useAuth();
   const queryClient = useQueryClient();
-  const { inWatchlist, itemId, isLoading: isChecking } = useIsInWatchlist(tmdbId, mediaType);
+  const {
+    inWatchlist,
+    itemId,
+    isLoading: isChecking,
+  } = useIsInWatchlist(tmdbId, mediaType);
 
   // Add to watchlist mutation
   const addMutation = useMutation({
     mutationFn: async () => {
-      console.log('🎬 Adding to watchlist:', { tmdbId, mediaType, ...itemData });
+      console.log('🎬 Adding to watchlist:', {
+        tmdbId,
+        mediaType,
+        ...itemData,
+      });
       const response = await backendAPIService.addToWatchlist({
         tmdbId,
         mediaType,
@@ -180,16 +197,18 @@ export function useWatchlistToggle(
       });
       console.log('🎬 Add to watchlist response:', response);
       if (!response.success) {
-        throw new Error(response.error?.message || 'Failed to add to watchlist');
+        throw new Error(
+          response.error?.message || 'Failed to add to watchlist'
+        );
       }
       return response.data?.item;
     },
-    onSuccess: (data) => {
+    onSuccess: data => {
       console.log('✅ Successfully added to watchlist:', data);
       queryClient.invalidateQueries({ queryKey: WATCHLIST_QUERY_KEY });
       queryClient.invalidateQueries({ queryKey: WATCHLIST_CHECK_QUERY_KEY });
     },
-    onError: (error) => {
+    onError: error => {
       console.error('❌ Failed to add to watchlist:', error);
     },
   });
@@ -200,7 +219,9 @@ export function useWatchlistToggle(
       if (!itemId) throw new Error('No item ID found');
       const response = await backendAPIService.removeFromWatchlist(itemId);
       if (!response.success) {
-        throw new Error(response.error?.message || 'Failed to remove from watchlist');
+        throw new Error(
+          response.error?.message || 'Failed to remove from watchlist'
+        );
       }
       return response.data?.deleted;
     },

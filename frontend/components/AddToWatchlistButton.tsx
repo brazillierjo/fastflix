@@ -9,12 +9,7 @@ import { useWatchlistToggle } from '@/hooks/useWatchlist';
 import { WatchlistProvider } from '@/types/api';
 import { MotiView } from 'moti';
 import React from 'react';
-import {
-  ActivityIndicator,
-  Text,
-  TouchableOpacity,
-  View,
-} from 'react-native';
+import { ActivityIndicator, Text, TouchableOpacity, View } from 'react-native';
 import * as Haptics from 'expo-haptics';
 
 interface AddToWatchlistButtonProps {
@@ -56,7 +51,9 @@ export default function AddToWatchlistButton({
   const handlePress = async () => {
     // Haptic feedback
     await Haptics.impactAsync(
-      inWatchlist ? Haptics.ImpactFeedbackStyle.Light : Haptics.ImpactFeedbackStyle.Medium
+      inWatchlist
+        ? Haptics.ImpactFeedbackStyle.Light
+        : Haptics.ImpactFeedbackStyle.Medium
     );
     toggle();
   };

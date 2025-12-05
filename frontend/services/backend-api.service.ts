@@ -490,15 +490,20 @@ class BackendAPIService {
     tmdbId: number,
     mediaType: 'movie' | 'tv'
   ): Promise<APIResponse<WatchlistCheckResponse>> {
-    return await this.makeRequest(`/api/watchlist/check/${tmdbId}/${mediaType}`, {
-      method: 'GET',
-    });
+    return await this.makeRequest(
+      `/api/watchlist/check/${tmdbId}/${mediaType}`,
+      {
+        method: 'GET',
+      }
+    );
   }
 
   /**
    * Refresh streaming providers for watchlist items
    */
-  async refreshWatchlistProviders(): Promise<APIResponse<WatchlistRefreshResponse>> {
+  async refreshWatchlistProviders(): Promise<
+    APIResponse<WatchlistRefreshResponse>
+  > {
     return await this.makeRequest('/api/watchlist/refresh-providers', {
       method: 'POST',
     });

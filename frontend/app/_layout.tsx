@@ -2,12 +2,13 @@ import '@/global.css';
 
 import { Ionicons } from '@expo/vector-icons';
 import { BlurView } from 'expo-blur';
+import { isRunningInExpoGo } from 'expo';
 import * as Haptics from 'expo-haptics';
-import { Tabs } from 'expo-router';
+import { Tabs, useNavigationContainerRef } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
 import * as Updates from 'expo-updates';
 import { MotiView } from 'moti';
-import { useEffect } from 'react';
+import React, { useEffect } from 'react';
 import {
   Platform,
   StyleSheet,
@@ -28,6 +29,39 @@ import {
   getTabStyle,
   getSquircle,
 } from '@/utils/designHelpers';
+import * as Sentry from '@sentry/react-native';
+
+// Navigation integration for performance tracking
+const navigationIntegration = Sentry.reactNavigationIntegration({
+  enableTimeToInitialDisplay: !isRunningInExpoGo(),
+});
+
+Sentry.init({
+  dsn: 'https://30fa1065a683859f2063e0a098ac7dec@o4510470474825728.ingest.de.sentry.io/4510483823853648',
+
+  // Adds more context data to events (IP address, cookies, user, etc.)
+  sendDefaultPii: true,
+
+  // Performance monitoring
+  tracesSampleRate: __DEV__ ? 1.0 : 0.2,
+  enableNativeFramesTracking: !isRunningInExpoGo(),
+
+  // Enable Logs
+  enableLogs: true,
+
+  // Configure Session Replay
+  replaysSessionSampleRate: 0.1,
+  replaysOnErrorSampleRate: 1,
+
+  integrations: [
+    navigationIntegration,
+    Sentry.mobileReplayIntegration(),
+    Sentry.feedbackIntegration(),
+  ],
+
+  // Disable in development
+  enabled: !__DEV__,
+});
 
 // Custom Tab Bar with Glassmorphism
 function CustomTabBar({ state, descriptors, navigation }: any) {
@@ -44,82 +78,82 @@ function CustomTabBar({ state, descriptors, navigation }: any) {
         >
           <View style={[styles.tabBarContent, getGlassTabStyle(isDark)]}>
             {state.routes
-            .filter(
-              (route: any) =>
-                route.name !== 'auth' &&
-                route.name !== '+not-found' &&
-                route.name !== '_sitemap' &&
-                route.name !== 'watchlist'
-            )
-            .map((route: any, index: number) => {
-              const { options } = descriptors[route.key];
-              const label = options.title;
-              const isFocused = state.routes[state.index].name === route.name;
+              .filter(
+                (route: any) =>
+                  route.name !== 'auth' &&
+                  route.name !== '+not-found' &&
+                  route.name !== '_sitemap' &&
+                  route.name !== 'watchlist'
+              )
+              .map((route: any, index: number) => {
+                const { options } = descriptors[route.key];
+                const label = options.title;
+                const isFocused = state.routes[state.index].name === route.name;
 
-              const onPress = () => {
-                const event = navigation.emit({
-                  type: 'tabPress',
-                  target: route.key,
-                  canPreventDefault: true,
-                });
+                const onPress = () => {
+                  const event = navigation.emit({
+                    type: 'tabPress',
+                    target: route.key,
+                    canPreventDefault: true,
+                  });
 
-                if (!isFocused && !event.defaultPrevented) {
-                  Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
-                  navigation.navigate(route.name);
-                }
-              };
+                  if (!isFocused && !event.defaultPrevented) {
+                    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+                    navigation.navigate(route.name);
+                  }
+                };
 
-              return (
-                <TouchableOpacity
-                  key={route.key}
-                  onPress={onPress}
-                  style={styles.tabButton}
-                  activeOpacity={0.7}
-                >
-                  <MotiView
-                    animate={{
-                      scale: isFocused ? 1 : 0.95,
-                      opacity: isFocused ? 1 : 0.7,
-                    }}
-                    transition={{
-                      type: 'timing',
-                      duration: 200,
-                    }}
-                    style={[
-                      getTabStyle(isFocused, isDark),
-                      isFocused && styles.tabButtonActive,
-                    ]}
+                return (
+                  <TouchableOpacity
+                    key={route.key}
+                    onPress={onPress}
+                    style={styles.tabButton}
+                    activeOpacity={0.7}
                   >
-                    <View style={styles.tabContent}>
-                      <View style={styles.tabIcon}>
-                        {options.tabBarIcon?.({
-                          color: isFocused
-                            ? '#fff'
-                            : isDark
-                              ? '#a3a3a3'
-                              : '#737373',
-                          focused: isFocused,
-                        })}
-                      </View>
-                      <Text
-                        style={[
-                          styles.tabLabel,
-                          {
+                    <MotiView
+                      animate={{
+                        scale: isFocused ? 1 : 0.95,
+                        opacity: isFocused ? 1 : 0.7,
+                      }}
+                      transition={{
+                        type: 'timing',
+                        duration: 200,
+                      }}
+                      style={[
+                        getTabStyle(isFocused, isDark),
+                        isFocused && styles.tabButtonActive,
+                      ]}
+                    >
+                      <View style={styles.tabContent}>
+                        <View style={styles.tabIcon}>
+                          {options.tabBarIcon?.({
                             color: isFocused
                               ? '#fff'
                               : isDark
                                 ? '#a3a3a3'
                                 : '#737373',
-                          },
-                        ]}
-                      >
-                        {label}
-                      </Text>
-                    </View>
-                  </MotiView>
-                </TouchableOpacity>
-              );
-            })}
+                            focused: isFocused,
+                          })}
+                        </View>
+                        <Text
+                          style={[
+                            styles.tabLabel,
+                            {
+                              color: isFocused
+                                ? '#fff'
+                                : isDark
+                                  ? '#a3a3a3'
+                                  : '#737373',
+                            },
+                          ]}
+                        >
+                          {label}
+                        </Text>
+                      </View>
+                    </MotiView>
+                  </TouchableOpacity>
+                );
+              })}
           </View>
         </BlurView>
       </View>
@@ -166,7 +200,7 @@ function TabsLayout() {
       <Tabs.Screen
         name='watchlist'
         options={{
-          href: null,
+          title: 'Watchlist',
         }}
       />
       <Tabs.Screen
@@ -241,7 +275,16 @@ const styles = StyleSheet.create({
   },
 });
 
-export default function RootLayout() {
+export default Sentry.wrap(function RootLayout() {
+  const ref = useNavigationContainerRef();
+
+  // Register navigation container for Sentry performance tracking
+  useEffect(() => {
+    if (ref?.current) {
+      navigationIntegration.registerNavigationContainer(ref);
+    }
+  }, [ref]);
+
   // Initialize expo-updates
   useEffect(() => {
     async function onFetchUpdateAsync() {
@@ -275,4 +318,4 @@ export default function RootLayout() {
       </LanguageProvider>
     </QueryProvider>
   );
-}
+});
