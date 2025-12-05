@@ -88,6 +88,7 @@ export const translations = {
       'No search history or preferences stored',
       'No personal information collected',
       'All recommendations are generated in real-time without data retention',
+      'Error monitoring via Sentry to improve app stability (anonymous crash reports)',
     ],
     dataUsage: 'How the App Works',
     dataUsageDesc: 'FastFlix processes your requests locally and temporarily:',
@@ -96,6 +97,7 @@ export const translations = {
       'Language preferences are stored locally on your device only',
       'No data is transmitted to our servers or stored in any database',
       'All processing happens in real-time without data persistence',
+      'Anonymous error data is sent to Sentry for crash monitoring and app improvement',
     ],
     dataSharing: 'Data Sharing',
     dataSharingDesc:
@@ -104,6 +106,7 @@ export const translations = {
       'No user data is collected or stored',
       'No personal information is shared with third parties',
       'Only anonymous API requests are made to external services (Google Gemini, TMDB)',
+      'Anonymous crash reports are shared with Sentry for error monitoring',
     ],
     dataRetention: 'Data Retention',
     dataRetentionDesc:
@@ -326,6 +329,7 @@ export const translations = {
       'Aucun historique de recherche ou préférences stockées',
       'Aucune information personnelle collectée',
       'Toutes les recommandations sont générées en temps réel sans conservation de données',
+      "Surveillance des erreurs via Sentry pour améliorer la stabilité de l'app (rapports de crash anonymes)",
     ],
     dataUsage: "Comment fonctionne l'application",
     dataUsageDesc:
@@ -335,6 +339,7 @@ export const translations = {
       'Les préférences de langue sont stockées localement sur votre appareil uniquement',
       "Aucune donnée n'est transmise à nos serveurs ou stockée dans une base de données",
       'Tout le traitement se fait en temps réel sans persistance des données',
+      "Des données d'erreur anonymes sont envoyées à Sentry pour la surveillance des crashs et l'amélioration de l'app",
     ],
     dataSharing: 'Partage de données',
     dataSharingDesc:
@@ -343,6 +348,7 @@ export const translations = {
       "Aucune donnée utilisateur n'est collectée ou stockée",
       "Aucune information personnelle n'est partagée avec des tiers",
       'Seules des requêtes API anonymes sont faites vers des services externes (Google Gemini, TMDB)',
+      'Des rapports de crash anonymes sont partagés avec Sentry pour la surveillance des erreurs',
     ],
     dataRetention: 'Conservation des données',
     dataRetentionDesc:
@@ -568,6 +574,7 @@ export const translations = {
       'Nessuno storico di ricerca o preferenze memorizzate',
       'Nessuna informazione personale raccolta',
       'Tutte le raccomandazioni sono generate in tempo reale senza conservazione dati',
+      "Monitoraggio degli errori tramite Sentry per migliorare la stabilità dell'app (rapporti di crash anonimi)",
     ],
     dataUsage: "Come funziona l'app",
     dataUsageDesc:
@@ -577,6 +584,7 @@ export const translations = {
       'Le preferenze di lingua sono memorizzate solo localmente sul tuo dispositivo',
       'Nessun dato viene trasmesso ai nostri server o memorizzato in alcun database',
       "Tutta l'elaborazione avviene in tempo reale senza persistenza dei dati",
+      "Dati di errore anonimi vengono inviati a Sentry per il monitoraggio dei crash e il miglioramento dell'app",
     ],
     dataSharing: 'Condivisione dati',
     dataSharingDesc:
@@ -585,6 +593,7 @@ export const translations = {
       'Nessun dato utente viene raccolto o memorizzato',
       'Nessuna informazione personale viene condivisa con terze parti',
       'Solo richieste API anonime vengono effettuate verso servizi esterni (Google Gemini, TMDB)',
+      'Rapporti di crash anonimi vengono condivisi con Sentry per il monitoraggio degli errori',
     ],
     dataRetention: 'Conservazione dati',
     dataRetentionDesc:
@@ -808,6 +817,7 @@ export const translations = {
       '検索履歴や設定は保存されません',
       '個人情報は収集されません',
       'すべてのレコメンデーションはデータ保持なしでリアルタイムに生成されます',
+      'アプリの安定性向上のためSentryによるエラー監視（匿名クラッシュレポート）',
     ],
     dataUsage: 'アプリの仕組み',
     dataUsageDesc:
@@ -817,6 +827,7 @@ export const translations = {
       '言語設定はデバイスにローカルでのみ保存されます',
       'データは当社のサーバーに送信されたり、データベースに保存されたりしません',
       'すべての処理はデータの永続化なしでリアルタイムで行われます',
+      '匿名のエラーデータがクラッシュ監視とアプリ改善のためにSentryに送信されます',
     ],
     dataSharing: 'データ共有',
     dataSharingDesc:
@@ -825,6 +836,7 @@ export const translations = {
       'ユーザーデータは収集または保存されません',
       '個人情報は第三者と共有されません',
       '外部サービス（Google Gemini、TMDB）への匿名APIリクエストのみが行われます',
+      '匿名のクラッシュレポートがエラー監視のためにSentryと共有されます',
     ],
     dataRetention: 'データ保持',
     dataRetentionDesc:
@@ -1047,6 +1059,7 @@ export const translations = {
       'No se almacena historial de búsqueda ni preferencias',
       'No se recopila información personal',
       'Todas las recomendaciones se generan en tiempo real sin retención de datos',
+      'Monitoreo de errores a través de Sentry para mejorar la estabilidad de la app (informes de fallos anónimos)',
     ],
     dataUsage: 'Cómo funciona la app',
     dataUsageDesc: 'FastFlix procesa tus solicitudes local y temporalmente:',
@@ -1055,6 +1068,7 @@ export const translations = {
       'Las preferencias de idioma se almacenan solo localmente en tu dispositivo',
       'No se transmiten datos a nuestros servidores ni se almacenan en ninguna base de datos',
       'Todo el procesamiento ocurre en tiempo real sin persistencia de datos',
+      'Datos de errores anónimos se envían a Sentry para el monitoreo de fallos y mejora de la app',
     ],
     dataSharing: 'Compartir datos',
     dataSharingDesc:
@@ -1063,6 +1077,7 @@ export const translations = {
       'No se recopilan ni almacenan datos de usuario',
       'No se comparte información personal con terceros',
       'Solo se realizan solicitudes API anónimas a servicios externos (Google Gemini, TMDB)',
+      'Informes de fallos anónimos se comparten con Sentry para el monitoreo de errores',
     ],
     dataRetention: 'Retención de datos',
     dataRetentionDesc:
@@ -1286,6 +1301,7 @@ export const translations = {
       'Kein Suchverlauf oder Präferenzen werden gespeichert',
       'Keine persönlichen Informationen werden gesammelt',
       'Alle Empfehlungen werden in Echtzeit ohne Datenspeicherung generiert',
+      'Fehlerüberwachung über Sentry zur Verbesserung der App-Stabilität (anonyme Absturzberichte)',
     ],
     dataUsage: 'Wie die App funktioniert',
     dataUsageDesc: 'FastFlix verarbeitet deine Anfragen lokal und temporär:',
@@ -1294,6 +1310,7 @@ export const translations = {
       'Spracheinstellungen werden nur lokal auf deinem Gerät gespeichert',
       'Keine Daten werden an unsere Server übertragen oder in einer Datenbank gespeichert',
       'Die gesamte Verarbeitung erfolgt in Echtzeit ohne Datenpersistenz',
+      'Anonyme Fehlerdaten werden zur Absturzüberwachung und App-Verbesserung an Sentry gesendet',
     ],
     dataSharing: 'Datenweitergabe',
     dataSharingDesc:
@@ -1302,6 +1319,7 @@ export const translations = {
       'Keine Benutzerdaten werden gesammelt oder gespeichert',
       'Keine persönlichen Informationen werden mit Dritten geteilt',
       'Nur anonyme API-Anfragen werden an externe Dienste (Google Gemini, TMDB) gestellt',
+      'Anonyme Absturzberichte werden zur Fehlerüberwachung mit Sentry geteilt',
     ],
     dataRetention: 'Datenspeicherung',
     dataRetentionDesc:
