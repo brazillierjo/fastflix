@@ -45,7 +45,7 @@ export default function Support() {
   };
 
   return (
-    <div className='min-h-screen bg-gray-50 dark:bg-gray-900 py-12'>
+    <div className='min-h-screen bg-gray-50 py-12 dark:bg-gray-900'>
       <div className='mx-auto max-w-4xl px-4 sm:px-6 lg:px-8'>
         {/* Header */}
         <div className='mb-8'>
@@ -56,13 +56,15 @@ export default function Support() {
             </Button>
           </Link>
           <div className='text-center'>
-            <div className='mb-4 inline-flex h-16 w-16 items-center justify-center rounded-full bg-netflix/10'>
-              <HelpCircle className='h-8 w-8 text-netflix' />
+            <div className='bg-netflix/10 mb-4 inline-flex h-16 w-16 items-center justify-center rounded-full'>
+              <HelpCircle className='text-netflix h-8 w-8' />
             </div>
             <h1 className='mb-4 text-4xl font-bold text-gray-900 dark:text-white'>
               {t('supportTitle')}
             </h1>
-            <p className='text-lg text-gray-600 dark:text-gray-400'>{t('supportSubtitle')}</p>
+            <p className='text-lg text-gray-600 dark:text-gray-400'>
+              {t('supportSubtitle')}
+            </p>
           </div>
         </div>
 
@@ -117,8 +119,8 @@ export default function Support() {
                 >
                   <CardContent className='p-6'>
                     <div className='flex items-start space-x-4'>
-                      <div className='flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-squircle bg-netflix/10'>
-                        <Icon className='h-6 w-6 text-netflix' />
+                      <div className='rounded-squircle bg-netflix/10 flex h-12 w-12 flex-shrink-0 items-center justify-center'>
+                        <Icon className='text-netflix h-6 w-6' />
                       </div>
                       <div className='flex-1'>
                         <h3 className='mb-2 text-lg font-semibold text-gray-900'>

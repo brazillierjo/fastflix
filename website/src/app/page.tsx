@@ -60,9 +60,9 @@ export default function Home() {
               {t('heroBadge')}
             </Badge>
 
-            <h1 className='text-4xl font-bold tracking-tight text-gray-900 dark:text-white sm:text-6xl'>
+            <h1 className='text-4xl font-bold tracking-tight text-gray-900 sm:text-6xl dark:text-white'>
               {t('heroTitle')}{' '}
-              <span className='bg-gradient-to-r from-netflix to-netflix-dark bg-clip-text text-transparent'>
+              <span className='from-netflix to-netflix-dark bg-gradient-to-r bg-clip-text text-transparent'>
                 {t('heroTitleHighlight')}
               </span>
             </h1>
@@ -112,7 +112,7 @@ export default function Home() {
                   className='border-0 text-center shadow-lg transition-shadow hover:shadow-xl'
                 >
                   <CardContent className='p-6'>
-                    <div className='mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-squircle bg-gradient-to-br from-netflix to-netflix-dark'>
+                    <div className='rounded-squircle from-netflix to-netflix-dark mx-auto mb-4 flex h-12 w-12 items-center justify-center bg-gradient-to-br'>
                       <Icon className='h-6 w-6 text-white' />
                     </div>
                     <h3 className='mb-2 text-lg font-semibold text-gray-900'>
@@ -139,7 +139,7 @@ export default function Home() {
             </p>
             <div className='mt-12 flex items-center justify-center space-x-12'>
               <div className='text-center'>
-                <Smartphone className='mx-auto mb-2 h-12 w-12 text-netflix' />
+                <Smartphone className='text-netflix mx-auto mb-2 h-12 w-12' />
                 <p className='text-sm font-medium text-gray-900 dark:text-white'>
                   {t('iphoneSupport')}
                 </p>
@@ -148,41 +148,49 @@ export default function Home() {
                 </p>
               </div>
               <div className='text-center'>
-                <Tablet className='mx-auto mb-2 h-12 w-12 text-netflix' />
+                <Tablet className='text-netflix mx-auto mb-2 h-12 w-12' />
                 <p className='text-sm font-medium text-gray-900 dark:text-white'>
                   {t('ipadSupport')}
                 </p>
-                <p className='text-xs text-gray-500 dark:text-gray-400'>{t('ipadRequirement')}</p>
+                <p className='text-xs text-gray-500 dark:text-gray-400'>
+                  {t('ipadRequirement')}
+                </p>
               </div>
             </div>
             <div className='mx-auto mt-12 max-w-4xl'>
               <div className='grid grid-cols-1 gap-8 md:grid-cols-3'>
                 <div className='text-center'>
-                  <div className='mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-full bg-netflix/10'>
-                    <span className='text-lg font-bold text-netflix'>1</span>
+                  <div className='bg-netflix/10 mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-full'>
+                    <span className='text-netflix text-lg font-bold'>1</span>
                   </div>
                   <h3 className='mb-2 font-semibold text-gray-900 dark:text-white'>
                     {t('step1Title')}
                   </h3>
-                  <p className='text-sm text-gray-600 dark:text-gray-400'>{t('step1Desc')}</p>
+                  <p className='text-sm text-gray-600 dark:text-gray-400'>
+                    {t('step1Desc')}
+                  </p>
                 </div>
                 <div className='text-center'>
-                  <div className='mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-full bg-netflix/20'>
-                    <span className='text-lg font-bold text-netflix'>2</span>
+                  <div className='bg-netflix/20 mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-full'>
+                    <span className='text-netflix text-lg font-bold'>2</span>
                   </div>
                   <h3 className='mb-2 font-semibold text-gray-900 dark:text-white'>
                     {t('step2Title')}
                   </h3>
-                  <p className='text-sm text-gray-600 dark:text-gray-400'>{t('step2Desc')}</p>
+                  <p className='text-sm text-gray-600 dark:text-gray-400'>
+                    {t('step2Desc')}
+                  </p>
                 </div>
                 <div className='text-center'>
-                  <div className='mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-full bg-netflix/30'>
-                    <span className='text-lg font-bold text-netflix'>3</span>
+                  <div className='bg-netflix/30 mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-full'>
+                    <span className='text-netflix text-lg font-bold'>3</span>
                   </div>
                   <h3 className='mb-2 font-semibold text-gray-900 dark:text-white'>
                     {t('step3Title')}
                   </h3>
-                  <p className='text-sm text-gray-600 dark:text-gray-400'>{t('step3Desc')}</p>
+                  <p className='text-sm text-gray-600 dark:text-gray-400'>
+                    {t('step3Desc')}
+                  </p>
                 </div>
               </div>
             </div>
@@ -191,7 +199,7 @@ export default function Home() {
       </section>
 
       {/* CTA Section */}
-      <section className='bg-gradient-to-r from-netflix to-netflix-dark py-20'>
+      <section className='from-netflix to-netflix-dark bg-gradient-to-r py-20'>
         <div className='mx-auto max-w-7xl px-4 sm:px-6 lg:px-8'>
           <div className='text-center'>
             <h2 className='text-3xl font-bold tracking-tight text-white sm:text-4xl'>
@@ -214,7 +222,7 @@ export default function Home() {
                 <Button
                   size='lg'
                   variant='outline'
-                  className='border-white bg-white/20 px-8 py-3 text-white hover:bg-white hover:text-netflix'
+                  className='hover:text-netflix border-white bg-white/20 px-8 py-3 text-white hover:bg-white'
                 >
                   {t('learnMore')}
                 </Button>
@@ -230,7 +238,7 @@ export default function Home() {
         <div className='mx-auto max-w-7xl px-4 sm:px-6 lg:px-8'>
           <div className='text-center'>
             <div className='mb-4 flex items-center justify-center space-x-2'>
-              <div className='flex h-8 w-8 items-center justify-center rounded-squircle bg-gradient-to-br from-netflix to-netflix-dark'>
+              <div className='rounded-squircle from-netflix to-netflix-dark flex h-8 w-8 items-center justify-center bg-gradient-to-br'>
                 <span className='text-sm font-bold text-white'>FF</span>
               </div>
               <span className='text-xl font-bold text-white'>FastFlix</span>

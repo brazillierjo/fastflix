@@ -27,7 +27,7 @@ export function LanguageProvider({ children }: { children: React.ReactNode }) {
     } else {
       // Detect browser language
       const browserLang = navigator.language.toLowerCase();
-      const detectedLang = supportedLanguages.find((lang) =>
+      const detectedLang = supportedLanguages.find(lang =>
         browserLang.startsWith(lang)
       );
       if (detectedLang) {

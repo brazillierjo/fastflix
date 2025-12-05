@@ -23,7 +23,7 @@ export const translations = {
     heroTitle: 'Your perfect movie,',
     heroTitleHighlight: 'one prompt away',
     heroDescription:
-      'FastFlix is an iOS mobile application that uses AI to find the perfect movie or TV show for you. Simply describe what you\'re in the mood for in natural language, and our intelligent system will provide personalized recommendations.',
+      "FastFlix is an iOS mobile application that uses AI to find the perfect movie or TV show for you. Simply describe what you're in the mood for in natural language, and our intelligent system will provide personalized recommendations.",
     heroSubDescription:
       'Download the app to unlock unlimited recommendations with a premium subscription.',
     downloadIOS: 'Download for iOS',
@@ -65,7 +65,8 @@ export const translations = {
     step2Title: 'Describe Your Mood',
     step2Desc: 'Tell our AI what you feel like watching in natural language',
     step3Title: 'Get Recommendations',
-    step3Desc: 'Receive personalized suggestions filtered by your streaming platforms',
+    step3Desc:
+      'Receive personalized suggestions filtered by your streaming platforms',
 
     // CTA section
     ctaTitle: 'Ready to Discover Your Next Favorite?',
@@ -269,20 +270,20 @@ export const translations = {
     // Features section
     featuresTitle: 'Pourquoi choisir FastFlix',
     featuresDescription:
-      "Recommandations IA professionnelles conçues pour votre expérience de streaming",
+      'Recommandations IA professionnelles conçues pour votre expérience de streaming',
     flexiblePrompts: 'Recherche en langage naturel',
     flexiblePromptsDesc:
-      "Décrivez ce que vous voulez avec vos propres mots - notre IA comprend le contexte et les nuances",
+      'Décrivez ce que vous voulez avec vos propres mots - notre IA comprend le contexte et les nuances',
     aiPowered: "Propulsé par l'IA Google Gemini",
     aiPoweredDesc:
-      "Une technologie IA avancée fournit des recommandations précises et contextuelles adaptées à vos préférences",
+      'Une technologie IA avancée fournit des recommandations précises et contextuelles adaptées à vos préférences',
     platformFiltering: 'Intégration des plateformes de streaming',
     platformFilteringDesc:
-      "Filtre automatiquement les résultats en fonction de vos services de streaming disponibles pour un accès instantané",
+      'Filtre automatiquement les résultats en fonction de vos services de streaming disponibles pour un accès instantané',
     watchlist: 'Liste personnelle',
     watchlistDesc:
       'Sauvegardez films et séries pour plus tard avec des mises à jour en temps réel de la disponibilité',
-    zeroDataCollection: 'Confidentialité d\'abord',
+    zeroDataCollection: "Confidentialité d'abord",
     zeroDataCollectionDesc:
       "Confidentialité totale avec zéro collecte de données - pas de comptes, pas de suivi, pas d'historique stocké",
 
@@ -299,9 +300,11 @@ export const translations = {
     step1Title: "Téléchargez l'application",
     step1Desc: "Obtenez FastFlix depuis l'App Store sur votre iPhone ou iPad",
     step2Title: 'Décrivez votre humeur',
-    step2Desc: "Dites à notre IA ce que vous avez envie de regarder en langage naturel",
+    step2Desc:
+      'Dites à notre IA ce que vous avez envie de regarder en langage naturel',
     step3Title: 'Recevez des recommandations',
-    step3Desc: 'Obtenez des suggestions personnalisées filtrées par vos plateformes de streaming',
+    step3Desc:
+      'Obtenez des suggestions personnalisées filtrées par vos plateformes de streaming',
 
     // CTA section
     ctaTitle: 'Prêt à découvrir votre prochain favori ?',
@@ -386,7 +389,7 @@ export const translations = {
       'Les abonnements se renouvellent automatiquement sauf si le renouvellement automatique est désactivé au moins 24 heures avant la fin de la période en cours',
       'Vous pouvez gérer et annuler les abonnements dans les paramètres de votre compte Apple ID',
       "Aucun remboursement n'est fourni pour les portions inutilisées des périodes d'abonnement",
-      "3 recherches gratuites sont fournies à tous les utilisateurs avant de nécessiter un abonnement",
+      '3 recherches gratuites sont fournies à tous les utilisateurs avant de nécessiter un abonnement',
     ],
     intellectualProperty: 'Propriété intellectuelle',
     intellectualPropertyDesc:
@@ -450,7 +453,7 @@ export const translations = {
       {
         question: 'Combien coûte FastFlix ?',
         answer:
-          'FastFlix inclut 3 recherches gratuites pour commencer. Pour des recommandations illimitées, abonnez-vous à FastFlix Premium pour 2,99€/mois ou 29,99€/an. Tous les abonnements sont gérés via l\'application iOS sur votre appareil.',
+          "FastFlix inclut 3 recherches gratuites pour commencer. Pour des recommandations illimitées, abonnez-vous à FastFlix Premium pour 2,99€/mois ou 29,99€/an. Tous les abonnements sont gérés via l'application iOS sur votre appareil.",
       },
       {
         question: 'Quels appareils sont supportés ?',
@@ -458,7 +461,7 @@ export const translations = {
           "FastFlix est disponible exclusivement sur les appareils iOS. Vous pouvez le télécharger depuis l'App Store sur iPhone (iOS 15.0+) ou iPad (iPadOS 15.0+).",
       },
       {
-        question: 'Comment m\'abonner à la version premium ?',
+        question: "Comment m'abonner à la version premium ?",
         answer:
           "Téléchargez l'application FastFlix depuis l'App Store et abonnez-vous directement dans l'application. Toute la gestion des abonnements se fait via les paramètres de votre compte Apple ID.",
       },
@@ -470,7 +473,7 @@ export const translations = {
       {
         question: 'Stockez-vous mon historique de recherche ?',
         answer:
-          "Non. FastFlix ne stocke aucune donnée personnelle ni historique de recherche. Toutes les requêtes sont traitées en temps réel et immédiatement supprimées après avoir fourni les recommandations.",
+          'Non. FastFlix ne stocke aucune donnée personnelle ni historique de recherche. Toutes les requêtes sont traitées en temps réel et immédiatement supprimées après avoir fourni les recommandations.',
       },
     ],
   },
@@ -492,16 +495,16 @@ export const translations = {
     homeTitle: 'FastFlix',
     homeSubtitle: 'Raccomandazioni di film e serie TV con IA',
     homeDescription:
-      'Scopri il tuo prossimo film o serie preferita con il nostro sistema di raccomandazione intelligente alimentato dall\'IA.',
+      "Scopri il tuo prossimo film o serie preferita con il nostro sistema di raccomandazione intelligente alimentato dall'IA.",
 
     // Hero section
-    heroBadge: 'Scarica l\'app',
+    heroBadge: "Scarica l'app",
     heroTitle: 'Il tuo film perfetto,',
     heroTitleHighlight: 'a un prompt di distanza',
     heroDescription:
-      'FastFlix è un\'applicazione mobile iOS che utilizza l\'IA per trovare il film o la serie TV perfetta per te. Descrivi semplicemente cosa hai voglia di guardare in linguaggio naturale e il nostro sistema intelligente fornirà raccomandazioni personalizzate.',
+      "FastFlix è un'applicazione mobile iOS che utilizza l'IA per trovare il film o la serie TV perfetta per te. Descrivi semplicemente cosa hai voglia di guardare in linguaggio naturale e il nostro sistema intelligente fornirà raccomandazioni personalizzate.",
     heroSubDescription:
-      'Scarica l\'app per sbloccare raccomandazioni illimitate con un abbonamento premium.',
+      "Scarica l'app per sbloccare raccomandazioni illimitate con un abbonamento premium.",
     downloadIOS: 'Scarica per iOS',
     privacyStatement:
       'Disponibile esclusivamente su iOS • Abbonamento premium richiesto per uso illimitato',
@@ -529,24 +532,26 @@ export const translations = {
     // Platform section
     platformTitle: 'Inizia con FastFlix',
     platformDescription:
-      'Scarica l\'app mobile FastFlix dall\'App Store per iniziare a scoprire raccomandazioni personalizzate.',
+      "Scarica l'app mobile FastFlix dall'App Store per iniziare a scoprire raccomandazioni personalizzate.",
     iphoneSupport: 'iPhone',
     iphoneRequirement: 'iOS 15.0 o successivo',
     ipadSupport: 'iPad',
     ipadRequirement: 'iPadOS 15.0 o successivo',
 
     // How it works
-    step1Title: 'Scarica l\'app',
-    step1Desc: 'Ottieni FastFlix dall\'App Store sul tuo iPhone o iPad',
+    step1Title: "Scarica l'app",
+    step1Desc: "Ottieni FastFlix dall'App Store sul tuo iPhone o iPad",
     step2Title: 'Descrivi il tuo umore',
-    step2Desc: 'Dì alla nostra IA cosa hai voglia di guardare in linguaggio naturale',
+    step2Desc:
+      'Dì alla nostra IA cosa hai voglia di guardare in linguaggio naturale',
     step3Title: 'Ricevi raccomandazioni',
-    step3Desc: 'Ottieni suggerimenti personalizzati filtrati per le tue piattaforme di streaming',
+    step3Desc:
+      'Ottieni suggerimenti personalizzati filtrati per le tue piattaforme di streaming',
 
     // CTA section
     ctaTitle: 'Pronto a scoprire il tuo prossimo preferito?',
     ctaSubtitle: 'Scarica FastFlix ora',
-    downloadForIOS: 'Ottieni l\'app',
+    downloadForIOS: "Ottieni l'app",
     learnMore: 'Scopri di più',
     ctaPrivacy:
       '3 ricerche gratuite incluse • Premium: €2,99/mese o €29,99/anno per raccomandazioni illimitate',
@@ -564,13 +569,14 @@ export const translations = {
       'Nessuna informazione personale raccolta',
       'Tutte le raccomandazioni sono generate in tempo reale senza conservazione dati',
     ],
-    dataUsage: 'Come funziona l\'app',
-    dataUsageDesc: 'FastFlix elabora le tue richieste localmente e temporaneamente:',
+    dataUsage: "Come funziona l'app",
+    dataUsageDesc:
+      'FastFlix elabora le tue richieste localmente e temporaneamente:',
     dataUsageItems: [
       'Le tue query di ricerca sono inviate direttamente ai servizi IA per le raccomandazioni',
       'Le preferenze di lingua sono memorizzate solo localmente sul tuo dispositivo',
       'Nessun dato viene trasmesso ai nostri server o memorizzato in alcun database',
-      'Tutta l\'elaborazione avviene in tempo reale senza persistenza dei dati',
+      "Tutta l'elaborazione avviene in tempo reale senza persistenza dei dati",
     ],
     dataSharing: 'Condivisione dati',
     dataSharingDesc:
@@ -589,7 +595,7 @@ export const translations = {
       'Nessun dato personale viene mai raccolto',
       'Nessun account utente o profilo viene creato',
       'Nessun tracciamento o analisi viene implementato',
-      'L\'anonimato completo viene mantenuto in ogni momento',
+      "L'anonimato completo viene mantenuto in ogni momento",
     ],
 
     // Privacy Policy - Contact Section
@@ -602,25 +608,25 @@ export const translations = {
     // Terms of Use
     termsTitle: 'Termini di utilizzo',
     termsIntro:
-      'Questi Termini di utilizzo regolano l\'uso dell\'applicazione mobile FastFlix. Utilizzando FastFlix, accetti questi termini.',
+      "Questi Termini di utilizzo regolano l'uso dell'applicazione mobile FastFlix. Utilizzando FastFlix, accetti questi termini.",
     acceptanceOfTerms: 'Accettazione dei termini',
     acceptanceOfTermsDesc:
-      'Scaricando, installando o utilizzando FastFlix, accetti di essere vincolato da questi Termini di utilizzo. Se non accetti questi termini, ti preghiamo di non utilizzare l\'applicazione.',
+      "Scaricando, installando o utilizzando FastFlix, accetti di essere vincolato da questi Termini di utilizzo. Se non accetti questi termini, ti preghiamo di non utilizzare l'applicazione.",
     useOfService: 'Utilizzo del servizio',
     useOfServiceDesc:
-      'FastFlix è un\'applicazione mobile progettata per fornire raccomandazioni di film e serie TV alimentate dall\'IA. Puoi utilizzare il servizio solo per scopi personali e non commerciali.',
+      "FastFlix è un'applicazione mobile progettata per fornire raccomandazioni di film e serie TV alimentate dall'IA. Puoi utilizzare il servizio solo per scopi personali e non commerciali.",
     useOfServiceItems: [
       'Devi avere almeno 13 anni per utilizzare FastFlix',
       'Accetti di utilizzare il servizio solo per scopi legali',
-      'Non tenterai di fare reverse engineering o modificare l\'applicazione',
+      "Non tenterai di fare reverse engineering o modificare l'applicazione",
       'Non utilizzerai il servizio per distribuire contenuti dannosi o illegali',
     ],
     subscriptionTerms: 'Termini di abbonamento',
     subscriptionTermsDesc:
-      'FastFlix offre un abbonamento premium nell\'app mobile con i seguenti termini:',
+      "FastFlix offre un abbonamento premium nell'app mobile con i seguenti termini:",
     subscriptionTermsItems: [
       'Gli abbonamenti sono auto-rinnovabili e addebitati mensilmente (€2,99) o annualmente (€29,99)',
-      'Il pagamento verrà addebitato sul tuo account Apple ID alla conferma dell\'acquisto',
+      "Il pagamento verrà addebitato sul tuo account Apple ID alla conferma dell'acquisto",
       'Gli abbonamenti si rinnovano automaticamente a meno che il rinnovo automatico non venga disattivato almeno 24 ore prima della fine del periodo corrente',
       'Puoi gestire e annullare gli abbonamenti nelle Impostazioni del tuo account Apple ID',
       'Non vengono forniti rimborsi per le porzioni non utilizzate dei periodi di abbonamento',
@@ -631,7 +637,7 @@ export const translations = {
       'FastFlix e tutti i contenuti, le funzionalità e le funzionalità correlate sono di nostra proprietà e sono protetti da copyright, marchi e altre leggi sulla proprietà intellettuale.',
     limitationOfLiability: 'Limitazione di responsabilità',
     limitationOfLiabilityDesc:
-      'FastFlix viene fornito "così com\'è" senza garanzie di alcun tipo. Non siamo responsabili per eventuali danni derivanti dall\'utilizzo dell\'applicazione.',
+      "FastFlix viene fornito \"così com'è\" senza garanzie di alcun tipo. Non siamo responsabili per eventuali danni derivanti dall'utilizzo dell'applicazione.",
     termination: 'Risoluzione',
     terminationDesc:
       'Possiamo terminare o sospendere il tuo accesso a FastFlix in qualsiasi momento, senza preavviso, per condotte che riteniamo violino questi Termini di utilizzo.',
@@ -661,9 +667,11 @@ export const translations = {
 
     // Support - Contact Options
     bugReport: 'Segnala un bug',
-    bugReportDesc: 'Hai trovato un problema? Faccelo sapere così possiamo risolverlo.',
+    bugReportDesc:
+      'Hai trovato un problema? Faccelo sapere così possiamo risolverlo.',
     featureRequest: 'Richiesta funzionalità',
-    featureRequestDesc: 'Hai un\'idea per una nuova funzionalità? Ci piacerebbe sentirla!',
+    featureRequestDesc:
+      "Hai un'idea per una nuova funzionalità? Ci piacerebbe sentirla!",
 
     // Support - Quick Help Section
     needImmediateHelp: 'Hai bisogno di aiuto?',
@@ -681,27 +689,27 @@ export const translations = {
       {
         question: 'Come si usa FastFlix?',
         answer:
-          'Scarica l\'app mobile FastFlix dall\'App Store. Una volta installata, puoi descrivere cosa vuoi guardare in linguaggio naturale e la nostra IA fornirà raccomandazioni personalizzate. L\'app include 3 ricerche gratuite, dopo le quali è richiesto un abbonamento premium per l\'accesso illimitato.',
+          "Scarica l'app mobile FastFlix dall'App Store. Una volta installata, puoi descrivere cosa vuoi guardare in linguaggio naturale e la nostra IA fornirà raccomandazioni personalizzate. L'app include 3 ricerche gratuite, dopo le quali è richiesto un abbonamento premium per l'accesso illimitato.",
       },
       {
         question: 'Quanto costa FastFlix?',
         answer:
-          'FastFlix include 3 ricerche gratuite per iniziare. Per raccomandazioni illimitate, abbonati a FastFlix Premium per €2,99/mese o €29,99/anno. Tutti gli abbonamenti sono gestiti tramite l\'app iOS sul tuo dispositivo.',
+          "FastFlix include 3 ricerche gratuite per iniziare. Per raccomandazioni illimitate, abbonati a FastFlix Premium per €2,99/mese o €29,99/anno. Tutti gli abbonamenti sono gestiti tramite l'app iOS sul tuo dispositivo.",
       },
       {
         question: 'Quali dispositivi sono supportati?',
         answer:
-          'FastFlix è disponibile esclusivamente su dispositivi iOS. Puoi scaricarlo dall\'App Store su iPhone (iOS 15.0+) o iPad (iPadOS 15.0+).',
+          "FastFlix è disponibile esclusivamente su dispositivi iOS. Puoi scaricarlo dall'App Store su iPhone (iOS 15.0+) o iPad (iPadOS 15.0+).",
       },
       {
         question: 'Come mi abbono a premium?',
         answer:
-          'Scarica l\'app FastFlix dall\'App Store e abbonati direttamente nell\'app. Tutta la gestione degli abbonamenti avviene tramite le Impostazioni del tuo account Apple ID.',
+          "Scarica l'app FastFlix dall'App Store e abbonati direttamente nell'app. Tutta la gestione degli abbonamenti avviene tramite le Impostazioni del tuo account Apple ID.",
       },
       {
         question: 'Posso cambiare la lingua?',
         answer:
-          'Sì, FastFlix supporta 6 lingue: inglese, francese, tedesco, spagnolo, italiano e giapponese. Puoi cambiare la lingua nelle impostazioni dell\'app mobile.',
+          "Sì, FastFlix supporta 6 lingue: inglese, francese, tedesco, spagnolo, italiano e giapponese. Puoi cambiare la lingua nelle impostazioni dell'app mobile.",
       },
       {
         question: 'Memorizzate la mia cronologia di ricerca?',
@@ -777,7 +785,8 @@ export const translations = {
     step2Title: '気分を説明',
     step2Desc: '見たいものを自然言語でAIに伝える',
     step3Title: 'レコメンデーションを受け取る',
-    step3Desc: 'ストリーミングプラットフォームでフィルタリングされたパーソナライズされた提案を受け取る',
+    step3Desc:
+      'ストリーミングプラットフォームでフィルタリングされたパーソナライズされた提案を受け取る',
 
     // CTA section
     ctaTitle: '次のお気に入りを発見する準備はできましたか？',
@@ -801,7 +810,8 @@ export const translations = {
       'すべてのレコメンデーションはデータ保持なしでリアルタイムに生成されます',
     ],
     dataUsage: 'アプリの仕組み',
-    dataUsageDesc: 'FastFlixはあなたのリクエストをローカルで一時的に処理します：',
+    dataUsageDesc:
+      'FastFlixはあなたのリクエストをローカルで一時的に処理します：',
     dataUsageItems: [
       '検索クエリはレコメンデーションのためにAIサービスに直接送信されます',
       '言語設定はデバイスにローカルでのみ保存されます',
@@ -820,7 +830,8 @@ export const translations = {
     dataRetentionDesc:
       'FastFlixはユーザーデータを保持しません。すべてのやり取りはリアルタイムで処理され、レコメンデーション生成後すぐに破棄されます。',
     yourRights: 'あなたのプライバシー',
-    yourRightsDesc: 'FastFlixでは、以下の理由であなたのプライバシーが保証されます：',
+    yourRightsDesc:
+      'FastFlixでは、以下の理由であなたのプライバシーが保証されます：',
     yourRightsItems: [
       '個人データは一切収集されません',
       'ユーザーアカウントやプロファイルは作成されません',
@@ -1013,7 +1024,8 @@ export const translations = {
     step2Title: 'Describe tu estado de ánimo',
     step2Desc: 'Dile a nuestra IA lo que te apetece ver en lenguaje natural',
     step3Title: 'Recibe recomendaciones',
-    step3Desc: 'Obtén sugerencias personalizadas filtradas por tus plataformas de streaming',
+    step3Desc:
+      'Obtén sugerencias personalizadas filtradas por tus plataformas de streaming',
 
     // CTA section
     ctaTitle: '¿Listo para descubrir tu próximo favorito?',
@@ -1133,9 +1145,11 @@ export const translations = {
 
     // Support - Contact Options
     bugReport: 'Reportar un error',
-    bugReportDesc: '¿Encontraste un problema? Haznos saber para que podamos solucionarlo.',
+    bugReportDesc:
+      '¿Encontraste un problema? Haznos saber para que podamos solucionarlo.',
     featureRequest: 'Solicitud de función',
-    featureRequestDesc: '¿Tienes una idea para una nueva función? ¡Nos encantaría escucharla!',
+    featureRequestDesc:
+      '¿Tienes una idea para una nueva función? ¡Nos encantaría escucharla!',
 
     // Support - Quick Help Section
     needImmediateHelp: '¿Necesitas ayuda?',
@@ -1249,7 +1263,8 @@ export const translations = {
     step2Title: 'Beschreibe deine Stimmung',
     step2Desc: 'Sag unserer KI in natürlicher Sprache, was du schauen möchtest',
     step3Title: 'Empfehlungen erhalten',
-    step3Desc: 'Erhalte personalisierte Vorschläge, gefiltert nach deinen Streaming-Plattformen',
+    step3Desc:
+      'Erhalte personalisierte Vorschläge, gefiltert nach deinen Streaming-Plattformen',
 
     // CTA section
     ctaTitle: 'Bereit, deinen nächsten Favoriten zu entdecken?',
@@ -1369,9 +1384,11 @@ export const translations = {
 
     // Support - Contact Options
     bugReport: 'Fehler melden',
-    bugReportDesc: 'Problem gefunden? Lass es uns wissen, damit wir es beheben können.',
+    bugReportDesc:
+      'Problem gefunden? Lass es uns wissen, damit wir es beheben können.',
     featureRequest: 'Funktionswunsch',
-    featureRequestDesc: 'Hast du eine Idee für eine neue Funktion? Wir würden sie gerne hören!',
+    featureRequestDesc:
+      'Hast du eine Idee für eine neue Funktion? Wir würden sie gerne hören!',
 
     // Support - Quick Help Section
     needImmediateHelp: 'Brauchst du Hilfe?',
