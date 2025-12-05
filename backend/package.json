@@ -25,7 +25,7 @@
     "dotenv": "^17.2.3",
     "google-auth-library": "^10.5.0",
     "jsonwebtoken": "^9.0.2",
-    "next": "16.0.5",
+    "next": "16.0.7",
     "react": "19.2.0",
     "react-dom": "19.2.0",
     "zod": "^4.1.13"
@@ -41,7 +41,7 @@
     "@typescript-eslint/eslint-plugin": "^8.48.0",
     "@typescript-eslint/parser": "^8.48.0",
     "eslint": "^9",
-    "eslint-config-next": "16.0.5",
+    "eslint-config-next": "16.0.7",
     "jest": "^30.2.0",
     "knip": "^5.70.2",
     "prettier": "^3.7.2",
