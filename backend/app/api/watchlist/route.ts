@@ -15,15 +15,21 @@ const addToWatchlistSchema = z.object({
   mediaType: z.enum(['movie', 'tv']),
   title: z.string(),
   posterPath: z.string().nullable(),
-  providers: z.array(
-    z.object({
-      provider_id: z.number(),
-      provider_name: z.string(),
-      logo_path: z.string().optional().default(''),
-      display_priority: z.number().optional().default(0),
-      availability_type: z.enum(['flatrate', 'rent', 'buy', 'ads']).optional().default('flatrate'),
-    })
-  ).optional().default([]),
+  providers: z
+    .array(
+      z.object({
+        provider_id: z.number(),
+        provider_name: z.string(),
+        logo_path: z.string().optional().default(''),
+        display_priority: z.number().optional().default(0),
+        availability_type: z
+          .enum(['flatrate', 'rent', 'buy', 'ads'])
+          .optional()
+          .default('flatrate'),
+      })
+    )
+    .optional()
+    .default([]),
   country: z.string().min(2).max(3),
 });
 

@@ -650,7 +650,16 @@ class DatabaseService {
       await this.client!.execute({
         sql: `INSERT INTO watchlist (id, user_id, tmdb_id, media_type, title, poster_path, providers_json, country, last_provider_check)
               VALUES (?, ?, ?, ?, ?, ?, ?, ?, datetime('now'))`,
-        args: [id, userId, item.tmdbId, item.mediaType, item.title, item.posterPath, providersJson, item.country],
+        args: [
+          id,
+          userId,
+          item.tmdbId,
+          item.mediaType,
+          item.title,
+          item.posterPath,
+          providersJson,
+          item.country,
+        ],
       });
 
       console.log(`✅ Added to watchlist: ${item.title} (${item.mediaType}) for user ${userId}`);
@@ -732,7 +741,11 @@ class DatabaseService {
   /**
    * Check if an item is in user's watchlist
    */
-  async isInWatchlist(userId: string, tmdbId: number, mediaType: 'movie' | 'tv'): Promise<{ inWatchlist: boolean; itemId: string | null }> {
+  async isInWatchlist(
+    userId: string,
+    tmdbId: number,
+    mediaType: 'movie' | 'tv'
+  ): Promise<{ inWatchlist: boolean; itemId: string | null }> {
     this.initialize();
 
     try {
@@ -778,7 +791,11 @@ class DatabaseService {
   /**
    * Get watchlist item by TMDB ID
    */
-  async getWatchlistItemByTmdbId(userId: string, tmdbId: number, mediaType: 'movie' | 'tv'): Promise<WatchlistItem | null> {
+  async getWatchlistItemByTmdbId(
+    userId: string,
+    tmdbId: number,
+    mediaType: 'movie' | 'tv'
+  ): Promise<WatchlistItem | null> {
     this.initialize();
 
     try {
