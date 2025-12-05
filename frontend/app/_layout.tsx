@@ -35,14 +35,15 @@ function CustomTabBar({ state, descriptors, navigation }: any) {
   const isDark = colorScheme === 'dark';
 
   return (
-    <View style={styles.tabBarContainer}>
-      <BlurView
-        intensity={Platform.OS === 'ios' ? 80 : 60}
-        tint={isDark ? 'dark' : 'light'}
-        style={[styles.blurView, getGlassShadow(isDark)]}
-      >
-        <View style={[styles.tabBarContent, getGlassTabStyle(isDark)]}>
-          {state.routes
+    <View style={styles.tabBarWrapper}>
+      <View style={styles.tabBarContainer}>
+        <BlurView
+          intensity={Platform.OS === 'ios' ? 80 : 60}
+          tint={isDark ? 'dark' : 'light'}
+          style={[styles.blurView, getGlassShadow(isDark)]}
+        >
+          <View style={[styles.tabBarContent, getGlassTabStyle(isDark)]}>
+            {state.routes
             .filter(
               (route: any) =>
                 route.name !== 'auth' &&
@@ -119,8 +120,9 @@ function CustomTabBar({ state, descriptors, navigation }: any) {
                 </TouchableOpacity>
               );
             })}
-        </View>
-      </BlurView>
+          </View>
+        </BlurView>
+      </View>
     </View>
   );
 }
@@ -190,15 +192,17 @@ function TabsLayout() {
 }
 
 const styles = StyleSheet.create({
-  tabBarContainer: {
+  tabBarWrapper: {
     position: 'absolute',
     bottom: 20,
-    left: '10%', // Center with 80% width
-    right: '10%',
-    maxWidth: 500, // Limit width on iPad/tablets
-    alignSelf: 'center',
-    width: '80%',
+    left: 0,
+    right: 0,
+    alignItems: 'center',
     zIndex: 100,
+  },
+  tabBarContainer: {
+    width: '80%',
+    maxWidth: 500, // Limit width on iPad/tablets
   },
   blurView: {
     ...getSquircle(24), // Apple squircle corners for tab bar

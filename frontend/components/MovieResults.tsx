@@ -195,7 +195,7 @@ export default function MovieResults({
         {geminiResponse && (
           <View
             style={getSquircle(18)}
-            className='mb-4 mt-4 border border-netflix-500/20 bg-netflix-500/10 p-4'
+            className='mb-4 mt-6 border border-netflix-500/20 bg-netflix-500/10 p-4'
           >
             <View className='mb-2 flex-row items-center gap-2'>
               <Ionicons name='sparkles' size={20} color='#E50914' />
