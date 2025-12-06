@@ -49,7 +49,8 @@ class GeminiService {
     filters?: {
       yearFrom?: number;
       yearTo?: number;
-    }
+    },
+    maxRecommendations: number = 25
   ): Promise<AIRecommendationResult> {
     const genAI = this.getClient();
     const modelName = process.env.GEMINI_MODEL || 'gemini-2.0-flash';
@@ -137,7 +138,7 @@ CRITICAL: Be EXCEPTIONALLY generous and creative in recommendations. Cast a wide
 
 Provide three distinct outputs:
 
-1. RECOMMENDATIONS: Up to 25 ${contentTypeText} matching the request (be generous and inventive). Include exact titles, franchise variations, spiritual successors, and thematically similar works. List only titles separated by commas.
+1. RECOMMENDATIONS: Up to ${maxRecommendations} ${contentTypeText} matching the request (be generous and inventive). Include exact titles, franchise variations, spiritual successors, and thematically similar works. List only titles separated by commas.
 
 2. DETECTED_PLATFORMS: Extract any specific streaming platforms mentioned in the user's request (e.g., "Netflix", "Disney+", "Amazon Prime", "HBO", "Hulu", "Apple TV"). If no specific platform is mentioned, leave this empty. List only platform names separated by commas.
 

@@ -48,6 +48,7 @@ export interface SubscriptionContextType {
   // Trial state
   trialInfo: TrialInfo | null;
   isInTrial: boolean;
+  canStartTrial: boolean; // True if user hasn't used their trial yet
 
   // Backend subscription info (with full details)
   subscriptionInfo: SubscriptionInfo | null;
@@ -195,10 +196,11 @@ export const SubscriptionProvider: React.FC<SubscriptionProviderProps> = ({
         t('subscription.success.message') ||
           'Thank you for upgrading! You now have unlimited access to all features.'
       );
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error('❌ Error purchasing package:', error);
 
-      if (error.userCancelled) {
+      const purchaseError = error as { userCancelled?: boolean; message?: string };
+      if (purchaseError.userCancelled) {
         console.log('User cancelled purchase');
         return;
       }
@@ -206,7 +208,7 @@ export const SubscriptionProvider: React.FC<SubscriptionProviderProps> = ({
       Alert.alert(
         t('subscription.error.title') || 'Purchase Failed',
         t('subscription.error.message') ||
-          error.message ||
+          purchaseError.message ||
           'Something went wrong. Please try again.'
       );
     }
@@ -244,13 +246,14 @@ export const SubscriptionProvider: React.FC<SubscriptionProviderProps> = ({
       }
 
       return hasActiveSubscription;
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error('❌ Error restoring purchases:', error);
 
+      const restoreError = error as { message?: string };
       Alert.alert(
         t('subscription.restoration.error.title') || 'Restore Failed',
         t('subscription.restoration.error.message') ||
-          error.message ||
+          restoreError.message ||
           'Something went wrong. Please try again.'
       );
 
@@ -319,7 +322,7 @@ export const SubscriptionProvider: React.FC<SubscriptionProviderProps> = ({
       setSubscriptionStatus(status);
 
       console.log('✅ User linked to RevenueCat - Status:', status);
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error('❌ Error linking user to RevenueCat:', error);
       // Don't throw - this is not critical, just log the error
       // The user can still use the app, but purchases might not sync properly
@@ -407,6 +410,9 @@ export const SubscriptionProvider: React.FC<SubscriptionProviderProps> = ({
   // Computed property for trial status
   const isInTrial = trialInfo?.isActive ?? false;
 
+  // User can start trial if they haven't used it yet (trialInfo.used is false or undefined means not used)
+  const canStartTrial = trialInfo ? !trialInfo.used : false;
+
   // Refresh subscription and trial status from backend
   const refreshSubscriptionStatus = async (): Promise<void> => {
     await checkBackendSubscription();
@@ -419,6 +425,7 @@ export const SubscriptionProvider: React.FC<SubscriptionProviderProps> = ({
     offerings,
     trialInfo,
     isInTrial,
+    canStartTrial,
     subscriptionInfo,
     hasUnlimitedAccess:
       hasBackendSubscription ||

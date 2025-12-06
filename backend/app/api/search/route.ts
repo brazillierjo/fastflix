@@ -18,6 +18,8 @@ import { requireAuth } from '@/lib/middleware';
 import type { SearchResponse, MovieResult, StreamingProvider } from '@/lib/types';
 
 const MIN_RESULTS = 5;
+const DEFAULT_RECOMMENDATIONS = 25;
+const FILTERED_RECOMMENDATIONS = 40; // Request more when platform filters are active
 
 export async function POST(request: NextRequest) {
   const startTime = Date.now();
@@ -87,10 +89,20 @@ export async function POST(request: NextRequest) {
     }
 
     // Step 4: Generate AI recommendations with conversational response
+    // Request more recommendations when platform filters are active to ensure enough results after filtering
+    const hasPlatformFilters = platforms && platforms.length > 0;
+    const maxRecommendations = hasPlatformFilters ? FILTERED_RECOMMENDATIONS : DEFAULT_RECOMMENDATIONS;
+
+    if (hasPlatformFilters) {
+      console.log(`📋 Platform filters active, requesting ${maxRecommendations} recommendations`);
+    }
+
     const aiResult = await gemini.generateRecommendationsWithResponse(
       query,
       contentTypes,
-      language
+      language,
+      undefined, // filters (yearFrom/yearTo) - not used from search route currently
+      maxRecommendations
     );
 
     // Step 5: Enrich recommendations with TMDB data

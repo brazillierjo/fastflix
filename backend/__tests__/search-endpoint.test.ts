@@ -185,7 +185,9 @@ describe('Search Endpoint', () => {
       expect(gemini.generateRecommendationsWithResponse).toHaveBeenCalledWith(
         'sci-fi movies',
         ['movies'],
-        'en-US'
+        'en-US',
+        undefined,
+        25 // Default recommendations count (no platform filters)
       );
     });
 
@@ -201,7 +203,28 @@ describe('Search Endpoint', () => {
       expect(gemini.generateRecommendationsWithResponse).toHaveBeenCalledWith(
         'adventure',
         ['movies', 'TV shows'],
-        expect.any(String)
+        expect.any(String),
+        undefined,
+        25 // Default recommendations count (no platform filters)
+      );
+    });
+
+    it('should request more recommendations when platform filters are active', async () => {
+      const request = createMockRequest({
+        query: 'action movies',
+        includeMovies: true,
+        includeTvShows: false,
+        platforms: [8, 9], // Netflix, Amazon Prime
+      });
+
+      await POST(request);
+
+      expect(gemini.generateRecommendationsWithResponse).toHaveBeenCalledWith(
+        'action movies',
+        ['movies'],
+        expect.any(String),
+        undefined,
+        40 // Increased recommendations count when platform filters are active
       );
     });
 
