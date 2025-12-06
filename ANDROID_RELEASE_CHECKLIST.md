@@ -1,91 +1,18 @@
 # FastFlix - Android Release Checklist
 
-## Phase 1: Google Cloud Console - Authentication
+## Phase 1: Google Play Console
 
-### Créer Android OAuth Client ID
-- [ ] Aller sur [Google Cloud Console](https://console.cloud.google.com)
-- [ ] Sélectionner le projet FastFlix existant
-- [ ] Aller dans "APIs & Services" > "Credentials"
-- [ ] Cliquer "Create Credentials" > "OAuth 2.0 Client ID"
-- [ ] Sélectionner "Android" comme type d'application
-- [ ] Renseigner le package name: `com.fastflix.app`
-- [ ] Générer le SHA-1 fingerprint (voir commande ci-dessous)
-- [ ] Copier l'Android Client ID généré
-
-```bash
-# Pour générer le SHA-1 (debug)
-keytool -list -v -keystore ~/.android/debug.keystore -alias androiddebugkey -storepass android -keypass android
-
-# Pour générer le SHA-1 (release - après création du keystore)
-keytool -list -v -keystore /path/to/release.keystore -alias fastflix-release
-```
-
----
-
-## Phase 2: RevenueCat - Configuration Android
-
-### Dashboard RevenueCat
-- [ ] Se connecter sur [RevenueCat Dashboard](https://app.revenuecat.com)
-- [ ] Aller dans le projet FastFlix
-- [ ] Cliquer "Add App" et sélectionner "Google Play Store"
-- [ ] Configurer le Service Account JSON (voir Phase 4)
-- [ ] Copier l'Android Public API Key
-
-### Créer les produits Android
-- [ ] Aller dans "Products"
-- [ ] Créer le produit Monthly pour Android (`com.fastflix.app.Month`)
-- [ ] Créer le produit Quarterly pour Android (`com.fastflix.app.Quarterly`)
-- [ ] Créer le produit Annual pour Android (`com.fastflix.app.Annual`)
-- [ ] Vérifier que les produits sont dans les bons "Offerings"
-
----
-
-## Phase 3: Configuration du Code
-
-### Variables d'environnement (.env.local)
-- [ ] Ajouter `EXPO_PUBLIC_GOOGLE_ANDROID_CLIENT_ID=xxx.apps.googleusercontent.com`
-- [ ] Ajouter `EXPO_PUBLIC_REVENUECAT_ANDROID_API_KEY=goog_xxx`
-
-### Modifier auth.tsx
-- [ ] Importer les variables d'environnement Android
-- [ ] Ajouter `androidClientId` dans `Google.useIdTokenAuthRequest()`
-
-```tsx
-const [request, response, promptAsync] = Google.useIdTokenAuthRequest({
-  iosClientId: googleIosClientId,
-  androidClientId: googleAndroidClientId, // Ajouter cette ligne
-});
-```
-
-### Modifier RevenueCatContext.tsx
-- [ ] Ajouter Platform.select pour l'API key
-
-```tsx
-const apiKey = Platform.select({
-  ios: Constants.expoConfig?.extra?.EXPO_PUBLIC_REVENUECAT_IOS_API_KEY,
-  android: Constants.expoConfig?.extra?.EXPO_PUBLIC_REVENUECAT_ANDROID_API_KEY,
-});
-```
-
-### Synchroniser les versions
-- [ ] Mettre à jour `android/app/build.gradle` versionName vers 2.1.0
-- [ ] Incrémenter versionCode si nécessaire
-
----
-
-## Phase 4: Google Play Console
-
-### Créer un compte développeur
+### Creer un compte developpeur
 - [ ] Aller sur [Google Play Console](https://play.google.com/console)
 - [ ] Payer les frais d'inscription ($25 one-time)
-- [ ] Compléter la vérification d'identité
+- [ ] Completer la verification d'identite
 
-### Créer l'application FastFlix
+### Creer l'application FastFlix
 - [ ] Cliquer "Create app"
 - [ ] Nom: "FastFlix"
-- [ ] Langue par défaut: Français ou English
+- [ ] Langue par defaut: Francais ou English
 - [ ] Type: App
-- [ ] Catégorie: Entertainment
+- [ ] Categorie: Entertainment
 - [ ] Accepter les conditions
 
 ### Configurer les informations de l'app
@@ -97,33 +24,122 @@ const apiKey = Platform.select({
 
 ### Store Listing
 - [ ] Ajouter le titre: "FastFlix - Movie Recommendations"
-- [ ] Ajouter la description courte (80 caractères max)
-- [ ] Ajouter la description longue (4000 caractères max)
-- [ ] Uploader l'icône de l'app (512x512)
+- [ ] Ajouter la description courte (80 caracteres max)
+- [ ] Ajouter la description longue (4000 caracteres max)
+- [ ] Uploader l'icone de l'app (512x512)
 - [ ] Uploader le feature graphic (1024x500)
-- [ ] Uploader les screenshots (min 2 pour téléphone)
-- [ ] Sélectionner la catégorie: Entertainment
+- [ ] Uploader les screenshots (min 2 pour telephone)
+- [ ] Selectionner la categorie: Entertainment
 
 ### Configurer les abonnements
 - [ ] Aller dans "Monetization" > "Products" > "Subscriptions"
-- [ ] Créer l'abonnement Monthly (com.fastflix.app.Month) - 2,99€
-- [ ] Créer l'abonnement Quarterly (com.fastflix.app.Quarterly) - 6,99€
-- [ ] Créer l'abonnement Annual (com.fastflix.app.Annual) - 17,99€
+- [ ] Creer l'abonnement Monthly (com.fastflix.app.Month) - 2,99 EUR
+- [ ] Creer l'abonnement Quarterly (com.fastflix.app.Quarterly) - 6,99 EUR
+- [ ] Creer l'abonnement Annual (com.fastflix.app.Annual) - 17,99 EUR
 - [ ] Activer les abonnements
 
 ### Service Account pour RevenueCat
 - [ ] Aller dans "Setup" > "API access"
-- [ ] Créer un Service Account ou utiliser un existant
-- [ ] Télécharger le JSON credentials
-- [ ] Uploader le JSON dans RevenueCat (Phase 2)
+- [ ] Creer un Service Account ou utiliser un existant
+- [ ] Telecharger le JSON credentials
+- [ ] Garder le fichier pour RevenueCat (Phase 2)
+
+---
+
+## Phase 2: Google Cloud Console - Authentication
+
+### Creer Android OAuth Client ID
+- [ ] Aller sur [Google Cloud Console](https://console.cloud.google.com)
+- [ ] Selectionner le projet FastFlix existant
+- [ ] Aller dans "APIs & Services" > "Credentials"
+- [ ] Cliquer "Create Credentials" > "OAuth 2.0 Client ID"
+- [ ] Selectionner "Android" comme type d'application
+- [ ] Renseigner le package name: `com.fastflix.app`
+- [ ] Generer le SHA-1 fingerprint (voir commande ci-dessous)
+- [ ] Copier l'Android Client ID genere
+
+```bash
+# Pour generer le SHA-1 (debug)
+keytool -list -v -keystore ~/.android/debug.keystore -alias androiddebugkey -storepass android -keypass android
+
+# Pour generer le SHA-1 (release - apres creation du keystore)
+keytool -list -v -keystore /path/to/release.keystore -alias fastflix-release
+```
+
+---
+
+## Phase 3: RevenueCat - Configuration Android
+
+### Dashboard RevenueCat
+- [ ] Se connecter sur [RevenueCat Dashboard](https://app.revenuecat.com)
+- [ ] Aller dans le projet FastFlix
+- [ ] Cliquer "Add App" et selectionner "Google Play Store"
+- [ ] Uploader le Service Account JSON (de Phase 1)
+- [ ] Copier l'Android Public API Key
+
+### Creer les produits Android
+- [ ] Aller dans "Products"
+- [ ] Creer le produit Monthly pour Android (`com.fastflix.app.Month`)
+- [ ] Creer le produit Quarterly pour Android (`com.fastflix.app.Quarterly`)
+- [ ] Creer le produit Annual pour Android (`com.fastflix.app.Annual`)
+- [ ] Verifier que les produits sont dans les bons "Offerings"
+
+---
+
+## Phase 4: Configuration du Code
+
+### Variables d'environnement (.env.local)
+- [ ] Ajouter `EXPO_PUBLIC_GOOGLE_ANDROID_CLIENT_ID=xxx.apps.googleusercontent.com`
+- [ ] Ajouter `EXPO_PUBLIC_REVENUECAT_ANDROID_API_KEY=goog_xxx`
+
+### Modifier app.config.js
+Ajouter les nouvelles variables dans `extra`:
+
+```js
+extra: {
+  // ... existing
+  EXPO_PUBLIC_GOOGLE_ANDROID_CLIENT_ID:
+    process.env.EXPO_PUBLIC_GOOGLE_ANDROID_CLIENT_ID,
+  EXPO_PUBLIC_REVENUECAT_ANDROID_API_KEY:
+    process.env.EXPO_PUBLIC_REVENUECAT_ANDROID_API_KEY,
+}
+```
+
+### Modifier auth.tsx
+- [ ] Ajouter `androidClientId` dans `Google.useIdTokenAuthRequest()`
+
+```tsx
+const googleAndroidClientId =
+  Constants.expoConfig?.extra?.EXPO_PUBLIC_GOOGLE_ANDROID_CLIENT_ID;
+
+const [request, response, promptAsync] = Google.useIdTokenAuthRequest({
+  iosClientId: googleIosClientId,
+  androidClientId: googleAndroidClientId,
+});
+
+// Mettre a jour la condition d'affichage du bouton Google
+{(googleIosClientId || googleAndroidClientId) && (
+  <TouchableOpacity ... />
+)}
+```
+
+### Modifier RevenueCatContext.tsx
+- [ ] Ajouter la cle API Android dans Platform.select
+
+```tsx
+const apiKey = Platform.select({
+  ios: Constants.expoConfig?.extra?.EXPO_PUBLIC_REVENUECAT_IOS_API_KEY,
+  android: Constants.expoConfig?.extra?.EXPO_PUBLIC_REVENUECAT_ANDROID_API_KEY,
+});
+```
 
 ---
 
 ## Phase 5: Build Configuration
 
-### Générer le Release Keystore
-- [ ] Exécuter la commande ci-dessous
-- [ ] Sauvegarder le keystore dans un endroit sécurisé (PAS dans git)
+### Generer le Release Keystore
+- [ ] Executer la commande ci-dessous
+- [ ] Sauvegarder le keystore dans un endroit securise (PAS dans git)
 - [ ] Noter le mot de passe dans un gestionnaire de mots de passe
 
 ```bash
@@ -133,22 +149,9 @@ keytool -genkey -v -keystore fastflix-release.keystore \
 ```
 
 ### Configurer EAS Build
-- [ ] Ajouter le keystore à EAS: `eas credentials`
-- [ ] Sélectionner Android > production
+- [ ] Ajouter le keystore a EAS: `eas credentials`
+- [ ] Selectionner Android > production
 - [ ] Upload le keystore
-
-### Mettre à jour eas.json (optionnel)
-```json
-{
-  "build": {
-    "production": {
-      "android": {
-        "buildType": "app-bundle"
-      }
-    }
-  }
-}
-```
 
 ---
 
@@ -159,7 +162,7 @@ keytool -genkey -v -keystore fastflix-release.keystore \
 - [ ] Installer l'APK sur un appareil Android
 - [ ] Tester Google Sign In
 - [ ] Tester l'affichage du paywall
-- [ ] Tester un achat en sandbox (si configuré)
+- [ ] Tester un achat en sandbox (si configure)
 
 ### Internal Testing Track
 - [ ] Uploader le build sur Internal Testing dans Play Console
@@ -172,7 +175,7 @@ keytool -genkey -v -keystore fastflix-release.keystore \
 
 ### Build de production
 - [ ] Lancer `eas build --platform android --profile production`
-- [ ] Télécharger l'AAB (Android App Bundle)
+- [ ] Telecharger l'AAB (Android App Bundle)
 
 ### Soumettre sur Play Store
 - [ ] Aller dans "Release" > "Production"
@@ -182,11 +185,19 @@ keytool -genkey -v -keystore fastflix-release.keystore \
 - [ ] Soumettre pour review
 
 ### Post-release
-- [ ] Vérifier que l'app est approuvée (1-3 jours)
+- [ ] Verifier que l'app est approuvee (1-3 jours)
 - [ ] Tester l'app depuis le Play Store
-- [ ] Vérifier que les achats fonctionnent en production
+- [ ] Verifier que les achats fonctionnent en production
 
 ---
+
+## Notes importantes
+
+- Le SHA-1 doit correspondre au keystore utilise pour signer l'app
+- Les product IDs doivent etre identiques entre Play Console et RevenueCat
+- Le webhook RevenueCat est le meme pour iOS et Android
+- Apple Sign In n'est pas disponible sur Android (Google Sign In uniquement)
+- Le package name `com.fastflix.app` est deja configure dans app.config.js
 
 ## Ressources utiles
 
@@ -194,12 +205,3 @@ keytool -genkey -v -keystore fastflix-release.keystore \
 - [RevenueCat Android Setup](https://www.revenuecat.com/docs/getting-started/installation/android)
 - [Google Play Console Help](https://support.google.com/googleplay/android-developer/)
 - [EAS Build Android](https://docs.expo.dev/build/setup/#android)
-
----
-
-## Notes
-
-- Le SHA-1 doit correspondre au keystore utilisé pour signer l'app
-- Les product IDs doivent être identiques entre Play Console et RevenueCat
-- Le webhook RevenueCat est le même pour iOS et Android
-- Apple Sign In n'est pas disponible sur Android (Google Sign In uniquement)
