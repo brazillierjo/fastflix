@@ -136,9 +136,7 @@ npm run format:check     # Prettier check
 ### Database Schema (Turso SQLite)
 Key tables:
 - `users`: User accounts with auth provider info and trial tracking
-- `user_preferences`: User's default search filters (country, platforms, availability types)
 - `subscriptions`: RevenueCat subscription status per user
-- `prompt_logs`: Analytics for search queries
 - `blocked_devices`: Anti-abuse device blocking
 - `watchlist`: User watchlist items (tmdb_id, media_type, title, poster_path, providers_json, country)
 

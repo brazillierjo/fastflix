@@ -748,21 +748,4 @@ describe('Database Service', () => {
     });
   });
 
-  describe('logPromptWithUserId', () => {
-    it('should log prompt without throwing', async () => {
-      mockExecute.mockResolvedValueOnce({ rows: [] });
-
-      await expect(
-        db.logPromptWithUserId('user-123', 'test query', 10, 500)
-      ).resolves.not.toThrow();
-    });
-
-    it('should not throw on logging error', async () => {
-      mockExecute.mockRejectedValueOnce(new Error('DB Error'));
-
-      await expect(
-        db.logPromptWithUserId('user-123', 'test query', 10, 500)
-      ).resolves.not.toThrow();
-    });
-  });
 });

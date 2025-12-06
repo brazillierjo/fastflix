@@ -35,19 +35,6 @@ CREATE TABLE IF NOT EXISTS subscriptions (
 
 CREATE INDEX IF NOT EXISTS idx_subscriptions_user_id ON subscriptions(user_id);
 
--- Table pour tracer les requêtes (analytics optionnel)
-CREATE TABLE IF NOT EXISTS prompt_logs (
-  id INTEGER PRIMARY KEY AUTOINCREMENT,
-  device_id TEXT NOT NULL,
-  user_id TEXT,                           -- Ajouté dans migration 001
-  query TEXT,                             -- Requête de l'utilisateur (optionnel)
-  results_count INTEGER,                  -- Nombre de résultats retournés
-  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-  response_time_ms INTEGER                -- Temps de réponse de l'API
-);
-
-CREATE INDEX IF NOT EXISTS idx_prompt_logs_user_id ON prompt_logs(user_id);
-
 -- Table pour les appareils bloqués (anti-abus)
 CREATE TABLE IF NOT EXISTS blocked_devices (
   device_id TEXT PRIMARY KEY,
@@ -57,5 +44,4 @@ CREATE TABLE IF NOT EXISTS blocked_devices (
 );
 
 -- Index pour optimiser les requêtes
-CREATE INDEX IF NOT EXISTS idx_prompt_logs_device ON prompt_logs(device_id, created_at);
 CREATE INDEX IF NOT EXISTS idx_subscriptions_status ON subscriptions(status, expires_at);

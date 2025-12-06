@@ -168,10 +168,7 @@ export async function POST(request: NextRequest) {
       }
     }
 
-    // Step 9: Log the prompt for analytics
     const responseTimeMs = Date.now() - startTime;
-    await db.logPromptWithUserId(userId, query, finalResults.length, responseTimeMs);
-
     console.log(`📊 Final: ${finalResults.length} results in ${responseTimeMs}ms`);
 
     // Step 10: Return successful response

@@ -387,22 +387,6 @@ CREATE TABLE subscriptions (
 );
 ```
 
-### `prompt_logs`
-
-Analytics and usage tracking.
-
-```sql
-CREATE TABLE prompt_logs (
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
-    device_id TEXT,
-    user_id TEXT,
-    query TEXT,
-    results_count INTEGER,
-    response_time_ms INTEGER,
-    created_at TEXT DEFAULT CURRENT_TIMESTAMP
-);
-```
-
 ### `blocked_devices`
 
 Anti-abuse system for blocking malicious devices.

@@ -21,7 +21,6 @@ jest.mock('../lib/tmdb', () => ({
 jest.mock('../lib/db', () => ({
   db: {
     hasAccess: jest.fn(),
-    logPromptWithUserId: jest.fn(),
   },
 }));
 
@@ -63,7 +62,6 @@ describe('Search Endpoint', () => {
     (applyRateLimit as jest.Mock).mockResolvedValue(null);
 
     (db.hasAccess as jest.Mock).mockResolvedValue(true);
-    (db.logPromptWithUserId as jest.Mock).mockResolvedValue(undefined);
 
     (gemini.generateRecommendationsWithResponse as jest.Mock).mockResolvedValue({
       recommendations: ['Movie 1', 'Movie 2', 'Movie 3'],
@@ -409,25 +407,6 @@ describe('Search Endpoint', () => {
 
       // Should filter to Netflix results (8 movies on Netflix)
       expect(data.recommendations.length).toBe(8);
-    });
-  });
-
-  describe('Logging', () => {
-    it('should log prompt after successful search', async () => {
-      const request = createMockRequest({
-        query: 'romantic comedies',
-        includeMovies: true,
-        includeTvShows: false,
-      });
-
-      await POST(request);
-
-      expect(db.logPromptWithUserId).toHaveBeenCalledWith(
-        'user-123',
-        'romantic comedies',
-        expect.any(Number),
-        expect.any(Number)
-      );
     });
   });
 
