@@ -31,8 +31,8 @@ export async function GET(request: NextRequest) {
       return NextResponse.json({ error: 'User not found' }, { status: 404 });
     }
 
-    // Step 4: Check subscription status from database
-    const hasActiveSubscription = await db.hasActiveSubscriptionByUserId(payload.userId);
+    // Step 4: Get subscription details from database
+    const subscriptionDetails = await db.getSubscriptionDetails(payload.userId);
 
     // Step 5: Get trial info
     const trialInfo = await db.getTrialInfo(payload.userId);
@@ -42,7 +42,12 @@ export async function GET(request: NextRequest) {
       {
         user,
         subscription: {
-          isActive: hasActiveSubscription,
+          isActive: subscriptionDetails.isActive,
+          status: subscriptionDetails.status,
+          productId: subscriptionDetails.productId,
+          expiresAt: subscriptionDetails.expiresAt,
+          createdAt: subscriptionDetails.createdAt,
+          willRenew: subscriptionDetails.willRenew,
         },
         trial: trialInfo,
       },

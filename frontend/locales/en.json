@@ -174,7 +174,19 @@
         "title": "Restore Failed",
         "message": "Unable to restore purchases. Please try again."
       }
-    }
+    },
+    "plan": {
+      "monthly": "Monthly",
+      "quarterly": "Quarterly",
+      "annual": "Annual",
+      "premium": "Premium",
+      "unknown": "Unknown"
+    },
+    "startDate": "Start date",
+    "endDate": "End date",
+    "renewalDate": "Renewal date",
+    "cancelledMessage": "Your subscription will not renew",
+    "accessUntil": "You will have access until"
   },
   "trial": {
     "success": {
@@ -214,6 +226,7 @@
     "signOut": "Sign Out",
     "preferences": "Preferences",
     "noSubscription": "Not subscribed",
+    "subscriptionCancelled": "Cancelled - Active until expiry",
     "signInRequired": "Sign in to manage",
     "defaultFilters": "Default Filters",
     "defaultFiltersSubtitle": "Country, platforms, content type",

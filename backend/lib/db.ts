@@ -473,6 +473,100 @@ class DatabaseService {
     return isInTrial;
   }
 
+  /**
+   * End the free trial early (e.g., when user subscribes)
+   * This sets trial_ends_at to now, so the trial is no longer active
+   */
+  async endFreeTrial(userId: string): Promise<void> {
+    this.initialize();
+
+    try {
+      await this.client!.execute({
+        sql: `UPDATE users
+              SET trial_ends_at = datetime('now'),
+                  updated_at = datetime('now')
+              WHERE id = ? AND trial_used = 1`,
+        args: [userId],
+      });
+    } catch (error) {
+      // Don't throw - ending trial should not break the subscription flow
+      console.error('Failed to end free trial:', error);
+    }
+  }
+
+  /**
+   * Get subscription details for a user
+   */
+  async getSubscriptionDetails(userId: string): Promise<{
+    isActive: boolean;
+    status: string | null;
+    productId: string | null;
+    expiresAt: string | null;
+    createdAt: string | null;
+    willRenew: boolean;
+  }> {
+    this.initialize();
+
+    try {
+      const result = await this.client!.execute({
+        sql: `SELECT status, product_id, expires_at, created_at
+              FROM subscriptions
+              WHERE user_id = ?
+              ORDER BY created_at DESC
+              LIMIT 1`,
+        args: [userId],
+      });
+
+      if (result.rows.length === 0) {
+        return {
+          isActive: false,
+          status: null,
+          productId: null,
+          expiresAt: null,
+          createdAt: null,
+          willRenew: false,
+        };
+      }
+
+      const row = result.rows[0];
+      const status = row.status as string;
+      const expiresAt = row.expires_at as string | null;
+
+      // Check if subscription is active (not expired)
+      let isActive = false;
+      if (status === 'active' || status === 'cancelled') {
+        if (expiresAt) {
+          const expiresAtDate = new Date(expiresAt);
+          isActive = expiresAtDate > new Date();
+        } else {
+          // No expiration date means lifetime or error
+          isActive = status === 'active';
+        }
+      }
+
+      // Will renew if status is 'active' (cancelled means won't renew)
+      const willRenew = status === 'active';
+
+      return {
+        isActive,
+        status,
+        productId: row.product_id as string | null,
+        expiresAt,
+        createdAt: row.created_at as string | null,
+        willRenew,
+      };
+    } catch {
+      return {
+        isActive: false,
+        status: null,
+        productId: null,
+        expiresAt: null,
+        createdAt: null,
+        willRenew: false,
+      };
+    }
+  }
+
   // ==========================================================================
   // User Preferences Methods
   // ==========================================================================

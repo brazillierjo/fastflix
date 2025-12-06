@@ -174,7 +174,19 @@
         "title": "Error en la restauración",
         "message": "No se pudieron restaurar las compras. Por favor, inténtalo de nuevo."
       }
-    }
+    },
+    "plan": {
+      "monthly": "Mensual",
+      "quarterly": "Trimestral",
+      "annual": "Anual",
+      "premium": "Premium",
+      "unknown": "Desconocido"
+    },
+    "startDate": "Fecha de inicio",
+    "endDate": "Fecha de fin",
+    "renewalDate": "Fecha de renovación",
+    "cancelledMessage": "Tu suscripción no se renovará",
+    "accessUntil": "Tendrás acceso hasta"
   },
   "trial": {
     "success": {
@@ -214,6 +226,7 @@
     "signOut": "Cerrar sesión",
     "preferences": "Preferencias",
     "noSubscription": "Sin suscripción",
+    "subscriptionCancelled": "Cancelada - Activa hasta expiración",
     "signInRequired": "Inicia sesión para gestionar",
     "defaultFilters": "Filtros predeterminados",
     "defaultFiltersSubtitle": "País, plataformas, tipo de contenido",

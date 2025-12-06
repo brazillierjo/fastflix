@@ -174,7 +174,19 @@
         "title": "Wiederherstellung fehlgeschlagen",
         "message": "Die Käufe konnten nicht wiederhergestellt werden. Bitte versuche es erneut."
       }
-    }
+    },
+    "plan": {
+      "monthly": "Monatlich",
+      "quarterly": "Vierteljährlich",
+      "annual": "Jährlich",
+      "premium": "Premium",
+      "unknown": "Unbekannt"
+    },
+    "startDate": "Startdatum",
+    "endDate": "Enddatum",
+    "renewalDate": "Verlängerungsdatum",
+    "cancelledMessage": "Dein Abonnement wird nicht verlängert",
+    "accessUntil": "Du hast Zugang bis"
   },
   "trial": {
     "success": {
@@ -214,6 +226,7 @@
     "signOut": "Abmelden",
     "preferences": "Einstellungen",
     "noSubscription": "Nicht abonniert",
+    "subscriptionCancelled": "Gekündigt - Aktiv bis Ablauf",
     "signInRequired": "Anmelden zum Verwalten",
     "defaultFilters": "Standardfilter",
     "defaultFiltersSubtitle": "Land, Plattformen, Inhaltstyp",

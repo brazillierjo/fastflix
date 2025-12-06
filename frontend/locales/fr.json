@@ -174,7 +174,19 @@
         "title": "Échec de la restauration",
         "message": "Impossible de restaurer les achats. Veuillez réessayer."
       }
-    }
+    },
+    "plan": {
+      "monthly": "Mensuel",
+      "quarterly": "Trimestriel",
+      "annual": "Annuel",
+      "premium": "Premium",
+      "unknown": "Inconnu"
+    },
+    "startDate": "Date de début",
+    "endDate": "Date de fin",
+    "renewalDate": "Date de renouvellement",
+    "cancelledMessage": "Votre abonnement ne sera pas renouvelé",
+    "accessUntil": "Vous aurez accès jusqu'au"
   },
   "trial": {
     "success": {
@@ -214,6 +226,7 @@
     "signOut": "Se déconnecter",
     "preferences": "Préférences",
     "noSubscription": "Non abonné",
+    "subscriptionCancelled": "Résilié - Actif jusqu'à expiration",
     "signInRequired": "Connectez-vous pour gérer",
     "defaultFilters": "Filtres par défaut",
     "defaultFiltersSubtitle": "Pays, plateformes, type de contenu",

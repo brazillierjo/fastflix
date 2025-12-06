@@ -8,6 +8,7 @@ import * as SecureStore from 'expo-secure-store';
 import {
   APIResponse,
   TrialInfo,
+  SubscriptionInfo,
   WatchlistItem,
   WatchlistResponse,
   WatchlistCheckResponse,
@@ -369,7 +370,7 @@ class BackendAPIService {
   async getCurrentUser(): Promise<
     APIResponse<{
       user: any;
-      subscription: { isActive: boolean };
+      subscription: SubscriptionInfo;
       trial: TrialInfo;
     }>
   > {

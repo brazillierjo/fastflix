@@ -27,7 +27,7 @@ import Purchases, {
 } from 'react-native-purchases';
 import { useLanguage } from './LanguageContext';
 import { backendAPIService } from '../services/backend-api.service';
-import { TrialInfo } from '@/types/api';
+import { TrialInfo, SubscriptionInfo } from '@/types/api';
 
 // Subscription status enum for clarity
 export enum SubscriptionStatus {
@@ -48,6 +48,9 @@ export interface SubscriptionContextType {
   // Trial state
   trialInfo: TrialInfo | null;
   isInTrial: boolean;
+
+  // Backend subscription info (with full details)
+  subscriptionInfo: SubscriptionInfo | null;
 
   // Derived properties for easy access
   hasUnlimitedAccess: boolean; // True for ACTIVE, GRACE_PERIOD, or active trial
@@ -85,6 +88,8 @@ export const SubscriptionProvider: React.FC<SubscriptionProviderProps> = ({
   const [offerings, setOfferings] = useState<PurchasesOffering[] | null>(null);
   const [hasBackendSubscription, setHasBackendSubscription] = useState(false);
   const [trialInfo, setTrialInfo] = useState<TrialInfo | null>(null);
+  const [subscriptionInfo, setSubscriptionInfo] =
+    useState<SubscriptionInfo | null>(null);
 
   // Determine subscription status from CustomerInfo
   const determineSubscriptionStatus = (
@@ -270,11 +275,21 @@ export const SubscriptionProvider: React.FC<SubscriptionProviderProps> = ({
           }
         }
 
-        // Check subscription status
-        if (response.data.subscription?.isActive) {
-          console.log('✅ Backend subscription is active');
-          setHasBackendSubscription(true);
-          return true;
+        // Update subscription info with full details
+        if (response.data.subscription) {
+          setSubscriptionInfo(response.data.subscription);
+
+          // Check subscription status
+          if (response.data.subscription.isActive) {
+            console.log(
+              '✅ Backend subscription is active, status:',
+              response.data.subscription.status,
+              'willRenew:',
+              response.data.subscription.willRenew
+            );
+            setHasBackendSubscription(true);
+            return true;
+          }
         }
       }
 
@@ -404,6 +419,7 @@ export const SubscriptionProvider: React.FC<SubscriptionProviderProps> = ({
     offerings,
     trialInfo,
     isInTrial,
+    subscriptionInfo,
     hasUnlimitedAccess:
       hasBackendSubscription ||
       isInTrial ||

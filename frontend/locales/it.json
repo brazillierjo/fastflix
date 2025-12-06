@@ -174,7 +174,19 @@
         "title": "Ripristino fallito",
         "message": "Impossibile ripristinare gli acquisti. Riprova."
       }
-    }
+    },
+    "plan": {
+      "monthly": "Mensile",
+      "quarterly": "Trimestrale",
+      "annual": "Annuale",
+      "premium": "Premium",
+      "unknown": "Sconosciuto"
+    },
+    "startDate": "Data di inizio",
+    "endDate": "Data di fine",
+    "renewalDate": "Data di rinnovo",
+    "cancelledMessage": "Il tuo abbonamento non verrà rinnovato",
+    "accessUntil": "Avrai accesso fino al"
   },
   "trial": {
     "success": {
@@ -214,6 +226,7 @@
     "signOut": "Esci",
     "preferences": "Preferenze",
     "noSubscription": "Non abbonato",
+    "subscriptionCancelled": "Cancellato - Attivo fino alla scadenza",
     "signInRequired": "Accedi per gestire",
     "defaultFilters": "Filtri predefiniti",
     "defaultFiltersSubtitle": "Paese, piattaforme, tipo di contenuto",

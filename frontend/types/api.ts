@@ -198,6 +198,16 @@ export interface TrialInfo {
   used: boolean;
 }
 
+// Subscription types
+export interface SubscriptionInfo {
+  isActive: boolean;
+  status: 'active' | 'cancelled' | 'expired' | 'billing_issue' | null;
+  productId: string | null;
+  expiresAt: string | null;
+  createdAt: string | null;
+  willRenew: boolean;
+}
+
 export interface UserState {
   language: string;
   country: string;

@@ -26,10 +26,13 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 
 export default function ProfileScreen() {
   const { language, setLanguage, t } = useLanguage();
-  const { hasUnlimitedAccess, trialInfo, isInTrial } = useSubscription();
+  const { hasUnlimitedAccess, trialInfo, isInTrial, subscriptionInfo } = useSubscription();
   const { user, isAuthenticated } = useAuth();
   const { count: watchlistCount } = useWatchlistCount();
   const router = useRouter();
+
+  // Determine if user has a paid subscription (not just trial)
+  const hasPaidSubscription = subscriptionInfo?.isActive ?? false;
 
   // Modal states
   const [showAccountModal, setShowAccountModal] = useState(false);
@@ -48,6 +51,15 @@ export default function ProfileScreen() {
       return t('profile.signInRequired') || 'Sign in to manage';
     }
     if (hasUnlimitedAccess) {
+      // Prioritize paid subscription over trial
+      if (hasPaidSubscription) {
+        // Show cancellation status if not renewing
+        if (subscriptionInfo && !subscriptionInfo.willRenew) {
+          return t('profile.subscriptionCancelled') || 'Cancelled - Active until expiry';
+        }
+        return t('profile.activeSubscription') || 'Active';
+      }
+      // Show trial info only if no paid subscription
       if (isInTrial && trialInfo) {
         return `${t('profile.activeTrial') || 'Free Trial'} - ${trialInfo.daysRemaining} ${
           trialInfo.daysRemaining === 1

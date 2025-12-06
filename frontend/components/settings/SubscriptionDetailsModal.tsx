@@ -2,7 +2,7 @@ import { Ionicons } from '@expo/vector-icons';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { useSubscription } from '@/contexts/RevenueCatContext';
 import * as Sentry from '@sentry/react-native';
-import React, { useState } from 'react';
+import React, { useState, useMemo } from 'react';
 import {
   ActivityIndicator,
   Alert,
@@ -20,20 +20,80 @@ interface SubscriptionDetailsModalProps {
   onViewPlans: () => void;
 }
 
+// Helper to format product ID to readable plan name
+const getProductName = (productId: string | null, t: (key: string) => string): string => {
+  if (!productId) return t('subscription.plan.unknown') || 'Unknown';
+
+  const id = productId.toLowerCase();
+  if (id.includes('annual') || id.includes('yearly')) {
+    return t('subscription.plan.annual') || 'Annual';
+  }
+  if (id.includes('quarter') || id.includes('three_month')) {
+    return t('subscription.plan.quarterly') || 'Quarterly';
+  }
+  if (id.includes('month')) {
+    return t('subscription.plan.monthly') || 'Monthly';
+  }
+  return t('subscription.plan.premium') || 'Premium';
+};
+
+// Helper to format date
+const formatDate = (dateString: string | null, language: string): string => {
+  if (!dateString) return '-';
+
+  try {
+    // Handle both ISO format and SQLite datetime format
+    let date: Date;
+    if (dateString.includes('T')) {
+      // ISO format: 2026-01-03T12:11:29.000Z
+      date = new Date(dateString);
+    } else {
+      // SQLite format: 2025-12-03 10:55:12
+      date = new Date(dateString.replace(' ', 'T') + 'Z');
+    }
+
+    if (isNaN(date.getTime())) return '-';
+
+    return date.toLocaleDateString(language, {
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric',
+    });
+  } catch {
+    return '-';
+  }
+};
+
 export default function SubscriptionDetailsModal({
   visible,
   onClose,
   onViewPlans,
 }: SubscriptionDetailsModalProps) {
-  const { hasUnlimitedAccess, restorePurchases, trialInfo, isInTrial } =
+  const { hasUnlimitedAccess, restorePurchases, trialInfo, isInTrial, subscriptionInfo } =
     useSubscription();
-  const { t } = useLanguage();
+  const { t, language } = useLanguage();
   const colorScheme = useColorScheme();
   const isDark = colorScheme === 'dark';
 
   const [restoring, setRestoring] = useState(false);
 
   const isSubscribed = hasUnlimitedAccess;
+
+  // Determine if user has a paid subscription (not just trial)
+  const hasPaidSubscription = subscriptionInfo?.isActive ?? false;
+
+  // Format subscription info for display
+  const subscriptionDetails = useMemo(() => {
+    if (!subscriptionInfo || !subscriptionInfo.isActive) return null;
+
+    return {
+      planName: getProductName(subscriptionInfo.productId, t),
+      startDate: formatDate(subscriptionInfo.createdAt, language),
+      endDate: formatDate(subscriptionInfo.expiresAt, language),
+      willRenew: subscriptionInfo.willRenew,
+      status: subscriptionInfo.status,
+    };
+  }, [subscriptionInfo, t, language]);
 
   const handleRestore = async () => {
     try {
@@ -101,23 +161,86 @@ export default function SubscriptionDetailsModal({
               <View className='flex-1'>
                 <Text className='text-lg font-semibold text-light-text dark:text-dark-text'>
                   {isSubscribed
-                    ? isInTrial
-                      ? t('profile.activeTrial') || 'Free Trial Active'
-                      : t('profile.activeSubscription') || 'Active Subscription'
+                    ? hasPaidSubscription
+                      ? t('profile.activeSubscription') || 'Active Subscription'
+                      : isInTrial
+                        ? t('profile.activeTrial') || 'Free Trial Active'
+                        : t('profile.activeSubscription') || 'Active Subscription'
                     : t('subscription.required.title') ||
                       'No Active Subscription'}
                 </Text>
                 {isSubscribed && (
                   <Text className='text-sm text-light-muted dark:text-dark-muted'>
-                    {t('profile.enjoyPremiumFeatures') ||
-                      'Enjoy all FastFlix Pro features'}
+                    {hasPaidSubscription && subscriptionDetails
+                      ? subscriptionDetails.planName
+                      : t('profile.enjoyPremiumFeatures') ||
+                        'Enjoy all FastFlix Pro features'}
                   </Text>
                 )}
               </View>
             </View>
 
-            {/* Trial Info */}
-            {isInTrial && trialInfo && (
+            {/* Paid Subscription Info */}
+            {hasPaidSubscription && subscriptionDetails && (
+              <View className='mt-2 space-y-2'>
+                {/* Start Date */}
+                <View className='flex-row items-center justify-between rounded-lg bg-light-background/50 px-3 py-2 dark:bg-dark-background/50'>
+                  <View className='flex-row items-center gap-2'>
+                    <Ionicons
+                      name='calendar-outline'
+                      size={16}
+                      color={isDark ? '#9ca3af' : '#6b7280'}
+                    />
+                    <Text className='text-sm text-light-muted dark:text-dark-muted'>
+                      {t('subscription.startDate') || 'Start date'}
+                    </Text>
+                  </View>
+                  <Text className='text-sm font-medium text-light-text dark:text-dark-text'>
+                    {subscriptionDetails.startDate}
+                  </Text>
+                </View>
+
+                {/* End/Renewal Date */}
+                <View className='flex-row items-center justify-between rounded-lg bg-light-background/50 px-3 py-2 dark:bg-dark-background/50'>
+                  <View className='flex-row items-center gap-2'>
+                    <Ionicons
+                      name={subscriptionDetails.willRenew ? 'refresh-outline' : 'time-outline'}
+                      size={16}
+                      color={subscriptionDetails.willRenew ? '#22c55e' : '#f59e0b'}
+                    />
+                    <Text className='text-sm text-light-muted dark:text-dark-muted'>
+                      {subscriptionDetails.willRenew
+                        ? t('subscription.renewalDate') || 'Renewal date'
+                        : t('subscription.endDate') || 'End date'}
+                    </Text>
+                  </View>
+                  <Text className='text-sm font-medium text-light-text dark:text-dark-text'>
+                    {subscriptionDetails.endDate}
+                  </Text>
+                </View>
+
+                {/* Cancellation Warning */}
+                {!subscriptionDetails.willRenew && (
+                  <View className='mt-2 rounded-lg bg-amber-500/10 p-3 dark:bg-amber-500/20'>
+                    <View className='flex-row items-center gap-2'>
+                      <Ionicons name='warning-outline' size={18} color='#f59e0b' />
+                      <Text className='flex-1 text-sm font-medium text-amber-600 dark:text-amber-400'>
+                        {t('subscription.cancelledMessage') ||
+                          'Your subscription will not renew'}
+                      </Text>
+                    </View>
+                    <Text className='mt-1 text-sm text-amber-600/80 dark:text-amber-400/80'>
+                      {t('subscription.accessUntil') ||
+                        'You will have access until'}{' '}
+                      {subscriptionDetails.endDate}
+                    </Text>
+                  </View>
+                )}
+              </View>
+            )}
+
+            {/* Trial Info (only show if not a paid subscriber) */}
+            {!hasPaidSubscription && isInTrial && trialInfo && (
               <View className='mt-2 rounded-lg bg-amber-500/10 p-3 dark:bg-amber-500/20'>
                 <View className='flex-row items-center gap-2'>
                   <Ionicons name='time-outline' size={18} color='#f59e0b' />
@@ -138,25 +261,32 @@ export default function SubscriptionDetailsModal({
 
           {/* Actions */}
           <View className='overflow-hidden rounded-xl bg-light-card dark:bg-dark-card'>
-            {/* View Plans */}
-            <TouchableOpacity
-              onPress={onViewPlans}
-              className='flex-row items-center px-4 py-3'
-            >
-              <View className='mr-3 h-8 w-8 items-center justify-center rounded-lg bg-netflix-500/20'>
-                <Ionicons name='star' size={18} color='#E50914' />
-              </View>
-              <Text className='flex-1 text-base font-medium text-light-text dark:text-dark-text'>
-                {t('profile.viewPlans') || 'View Plans'}
-              </Text>
-              <Ionicons
-                name='chevron-forward'
-                size={20}
-                color={isDark ? '#6b7280' : '#9ca3af'}
-              />
-            </TouchableOpacity>
+            {/* View Plans - Only show if:
+                - User is not subscribed, OR
+                - User has cancelled (subscription won't renew) so they might want to resubscribe
+            */}
+            {(!hasPaidSubscription || (subscriptionDetails && !subscriptionDetails.willRenew)) && (
+              <>
+                <TouchableOpacity
+                  onPress={onViewPlans}
+                  className='flex-row items-center px-4 py-3'
+                >
+                  <View className='mr-3 h-8 w-8 items-center justify-center rounded-lg bg-netflix-500/20'>
+                    <Ionicons name='star' size={18} color='#E50914' />
+                  </View>
+                  <Text className='flex-1 text-base font-medium text-light-text dark:text-dark-text'>
+                    {t('profile.viewPlans') || 'View Plans'}
+                  </Text>
+                  <Ionicons
+                    name='chevron-forward'
+                    size={20}
+                    color={isDark ? '#6b7280' : '#9ca3af'}
+                  />
+                </TouchableOpacity>
 
-            <View className='ml-16 h-px bg-light-border dark:bg-dark-border' />
+                <View className='ml-16 h-px bg-light-border dark:bg-dark-border' />
+              </>
+            )}
 
             {/* Restore Purchases */}
             <TouchableOpacity

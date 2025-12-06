@@ -174,7 +174,19 @@
         "title": "復元失敗",
         "message": "購入を復元できませんでした。もう一度お試しください。"
       }
-    }
+    },
+    "plan": {
+      "monthly": "月額",
+      "quarterly": "3ヶ月",
+      "annual": "年額",
+      "premium": "プレミアム",
+      "unknown": "不明"
+    },
+    "startDate": "開始日",
+    "endDate": "終了日",
+    "renewalDate": "更新日",
+    "cancelledMessage": "サブスクリプションは更新されません",
+    "accessUntil": "アクセス期限："
   },
   "trial": {
     "success": {
@@ -214,6 +226,7 @@
     "signOut": "サインアウト",
     "preferences": "設定",
     "noSubscription": "未登録",
+    "subscriptionCancelled": "解約済み - 期限まで有効",
     "signInRequired": "管理するにはサインイン",
     "defaultFilters": "デフォルトフィルター",
     "defaultFiltersSubtitle": "国、プラットフォーム、コンテンツタイプ",
