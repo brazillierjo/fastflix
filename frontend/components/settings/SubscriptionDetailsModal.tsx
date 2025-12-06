@@ -261,32 +261,30 @@ export default function SubscriptionDetailsModal({
 
           {/* Actions */}
           <View className='overflow-hidden rounded-xl bg-light-card dark:bg-dark-card'>
-            {/* View Plans - Only show if:
-                - User is not subscribed, OR
-                - User has cancelled (subscription won't renew) so they might want to resubscribe
+            {/* Plans button:
+                - "View Plans" if not subscribed or cancelled
+                - "Change Plan" if subscribed and will renew
             */}
-            {(!hasPaidSubscription || (subscriptionDetails && !subscriptionDetails.willRenew)) && (
-              <>
-                <TouchableOpacity
-                  onPress={onViewPlans}
-                  className='flex-row items-center px-4 py-3'
-                >
-                  <View className='mr-3 h-8 w-8 items-center justify-center rounded-lg bg-netflix-500/20'>
-                    <Ionicons name='star' size={18} color='#E50914' />
-                  </View>
-                  <Text className='flex-1 text-base font-medium text-light-text dark:text-dark-text'>
-                    {t('profile.viewPlans') || 'View Plans'}
-                  </Text>
-                  <Ionicons
-                    name='chevron-forward'
-                    size={20}
-                    color={isDark ? '#6b7280' : '#9ca3af'}
-                  />
-                </TouchableOpacity>
+            <TouchableOpacity
+              onPress={onViewPlans}
+              className='flex-row items-center px-4 py-3'
+            >
+              <View className='mr-3 h-8 w-8 items-center justify-center rounded-lg bg-netflix-500/20'>
+                <Ionicons name='star' size={18} color='#E50914' />
+              </View>
+              <Text className='flex-1 text-base font-medium text-light-text dark:text-dark-text'>
+                {hasPaidSubscription && subscriptionDetails?.willRenew
+                  ? t('profile.changePlan') || 'Change Plan'
+                  : t('profile.viewPlans') || 'View Plans'}
+              </Text>
+              <Ionicons
+                name='chevron-forward'
+                size={20}
+                color={isDark ? '#6b7280' : '#9ca3af'}
+              />
+            </TouchableOpacity>
 
-                <View className='ml-16 h-px bg-light-border dark:bg-dark-border' />
-              </>
-            )}
+            <View className='ml-16 h-px bg-light-border dark:bg-dark-border' />
 
             {/* Restore Purchases */}
             <TouchableOpacity
