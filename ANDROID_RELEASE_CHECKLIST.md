@@ -42,21 +42,21 @@
 - [ ] Aller dans "Setup" > "API access"
 - [ ] Creer un Service Account ou utiliser un existant
 - [ ] Telecharger le JSON credentials
-- [ ] Garder le fichier pour RevenueCat (Phase 2)
+- [ ] Garder le fichier pour RevenueCat (Phase 3)
 
 ---
 
 ## Phase 2: Google Cloud Console - Authentication
 
 ### Creer Android OAuth Client ID
-- [ ] Aller sur [Google Cloud Console](https://console.cloud.google.com)
-- [ ] Selectionner le projet FastFlix existant
-- [ ] Aller dans "APIs & Services" > "Credentials"
-- [ ] Cliquer "Create Credentials" > "OAuth 2.0 Client ID"
-- [ ] Selectionner "Android" comme type d'application
-- [ ] Renseigner le package name: `com.fastflix.app`
-- [ ] Generer le SHA-1 fingerprint (voir commande ci-dessous)
-- [ ] Copier l'Android Client ID genere
+- [x] Aller sur [Google Cloud Console](https://console.cloud.google.com)
+- [x] Selectionner le projet FastFlix existant
+- [x] Aller dans "APIs & Services" > "Credentials"
+- [x] Cliquer "Create Credentials" > "OAuth 2.0 Client ID"
+- [x] Selectionner "Android" comme type d'application
+- [x] Renseigner le package name: `com.fastflix.app`
+- [x] Generer le SHA-1 fingerprint (voir commande ci-dessous)
+- [x] Copier l'Android Client ID genere
 
 ```bash
 # Pour generer le SHA-1 (debug)
@@ -89,11 +89,11 @@ keytool -list -v -keystore /path/to/release.keystore -alias fastflix-release
 ## Phase 4: Configuration du Code
 
 ### Variables d'environnement (.env.local)
-- [ ] Ajouter `EXPO_PUBLIC_GOOGLE_ANDROID_CLIENT_ID=xxx.apps.googleusercontent.com`
+- [x] Ajouter `EXPO_PUBLIC_GOOGLE_ANDROID_CLIENT_ID=xxx.apps.googleusercontent.com`
 - [ ] Ajouter `EXPO_PUBLIC_REVENUECAT_ANDROID_API_KEY=goog_xxx`
 
 ### Modifier app.config.js
-Ajouter les nouvelles variables dans `extra`:
+- [x] Ajouter les nouvelles variables dans `extra`
 
 ```js
 extra: {
@@ -106,7 +106,7 @@ extra: {
 ```
 
 ### Modifier auth.tsx
-- [ ] Ajouter `androidClientId` dans `Google.useIdTokenAuthRequest()`
+- [x] Ajouter `androidClientId` dans `Google.useIdTokenAuthRequest()`
 
 ```tsx
 const googleAndroidClientId =
@@ -138,9 +138,9 @@ const apiKey = Platform.select({
 ## Phase 5: Build Configuration
 
 ### Generer le Release Keystore
-- [ ] Executer la commande ci-dessous
-- [ ] Sauvegarder le keystore dans un endroit securise (PAS dans git)
-- [ ] Noter le mot de passe dans un gestionnaire de mots de passe
+- [x] Executer la commande ci-dessous (fait via EAS)
+- [x] Sauvegarder le keystore dans un endroit securise (PAS dans git)
+- [x] Noter le mot de passe dans un gestionnaire de mots de passe
 
 ```bash
 keytool -genkey -v -keystore fastflix-release.keystore \
@@ -149,9 +149,9 @@ keytool -genkey -v -keystore fastflix-release.keystore \
 ```
 
 ### Configurer EAS Build
-- [ ] Ajouter le keystore a EAS: `eas credentials`
-- [ ] Selectionner Android > production
-- [ ] Upload le keystore
+- [x] Ajouter le keystore a EAS: `eas credentials`
+- [x] Selectionner Android > production
+- [x] Upload le keystore
 
 ---
 

@@ -39,13 +39,16 @@ export default function AuthScreen() {
   const colorScheme = useColorScheme();
   const isDark = colorScheme === 'dark';
 
-  // Get Google iOS Client ID from config
+  // Get Google Client IDs from config
   const googleIosClientId =
     Constants.expoConfig?.extra?.EXPO_PUBLIC_GOOGLE_IOS_CLIENT_ID;
+  const googleAndroidClientId =
+    Constants.expoConfig?.extra?.EXPO_PUBLIC_GOOGLE_ANDROID_CLIENT_ID;
 
-  // Setup Google Auth Request (using iOS native client)
+  // Setup Google Auth Request (using platform-specific client)
   const [request, response, promptAsync] = Google.useIdTokenAuthRequest({
     iosClientId: googleIosClientId,
+    androidClientId: googleAndroidClientId,
   });
 
   // Track processed response to prevent duplicate handling
@@ -175,7 +178,7 @@ export default function AuthScreen() {
               )}
 
               {/* Sign in with Google Button - Official Google styling */}
-              {googleIosClientId && (
+              {(googleIosClientId || googleAndroidClientId) && (
                 <TouchableOpacity
                   onPress={() => promptAsync()}
                   disabled={!request}
@@ -207,17 +210,19 @@ export default function AuthScreen() {
               )}
 
               {/* Platform not supported message - only if no auth methods available */}
-              {Platform.OS !== 'ios' && !googleIosClientId && (
-                <View
-                  style={getSquircle(14)}
-                  className='border border-light-accent/20 bg-light-accent/5 p-4 dark:border-dark-accent/20 dark:bg-dark-accent/5'
-                >
-                  <Text className='text-center text-sm text-light-text dark:text-dark-text'>
-                    {t('auth.platformNotSupported') ||
-                      'Authentication is currently only available on iOS.'}
-                  </Text>
-                </View>
-              )}
+              {Platform.OS !== 'ios' &&
+                !googleIosClientId &&
+                !googleAndroidClientId && (
+                  <View
+                    style={getSquircle(14)}
+                    className='border border-light-accent/20 bg-light-accent/5 p-4 dark:border-dark-accent/20 dark:bg-dark-accent/5'
+                  >
+                    <Text className='text-center text-sm text-light-text dark:text-dark-text'>
+                      {t('auth.platformNotSupported') ||
+                        'Authentication is currently only available on iOS.'}
+                    </Text>
+                  </View>
+                )}
             </View>
           )}
         </MotiView>

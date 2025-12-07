@@ -126,17 +126,22 @@ export interface GoogleTokenPayload {
  */
 export async function verifyGoogleToken(idToken: string): Promise<GoogleTokenPayload> {
   try {
-    const clientId = process.env.GOOGLE_CLIENT_ID;
+    const iosClientId = process.env.GOOGLE_CLIENT_ID;
+    const androidClientId = process.env.GOOGLE_ANDROID_CLIENT_ID;
 
-    if (!clientId) {
-      throw new Error('GOOGLE_CLIENT_ID environment variable is not set');
+    if (!iosClientId && !androidClientId) {
+      throw new Error(
+        'GOOGLE_CLIENT_ID or GOOGLE_ANDROID_CLIENT_ID environment variable must be set'
+      );
     }
 
-    const client = new OAuth2Client(clientId);
+    // Accept tokens from both iOS and Android clients
+    const allowedAudiences = [iosClientId, androidClientId].filter(Boolean) as string[];
+    const client = new OAuth2Client();
 
     const ticket = await client.verifyIdToken({
       idToken,
-      audience: clientId,
+      audience: allowedAudiences,
     });
 
     const payload = ticket.getPayload();
