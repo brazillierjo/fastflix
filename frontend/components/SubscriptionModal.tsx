@@ -412,7 +412,7 @@ export default function SubscriptionModal({
                     </View>
                   </View>
                   <View className='items-end'>
-                    {monthlyPrice > 0 && (
+                    {quarterlySavings > 0 && (
                       <Text className='text-sm text-light-muted line-through dark:text-dark-muted'>
                         {formatNumericPrice(quarterlyComparisonPrice)}
                       </Text>
@@ -468,7 +468,7 @@ export default function SubscriptionModal({
                     </View>
                   </View>
                   <View className='items-end'>
-                    {monthlyPrice > 0 && (
+                    {annualSavings > 0 && (
                       <Text className='text-sm text-light-muted line-through dark:text-dark-muted'>
                         {formatNumericPrice(annualComparisonPrice)}
                       </Text>
