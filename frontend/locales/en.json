@@ -160,7 +160,9 @@
     },
     "error": {
       "title": "Purchase Failed",
-      "message": "Unable to complete purchase. Please try again."
+      "message": "Unable to complete purchase. Please try again.",
+      "loadFailed": "Unable to load plans",
+      "tryAgain": "Please check your connection and try again"
     },
     "restoration": {
       "success": {
@@ -280,7 +282,8 @@
   "common": {
     "cancel": "Cancel",
     "done": "Done",
-    "close": "Close"
+    "close": "Close",
+    "retry": "Retry"
   },
   "tabs": {
     "movies": "Movies",

@@ -160,7 +160,9 @@
     },
     "error": {
       "title": "Error en la compra",
-      "message": "No se pudo completar la compra. Por favor, inténtalo de nuevo."
+      "message": "No se pudo completar la compra. Por favor, inténtalo de nuevo.",
+      "loadFailed": "No se pudieron cargar los planes",
+      "tryAgain": "Verifica tu conexión e inténtalo de nuevo"
     },
     "restoration": {
       "success": {
@@ -280,7 +282,8 @@
   "common": {
     "cancel": "Cancelar",
     "done": "Listo",
-    "close": "Cerrar"
+    "close": "Cerrar",
+    "retry": "Reintentar"
   },
   "tabs": {
     "movies": "Películas",

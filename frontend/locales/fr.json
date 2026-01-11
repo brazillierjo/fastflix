@@ -160,7 +160,9 @@
     },
     "error": {
       "title": "Échec de l'achat",
-      "message": "Impossible de finaliser l'achat. Veuillez réessayer."
+      "message": "Impossible de finaliser l'achat. Veuillez réessayer.",
+      "loadFailed": "Impossible de charger les forfaits",
+      "tryAgain": "Vérifiez votre connexion et réessayez"
     },
     "restoration": {
       "success": {
@@ -280,7 +282,8 @@
   "common": {
     "cancel": "Annuler",
     "done": "OK",
-    "close": "Fermer"
+    "close": "Fermer",
+    "retry": "Réessayer"
   },
   "tabs": {
     "movies": "Films",

@@ -160,7 +160,9 @@
     },
     "error": {
       "title": "Kauf fehlgeschlagen",
-      "message": "Der Kauf konnte nicht abgeschlossen werden. Bitte versuche es erneut."
+      "message": "Der Kauf konnte nicht abgeschlossen werden. Bitte versuche es erneut.",
+      "loadFailed": "Pläne konnten nicht geladen werden",
+      "tryAgain": "Bitte überprüfe deine Verbindung und versuche es erneut"
     },
     "restoration": {
       "success": {
@@ -280,7 +282,8 @@
   "common": {
     "cancel": "Abbrechen",
     "done": "Fertig",
-    "close": "Schließen"
+    "close": "Schließen",
+    "retry": "Erneut versuchen"
   },
   "tabs": {
     "movies": "Filme",

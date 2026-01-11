@@ -145,7 +145,7 @@ export const SubscriptionProvider: React.FC<SubscriptionProviderProps> = ({
   // Fetch offerings separately (can be retried)
   const fetchOfferings = async (retryCount = 0): Promise<void> => {
     const MAX_RETRIES = 2;
-    const TIMEOUT_MS = 10000; // 10 seconds timeout
+    const TIMEOUT_MS = 30000; // 30 seconds timeout (Apple servers can be slow)
 
     try {
       console.log('📦 Fetching offerings...');
@@ -201,7 +201,7 @@ export const SubscriptionProvider: React.FC<SubscriptionProviderProps> = ({
         try {
           const info = await withTimeout(
             Purchases.getCustomerInfo(),
-            8000, // 8 seconds timeout
+            20000, // 20 seconds timeout (Apple servers can be slow)
             'CustomerInfo fetch timeout'
           );
           setCustomerInfo(info);

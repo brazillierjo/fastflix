@@ -160,7 +160,9 @@
     },
     "error": {
       "title": "購入失敗",
-      "message": "購入を完了できませんでした。もう一度お試しください。"
+      "message": "購入を完了できませんでした。もう一度お試しください。",
+      "loadFailed": "プランを読み込めませんでした",
+      "tryAgain": "接続を確認して再試行してください"
     },
     "restoration": {
       "success": {
@@ -280,7 +282,8 @@
   "common": {
     "cancel": "キャンセル",
     "done": "完了",
-    "close": "閉じる"
+    "close": "閉じる",
+    "retry": "再試行"
   },
   "tabs": {
     "movies": "映画",

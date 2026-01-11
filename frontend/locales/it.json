@@ -160,7 +160,9 @@
     },
     "error": {
       "title": "Acquisto fallito",
-      "message": "Impossibile completare l'acquisto. Riprova."
+      "message": "Impossibile completare l'acquisto. Riprova.",
+      "loadFailed": "Impossibile caricare i piani",
+      "tryAgain": "Controlla la connessione e riprova"
     },
     "restoration": {
       "success": {
@@ -280,7 +282,8 @@
   "common": {
     "cancel": "Annulla",
     "done": "Fatto",
-    "close": "Chiudi"
+    "close": "Chiudi",
+    "retry": "Riprova"
   },
   "tabs": {
     "movies": "Film",
