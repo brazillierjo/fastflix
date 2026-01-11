@@ -25,6 +25,7 @@ import Purchases, {
   PurchasesOffering,
   PurchasesPackage,
 } from 'react-native-purchases';
+import * as Sentry from '@sentry/react-native';
 import { useLanguage } from './LanguageContext';
 import { backendAPIService } from '../services/backend-api.service';
 import { TrialInfo, SubscriptionInfo } from '@/types/api';
@@ -155,14 +156,51 @@ export const SubscriptionProvider: React.FC<SubscriptionProviderProps> = ({
         'Offerings fetch timeout'
       );
 
+      // Log full offerings response for debugging
+      console.log('📦 Offerings response:', JSON.stringify({
+        current: offerings.current?.identifier ?? null,
+        allKeys: Object.keys(offerings.all),
+        allCount: Object.keys(offerings.all).length,
+      }));
+
       if (offerings.current) {
         setOfferings([offerings.current]);
         console.log('✅ Offerings loaded:', offerings.current.identifier);
+        console.log('📦 Packages:', offerings.current.availablePackages.map(p => ({
+          id: p.identifier,
+          productId: p.product.identifier,
+          price: p.product.priceString,
+        })));
       } else {
-        console.warn('⚠️ No current offering available');
+        // Log to Sentry when offerings.current is null (common issue on sandbox)
+        const allOfferingKeys = Object.keys(offerings.all);
+        console.warn('⚠️ No current offering available. All offerings:', allOfferingKeys);
+
+        Sentry.captureMessage('RevenueCat: No current offering available', {
+          level: 'warning',
+          extra: {
+            allOfferingKeys,
+            allOfferingsCount: allOfferingKeys.length,
+            retryCount,
+          },
+        });
+
+        // If there are other offerings available, try to use the first one
+        if (allOfferingKeys.length > 0) {
+          const firstOffering = offerings.all[allOfferingKeys[0]];
+          if (firstOffering) {
+            console.log('📦 Using fallback offering:', allOfferingKeys[0]);
+            setOfferings([firstOffering]);
+          }
+        }
       }
     } catch (error) {
       console.error('❌ Error fetching offerings:', error);
+
+      Sentry.captureException(error, {
+        tags: { context: 'fetch-offerings' },
+        extra: { retryCount },
+      });
 
       // Retry with exponential backoff
       if (retryCount < MAX_RETRIES) {
