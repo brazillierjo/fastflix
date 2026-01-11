@@ -43,20 +43,21 @@ Sentry.init({
   // Adds more context data to events (IP address, cookies, user, etc.)
   sendDefaultPii: true,
 
-  // Performance monitoring
-  tracesSampleRate: __DEV__ ? 1.0 : 0.2,
-  enableNativeFramesTracking: !isRunningInExpoGo(),
+  // Performance monitoring - reduced to minimize RAM usage at startup
+  tracesSampleRate: __DEV__ ? 1.0 : 0.1,
+  enableNativeFramesTracking: false, // Disabled to prevent iOS watchdog termination
 
-  // Enable Logs
-  enableLogs: true,
+  // Disable verbose logging in production
+  enableLogs: __DEV__,
 
-  // Configure Session Replay
-  replaysSessionSampleRate: 0.1,
-  replaysOnErrorSampleRate: 1,
+  // Session Replay disabled to prevent RAM overconsumption
+  // mobileReplayIntegration was causing iOS watchdog termination
+  replaysSessionSampleRate: 0,
+  replaysOnErrorSampleRate: 0,
 
   integrations: [
     navigationIntegration,
-    Sentry.mobileReplayIntegration(),
+    // mobileReplayIntegration removed - causes excessive RAM usage on iOS
     Sentry.feedbackIntegration(),
   ],
 

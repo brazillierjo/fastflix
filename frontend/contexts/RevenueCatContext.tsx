@@ -63,6 +63,7 @@ export interface SubscriptionContextType {
   linkUserToRevenueCat: (userId: string) => Promise<void>;
   startFreeTrial: () => Promise<boolean>;
   refreshSubscriptionStatus: () => Promise<void>;
+  refreshOfferings: () => Promise<void>;
 
   // Package helpers
   getMonthlyPackage: () => PurchasesPackage | null;
@@ -127,6 +128,51 @@ export const SubscriptionProvider: React.FC<SubscriptionProviderProps> = ({
     return SubscriptionStatus.FREE;
   };
 
+  // Helper to add timeout to promises
+  const withTimeout = <T,>(
+    promise: Promise<T>,
+    timeoutMs: number,
+    errorMessage: string
+  ): Promise<T> => {
+    return Promise.race([
+      promise,
+      new Promise<T>((_, reject) =>
+        setTimeout(() => reject(new Error(errorMessage)), timeoutMs)
+      ),
+    ]);
+  };
+
+  // Fetch offerings separately (can be retried)
+  const fetchOfferings = async (retryCount = 0): Promise<void> => {
+    const MAX_RETRIES = 2;
+    const TIMEOUT_MS = 10000; // 10 seconds timeout
+
+    try {
+      console.log('📦 Fetching offerings...');
+      const offerings = await withTimeout(
+        Purchases.getOfferings(),
+        TIMEOUT_MS,
+        'Offerings fetch timeout'
+      );
+
+      if (offerings.current) {
+        setOfferings([offerings.current]);
+        console.log('✅ Offerings loaded:', offerings.current.identifier);
+      } else {
+        console.warn('⚠️ No current offering available');
+      }
+    } catch (error) {
+      console.error('❌ Error fetching offerings:', error);
+
+      // Retry with exponential backoff
+      if (retryCount < MAX_RETRIES) {
+        const delay = Math.pow(2, retryCount) * 1000; // 1s, 2s, 4s
+        console.log(`🔄 Retrying offerings fetch in ${delay}ms...`);
+        setTimeout(() => fetchOfferings(retryCount + 1), delay);
+      }
+    }
+  };
+
   // Initialize RevenueCat
   useEffect(() => {
     const initializeRevenueCat = async () => {
@@ -151,23 +197,32 @@ export const SubscriptionProvider: React.FC<SubscriptionProviderProps> = ({
 
         console.log('✅ RevenueCat configured successfully');
 
-        // Get customer info
-        const info = await Purchases.getCustomerInfo();
-        setCustomerInfo(info);
+        // Get customer info with timeout (critical for subscription status)
+        try {
+          const info = await withTimeout(
+            Purchases.getCustomerInfo(),
+            8000, // 8 seconds timeout
+            'CustomerInfo fetch timeout'
+          );
+          setCustomerInfo(info);
 
-        const status = determineSubscriptionStatus(info);
-        setSubscriptionStatus(status);
+          const status = determineSubscriptionStatus(info);
+          setSubscriptionStatus(status);
 
-        console.log('✅ RevenueCat initialized - Status:', status);
-
-        // Fetch available offerings
-        const offerings = await Purchases.getOfferings();
-        if (offerings.current) {
-          setOfferings([offerings.current]);
-          console.log('✅ Offerings loaded:', offerings.current.identifier);
+          console.log('✅ RevenueCat initialized - Status:', status);
+        } catch (infoError) {
+          console.warn('⚠️ Failed to get customer info:', infoError);
+          // Continue without customer info - will be fetched later
+          setSubscriptionStatus(SubscriptionStatus.FREE);
         }
 
+        // Mark loading as complete before fetching offerings
+        // This prevents the app from being blocked waiting for offerings
         setIsLoading(false);
+
+        // Fetch offerings in background (non-blocking)
+        // This allows the app to start even if offerings take a while
+        fetchOfferings();
       } catch (error) {
         console.error('❌ Error initializing RevenueCat:', error);
         setIsLoading(false);
@@ -418,6 +473,11 @@ export const SubscriptionProvider: React.FC<SubscriptionProviderProps> = ({
     await checkBackendSubscription();
   };
 
+  // Refresh offerings (useful if initial fetch failed)
+  const refreshOfferings = async (): Promise<void> => {
+    await fetchOfferings();
+  };
+
   const contextValue: SubscriptionContextType = {
     subscriptionStatus,
     isLoading,
@@ -441,6 +501,7 @@ export const SubscriptionProvider: React.FC<SubscriptionProviderProps> = ({
     linkUserToRevenueCat,
     startFreeTrial,
     refreshSubscriptionStatus,
+    refreshOfferings,
     getMonthlyPackage,
     getQuarterlyPackage,
     getAnnualPackage,
