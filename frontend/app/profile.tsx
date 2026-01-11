@@ -26,7 +26,8 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 
 export default function ProfileScreen() {
   const { language, setLanguage, t } = useLanguage();
-  const { hasUnlimitedAccess, trialInfo, isInTrial, subscriptionInfo } = useSubscription();
+  const { hasUnlimitedAccess, trialInfo, isInTrial, subscriptionInfo } =
+    useSubscription();
   const { user, isAuthenticated } = useAuth();
   const { count: watchlistCount } = useWatchlistCount();
   const router = useRouter();
@@ -55,7 +56,10 @@ export default function ProfileScreen() {
       if (hasPaidSubscription) {
         // Show cancellation status if not renewing
         if (subscriptionInfo && !subscriptionInfo.willRenew) {
-          return t('profile.subscriptionCancelled') || 'Cancelled - Active until expiry';
+          return (
+            t('profile.subscriptionCancelled') ||
+            'Cancelled - Active until expiry'
+          );
         }
         return t('profile.activeSubscription') || 'Active';
       }

@@ -11,7 +11,7 @@ import {
 import { getSquircle, getButtonBorderRadius } from '@/utils/designHelpers';
 import * as Sentry from '@sentry/react-native';
 import { MotiView } from 'moti';
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   ActivityIndicator,
   Alert,
@@ -42,6 +42,7 @@ export default function SubscriptionModal({
   const { t, country } = useLanguage();
   const {
     isLoading,
+    offerings,
     purchasePackage,
     restorePurchases,
     getMonthlyPackage,
@@ -49,12 +50,45 @@ export default function SubscriptionModal({
     getAnnualPackage,
     trialInfo,
     startFreeTrial,
+    refreshOfferings,
   } = useSubscription();
 
   const [selectedPlan, setSelectedPlan] = useState<PlanType>('quarterly');
   const [purchasing, setPurchasing] = useState(false);
+  const [isLoadingOfferings, setIsLoadingOfferings] = useState(false);
   const colorScheme = useColorScheme();
   const isDark = colorScheme === 'dark';
+
+  // Check if offerings are available
+  const hasOfferings = offerings && offerings.length > 0;
+
+  // Refresh offerings when modal opens if they're not loaded
+  useEffect(() => {
+    let isMounted = true;
+
+    const loadOfferings = async () => {
+      if (visible && !hasOfferings && !isLoading) {
+        setIsLoadingOfferings(true);
+        try {
+          await refreshOfferings();
+        } catch (error) {
+          Sentry.captureException(error, {
+            tags: { context: 'refresh-offerings' },
+          });
+        } finally {
+          if (isMounted) {
+            setIsLoadingOfferings(false);
+          }
+        }
+      }
+    };
+
+    loadOfferings();
+
+    return () => {
+      isMounted = false;
+    };
+  }, [visible, hasOfferings, isLoading, refreshOfferings]);
 
   const monthlyPackage = getMonthlyPackage();
   const quarterlyPackage = getQuarterlyPackage();
@@ -225,7 +259,8 @@ export default function SubscriptionModal({
     ? 'rgba(16, 185, 129, 0.15)'
     : 'rgba(16, 185, 129, 0.1)';
 
-  if (isLoading) {
+  // Show loading state when RevenueCat is initializing or offerings are being fetched
+  if (isLoading || isLoadingOfferings) {
     return (
       <Modal visible={visible} transparent animationType='fade'>
         <View className='flex-1 items-center justify-center bg-black/50'>
@@ -237,6 +272,57 @@ export default function SubscriptionModal({
             <Text className='mt-4 text-center text-light-muted dark:text-dark-muted'>
               {t('subscription.loading') || 'Loading subscription options...'}
             </Text>
+          </View>
+        </View>
+      </Modal>
+    );
+  }
+
+  // Show error state with retry button if offerings failed to load
+  if (!hasOfferings) {
+    return (
+      <Modal visible={visible} transparent animationType='fade'>
+        <View className='flex-1 items-center justify-center bg-black/50'>
+          <View
+            style={getSquircle(18)}
+            className='bg-light-background p-8 dark:bg-dark-surface'
+          >
+            <Ionicons
+              name='cloud-offline-outline'
+              size={48}
+              color={greenPrimary}
+            />
+            <Text className='mt-4 text-center text-lg font-semibold text-light-text dark:text-dark-text'>
+              {t('subscription.error.loadFailed') || 'Unable to load plans'}
+            </Text>
+            <Text className='mt-2 text-center text-light-muted dark:text-dark-muted'>
+              {t('subscription.error.tryAgain') ||
+                'Please check your connection and try again'}
+            </Text>
+            <TouchableOpacity
+              onPress={async () => {
+                setIsLoadingOfferings(true);
+                try {
+                  await refreshOfferings();
+                } finally {
+                  setIsLoadingOfferings(false);
+                }
+              }}
+              style={[
+                getButtonBorderRadius(),
+                { backgroundColor: greenPrimary },
+              ]}
+              className='mt-6 px-8 py-3'
+            >
+              <Text className='text-center font-semibold text-white'>
+                {t('common.retry') || 'Retry'}
+              </Text>
+            </TouchableOpacity>
+            <TouchableOpacity onPress={onClose} className='mt-4 py-2'>
+              <Text className='text-center text-light-muted dark:text-dark-muted'>
+                {t('common.close') || 'Close'}
+              </Text>
+            </TouchableOpacity>
           </View>
         </View>
       </Modal>

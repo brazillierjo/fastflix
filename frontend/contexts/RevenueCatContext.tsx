@@ -254,7 +254,10 @@ export const SubscriptionProvider: React.FC<SubscriptionProviderProps> = ({
     } catch (error: unknown) {
       console.error('❌ Error purchasing package:', error);
 
-      const purchaseError = error as { userCancelled?: boolean; message?: string };
+      const purchaseError = error as {
+        userCancelled?: boolean;
+        message?: string;
+      };
       if (purchaseError.userCancelled) {
         console.log('User cancelled purchase');
         return;

@@ -21,7 +21,10 @@ interface SubscriptionDetailsModalProps {
 }
 
 // Helper to format product ID to readable plan name
-const getProductName = (productId: string | null, t: (key: string) => string): string => {
+const getProductName = (
+  productId: string | null,
+  t: (key: string) => string
+): string => {
   if (!productId) return t('subscription.plan.unknown') || 'Unknown';
 
   const id = productId.toLowerCase();
@@ -49,7 +52,7 @@ const formatDate = (dateString: string | null, language: string): string => {
       date = new Date(dateString);
     } else {
       // SQLite format: 2025-12-03 10:55:12
-      date = new Date(dateString.replace(' ', 'T') + 'Z');
+      date = new Date(`${dateString.replace(' ', 'T')}Z`);
     }
 
     if (isNaN(date.getTime())) return '-';
@@ -69,8 +72,13 @@ export default function SubscriptionDetailsModal({
   onClose,
   onViewPlans,
 }: SubscriptionDetailsModalProps) {
-  const { hasUnlimitedAccess, restorePurchases, trialInfo, isInTrial, subscriptionInfo } =
-    useSubscription();
+  const {
+    hasUnlimitedAccess,
+    restorePurchases,
+    trialInfo,
+    isInTrial,
+    subscriptionInfo,
+  } = useSubscription();
   const { t, language } = useLanguage();
   const colorScheme = useColorScheme();
   const isDark = colorScheme === 'dark';
@@ -165,7 +173,8 @@ export default function SubscriptionDetailsModal({
                       ? t('profile.activeSubscription') || 'Active Subscription'
                       : isInTrial
                         ? t('profile.activeTrial') || 'Free Trial Active'
-                        : t('profile.activeSubscription') || 'Active Subscription'
+                        : t('profile.activeSubscription') ||
+                          'Active Subscription'
                     : t('subscription.required.title') ||
                       'No Active Subscription'}
                 </Text>
@@ -204,9 +213,15 @@ export default function SubscriptionDetailsModal({
                 <View className='flex-row items-center justify-between rounded-lg bg-light-background/50 px-3 py-2 dark:bg-dark-background/50'>
                   <View className='flex-row items-center gap-2'>
                     <Ionicons
-                      name={subscriptionDetails.willRenew ? 'refresh-outline' : 'time-outline'}
+                      name={
+                        subscriptionDetails.willRenew
+                          ? 'refresh-outline'
+                          : 'time-outline'
+                      }
                       size={16}
-                      color={subscriptionDetails.willRenew ? '#22c55e' : '#f59e0b'}
+                      color={
+                        subscriptionDetails.willRenew ? '#22c55e' : '#f59e0b'
+                      }
                     />
                     <Text className='text-sm text-light-muted dark:text-dark-muted'>
                       {subscriptionDetails.willRenew
@@ -223,7 +238,11 @@ export default function SubscriptionDetailsModal({
                 {!subscriptionDetails.willRenew && (
                   <View className='mt-2 rounded-lg bg-amber-500/10 p-3 dark:bg-amber-500/20'>
                     <View className='flex-row items-center gap-2'>
-                      <Ionicons name='warning-outline' size={18} color='#f59e0b' />
+                      <Ionicons
+                        name='warning-outline'
+                        size={18}
+                        color='#f59e0b'
+                      />
                       <Text className='flex-1 text-sm font-medium text-amber-600 dark:text-amber-400'>
                         {t('subscription.cancelledMessage') ||
                           'Your subscription will not renew'}
