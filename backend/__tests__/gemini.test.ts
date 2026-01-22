@@ -31,7 +31,7 @@ describe('Gemini Service', () => {
   beforeEach(() => {
     process.env = { ...originalEnv };
     process.env.GOOGLE_API_KEY = 'test-api-key';
-    process.env.GEMINI_MODEL = 'gemini-2.0-flash';
+    process.env.GEMINI_MODEL = 'gemini-2.5-flash';
   });
 
   afterEach(() => {
