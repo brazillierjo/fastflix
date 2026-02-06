@@ -1,7 +1,7 @@
 import { SupportedCountry } from '@/constants/languages';
 
 // Mapping des pays vers leurs devises
-export const COUNTRY_CURRENCY_MAP: Record<SupportedCountry, string> = {
+const COUNTRY_CURRENCY_MAP: Record<SupportedCountry, string> = {
   FR: 'EUR',
   US: 'USD',
   CA: 'CAD',
@@ -13,7 +13,7 @@ export const COUNTRY_CURRENCY_MAP: Record<SupportedCountry, string> = {
 };
 
 // Symboles des devises
-export const CURRENCY_SYMBOLS: Record<string, string> = {
+const CURRENCY_SYMBOLS: Record<string, string> = {
   EUR: '€',
   USD: '$',
   CAD: 'C$',
@@ -22,7 +22,7 @@ export const CURRENCY_SYMBOLS: Record<string, string> = {
 };
 
 // Mapping des devises vers leurs locales pour le formatage
-export const CURRENCY_LOCALES: Record<string, string> = {
+const CURRENCY_LOCALES: Record<string, string> = {
   EUR: 'fr-FR',
   USD: 'en-US',
   CAD: 'en-CA',
@@ -44,7 +44,7 @@ export const getCurrencyForCountry = (country: SupportedCountry): string => {
  * @param country - Code du pays
  * @returns Symbole de la devise (€, $, etc.)
  */
-export const getCurrencySymbolForCountry = (
+const getCurrencySymbolForCountry = (
   country: SupportedCountry
 ): string => {
   const currency = getCurrencyForCountry(country);
@@ -90,43 +90,6 @@ export const extractPriceFromString = (priceString: string): number | null => {
 
   const price = parseFloat(normalizedPrice);
   return isNaN(price) ? null : price;
-};
-
-/**
- * Convertit un prix d'une devise à une autre (simulation basique)
- * Note: Dans un vrai projet, vous utiliseriez une API de taux de change
- * @param price - Prix à convertir
- * @param fromCurrency - Devise source
- * @param toCurrency - Devise cible
- * @returns Prix converti (approximatif)
- */
-export const convertCurrency = (
-  price: number,
-  fromCurrency: string,
-  toCurrency: string
-): number => {
-  // Taux de change approximatifs (à remplacer par une vraie API)
-  const exchangeRates: Record<string, Record<string, number>> = {
-    USD: { EUR: 0.85, GBP: 0.75, CAD: 1.25, JPY: 110 },
-    EUR: { USD: 1.18, GBP: 0.88, CAD: 1.47, JPY: 130 },
-    GBP: { USD: 1.33, EUR: 1.14, CAD: 1.67, JPY: 147 },
-    CAD: { USD: 0.8, EUR: 0.68, GBP: 0.6, JPY: 88 },
-    JPY: { USD: 0.009, EUR: 0.0077, GBP: 0.0068, CAD: 0.011 },
-  };
-
-  if (fromCurrency === toCurrency) {
-    return price;
-  }
-
-  const rate = exchangeRates[fromCurrency]?.[toCurrency];
-  if (!rate) {
-    console.warn(
-      `Taux de change non trouvé pour ${fromCurrency} -> ${toCurrency}`
-    );
-    return price; // Retourne le prix original si pas de taux
-  }
-
-  return price * rate;
 };
 
 /**

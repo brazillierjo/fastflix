@@ -30,8 +30,7 @@ import { useLanguage } from './LanguageContext';
 import { backendAPIService } from '../services/backend-api.service';
 import { SubscriptionInfo } from '@/types/api';
 
-// Subscription status enum for clarity
-export enum SubscriptionStatus {
+enum SubscriptionStatus {
   UNKNOWN = 'unknown',
   FREE = 'free', // Non-subscribed user
   ACTIVE = 'active', // Currently subscribed
@@ -39,7 +38,7 @@ export enum SubscriptionStatus {
   EXPIRED = 'expired', // Subscription expired
 }
 
-export interface SubscriptionContextType {
+interface SubscriptionContextType {
   // Subscription state
   subscriptionStatus: SubscriptionStatus;
   isLoading: boolean;

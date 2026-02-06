@@ -13,7 +13,7 @@
  * - Seasonal/Occasion
  */
 
-export interface PlaceholderExample {
+interface PlaceholderExample {
   fr: string;
   en: string;
   ja: string;
@@ -22,7 +22,7 @@ export interface PlaceholderExample {
   de: string;
 }
 
-export const PLACEHOLDER_EXAMPLES: PlaceholderExample[] = [
+const PLACEHOLDER_EXAMPLES: PlaceholderExample[] = [
   // ============================================
   // 🎭 FUN & QUIRKY MOODS
   // ============================================

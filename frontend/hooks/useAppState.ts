@@ -21,7 +21,7 @@ import { useState } from 'react';
 import { StreamingProvider } from '../services/backend-api.service';
 import { Cast, DetailedInfo, Movie } from './useBackendMovieSearch';
 
-export interface AppState {
+interface AppState {
   query: string;
   movies: Movie[];
   streamingProviders: { [key: number]: StreamingProvider[] };

@@ -45,12 +45,7 @@ const translations: Translations = {
   de,
 };
 
-// Re-export for backward compatibility
-export const availableCountries = AVAILABLE_COUNTRIES;
-
-export type AvailableCountries = {
-  [key in SupportedCountry]: Country;
-};
+const availableCountries = AVAILABLE_COUNTRIES;
 
 interface LanguageContextType {
   language: SupportedLanguage;

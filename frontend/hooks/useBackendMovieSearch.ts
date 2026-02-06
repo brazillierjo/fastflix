@@ -39,7 +39,7 @@ export interface Cast {
   profile_path?: string;
 }
 
-export interface SearchParams {
+interface SearchParams {
   query: string;
   includeMovies: boolean;
   includeTvShows: boolean;
@@ -60,7 +60,7 @@ export interface DetailedInfo {
   first_air_year?: number;
 }
 
-export interface SearchResult {
+interface SearchResult {
   movies: Movie[];
   streamingProviders: { [key: number]: StreamingProvider[] };
   credits: { [key: number]: Cast[] };

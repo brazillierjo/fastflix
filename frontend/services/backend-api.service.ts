@@ -66,7 +66,7 @@ export interface Cast {
   profile_path: string | null;
 }
 
-export interface Genre {
+interface Genre {
   id: number;
   name: string;
 }
@@ -92,7 +92,7 @@ export interface SearchResponse {
   totalResults: number;
 }
 
-export interface HealthCheckResponse {
+interface HealthCheckResponse {
   status: string;
   timestamp: string;
   database: string;

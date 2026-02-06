@@ -53,26 +53,3 @@ export const APP_CONFIG = {
   },
 } as const;
 
-export const ERROR_MESSAGES = {
-  NETWORK_ERROR: 'Network error occurred',
-  API_ERROR: 'API request failed',
-  UNKNOWN_ERROR: 'An unknown error occurred',
-  SUBSCRIPTION_ERROR: 'Subscription operation failed',
-  SEARCH_ERROR: 'Search operation failed',
-  AI_QUOTA_EXCEEDED: 'AI service quota exceeded. Please try again later.',
-  AI_NETWORK_ERROR: 'Network error occurred',
-} as const;
-
-export const SUCCESS_MESSAGES = {
-  SUBSCRIPTION_ACTIVATED: 'Subscription activated successfully',
-  PURCHASES_RESTORED: 'Purchases restored successfully',
-  SEARCH_COMPLETED: 'Search completed successfully',
-} as const;
-
-export type AppConfig = typeof APP_CONFIG;
-export type ErrorMessage = (typeof ERROR_MESSAGES)[keyof typeof ERROR_MESSAGES];
-export type SuccessMessage =
-  (typeof SUCCESS_MESSAGES)[keyof typeof SUCCESS_MESSAGES];
-
-// Error message type for flexible usage
-export type FlexibleErrorMessage = ErrorMessage | string;

@@ -28,7 +28,7 @@ export interface User {
   updated_at: string;
 }
 
-export interface AuthResponse {
+interface AuthResponse {
   user: User;
   token: string;
 }
