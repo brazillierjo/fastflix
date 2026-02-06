@@ -1,7 +1,6 @@
 import { Ionicons } from '@expo/vector-icons';
 import FiltersBottomSheet from '@/components/FiltersBottomSheet';
 import { useLanguage } from '@/contexts/LanguageContext';
-import { useSubscription } from '@/contexts/RevenueCatContext';
 import { cn } from '@/utils/cn';
 import {
   getNetflixGlow,
@@ -39,7 +38,6 @@ interface SearchFormProps {
   onSearch: () => void;
   loading: boolean;
   onWatchlistPress?: () => void;
-  onTrialStarted?: () => void;
 }
 
 // Typewriter speed in ms per character
@@ -53,15 +51,11 @@ export default function SearchForm({
   onSearch,
   loading,
   onWatchlistPress,
-  onTrialStarted,
 }: SearchFormProps) {
   const { t, getRandomPlaceholder } = useLanguage();
-  const { canStartTrial, startFreeTrial, hasUnlimitedAccess } =
-    useSubscription();
   const [placeholder, setPlaceholder] = useState('');
   const [showFiltersModal, setShowFiltersModal] = useState(false);
   const [isTyping, setIsTyping] = useState(false);
-  const [isStartingTrial, setIsStartingTrial] = useState(false);
   const colorScheme = useColorScheme();
   const isDark = colorScheme === 'dark';
 
@@ -263,24 +257,6 @@ export default function SearchForm({
     return t('welcome.noIdea') || 'No idea?';
   };
 
-  // Handle starting free trial
-  const handleStartTrial = useCallback(async () => {
-    setIsStartingTrial(true);
-    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
-
-    const success = await startFreeTrial();
-
-    setIsStartingTrial(false);
-
-    if (success) {
-      Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
-      onTrialStarted?.();
-    }
-  }, [startFreeTrial, onTrialStarted]);
-
-  // Determine if we should show the trial button instead of generate
-  const shouldShowTrialButton = canStartTrial && !hasUnlimitedAccess;
-
   return (
     <KeyboardAvoidingView
       behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
@@ -469,7 +445,7 @@ export default function SearchForm({
             )}
           </MotiView>
 
-          {/* Main Action Button - Trial or Generate */}
+          {/* Generate Button */}
           <MotiView
             from={{ opacity: 0, scale: 0.95 }}
             animate={{ opacity: 1, scale: 1 }}
@@ -479,58 +455,24 @@ export default function SearchForm({
               duration: 600,
             }}
           >
-            {shouldShowTrialButton ? (
-              <TouchableOpacity
-                onPress={handleStartTrial}
-                disabled={isStartingTrial || isTyping}
-                className={cn(
-                  'flex-row items-center justify-center gap-2 px-6 py-5',
-                  isStartingTrial || isTyping
-                    ? 'bg-emerald-700'
-                    : 'bg-emerald-500 active:bg-emerald-600'
-                )}
-                style={[
-                  getButtonBorderRadius(),
-                  !isStartingTrial && !isTyping
-                    ? {
-                        shadowColor: '#10B981',
-                        shadowOffset: { width: 0, height: 0 },
-                        shadowOpacity: isDark ? 0.5 : 0.3,
-                        shadowRadius: 12,
-                        elevation: 8,
-                      }
-                    : undefined,
-                ]}
-              >
-                <Ionicons name='gift-outline' size={20} color='white' />
-                <Text className='text-base font-semibold text-white'>
-                  {isStartingTrial
-                    ? t('welcome.pleaseWait')
-                    : t('welcome.startTrialButton')}
-                </Text>
-              </TouchableOpacity>
-            ) : (
-              <TouchableOpacity
-                onPress={onSearch}
-                disabled={loading || isTyping}
-                className={cn(
-                  'items-center px-6 py-5',
-                  loading || isTyping
-                    ? 'bg-cinematic-600'
-                    : 'bg-netflix-500 active:bg-netflix-600'
-                )}
-                style={[
-                  getButtonBorderRadius(),
-                  !loading && !isTyping ? getNetflixGlow(isDark) : undefined,
-                ]}
-              >
-                <Text className='text-base font-semibold text-white'>
-                  {loading
-                    ? t('welcome.generating')
-                    : t('welcome.searchButton')}
-                </Text>
-              </TouchableOpacity>
-            )}
+            <TouchableOpacity
+              onPress={onSearch}
+              disabled={loading || isTyping}
+              className={cn(
+                'items-center px-6 py-5',
+                loading || isTyping
+                  ? 'bg-cinematic-600'
+                  : 'bg-netflix-500 active:bg-netflix-600'
+              )}
+              style={[
+                getButtonBorderRadius(),
+                !loading && !isTyping ? getNetflixGlow(isDark) : undefined,
+              ]}
+            >
+              <Text className='text-base font-semibold text-white'>
+                {loading ? t('welcome.generating') : t('welcome.searchButton')}
+              </Text>
+            </TouchableOpacity>
           </MotiView>
         </View>
       </ScrollView>

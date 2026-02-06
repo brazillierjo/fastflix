@@ -72,13 +72,8 @@ export default function SubscriptionDetailsModal({
   onClose,
   onViewPlans,
 }: SubscriptionDetailsModalProps) {
-  const {
-    hasUnlimitedAccess,
-    restorePurchases,
-    trialInfo,
-    isInTrial,
-    subscriptionInfo,
-  } = useSubscription();
+  const { hasUnlimitedAccess, restorePurchases, subscriptionInfo } =
+    useSubscription();
   const { t, language } = useLanguage();
   const colorScheme = useColorScheme();
   const isDark = colorScheme === 'dark';
@@ -169,12 +164,7 @@ export default function SubscriptionDetailsModal({
               <View className='flex-1'>
                 <Text className='text-lg font-semibold text-light-text dark:text-dark-text'>
                   {isSubscribed
-                    ? hasPaidSubscription
-                      ? t('profile.activeSubscription') || 'Active Subscription'
-                      : isInTrial
-                        ? t('profile.activeTrial') || 'Free Trial Active'
-                        : t('profile.activeSubscription') ||
-                          'Active Subscription'
+                    ? t('profile.activeSubscription') || 'Active Subscription'
                     : t('subscription.required.title') ||
                       'No Active Subscription'}
                 </Text>
@@ -255,25 +245,6 @@ export default function SubscriptionDetailsModal({
                     </Text>
                   </View>
                 )}
-              </View>
-            )}
-
-            {/* Trial Info (only show if not a paid subscriber) */}
-            {!hasPaidSubscription && isInTrial && trialInfo && (
-              <View className='mt-2 rounded-lg bg-amber-500/10 p-3 dark:bg-amber-500/20'>
-                <View className='flex-row items-center gap-2'>
-                  <Ionicons name='time-outline' size={18} color='#f59e0b' />
-                  <Text className='font-medium text-amber-600 dark:text-amber-400'>
-                    {trialInfo.daysRemaining}{' '}
-                    {trialInfo.daysRemaining === 1
-                      ? t('profile.dayRemaining') || 'day remaining'
-                      : t('profile.daysRemaining') || 'days remaining'}
-                  </Text>
-                </View>
-                <Text className='mt-1 text-sm text-amber-600/80 dark:text-amber-400/80'>
-                  {t('profile.trialEndsMessage') ||
-                    'Subscribe before your trial ends to keep unlimited access'}
-                </Text>
               </View>
             )}
           </View>

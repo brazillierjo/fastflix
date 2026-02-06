@@ -267,167 +267,25 @@ describe('Database Service', () => {
     });
   });
 
-  describe('Trial Methods', () => {
-    describe('startFreeTrial', () => {
-      it('should start trial for eligible user', async () => {
-        // getUserById
-        mockExecute.mockResolvedValueOnce({
-          rows: [{ id: 'user-123', trial_used: 0 }],
-        });
-        // Check trial_used
-        mockExecute.mockResolvedValueOnce({
-          rows: [{ trial_used: 0 }],
-        });
-        // Update trial
-        mockExecute.mockResolvedValueOnce({ rows: [] });
-        // getTrialInfo
-        mockExecute.mockResolvedValueOnce({
-          rows: [
-            {
-              trial_started_at: '2024-01-01T00:00:00Z',
-              trial_ends_at: '2024-01-08T00:00:00Z',
-              trial_used: 1,
-            },
-          ],
-        });
-
-        const trial = await db.startFreeTrial('user-123');
-
-        expect(trial).not.toBeNull();
-        expect(trial?.used).toBe(true);
+  describe('hasAccess', () => {
+    it('should return true when user has subscription', async () => {
+      mockExecute.mockResolvedValueOnce({
+        rows: [{ count: 1 }],
       });
 
-      it('should return null if trial already used', async () => {
-        // getUserById
-        mockExecute.mockResolvedValueOnce({
-          rows: [{ id: 'user-123', trial_used: 1 }],
-        });
-        // Check trial_used
-        mockExecute.mockResolvedValueOnce({
-          rows: [{ trial_used: 1 }],
-        });
+      const hasAccess = await db.hasAccess('user-123');
 
-        const trial = await db.startFreeTrial('user-123');
-
-        expect(trial).toBeNull();
-      });
-
-      it('should throw error if user not found', async () => {
-        mockExecute.mockResolvedValueOnce({ rows: [] });
-
-        await expect(db.startFreeTrial('nonexistent')).rejects.toThrow('User not found');
-      });
+      expect(hasAccess).toBe(true);
     });
 
-    describe('hasUsedFreeTrial', () => {
-      it('should return true when trial is used', async () => {
-        mockExecute.mockResolvedValueOnce({
-          rows: [{ trial_used: 1 }],
-        });
-
-        const used = await db.hasUsedFreeTrial('user-123');
-
-        expect(used).toBe(true);
+    it('should return false when no active subscription', async () => {
+      mockExecute.mockResolvedValueOnce({
+        rows: [{ count: 0 }],
       });
 
-      it('should return false when trial not used', async () => {
-        mockExecute.mockResolvedValueOnce({
-          rows: [{ trial_used: 0 }],
-        });
+      const hasAccess = await db.hasAccess('user-123');
 
-        const used = await db.hasUsedFreeTrial('user-123');
-
-        expect(used).toBe(false);
-      });
-    });
-
-    describe('isInFreeTrial', () => {
-      it('should return true when in active trial', async () => {
-        mockExecute.mockResolvedValueOnce({
-          rows: [{ trial_ends_at: '2099-01-01T00:00:00Z' }],
-        });
-
-        const isActive = await db.isInFreeTrial('user-123');
-
-        expect(isActive).toBe(true);
-      });
-
-      it('should return false when trial expired', async () => {
-        mockExecute.mockResolvedValueOnce({ rows: [] });
-
-        const isActive = await db.isInFreeTrial('user-123');
-
-        expect(isActive).toBe(false);
-      });
-    });
-
-    describe('getTrialInfo', () => {
-      it('should calculate days remaining correctly', async () => {
-        const futureDate = new Date();
-        futureDate.setDate(futureDate.getDate() + 5);
-
-        mockExecute.mockResolvedValueOnce({
-          rows: [
-            {
-              trial_started_at: new Date().toISOString(),
-              trial_ends_at: futureDate.toISOString(),
-              trial_used: 1,
-            },
-          ],
-        });
-
-        const info = await db.getTrialInfo('user-123');
-
-        expect(info.isActive).toBe(true);
-        expect(info.daysRemaining).toBeGreaterThanOrEqual(4);
-        expect(info.daysRemaining).toBeLessThanOrEqual(6);
-      });
-
-      it('should return default info when user not found', async () => {
-        mockExecute.mockResolvedValueOnce({ rows: [] });
-
-        const info = await db.getTrialInfo('nonexistent');
-
-        expect(info.isActive).toBe(false);
-        expect(info.daysRemaining).toBe(0);
-        expect(info.used).toBe(false);
-      });
-    });
-
-    describe('hasAccess', () => {
-      it('should return true when user has subscription', async () => {
-        mockExecute.mockResolvedValueOnce({
-          rows: [{ count: 1 }],
-        });
-
-        const hasAccess = await db.hasAccess('user-123');
-
-        expect(hasAccess).toBe(true);
-      });
-
-      it('should return true when user in active trial', async () => {
-        // No subscription
-        mockExecute.mockResolvedValueOnce({
-          rows: [{ count: 0 }],
-        });
-        // Active trial
-        mockExecute.mockResolvedValueOnce({
-          rows: [{ trial_ends_at: '2099-01-01' }],
-        });
-
-        const hasAccess = await db.hasAccess('user-123');
-
-        expect(hasAccess).toBe(true);
-      });
-
-      it('should return false when no subscription and no trial', async () => {
-        mockExecute.mockResolvedValueOnce({ rows: [{ count: 0 }] });
-        mockExecute.mockResolvedValueOnce({ rows: [] });
-
-        const hasAccess = await db.hasAccess('user-123');
-
-        expect(hasAccess).toBe(false);
-      });
+      expect(hasAccess).toBe(false);
     });
   });
 
@@ -747,5 +605,4 @@ describe('Database Service', () => {
       });
     });
   });
-
 });

@@ -26,8 +26,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 
 export default function ProfileScreen() {
   const { language, setLanguage, t } = useLanguage();
-  const { hasUnlimitedAccess, trialInfo, isInTrial, subscriptionInfo } =
-    useSubscription();
+  const { hasUnlimitedAccess, subscriptionInfo } = useSubscription();
   const { user, isAuthenticated } = useAuth();
   const { count: watchlistCount } = useWatchlistCount();
   const router = useRouter();
@@ -62,14 +61,6 @@ export default function ProfileScreen() {
           );
         }
         return t('profile.activeSubscription') || 'Active';
-      }
-      // Show trial info only if no paid subscription
-      if (isInTrial && trialInfo) {
-        return `${t('profile.activeTrial') || 'Free Trial'} - ${trialInfo.daysRemaining} ${
-          trialInfo.daysRemaining === 1
-            ? t('profile.dayRemaining') || 'day'
-            : t('profile.daysRemaining') || 'days'
-        }`;
       }
       return t('profile.activeSubscription') || 'Active';
     }

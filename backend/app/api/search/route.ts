@@ -91,7 +91,9 @@ export async function POST(request: NextRequest) {
     // Step 4: Generate AI recommendations with conversational response
     // Request more recommendations when platform filters are active to ensure enough results after filtering
     const hasPlatformFilters = platforms && platforms.length > 0;
-    const maxRecommendations = hasPlatformFilters ? FILTERED_RECOMMENDATIONS : DEFAULT_RECOMMENDATIONS;
+    const maxRecommendations = hasPlatformFilters
+      ? FILTERED_RECOMMENDATIONS
+      : DEFAULT_RECOMMENDATIONS;
 
     if (hasPlatformFilters) {
       console.log(`📋 Platform filters active, requesting ${maxRecommendations} recommendations`);

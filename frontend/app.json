@@ -21,7 +21,10 @@
     "ios": {
       "supportsTablet": true,
       "bundleIdentifier": "com.fastflix.app",
-      "storeKitConfig": "./ios/Products.storekit"
+      "storeKitConfig": "./ios/Products.storekit",
+      "infoPlist": {
+        "LSApplicationQueriesSchemes": ["mailto"]
+      }
     },
     "android": {
       "adaptiveIcon": {

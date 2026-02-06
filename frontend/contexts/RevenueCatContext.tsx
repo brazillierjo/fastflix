@@ -28,7 +28,7 @@ import Purchases, {
 import * as Sentry from '@sentry/react-native';
 import { useLanguage } from './LanguageContext';
 import { backendAPIService } from '../services/backend-api.service';
-import { TrialInfo, SubscriptionInfo } from '@/types/api';
+import { SubscriptionInfo } from '@/types/api';
 
 // Subscription status enum for clarity
 export enum SubscriptionStatus {
@@ -46,23 +46,17 @@ export interface SubscriptionContextType {
   customerInfo: CustomerInfo | null;
   offerings: PurchasesOffering[] | null;
 
-  // Trial state
-  trialInfo: TrialInfo | null;
-  isInTrial: boolean;
-  canStartTrial: boolean; // True if user hasn't used their trial yet
-
   // Backend subscription info (with full details)
   subscriptionInfo: SubscriptionInfo | null;
 
   // Derived properties for easy access
-  hasUnlimitedAccess: boolean; // True for ACTIVE, GRACE_PERIOD, or active trial
-  isFreeUser: boolean; // True for FREE users without trial
+  hasUnlimitedAccess: boolean; // True for ACTIVE or GRACE_PERIOD
+  isFreeUser: boolean; // True for FREE users
 
   // Actions
   purchasePackage: (packageToPurchase: PurchasesPackage) => Promise<void>;
   restorePurchases: () => Promise<boolean>;
   linkUserToRevenueCat: (userId: string) => Promise<void>;
-  startFreeTrial: () => Promise<boolean>;
   refreshSubscriptionStatus: () => Promise<void>;
   refreshOfferings: () => Promise<void>;
 
@@ -90,7 +84,6 @@ export const SubscriptionProvider: React.FC<SubscriptionProviderProps> = ({
   const [customerInfo, setCustomerInfo] = useState<CustomerInfo | null>(null);
   const [offerings, setOfferings] = useState<PurchasesOffering[] | null>(null);
   const [hasBackendSubscription, setHasBackendSubscription] = useState(false);
-  const [trialInfo, setTrialInfo] = useState<TrialInfo | null>(null);
   const [subscriptionInfo, setSubscriptionInfo] =
     useState<SubscriptionInfo | null>(null);
 
@@ -157,24 +150,33 @@ export const SubscriptionProvider: React.FC<SubscriptionProviderProps> = ({
       );
 
       // Log full offerings response for debugging
-      console.log('📦 Offerings response:', JSON.stringify({
-        current: offerings.current?.identifier ?? null,
-        allKeys: Object.keys(offerings.all),
-        allCount: Object.keys(offerings.all).length,
-      }));
+      console.log(
+        '📦 Offerings response:',
+        JSON.stringify({
+          current: offerings.current?.identifier ?? null,
+          allKeys: Object.keys(offerings.all),
+          allCount: Object.keys(offerings.all).length,
+        })
+      );
 
       if (offerings.current) {
         setOfferings([offerings.current]);
         console.log('✅ Offerings loaded:', offerings.current.identifier);
-        console.log('📦 Packages:', offerings.current.availablePackages.map(p => ({
-          id: p.identifier,
-          productId: p.product.identifier,
-          price: p.product.priceString,
-        })));
+        console.log(
+          '📦 Packages:',
+          offerings.current.availablePackages.map(p => ({
+            id: p.identifier,
+            productId: p.product.identifier,
+            price: p.product.priceString,
+          }))
+        );
       } else {
         // Log to Sentry when offerings.current is null (common issue on sandbox)
         const allOfferingKeys = Object.keys(offerings.all);
-        console.warn('⚠️ No current offering available. All offerings:', allOfferingKeys);
+        console.warn(
+          '⚠️ No current offering available. All offerings:',
+          allOfferingKeys
+        );
 
         Sentry.captureMessage('RevenueCat: No current offering available', {
           level: 'warning',
@@ -363,17 +365,6 @@ export const SubscriptionProvider: React.FC<SubscriptionProviderProps> = ({
       const response = await backendAPIService.getCurrentUser();
 
       if (response.success && response.data) {
-        // Update trial info
-        if (response.data.trial) {
-          setTrialInfo(response.data.trial);
-          if (response.data.trial.isActive) {
-            console.log(
-              '✅ User is in active trial, days remaining:',
-              response.data.trial.daysRemaining
-            );
-          }
-        }
-
         // Update subscription info with full details
         if (response.data.subscription) {
           setSubscriptionInfo(response.data.subscription);
@@ -458,58 +449,7 @@ export const SubscriptionProvider: React.FC<SubscriptionProviderProps> = ({
     return annualPackage || null;
   };
 
-  // Start free trial
-  const startFreeTrial = async (): Promise<boolean> => {
-    try {
-      console.log('🎁 Starting free trial...');
-
-      const response = await backendAPIService.startFreeTrial();
-
-      if (response.success && response.data?.trial) {
-        setTrialInfo(response.data.trial);
-        console.log('✅ Free trial started successfully');
-
-        Alert.alert(
-          t('trial.success.title') || 'Free Trial Started!',
-          t('trial.success.message') ||
-            'Enjoy 7 days of unlimited access to all features!'
-        );
-
-        return true;
-      }
-
-      // Handle error cases
-      const errorMessage = response.error?.message || 'Failed to start trial';
-      console.warn('⚠️ Failed to start trial:', errorMessage);
-
-      Alert.alert(
-        t('trial.error.title') || 'Trial Unavailable',
-        errorMessage === 'You have already used your free trial'
-          ? t('trial.error.alreadyUsed') ||
-              'You have already used your free trial.'
-          : t('trial.error.message') || errorMessage
-      );
-
-      return false;
-    } catch (error) {
-      console.error('❌ Error starting trial:', error);
-
-      Alert.alert(
-        t('trial.error.title') || 'Error',
-        t('trial.error.message') || 'Something went wrong. Please try again.'
-      );
-
-      return false;
-    }
-  };
-
-  // Computed property for trial status
-  const isInTrial = trialInfo?.isActive ?? false;
-
-  // User can start trial if they haven't used it yet (trialInfo.used is false or undefined means not used)
-  const canStartTrial = trialInfo ? !trialInfo.used : false;
-
-  // Refresh subscription and trial status from backend
+  // Refresh subscription status from backend
   const refreshSubscriptionStatus = async (): Promise<void> => {
     await checkBackendSubscription();
   };
@@ -524,23 +464,16 @@ export const SubscriptionProvider: React.FC<SubscriptionProviderProps> = ({
     isLoading,
     customerInfo,
     offerings,
-    trialInfo,
-    isInTrial,
-    canStartTrial,
     subscriptionInfo,
     hasUnlimitedAccess:
       hasBackendSubscription ||
-      isInTrial ||
       subscriptionStatus === SubscriptionStatus.ACTIVE ||
       subscriptionStatus === SubscriptionStatus.GRACE_PERIOD,
     isFreeUser:
-      subscriptionStatus === SubscriptionStatus.FREE &&
-      !hasBackendSubscription &&
-      !isInTrial,
+      subscriptionStatus === SubscriptionStatus.FREE && !hasBackendSubscription,
     purchasePackage,
     restorePurchases,
     linkUserToRevenueCat,
-    startFreeTrial,
     refreshSubscriptionStatus,
     refreshOfferings,
     getMonthlyPackage,

@@ -87,13 +87,6 @@ export async function POST(request: NextRequest) {
           product_id: event.product_id || null,
         });
 
-        // End any active trial when user subscribes
-        // This ensures the trial is consumed and UI shows premium status
-        if (event.type === 'INITIAL_PURCHASE') {
-          await db.endFreeTrial(userId);
-          console.log(`🎁 Trial ended for user ${user.email} (converted to paid)`);
-        }
-
         console.log(`✅ Subscription activated for user ${user.email}`);
         break;
 

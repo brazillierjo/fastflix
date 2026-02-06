@@ -34,10 +34,7 @@ export async function GET(request: NextRequest) {
     // Step 4: Get subscription details from database
     const subscriptionDetails = await db.getSubscriptionDetails(payload.userId);
 
-    // Step 5: Get trial info
-    const trialInfo = await db.getTrialInfo(payload.userId);
-
-    // Step 6: Return user info with subscription and trial status
+    // Step 5: Return user info with subscription status
     return NextResponse.json(
       {
         user,
@@ -49,7 +46,6 @@ export async function GET(request: NextRequest) {
           createdAt: subscriptionDetails.createdAt,
           willRenew: subscriptionDetails.willRenew,
         },
-        trial: trialInfo,
       },
       { status: 200 }
     );

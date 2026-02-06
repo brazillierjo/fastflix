@@ -296,7 +296,7 @@ describe('BackendAPIService', () => {
     });
 
     describe('getCurrentUser', () => {
-      it('should return user with subscription and trial info', async () => {
+      it('should return user with subscription info', async () => {
         mockSecureStore['fastflix_auth_token'] = 'test-token';
 
         mockFetch.mockResolvedValueOnce({
@@ -307,11 +307,6 @@ describe('BackendAPIService', () => {
               data: {
                 user: { id: 'user-123', email: 'test@example.com' },
                 subscription: { isActive: true },
-                trial: {
-                  isActive: false,
-                  daysRemaining: 0,
-                  used: true,
-                },
               },
             }),
         });
@@ -320,66 +315,6 @@ describe('BackendAPIService', () => {
 
         expect(result.success).toBe(true);
         expect(result.data?.subscription.isActive).toBe(true);
-      });
-    });
-  });
-
-  describe('Trial Methods', () => {
-    describe('startFreeTrial', () => {
-      it('should start free trial', async () => {
-        mockSecureStore['fastflix_auth_token'] = 'test-token';
-
-        mockFetch.mockResolvedValueOnce({
-          ok: true,
-          json: () =>
-            Promise.resolve({
-              success: true,
-              data: {
-                success: true,
-                message: 'Trial started',
-                trial: {
-                  isActive: true,
-                  daysRemaining: 7,
-                },
-              },
-            }),
-        });
-
-        const result = await backendAPIService.startFreeTrial();
-
-        expect(result.success).toBe(true);
-        expect(result.data?.trial.isActive).toBe(true);
-        expect(mockFetch).toHaveBeenCalledWith(
-          'http://test-api.com/api/trial',
-          expect.objectContaining({ method: 'POST' })
-        );
-      });
-    });
-
-    describe('getTrialStatus', () => {
-      it('should get trial status', async () => {
-        mockSecureStore['fastflix_auth_token'] = 'test-token';
-
-        mockFetch.mockResolvedValueOnce({
-          ok: true,
-          json: () =>
-            Promise.resolve({
-              success: true,
-              data: {
-                trial: {
-                  isActive: true,
-                  daysRemaining: 5,
-                  startsAt: '2024-01-01',
-                  endsAt: '2024-01-08',
-                },
-              },
-            }),
-        });
-
-        const result = await backendAPIService.getTrialStatus();
-
-        expect(result.success).toBe(true);
-        expect(result.data?.trial.daysRemaining).toBe(5);
       });
     });
   });

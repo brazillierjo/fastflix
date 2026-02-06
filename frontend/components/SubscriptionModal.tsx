@@ -48,8 +48,6 @@ export default function SubscriptionModal({
     getMonthlyPackage,
     getQuarterlyPackage,
     getAnnualPackage,
-    trialInfo,
-    startFreeTrial,
     refreshOfferings,
   } = useSubscription();
 
@@ -219,26 +217,6 @@ export default function SubscriptionModal({
       setPurchasing(false);
     }
   };
-
-  const handleStartTrial = async () => {
-    try {
-      setPurchasing(true);
-      const success = await startFreeTrial();
-
-      if (success) {
-        if (onSubscriptionSuccess) {
-          onSubscriptionSuccess();
-        }
-        onClose();
-      }
-    } catch (error) {
-      Sentry.captureException(error, { tags: { context: 'start-trial' } });
-    } finally {
-      setPurchasing(false);
-    }
-  };
-
-  const canStartTrial = !trialInfo?.used;
 
   const features = [
     {
@@ -577,84 +555,20 @@ export default function SubscriptionModal({
 
         {/* Bottom Actions */}
         <View className='border-t border-light-border p-6 dark:border-dark-border'>
-          {/* Free Trial Button - PRIMARY CTA - Only shown if user hasn't used trial */}
-          {canStartTrial && (
-            <>
-              <MotiView
-                from={{ scale: 1 }}
-                animate={{ scale: [1, 1.02, 1] }}
-                transition={{
-                  type: 'timing',
-                  duration: 1500,
-                  loop: true,
-                }}
-              >
-                <TouchableOpacity
-                  onPress={handleStartTrial}
-                  disabled={purchasing}
-                  style={[
-                    getButtonBorderRadius(),
-                    { backgroundColor: greenPrimary },
-                  ]}
-                  className={cn('py-4', purchasing && 'opacity-50')}
-                >
-                  {purchasing ? (
-                    <ActivityIndicator color='white' />
-                  ) : (
-                    <View className='flex-row items-center justify-center gap-2'>
-                      <MotiView
-                        from={{ rotate: '0deg' }}
-                        animate={{
-                          rotate: ['0deg', '-10deg', '10deg', '0deg'],
-                        }}
-                        transition={{
-                          type: 'timing',
-                          duration: 500,
-                          loop: true,
-                          delay: 2000,
-                        }}
-                      >
-                        <Ionicons name='gift-outline' size={22} color='white' />
-                      </MotiView>
-                      <Text className='text-center text-lg font-semibold text-white'>
-                        {t('subscription.startTrial') ||
-                          'Start 7-Day Free Trial'}
-                      </Text>
-                    </View>
-                  )}
-                </TouchableOpacity>
-              </MotiView>
-              <Text className='mb-4 mt-2 text-center text-sm text-light-muted dark:text-dark-muted'>
-                {t('subscription.trialReassurance') ||
-                  'No payment now. Cancel anytime.'}
-              </Text>
-            </>
-          )}
-
           {/* Subscribe Button */}
           <TouchableOpacity
             onPress={handlePurchase}
             disabled={purchasing || !getSelectedPackage()}
-            style={[
-              getButtonBorderRadius(),
-              canStartTrial
-                ? { borderWidth: 2, borderColor: greenPrimary }
-                : { backgroundColor: greenPrimary },
-            ]}
+            style={[getButtonBorderRadius(), { backgroundColor: greenPrimary }]}
             className={cn(
               'mb-4 py-4',
               (purchasing || !getSelectedPackage()) && 'opacity-50'
             )}
           >
             {purchasing ? (
-              <ActivityIndicator
-                color={canStartTrial ? greenPrimary : 'white'}
-              />
+              <ActivityIndicator color='white' />
             ) : (
-              <Text
-                className={cn('text-center text-lg font-semibold')}
-                style={{ color: canStartTrial ? greenPrimary : 'white' }}
-              >
+              <Text className='text-center text-lg font-semibold text-white'>
                 {t('subscription.subscribe') || 'Subscribe Now'}
               </Text>
             )}

@@ -61,6 +61,15 @@ Sentry.init({
     Sentry.feedbackIntegration(),
   ],
 
+  // Filter out non-actionable errors
+  beforeSend(event) {
+    const message = event.exception?.values?.[0]?.value || '';
+    if (message.includes('canceled the authorization attempt')) {
+      return null;
+    }
+    return event;
+  },
+
   // Disable in development
   enabled: !__DEV__,
 });
