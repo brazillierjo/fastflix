@@ -286,8 +286,19 @@ class DatabaseService {
 
   /**
    * Check if user has access (active subscription)
+   * Uses RevenueCat API as source of truth, falls back to DB
    */
   async hasAccess(userId: string): Promise<boolean> {
+    // Primary: Check RevenueCat API (source of truth)
+    try {
+      const { checkPremiumAccess } = await import('./revenuecat');
+      const { isPremium } = await checkPremiumAccess(userId);
+      if (isPremium) return true;
+    } catch (error) {
+      console.warn('⚠️ RevenueCat API check failed, falling back to DB:', error);
+    }
+
+    // Fallback: Check local database
     return this.hasActiveSubscriptionByUserId(userId);
   }
 

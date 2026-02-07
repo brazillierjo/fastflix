@@ -8,6 +8,7 @@ import { db } from '@/lib/db';
 import { applyRateLimit } from '@/lib/api-helpers';
 import { revenueCatWebhookSchema } from '@/lib/validation';
 import { verifyRevenueCatSignature } from '@/lib/webhook-verification';
+import { invalidateSubscriptionCache } from '@/lib/revenuecat';
 
 export async function POST(request: NextRequest) {
   try {
@@ -170,6 +171,9 @@ export async function POST(request: NextRequest) {
       default:
         console.warn(`⚠️ Unknown event type: ${event.type}`);
     }
+
+    // Invalidate subscription cache so next API call fetches fresh data
+    invalidateSubscriptionCache(userId);
 
     // Return success response
     return NextResponse.json({ received: true });

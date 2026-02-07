@@ -23,6 +23,8 @@ interface EnvConfig {
 
   // RevenueCat (required in production)
   REVENUECAT_WEBHOOK_SECRET?: string;
+  REVENUECAT_SECRET_API_KEY?: string;
+  REVENUECAT_PROJECT_ID?: string;
 }
 
 /**
@@ -39,7 +41,11 @@ const requiredVars = [
 /**
  * Variables required only in production
  */
-const productionRequiredVars = ['REVENUECAT_WEBHOOK_SECRET'] as const;
+const productionRequiredVars = [
+  'REVENUECAT_WEBHOOK_SECRET',
+  'REVENUECAT_SECRET_API_KEY',
+  'REVENUECAT_PROJECT_ID',
+] as const;
 
 /**
  * Validates that all required environment variables are set
@@ -84,6 +90,8 @@ export function validateEnv(): EnvConfig {
     TMDB_API_KEY: process.env.TMDB_API_KEY!,
     GOOGLE_API_KEY: process.env.GOOGLE_API_KEY!,
     REVENUECAT_WEBHOOK_SECRET: process.env.REVENUECAT_WEBHOOK_SECRET,
+    REVENUECAT_SECRET_API_KEY: process.env.REVENUECAT_SECRET_API_KEY,
+    REVENUECAT_PROJECT_ID: process.env.REVENUECAT_PROJECT_ID,
   };
 }
 
