@@ -1,4 +1,4 @@
-import 'dotenv/config';
+require('dotenv').config({ path: '.env.local' });
 
 const {
   version,
