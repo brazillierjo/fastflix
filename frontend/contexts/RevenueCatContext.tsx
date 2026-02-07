@@ -51,6 +51,7 @@ interface SubscriptionContextType {
   // Derived properties for easy access
   hasUnlimitedAccess: boolean; // True for ACTIVE or GRACE_PERIOD
   isFreeUser: boolean; // True for FREE users
+  isTrialEligible: boolean; // True if user can use intro offer (free trial)
 
   // Actions
   purchasePackage: (packageToPurchase: PurchasesPackage) => Promise<void>;
@@ -85,6 +86,7 @@ export const SubscriptionProvider: React.FC<SubscriptionProviderProps> = ({
   const [hasBackendSubscription, setHasBackendSubscription] = useState(false);
   const [subscriptionInfo, setSubscriptionInfo] =
     useState<SubscriptionInfo | null>(null);
+  const [isTrialEligible, setIsTrialEligible] = useState(false);
 
   // Determine subscription status from CustomerInfo
   const determineSubscriptionStatus = (
@@ -135,8 +137,25 @@ export const SubscriptionProvider: React.FC<SubscriptionProviderProps> = ({
     ]);
   };
 
+  // Check if user is eligible for introductory offer (free trial)
+  const checkTrialEligibility = async (productIds: string[]): Promise<void> => {
+    try {
+      const eligibility =
+        await Purchases.checkTrialOrIntroductoryPriceEligibility(productIds);
+      const isEligible = Object.values(eligibility).some(
+        e =>
+          e.status ===
+          Purchases.INTRO_ELIGIBILITY_STATUS.INTRO_ELIGIBILITY_STATUS_ELIGIBLE
+      );
+      setIsTrialEligible(isEligible);
+      console.log('🎁 Trial eligibility:', isEligible);
+    } catch (error) {
+      console.warn('⚠️ Failed to check trial eligibility:', error);
+    }
+  };
+
   // Fetch offerings separately (can be retried)
-  const fetchOfferings = async (retryCount = 0): Promise<void> => {
+  const fetchOfferings = async (retryCount = 0): Promise<boolean> => {
     const MAX_RETRIES = 2;
     const TIMEOUT_MS = 30000; // 30 seconds timeout (Apple servers can be slow)
 
@@ -169,6 +188,12 @@ export const SubscriptionProvider: React.FC<SubscriptionProviderProps> = ({
             price: p.product.priceString,
           }))
         );
+        // Check trial eligibility in background
+        const productIds = offerings.current.availablePackages.map(
+          p => p.product.identifier
+        );
+        checkTrialEligibility(productIds);
+        return true;
       } else {
         // Log to Sentry when offerings.current is null (common issue on sandbox)
         const allOfferingKeys = Object.keys(offerings.all);
@@ -192,8 +217,14 @@ export const SubscriptionProvider: React.FC<SubscriptionProviderProps> = ({
           if (firstOffering) {
             console.log('📦 Using fallback offering:', allOfferingKeys[0]);
             setOfferings([firstOffering]);
+            const productIds = firstOffering.availablePackages.map(
+              p => p.product.identifier
+            );
+            checkTrialEligibility(productIds);
+            return true;
           }
         }
+        return false;
       }
     } catch (error) {
       console.error('❌ Error fetching offerings:', error);
@@ -207,8 +238,10 @@ export const SubscriptionProvider: React.FC<SubscriptionProviderProps> = ({
       if (retryCount < MAX_RETRIES) {
         const delay = Math.pow(2, retryCount) * 1000; // 1s, 2s, 4s
         console.log(`🔄 Retrying offerings fetch in ${delay}ms...`);
-        setTimeout(() => fetchOfferings(retryCount + 1), delay);
+        await new Promise(resolve => setTimeout(resolve, delay));
+        return fetchOfferings(retryCount + 1);
       }
+      return false;
     }
   };
 
@@ -455,7 +488,7 @@ export const SubscriptionProvider: React.FC<SubscriptionProviderProps> = ({
 
   // Refresh offerings (useful if initial fetch failed)
   const refreshOfferings = async (): Promise<void> => {
-    await fetchOfferings();
+    await fetchOfferings(0);
   };
 
   const contextValue: SubscriptionContextType = {
@@ -470,6 +503,7 @@ export const SubscriptionProvider: React.FC<SubscriptionProviderProps> = ({
       subscriptionStatus === SubscriptionStatus.GRACE_PERIOD,
     isFreeUser:
       subscriptionStatus === SubscriptionStatus.FREE && !hasBackendSubscription,
+    isTrialEligible,
     purchasePackage,
     restorePurchases,
     linkUserToRevenueCat,

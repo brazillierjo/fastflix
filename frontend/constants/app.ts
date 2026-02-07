@@ -52,4 +52,3 @@ export const APP_CONFIG = {
     USER_PREFERENCES: '@user_preferences',
   },
 } as const;
-

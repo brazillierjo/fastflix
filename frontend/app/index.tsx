@@ -146,6 +146,7 @@ export default function HomeScreen() {
               onSearch={handleSearch}
               loading={movieSearchMutation.isPending}
               onWatchlistPress={() => setShowWatchlistModal(true)}
+              onSubscriptionPress={() => setShowSubscriptionModal(true)}
             />
           )}
         </View>

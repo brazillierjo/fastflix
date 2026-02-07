@@ -44,9 +44,7 @@ export const getCurrencyForCountry = (country: SupportedCountry): string => {
  * @param country - Code du pays
  * @returns Symbole de la devise (€, $, etc.)
  */
-const getCurrencySymbolForCountry = (
-  country: SupportedCountry
-): string => {
+const getCurrencySymbolForCountry = (country: SupportedCountry): string => {
   const currency = getCurrencyForCountry(country);
   return CURRENCY_SYMBOLS[currency] || '$';
 };

@@ -1,6 +1,7 @@
 import { Ionicons } from '@expo/vector-icons';
 import FiltersBottomSheet from '@/components/FiltersBottomSheet';
 import { useLanguage } from '@/contexts/LanguageContext';
+import { useSubscription } from '@/contexts/RevenueCatContext';
 import { cn } from '@/utils/cn';
 import {
   getNetflixGlow,
@@ -38,6 +39,7 @@ interface SearchFormProps {
   onSearch: () => void;
   loading: boolean;
   onWatchlistPress?: () => void;
+  onSubscriptionPress?: () => void;
 }
 
 // Typewriter speed in ms per character
@@ -51,8 +53,10 @@ export default function SearchForm({
   onSearch,
   loading,
   onWatchlistPress,
+  onSubscriptionPress,
 }: SearchFormProps) {
   const { t, getRandomPlaceholder } = useLanguage();
+  const { hasUnlimitedAccess, isTrialEligible } = useSubscription();
   const [placeholder, setPlaceholder] = useState('');
   const [showFiltersModal, setShowFiltersModal] = useState(false);
   const [isTyping, setIsTyping] = useState(false);
@@ -304,8 +308,9 @@ export default function SearchForm({
             }}
             className='mb-5'
           >
-            {/* Action Buttons Row */}
-            <View className='mb-3 flex-row items-center justify-between'>
+            {/* Action Buttons */}
+            <View className='mb-3 gap-2'>
+              {/* Filters & Watchlist Row */}
               <View className='flex-row items-center gap-2'>
                 {/* Filters Button */}
                 <TouchableOpacity
@@ -319,7 +324,7 @@ export default function SearchForm({
                     size={16}
                     color={isDark ? '#a3a3a3' : '#525252'}
                   />
-                  <Text className='text-xs font-semibold text-light-muted dark:text-dark-muted'>
+                  <Text className='text-sm font-semibold text-light-muted dark:text-dark-muted'>
                     {t('filters.button') || 'Filters'}
                   </Text>
                 </TouchableOpacity>
@@ -337,20 +342,20 @@ export default function SearchForm({
                       size={16}
                       color={isDark ? '#a3a3a3' : '#525252'}
                     />
-                    <Text className='text-xs font-semibold text-light-muted dark:text-dark-muted'>
+                    <Text className='text-sm font-semibold text-light-muted dark:text-dark-muted'>
                       {t('watchlist.title') || 'Watchlist'}
                     </Text>
                   </TouchableOpacity>
                 )}
               </View>
 
-              {/* "No idea" Magic Button */}
+              {/* "No idea" Magic Button - Own Row */}
               <Animated.View style={buttonAnimatedStyle}>
                 <TouchableOpacity
                   onPress={handleNoIdea}
                   style={getSquircle(20)}
                   className={cn(
-                    'flex-row items-center gap-2 px-4 py-2',
+                    'flex-row items-center gap-2 self-start px-4 py-2',
                     isTyping
                       ? 'bg-netflix-500/20'
                       : 'bg-gradient-to-r from-netflix-500/10 to-purple-500/10'
@@ -362,7 +367,7 @@ export default function SearchForm({
                     size={16}
                     color='#E50914'
                   />
-                  <Text className='text-xs font-semibold text-netflix-500'>
+                  <Text className='text-sm font-semibold text-netflix-500'>
                     {isTyping
                       ? t('welcome.typing') || 'Typing...'
                       : getNoIdeaText()}
@@ -437,7 +442,7 @@ export default function SearchForm({
                 className='mt-2 flex-row items-center justify-center gap-2'
               >
                 <View className='h-1.5 w-1.5 rounded-full bg-netflix-500' />
-                <Text className='text-xs text-netflix-500'>
+                <Text className='text-sm text-netflix-500'>
                   {t('welcome.magicHappening') ||
                     'Finding the perfect suggestion...'}
                 </Text>
@@ -456,7 +461,11 @@ export default function SearchForm({
             }}
           >
             <TouchableOpacity
-              onPress={onSearch}
+              onPress={
+                !hasUnlimitedAccess && query.trim() && onSubscriptionPress
+                  ? onSubscriptionPress
+                  : onSearch
+              }
               disabled={loading || isTyping}
               className={cn(
                 'items-center px-6 py-5',
@@ -470,7 +479,15 @@ export default function SearchForm({
               ]}
             >
               <Text className='text-base font-semibold text-white'>
-                {loading ? t('welcome.generating') : t('welcome.searchButton')}
+                {loading
+                  ? t('welcome.generating')
+                  : hasUnlimitedAccess
+                    ? t('welcome.searchButton')
+                    : query.trim()
+                      ? isTrialEligible
+                        ? t('subscription.startTrial')
+                        : t('subscription.subscribe')
+                      : t('welcome.searchButton')}
               </Text>
             </TouchableOpacity>
           </MotiView>

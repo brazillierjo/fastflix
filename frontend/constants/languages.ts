@@ -28,15 +28,14 @@ const SUPPORTED_COUNTRIES = [
 export type SupportedCountry = (typeof SUPPORTED_COUNTRIES)[number];
 
 // Configuration des langues avec leurs pays par défaut
-const LANGUAGE_COUNTRY_MAP: Record<SupportedLanguage, SupportedCountry> =
-  {
-    fr: 'FR',
-    en: 'US',
-    ja: 'JP',
-    it: 'IT',
-    es: 'ES',
-    de: 'DE',
-  };
+const LANGUAGE_COUNTRY_MAP: Record<SupportedLanguage, SupportedCountry> = {
+  fr: 'FR',
+  en: 'US',
+  ja: 'JP',
+  it: 'IT',
+  es: 'ES',
+  de: 'DE',
+};
 
 // Mapping des codes de langue vers les codes TMDB
 const TMDB_LANGUAGE_MAP: Record<SupportedLanguage, string> = {

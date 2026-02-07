@@ -117,8 +117,8 @@
       "subscribe": "Abbonati"
     },
     "hero": {
-      "title": "Sblocca le funzionalità FastFlix Pro",
-      "subtitle": "Ottieni il massimo dalla tua esperienza di scoperta cinematografica"
+      "title": "Prova FastFlix Pro gratis per 7 giorni",
+      "subtitle": "Raccomandazioni illimitate, poi scegli il tuo piano"
     },
     "features": {
       "unlimited": {
@@ -147,7 +147,8 @@
     },
     "subscribe": "Abbonati ora",
     "startTrial": "Prova gratuita di 7 giorni",
-    "trialReassurance": "Nessuna carta di credito richiesta. Annulla quando vuoi.",
+    "trialBadge": "7 GIORNI GRATIS",
+    "trialReassurance": "Annulla in qualsiasi momento durante la prova gratuita.",
     "trialBanner": {
       "title": "Prova FastFlix Pro gratis per 7 giorni",
       "cta": "Inizia la prova"

@@ -193,7 +193,13 @@ export default function ProfileScreen() {
                 iconColor={hasUnlimitedAccess ? '#fbbf24' : undefined}
                 title={t('profile.premiumSubscription') || 'Subscription'}
                 subtitle={getSubscriptionSubtitle()}
-                onPress={() => setShowSubscriptionDetailsModal(true)}
+                onPress={() => {
+                  if (hasUnlimitedAccess) {
+                    setShowSubscriptionDetailsModal(true);
+                  } else {
+                    setShowPlansModal(true);
+                  }
+                }}
                 isFirst
                 isLast
               />

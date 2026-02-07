@@ -199,12 +199,12 @@ export default function MovieResults({
           >
             <View className='mb-2 flex-row items-center gap-2'>
               <Ionicons name='sparkles' size={20} color='#E50914' />
-              <Text className='text-sm font-semibold text-netflix-500'>
+              <Text className='text-base font-semibold text-netflix-500'>
                 Assistant IA
               </Text>
             </View>
 
-            <Text className='text-sm leading-5 text-light-text dark:text-dark-text'>
+            <Text className='text-base leading-6 text-light-text dark:text-dark-text'>
               {geminiResponse}
             </Text>
           </View>
@@ -329,7 +329,7 @@ export default function MovieResults({
                         {/* Content Below Hero */}
                         <View className='p-4'>
                           {/* Overview */}
-                          <Text className='mb-3 text-sm leading-relaxed text-light-textSecondary dark:text-dark-textSecondary'>
+                          <Text className='mb-3 text-base leading-relaxed text-light-textSecondary dark:text-dark-textSecondary'>
                             {movie.overview || t('movies.noDescription')}
                           </Text>
 

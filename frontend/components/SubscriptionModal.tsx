@@ -24,7 +24,6 @@ import {
   View,
 } from 'react-native';
 import { PurchasesPackage } from 'react-native-purchases';
-import AppIcon from './AppIcon';
 
 interface SubscriptionModalProps {
   visible: boolean;
@@ -218,18 +217,6 @@ export default function SubscriptionModal({
     }
   };
 
-  const features = [
-    {
-      icon: <AppIcon size={24} />,
-      title:
-        t('subscription.features.unlimited.title') ||
-        'Unlimited Recommendations',
-      description:
-        t('subscription.features.unlimited.description') ||
-        'Get as many movie recommendations as you want',
-    },
-  ];
-
   // Green color scheme
   const greenPrimary = '#10B981'; // emerald-500
   const greenDark = '#059669'; // emerald-600
@@ -247,7 +234,7 @@ export default function SubscriptionModal({
             className='bg-light-background p-8 dark:bg-dark-surface'
           >
             <ActivityIndicator size='large' color={greenPrimary} />
-            <Text className='mt-4 text-center text-light-muted dark:text-dark-muted'>
+            <Text className='mt-4 text-center text-sm text-light-muted dark:text-dark-muted'>
               {t('subscription.loading') || 'Loading subscription options...'}
             </Text>
           </View>
@@ -273,7 +260,7 @@ export default function SubscriptionModal({
             <Text className='mt-4 text-center text-lg font-semibold text-light-text dark:text-dark-text'>
               {t('subscription.error.loadFailed') || 'Unable to load plans'}
             </Text>
-            <Text className='mt-2 text-center text-light-muted dark:text-dark-muted'>
+            <Text className='mt-2 text-center text-sm text-light-muted dark:text-dark-muted'>
               {t('subscription.error.tryAgain') ||
                 'Please check your connection and try again'}
             </Text>
@@ -292,12 +279,12 @@ export default function SubscriptionModal({
               ]}
               className='mt-6 px-8 py-3'
             >
-              <Text className='text-center font-semibold text-white'>
+              <Text className='text-center text-base font-semibold text-white'>
                 {t('common.retry') || 'Retry'}
               </Text>
             </TouchableOpacity>
             <TouchableOpacity onPress={onClose} className='mt-4 py-2'>
-              <Text className='text-center text-light-muted dark:text-dark-muted'>
+              <Text className='text-center text-sm text-light-muted dark:text-dark-muted'>
                 {t('common.close') || 'Close'}
               </Text>
             </TouchableOpacity>
@@ -330,61 +317,53 @@ export default function SubscriptionModal({
         </View>
 
         <ScrollView className='flex-1' showsVerticalScrollIndicator={false}>
-          {/* Hero Section */}
+          {/* Free Trial Banner */}
           <MotiView
             from={{ opacity: 0, translateY: 20 }}
             animate={{ opacity: 1, translateY: 0 }}
             transition={{ type: 'timing', duration: 600 }}
             className='p-6'
           >
-            <View className='mb-4 flex-row items-center justify-center gap-2'>
-              <Ionicons name='film' size={40} color={greenPrimary} />
-              <Ionicons
-                name='sparkles'
-                size={32}
-                color={isDark ? '#fbbf24' : '#f59e0b'}
-              />
-            </View>
-            <Text className='mb-2 text-center text-xl font-semibold text-light-text dark:text-dark-text'>
-              {t('subscription.hero.title') || 'Unlock Premium Features'}
-            </Text>
-            <Text className='mb-8 text-center text-light-muted dark:text-dark-muted'>
-              {t('subscription.hero.subtitle') ||
-                'Get the most out of your movie discovery experience'}
-            </Text>
-          </MotiView>
-
-          {/* Features */}
-          <View className='mb-8 px-6'>
-            {features.map((feature, index) => (
-              <MotiView
-                key={index}
-                from={{ opacity: 0, translateX: -20 }}
-                animate={{ opacity: 1, translateX: 0 }}
-                transition={{
-                  type: 'timing',
-                  duration: 600,
-                  delay: index * 100,
-                }}
-                className='mb-6 flex-row items-center'
+            {/* Trial Badge */}
+            <View className='mb-4 items-center'>
+              <View
+                className='rounded-full px-5 py-2'
+                style={{ backgroundColor: greenPrimary }}
               >
-                <View
-                  className='mr-4 h-12 w-12 items-center justify-center rounded-full'
-                  style={{ backgroundColor: greenBg }}
-                >
-                  <Ionicons name='film' size={24} color={greenPrimary} />
-                </View>
-                <View className='flex-1'>
-                  <Text className='mb-1 font-semibold text-light-text dark:text-dark-text'>
-                    {feature.title}
-                  </Text>
-                  <Text className='text-sm text-light-muted dark:text-dark-muted'>
-                    {feature.description}
-                  </Text>
-                </View>
-              </MotiView>
-            ))}
-          </View>
+                <Text className='text-base font-bold text-white'>
+                  {t('subscription.trialBadge') || '7 DAYS FREE'}
+                </Text>
+              </View>
+            </View>
+
+            <Text className='mb-2 text-center text-xl font-semibold text-light-text dark:text-dark-text'>
+              {t('subscription.hero.title') ||
+                'Try FastFlix Pro free for 7 days'}
+            </Text>
+            <Text className='mb-4 text-center text-sm text-light-muted dark:text-dark-muted'>
+              {t('subscription.hero.subtitle') ||
+                'Unlimited recommendations, then choose your plan'}
+            </Text>
+
+            {/* Feature highlight */}
+            <View
+              className='flex-row items-center justify-center gap-2 rounded-xl p-3'
+              style={{ backgroundColor: greenBg }}
+            >
+              <Ionicons
+                name='checkmark-circle'
+                size={20}
+                color={greenPrimary}
+              />
+              <Text
+                className='text-sm font-medium'
+                style={{ color: greenDark }}
+              >
+                {t('subscription.features.unlimited.title') ||
+                  'Unlimited Recommendations'}
+              </Text>
+            </View>
+          </MotiView>
 
           {/* Pricing Plans */}
           <View className='mb-8 px-6'>
@@ -406,7 +385,7 @@ export default function SubscriptionModal({
               >
                 <View className='flex-row items-center justify-between'>
                   <View className='flex-1'>
-                    <Text className='font-semibold text-light-text dark:text-dark-text'>
+                    <Text className='text-base font-semibold text-light-text dark:text-dark-text'>
                       {t('subscription.monthly.title') || 'Monthly'}
                     </Text>
                     <Text className='text-sm text-light-muted dark:text-dark-muted'>
@@ -453,7 +432,7 @@ export default function SubscriptionModal({
 
                 <View className='mt-2 flex-row items-center justify-between'>
                   <View className='flex-1'>
-                    <Text className='font-semibold text-light-text dark:text-dark-text'>
+                    <Text className='text-base font-semibold text-light-text dark:text-dark-text'>
                       {t('subscription.quarterly.title') || '3 Months'}
                     </Text>
                     <View className='flex-row items-center gap-2'>
@@ -509,7 +488,7 @@ export default function SubscriptionModal({
               >
                 <View className='flex-row items-center justify-between'>
                   <View className='flex-1'>
-                    <Text className='font-semibold text-light-text dark:text-dark-text'>
+                    <Text className='text-base font-semibold text-light-text dark:text-dark-text'>
                       {t('subscription.annual.title') || 'Annual'}
                     </Text>
                     <View className='flex-row items-center gap-2'>
@@ -561,7 +540,7 @@ export default function SubscriptionModal({
             disabled={purchasing || !getSelectedPackage()}
             style={[getButtonBorderRadius(), { backgroundColor: greenPrimary }]}
             className={cn(
-              'mb-4 py-4',
+              'mb-2 py-4',
               (purchasing || !getSelectedPackage()) && 'opacity-50'
             )}
           >
@@ -569,10 +548,16 @@ export default function SubscriptionModal({
               <ActivityIndicator color='white' />
             ) : (
               <Text className='text-center text-lg font-semibold text-white'>
-                {t('subscription.subscribe') || 'Subscribe Now'}
+                {t('subscription.startTrial') || 'Start 7-Day Free Trial'}
               </Text>
             )}
           </TouchableOpacity>
+
+          {/* Trial reassurance */}
+          <Text className='mb-4 text-center text-sm text-light-muted dark:text-dark-muted'>
+            {t('subscription.trialReassurance') ||
+              'Cancel anytime during your free trial'}
+          </Text>
 
           <TouchableOpacity
             onPress={handleRestore}
@@ -580,7 +565,7 @@ export default function SubscriptionModal({
             className='py-3'
           >
             <Text
-              className='text-center font-medium'
+              className='text-center text-sm font-medium'
               style={{ color: greenPrimary }}
             >
               {t('subscription.restore') || 'Restore Purchases'}

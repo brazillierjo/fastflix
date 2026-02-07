@@ -117,8 +117,8 @@
       "subscribe": "登録する"
     },
     "hero": {
-      "title": "FastFlix Pro機能をアンロック",
-      "subtitle": "映画発見体験を最大限に活用しましょう"
+      "title": "FastFlix Proを7日間無料でお試し",
+      "subtitle": "無制限のレコメンデーション、その後プランを選択"
     },
     "features": {
       "unlimited": {
@@ -147,7 +147,8 @@
     },
     "subscribe": "今すぐ購読",
     "startTrial": "7日間無料トライアル",
-    "trialReassurance": "クレジットカード不要。いつでもキャンセル可能。",
+    "trialBadge": "7日間無料",
+    "trialReassurance": "無料トライアル中いつでもキャンセル可能。",
     "trialBanner": {
       "title": "FastFlix Proを7日間無料でお試し",
       "cta": "無料トライアル開始"

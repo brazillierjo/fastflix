@@ -272,9 +272,7 @@ export default function WatchlistItem({
                                 size={10}
                                 color={badge.iconColor}
                               />
-                              <Text
-                                className={`text-[10px] ${badge.textColor}`}
-                              >
+                              <Text className={`text-xs ${badge.textColor}`}>
                                 {badge.label}
                               </Text>
                             </View>

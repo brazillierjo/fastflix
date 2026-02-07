@@ -730,6 +730,174 @@ const PLACEHOLDER_EXAMPLES: PlaceholderExample[] = [
     es: 'La película más subestimada de todos los tiempos',
     de: 'Der am meisten unterschätzte Film aller Zeiten',
   },
+
+  // ============================================
+  // 🍿 FOOD & COOKING
+  // ============================================
+  {
+    fr: 'Un film ou une série sur la cuisine qui donne faim',
+    en: 'A movie or series about cooking that makes you hungry',
+    ja: 'お腹が空く料理映画やドラマ',
+    it: 'Un film o una serie sulla cucina che mette fame',
+    es: 'Una película o serie de cocina que da hambre',
+    de: 'Ein Film oder Serie übers Kochen die hungrig macht',
+  },
+  {
+    fr: 'Un film avec des scènes de repas mémorables',
+    en: 'A movie with memorable food scenes',
+    ja: '印象的な食事シーンのある映画',
+    it: 'Un film con scene di pasti memorabili',
+    es: 'Una película con escenas de comida memorables',
+    de: 'Ein Film mit unvergesslichen Essensszenen',
+  },
+
+  // ============================================
+  // 🐾 ANIMALS
+  // ============================================
+  {
+    fr: 'Un film avec un chien qui va me faire chialer',
+    en: 'A dog movie that will make me cry',
+    ja: '泣ける犬の映画',
+    it: 'Un film con un cane che mi farà piangere',
+    es: 'Una película con un perro que me hará llorar',
+    de: 'Ein Hundefilm bei dem ich heulen werde',
+  },
+  {
+    fr: 'Un documentaire animalier à couper le souffle',
+    en: 'A breathtaking wildlife documentary',
+    ja: '息をのむ野生動物ドキュメンタリー',
+    it: 'Un documentario sugli animali mozzafiato',
+    es: 'Un documental de naturaleza impresionante',
+    de: 'Eine atemberaubende Tier-Dokumentation',
+  },
+
+  // ============================================
+  // 🏃 SPORTS
+  // ============================================
+  {
+    fr: 'Un film de sport inspirant basé sur une histoire vraie',
+    en: 'An inspiring sports movie based on a true story',
+    ja: '実話に基づく感動のスポーツ映画',
+    it: 'Un film sportivo ispirazionale basato su una storia vera',
+    es: 'Una película deportiva inspiradora basada en hechos reales',
+    de: 'Ein inspirierender Sportfilm nach wahrer Geschichte',
+  },
+  {
+    fr: 'Un film sur le football qui donne des frissons',
+    en: 'A football movie that gives you chills',
+    ja: '鳥肌が立つサッカー映画',
+    it: 'Un film sul calcio che dà i brividi',
+    es: 'Una película de fútbol que pone la piel de gallina',
+    de: 'Ein Fußballfilm der Gänsehaut macht',
+  },
+
+  // ============================================
+  // 🎓 COMING OF AGE
+  // ============================================
+  {
+    fr: 'Un film sur les galères de la vie étudiante',
+    en: 'A movie about the struggles of student life',
+    ja: '学生生活の苦悩を描いた映画',
+    it: 'Un film sulle difficoltà della vita universitaria',
+    es: 'Una película sobre las dificultades de la vida estudiantil',
+    de: 'Ein Film über die Kämpfe des Studentenlebens',
+  },
+  {
+    fr: 'Un coming-of-age touchant et drôle',
+    en: 'A touching and funny coming-of-age story',
+    ja: '感動的で面白い青春映画',
+    it: 'Un coming-of-age toccante e divertente',
+    es: 'Una historia coming-of-age emotiva y divertida',
+    de: 'Eine berührende und lustige Coming-of-Age Geschichte',
+  },
+
+  // ============================================
+  // 🎪 ABSURD & WEIRD
+  // ============================================
+  {
+    fr: 'Le film le plus bizarre que tu connaisses',
+    en: 'The weirdest movie you can think of',
+    ja: '思いつく限り一番変な映画',
+    it: 'Il film più strano che conosci',
+    es: 'La película más rara que se te ocurra',
+    de: 'Der seltsamste Film der dir einfällt',
+  },
+  {
+    fr: 'Un film complètement WTF de A24',
+    en: 'A completely WTF movie from A24',
+    ja: 'A24の完全にヤバい映画',
+    it: 'Un film completamente assurdo della A24',
+    es: 'Una película completamente WTF de A24',
+    de: 'Ein völlig verrückter A24 Film',
+  },
+
+  // ============================================
+  // 🌃 VIBES & AESTHETICS
+  // ============================================
+  {
+    fr: 'Un film avec une esthétique néon et des vibes nocturnes',
+    en: 'A movie with neon aesthetics and nighttime vibes',
+    ja: 'ネオンの美学とナイトバイブの映画',
+    it: 'Un film con estetica neon e vibes notturne',
+    es: 'Una película con estética neón y vibras nocturnas',
+    de: 'Ein Film mit Neon-Ästhetik und Nacht-Vibes',
+  },
+  {
+    fr: 'Quelque chose de cozy et réconfortant pour un soir de pluie',
+    en: 'Something cozy and comforting for a rainy evening',
+    ja: '雨の夜に居心地の良い映画',
+    it: 'Qualcosa di accogliente per una sera di pioggia',
+    es: 'Algo acogedor y reconfortante para una noche de lluvia',
+    de: 'Etwas Gemütliches für einen Regenabend',
+  },
+  {
+    fr: 'Un road movie avec des paysages magnifiques',
+    en: 'A road movie with stunning landscapes',
+    ja: '美しい風景のロードムービー',
+    it: 'Un road movie con paesaggi mozzafiato',
+    es: 'Una road movie con paisajes espectaculares',
+    de: 'Ein Roadmovie mit atemberaubenden Landschaften',
+  },
+
+  // ============================================
+  // 🔥 TRENDING & RECENT
+  // ============================================
+  {
+    fr: 'Le film dont tout le monde parle en ce moment',
+    en: 'The movie everyone is talking about right now',
+    ja: '今みんなが話題にしている映画',
+    it: 'Il film di cui parlano tutti in questo momento',
+    es: 'La película de la que todos hablan ahora',
+    de: 'Der Film über den gerade alle reden',
+  },
+  {
+    fr: 'Un film sorti cette année que je ne dois pas rater',
+    en: "A movie released this year that I shouldn't miss",
+    ja: '今年公開の見逃せない映画',
+    it: "Un film uscito quest'anno che non devo perdere",
+    es: 'Una película de este año que no me debo perder',
+    de: 'Ein Film von diesem Jahr den ich nicht verpassen sollte',
+  },
+
+  // ============================================
+  // 💀 TRUE CRIME & MYSTERY
+  // ============================================
+  {
+    fr: 'Un true crime qui donne froid dans le dos',
+    en: 'A true crime story that sends shivers down your spine',
+    ja: '背筋が凍る実話犯罪もの',
+    it: 'Un true crime che fa venire i brividi',
+    es: 'Un true crime que pone los pelos de punta',
+    de: 'Ein True Crime der einem Schauer über den Rücken jagt',
+  },
+  {
+    fr: 'Un whodunit avec un dénouement impossible à deviner',
+    en: 'A whodunit with an impossible-to-guess ending',
+    ja: '結末が絶対読めないフーダニット',
+    it: 'Un giallo con un finale impossibile da indovinare',
+    es: 'Un whodunit con un final imposible de adivinar',
+    de: 'Ein Whodunit mit einem unmöglich zu erahnendem Ende',
+  },
 ];
 
 /**

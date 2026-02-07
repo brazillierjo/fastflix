@@ -203,7 +203,7 @@ export default function AuthScreen() {
                     }}
                     style={{ width: 18, height: 18, marginRight: 10 }}
                   />
-                  <Text className='text-[15px] font-medium text-[#1f1f1f]'>
+                  <Text className='text-base font-medium text-[#1f1f1f]'>
                     {t('auth.signInWithGoogle') || 'Sign in with Google'}
                   </Text>
                 </TouchableOpacity>

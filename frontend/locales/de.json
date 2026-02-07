@@ -117,8 +117,8 @@
       "subscribe": "Abonnieren"
     },
     "hero": {
-      "title": "FastFlix Pro Funktionen freischalten",
-      "subtitle": "Hole das Beste aus deinem Filmfinder-Erlebnis heraus"
+      "title": "Teste FastFlix Pro 7 Tage kostenlos",
+      "subtitle": "Unbegrenzte Empfehlungen, dann wähle deinen Plan"
     },
     "features": {
       "unlimited": {
@@ -147,7 +147,8 @@
     },
     "subscribe": "Jetzt abonnieren",
     "startTrial": "7-tägige kostenlose Testversion",
-    "trialReassurance": "Keine Kreditkarte erforderlich. Jederzeit kündbar.",
+    "trialBadge": "7 TAGE GRATIS",
+    "trialReassurance": "Jederzeit während der Testversion kündbar.",
     "trialBanner": {
       "title": "Teste FastFlix Pro 7 Tage kostenlos",
       "cta": "Testversion starten"
