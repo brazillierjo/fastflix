@@ -118,7 +118,9 @@
     },
     "hero": {
       "title": "Teste FastFlix Pro 7 Tage kostenlos",
-      "subtitle": "Unbegrenzte Empfehlungen, dann wähle deinen Plan"
+      "subtitle": "Unbegrenzte Empfehlungen, dann wähle deinen Plan",
+      "titleNoTrial": "FastFlix Pro freischalten",
+      "subtitleNoTrial": "Unbegrenzte Empfehlungen mit Pro"
     },
     "features": {
       "unlimited": {
@@ -149,6 +151,7 @@
     "startTrial": "7-tägige kostenlose Testversion",
     "trialBadge": "7 TAGE GRATIS",
     "trialReassurance": "Jederzeit während der Testversion kündbar.",
+    "cancelAnytime": "Jederzeit kündbar.",
     "trialBanner": {
       "title": "Teste FastFlix Pro 7 Tage kostenlos",
       "cta": "Testversion starten"

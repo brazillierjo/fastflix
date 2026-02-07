@@ -48,6 +48,7 @@ export default function SubscriptionModal({
     getQuarterlyPackage,
     getAnnualPackage,
     refreshOfferings,
+    isTrialEligible,
   } = useSubscription();
 
   const [selectedPlan, setSelectedPlan] = useState<PlanType>('quarterly');
@@ -317,32 +318,40 @@ export default function SubscriptionModal({
         </View>
 
         <ScrollView className='flex-1' showsVerticalScrollIndicator={false}>
-          {/* Free Trial Banner */}
+          {/* Hero Banner */}
           <MotiView
             from={{ opacity: 0, translateY: 20 }}
             animate={{ opacity: 1, translateY: 0 }}
             transition={{ type: 'timing', duration: 600 }}
             className='p-6'
           >
-            {/* Trial Badge */}
-            <View className='mb-4 items-center'>
-              <View
-                className='rounded-full px-5 py-2'
-                style={{ backgroundColor: greenPrimary }}
-              >
-                <Text className='text-base font-bold text-white'>
-                  {t('subscription.trialBadge') || '7 DAYS FREE'}
-                </Text>
+            {/* Trial Badge - only show if eligible */}
+            {isTrialEligible && (
+              <View className='mb-4 items-center'>
+                <View
+                  className='rounded-full px-5 py-2'
+                  style={{ backgroundColor: greenPrimary }}
+                >
+                  <Text className='text-base font-bold text-white'>
+                    {t('subscription.trialBadge') || '7 DAYS FREE'}
+                  </Text>
+                </View>
               </View>
-            </View>
+            )}
 
             <Text className='mb-2 text-center text-xl font-semibold text-light-text dark:text-dark-text'>
-              {t('subscription.hero.title') ||
-                'Try FastFlix Pro free for 7 days'}
+              {isTrialEligible
+                ? t('subscription.hero.title') ||
+                  'Try FastFlix Pro free for 7 days'
+                : t('subscription.hero.titleNoTrial') ||
+                  'Unlock FastFlix Pro'}
             </Text>
             <Text className='mb-4 text-center text-sm text-light-muted dark:text-dark-muted'>
-              {t('subscription.hero.subtitle') ||
-                'Unlimited recommendations, then choose your plan'}
+              {isTrialEligible
+                ? t('subscription.hero.subtitle') ||
+                  'Unlimited recommendations, then choose your plan'
+                : t('subscription.hero.subtitleNoTrial') ||
+                  'Get unlimited recommendations with Pro'}
             </Text>
 
             {/* Feature highlight */}
@@ -548,15 +557,19 @@ export default function SubscriptionModal({
               <ActivityIndicator color='white' />
             ) : (
               <Text className='text-center text-lg font-semibold text-white'>
-                {t('subscription.startTrial') || 'Start 7-Day Free Trial'}
+                {isTrialEligible
+                  ? t('subscription.startTrial') || 'Start 7-Day Free Trial'
+                  : t('subscription.subscribe') || 'Subscribe'}
               </Text>
             )}
           </TouchableOpacity>
 
-          {/* Trial reassurance */}
+          {/* Trial reassurance / subscription info */}
           <Text className='mb-4 text-center text-sm text-light-muted dark:text-dark-muted'>
-            {t('subscription.trialReassurance') ||
-              'Cancel anytime during your free trial'}
+            {isTrialEligible
+              ? t('subscription.trialReassurance') ||
+                'Cancel anytime during your free trial'
+              : t('subscription.cancelAnytime') || 'Cancel anytime'}
           </Text>
 
           <TouchableOpacity

@@ -118,7 +118,9 @@
     },
     "hero": {
       "title": "Essayez FastFlix Pro gratuitement pendant 7 jours",
-      "subtitle": "Recommandations illimitées, puis choisissez votre formule"
+      "subtitle": "Recommandations illimitées, puis choisissez votre formule",
+      "titleNoTrial": "Passez à FastFlix Pro",
+      "subtitleNoTrial": "Obtenez des recommandations illimitées avec Pro"
     },
     "features": {
       "unlimited": {
@@ -149,6 +151,7 @@
     "startTrial": "Essai gratuit de 7 jours",
     "trialBadge": "7 JOURS GRATUITS",
     "trialReassurance": "Annulez à tout moment pendant votre essai gratuit.",
+    "cancelAnytime": "Annulez à tout moment.",
     "trialBanner": {
       "title": "Essayez FastFlix Pro gratuitement pendant 7 jours",
       "cta": "Démarrer l'essai"
