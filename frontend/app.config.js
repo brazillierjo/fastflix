@@ -33,6 +33,10 @@ export default {
     },
     assetBundlePatterns: ['**/*'],
     ios: {
+      icon: {
+        dark: './assets/appstore-dark.png',
+        tinted: './assets/appstore-tinted.png',
+      },
       supportsTablet: true,
       bundleIdentifier: 'com.fastflix.app',
       buildNumber: iosBuildNumber,
