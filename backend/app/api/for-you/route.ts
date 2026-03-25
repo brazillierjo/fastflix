@@ -77,8 +77,8 @@ export async function GET(request: NextRequest) {
 
     // Discover movies and TV shows with those genres in parallel
     const [movies, tvShows] = await Promise.all([
-      tmdb.discoverByGenres(effectiveGenreIds, 'movie'),
-      tmdb.discoverByGenres(effectiveGenreIds, 'tv'),
+      tmdb.discoverByGenres(effectiveGenreIds, 'movie', 1, language),
+      tmdb.discoverByGenres(effectiveGenreIds, 'tv', 1, language),
     ]);
 
     // Convert to MovieResult format and merge

@@ -550,7 +550,8 @@ class TMDBService {
   async discoverByGenres(
     genreIds: number[],
     mediaType: 'movie' | 'tv',
-    page: number = 1
+    page: number = 1,
+    language: string = 'fr-FR'
   ): Promise<(TMDBMovie | TMDBTVShow)[]> {
     try {
       const params: Record<string, string> = {
@@ -559,6 +560,7 @@ class TMDBService {
         'vote_count.gte': '100',
         page: String(page),
         include_adult: 'false',
+        language,
       };
 
       const data = await this.makeRequest<TMDBSearchResponse>(

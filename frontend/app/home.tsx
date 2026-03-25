@@ -207,25 +207,62 @@ export default function HomeScreen() {
           from={{ opacity: 0, translateY: -20 }}
           animate={{ opacity: 1, translateY: 0 }}
           transition={{ type: 'timing', duration: 600 }}
-          className='px-6 pt-8'
+          className='flex-row items-start justify-between px-6 pt-8'
         >
-          <Text
-            style={typography.title1}
-            className='text-light-text dark:text-dark-text'
-          >
-            {greeting}
-          </Text>
-          <Text
-            style={typography.body}
-            className='mt-1 capitalize text-light-muted dark:text-dark-muted'
-          >
-            {currentDate}
-          </Text>
-          {quotaText && (
-            <Text className='mt-1 text-xs text-light-muted dark:text-dark-muted'>
-              {quotaText}
+          {/* Left: Greeting + Date */}
+          <View className='flex-1'>
+            <Text
+              style={typography.title1}
+              className='text-light-text dark:text-dark-text'
+            >
+              {greeting}
             </Text>
-          )}
+            <Text
+              style={typography.body}
+              className='mt-1 capitalize text-light-muted dark:text-dark-muted'
+            >
+              {currentDate}
+            </Text>
+          </View>
+
+          {/* Right: FastFlix logo with premium ring */}
+          <TouchableOpacity
+            onPress={() => {
+              if (!hasUnlimitedAccess) {
+                setShowSubscriptionModal(true);
+              }
+            }}
+            activeOpacity={hasUnlimitedAccess ? 1 : 0.7}
+          >
+            <View
+              style={{
+                width: 46,
+                height: 46,
+                borderRadius: 13,
+                borderWidth: 2,
+                borderColor: hasUnlimitedAccess ? '#D4AF37' : isDark ? '#333' : '#ddd',
+                padding: 1,
+              }}
+            >
+              <Image
+                source={require('@/assets/appstore.png')}
+                style={{ width: '100%', height: '100%', borderRadius: 11 }}
+                resizeMode='cover'
+              />
+            </View>
+            <Text
+              style={{
+                fontSize: 9,
+                fontWeight: '700',
+                textAlign: 'center',
+                marginTop: 3,
+                color: hasUnlimitedAccess ? '#D4AF37' : isDark ? '#666' : '#999',
+                letterSpacing: 0.3,
+              }}
+            >
+              {hasUnlimitedAccess ? 'PRO' : 'FREE'}
+            </Text>
+          </TouchableOpacity>
         </MotiView>
 
         {/* Trial Banner */}
