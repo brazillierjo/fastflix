@@ -12,6 +12,7 @@ import { useBackendMovieSearch } from '@/hooks/useBackendMovieSearch';
 import { ConversationMessage } from '@/services/backend-api.service';
 import { cn } from '@/utils/cn';
 import { useQueryClient } from '@tanstack/react-query';
+import { useLocalSearchParams } from 'expo-router';
 import React, { useEffect, useRef, useState } from 'react';
 import {
   Alert,
@@ -23,6 +24,7 @@ import {
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 export default function SearchScreen() {
+  const params = useLocalSearchParams<{ query?: string }>();
   const {
     query,
     movies,
@@ -59,6 +61,15 @@ export default function SearchScreen() {
       timers.forEach(clearTimeout);
     };
   }, []);
+
+  // Pre-fill query from route params (e.g. from collections)
+  const hasPrefilledRef = useRef(false);
+  useEffect(() => {
+    if (params.query && !hasPrefilledRef.current) {
+      hasPrefilledRef.current = true;
+      setQuery(params.query);
+    }
+  }, [params.query, setQuery]);
 
   const handleSearch = async () => {
     handleSearchStart();
