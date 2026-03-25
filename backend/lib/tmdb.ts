@@ -41,6 +41,13 @@ class TMDBService {
   /**
    * Make a request to TMDB API with caching
    */
+  /**
+   * Make a request to TMDB API (also used by route handlers for discover queries)
+   */
+  async makePublicRequest<T>(endpoint: string, params: Record<string, string> = {}): Promise<T> {
+    return this.makeRequest<T>(endpoint, params);
+  }
+
   private async makeRequest<T>(endpoint: string, params: Record<string, string> = {}): Promise<T> {
     const cacheKey = `${endpoint}?${new URLSearchParams(params).toString()}`;
 

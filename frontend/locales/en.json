@@ -379,6 +379,10 @@
       "subtitle": "Save recommendations for later with a single tap. Track streaming availability so you never miss a great pick."
     }
   },
+  "newReleases": {
+    "title": "New This Week",
+    "subtitle": "On your platforms"
+  },
   "collections": {
     "title": "Collections",
     "cozy": "Cozy Night In",

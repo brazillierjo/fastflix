@@ -15,7 +15,7 @@ import { useQuery } from '@tanstack/react-query';
 import { backendAPIService, MovieResult, StreamingProvider } from '@/services/backend-api.service';
 import { useRouter } from 'expo-router';
 import { MotiView } from 'moti';
-import React from 'react';
+import React, { useState } from 'react';
 import {
   Image,
   Text,
@@ -67,6 +67,7 @@ export default function ForYouSection({ delay = 400 }: { delay?: number }) {
   const router = useRouter();
   const colorScheme = useColorScheme();
   const isDark = colorScheme === 'dark';
+  const [expanded, setExpanded] = useState(false);
 
   const tmdbLanguage = language?.includes('-') ? language : `${language || 'en'}-${(country || 'US').toUpperCase()}`;
   const tmdbCountry = (country || 'US').toUpperCase();
@@ -201,13 +202,13 @@ export default function ForYouSection({ delay = 400 }: { delay?: number }) {
       {/* Recommendations list */}
       {isAuthenticated && !isLoading && recommendations.length > 0 && (
         <View className='gap-3'>
-          {recommendations.slice(0, 10).map((item, i) => (
+          {recommendations.slice(0, expanded ? 15 : 3).map((item, i) => (
             <MotiView
               key={item.tmdb_id}
               from={{ opacity: 0, translateX: -10 }}
               animate={{ opacity: 1, translateX: 0 }}
               transition={{
-                delay: delay + i * 60,
+                delay: i < 3 ? delay + i * 60 : i * 40,
                 type: 'timing',
                 duration: 400,
               }}
@@ -293,6 +294,32 @@ export default function ForYouSection({ delay = 400 }: { delay?: number }) {
               </TouchableOpacity>
             </MotiView>
           ))}
+
+          {/* Show more / Show less button */}
+          {recommendations.length > 3 && (
+            <MotiView
+              from={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ delay: 200, type: 'timing', duration: 300 }}
+            >
+              <TouchableOpacity
+                onPress={() => setExpanded(!expanded)}
+                activeOpacity={0.7}
+                className='mt-2 flex-row items-center justify-center gap-1 py-3'
+              >
+                <Text className='text-sm font-semibold text-netflix-500'>
+                  {expanded
+                    ? t('movies.seeLess') || 'See less'
+                    : t('movies.seeMore') || 'See more'}
+                </Text>
+                <Ionicons
+                  name={expanded ? 'chevron-up' : 'chevron-down'}
+                  size={16}
+                  color='#E50914'
+                />
+              </TouchableOpacity>
+            </MotiView>
+          )}
         </View>
       )}
     </MotiView>

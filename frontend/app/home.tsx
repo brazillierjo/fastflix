@@ -1,6 +1,7 @@
 import { Ionicons } from '@expo/vector-icons';
 import CollectionsSection from '@/components/CollectionsSection';
 import ForYouSection from '@/components/ForYouSection';
+import NewReleasesSection from '@/components/NewReleasesSection';
 import SubscriptionModal from '@/components/SubscriptionModal';
 import TrialBanner from '@/components/TrialBanner';
 import TrialEndingModal from '@/components/TrialEndingModal';
@@ -481,6 +482,9 @@ export default function HomeScreen() {
                 ))}
           </ScrollView>
         </MotiView>
+
+        {/* New Releases This Week */}
+        <NewReleasesSection delay={325} />
 
         {/* Collections */}
         <CollectionsSection delay={350} />

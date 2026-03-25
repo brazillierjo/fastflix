@@ -346,6 +346,10 @@
     "screen3": { "title": "Le tue piattaforme, i tuoi contenuti", "subtitle": "Filtra per Netflix, Disney+, Prime Video e altro." },
     "screen4": { "title": "La tua lista intelligente", "subtitle": "Salva film e serie per dopo. Segna cosa hai visto e valuta." }
   },
+  "newReleases": {
+    "title": "Novità della settimana",
+    "subtitle": "Sulle tue piattaforme"
+  },
   "collections": {
     "title": "Collezioni",
     "cozy": "Serata accogliente",

@@ -346,6 +346,10 @@
     "screen3": { "title": "Tus plataformas, tu contenido", "subtitle": "Filtra por Netflix, Disney+, Prime Video y mas." },
     "screen4": { "title": "Tu lista inteligente", "subtitle": "Guarda películas y series para más tarde. Marca lo visto y valora." }
   },
+  "newReleases": {
+    "title": "Estrenos de la semana",
+    "subtitle": "En tus plataformas"
+  },
   "collections": {
     "title": "Colecciones",
     "cozy": "Noche acogedora",

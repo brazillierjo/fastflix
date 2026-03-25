@@ -545,6 +545,20 @@ class BackendAPIService {
   }
 
   /**
+   * Get new releases this week on user's platforms
+   */
+  async getNewReleases(params?: {
+    language?: string;
+    country?: string;
+  }): Promise<APIResponse<any>> {
+    const qs = new URLSearchParams();
+    if (params?.language) qs.set('language', params.language);
+    if (params?.country) qs.set('country', params.country);
+    const query = qs.toString() ? `?${qs.toString()}` : '';
+    return await this.makeRequest(`/api/new-releases${query}`, { method: 'GET' });
+  }
+
+  /**
    * Get similar content for a given TMDB item
    */
   async getSimilar(

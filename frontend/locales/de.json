@@ -346,6 +346,10 @@
     "screen3": { "title": "Deine Plattformen, dein Content", "subtitle": "Filtere nach Netflix, Disney+, Prime Video und mehr." },
     "screen4": { "title": "Deine smarte Merkliste", "subtitle": "Speichere Filme und Serien fürspater. Bewerte und verfolge alles." }
   },
+  "newReleases": {
+    "title": "Neu diese Woche",
+    "subtitle": "Auf deinen Plattformen"
+  },
   "collections": {
     "title": "Sammlungen",
     "cozy": "Gemutlicher Abend",

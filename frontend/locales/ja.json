@@ -346,6 +346,10 @@
     "screen3": { "title": "あなたのプラットフォーム、あなたのコンテンツ", "subtitle": "Netflix、Disney+、Prime Videoなどでフィルタリング。" },
     "screen4": { "title": "スマートウォッチリスト", "subtitle": "映画やドラマを保存。視聴済みをマークして評価し、AIの提案を改善。" }
   },
+  "newReleases": {
+    "title": "今週の新作",
+    "subtitle": "あなたのプラットフォームで"
+  },
   "collections": {
     "title": "コレクション",
     "cozy": "まったり夜",

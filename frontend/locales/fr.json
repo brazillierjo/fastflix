@@ -370,6 +370,10 @@
       "subtitle": "Sauvegardez films et séries pour plus tard. Marquez ce que vous avez vu, notez-les, et laissez l'IA affiner vos futures recommandations."
     }
   },
+  "newReleases": {
+    "title": "Sorties de la semaine",
+    "subtitle": "Sur vos plateformes"
+  },
   "collections": {
     "title": "Collections",
     "cozy": "Soirée cocooning",
