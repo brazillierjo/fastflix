@@ -68,6 +68,7 @@ export default function ForYouSection({ delay = 400 }: { delay?: number }) {
   const colorScheme = useColorScheme();
   const isDark = colorScheme === 'dark';
   const [expanded, setExpanded] = useState(false);
+  const [activeTab, setActiveTab] = useState<'movie' | 'tv'>('movie');
 
   const tmdbLanguage = language?.includes('-') ? language : `${language || 'en'}-${(country || 'US').toUpperCase()}`;
   const tmdbCountry = (country || 'US').toUpperCase();
@@ -92,8 +93,9 @@ export default function ForYouSection({ delay = 400 }: { delay?: number }) {
     gcTime: 1000 * 60 * 60,
   });
 
-  const recommendations = data?.recommendations ?? [];
+  const allRecommendations = data?.recommendations ?? [];
   const streamingProviders = data?.streamingProviders ?? {};
+  const recommendations = allRecommendations.filter(r => r.media_type === activeTab);
 
   const navigateToDetail = (item: MovieResult) => {
     const itemProviders = streamingProviders[item.tmdb_id] || [];
@@ -130,6 +132,30 @@ export default function ForYouSection({ delay = 400 }: { delay?: number }) {
       <Text className='mb-3 text-sm text-light-muted dark:text-dark-muted'>
         {t('forYou.subtitle')}
       </Text>
+
+      {/* Movies / TV toggle */}
+      {isAuthenticated && (
+        <View className='mb-3 flex-row gap-2'>
+          <TouchableOpacity
+            onPress={() => { setActiveTab('movie'); setExpanded(false); }}
+            style={getSquircle(10)}
+            className={`px-4 py-1.5 ${activeTab === 'movie' ? 'bg-netflix-500' : isDark ? 'bg-white/10' : 'bg-black/5'}`}
+          >
+            <Text className={`text-sm font-medium ${activeTab === 'movie' ? 'text-white' : 'text-light-text dark:text-dark-text'}`}>
+              {t('filters.moviesOnly') || 'Movies'}
+            </Text>
+          </TouchableOpacity>
+          <TouchableOpacity
+            onPress={() => { setActiveTab('tv'); setExpanded(false); }}
+            style={getSquircle(10)}
+            className={`px-4 py-1.5 ${activeTab === 'tv' ? 'bg-netflix-500' : isDark ? 'bg-white/10' : 'bg-black/5'}`}
+          >
+            <Text className={`text-sm font-medium ${activeTab === 'tv' ? 'text-white' : 'text-light-text dark:text-dark-text'}`}>
+              {t('filters.tvShowsOnly') || 'TV Shows'}
+            </Text>
+          </TouchableOpacity>
+        </View>
+      )}
 
       {/* Guest state: sign in prompt */}
       {!isAuthenticated && (
