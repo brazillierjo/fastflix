@@ -11,9 +11,9 @@ import { applyTierRateLimit } from '@/lib/api-helpers';
 import type { MovieResult, StreamingProvider } from '@/lib/types';
 
 /**
- * TMDB genre ID mapping
+ * TMDB genre ID mapping - Movies
  */
-const GENRE_MAP: Record<string, number> = {
+const MOVIE_GENRE_MAP: Record<string, number> = {
   Action: 28,
   Comedy: 35,
   Drama: 18,
@@ -26,6 +26,24 @@ const GENRE_MAP: Record<string, number> = {
   Fantasy: 14,
   Crime: 80,
   Adventure: 12,
+};
+
+/**
+ * TMDB genre ID mapping - TV Shows (different IDs!)
+ */
+const TV_GENRE_MAP: Record<string, number> = {
+  Action: 10759,      // Action & Adventure
+  Comedy: 35,
+  Drama: 18,
+  Thriller: 9648,     // Mystery (closest to Thriller for TV)
+  'Sci-Fi': 10765,    // Sci-Fi & Fantasy
+  Horror: 9648,       // Mystery
+  Romance: 18,        // Drama (no Romance genre for TV)
+  Animation: 16,
+  Documentary: 99,
+  Fantasy: 10765,     // Sci-Fi & Fantasy
+  Crime: 80,
+  Adventure: 10759,   // Action & Adventure
 };
 
 /**
@@ -67,18 +85,26 @@ export async function GET(request: NextRequest) {
     // Get top 3 favorite genres from taste profile
     const favoriteGenres = tasteProfile.favorite_genres.slice(0, 3);
 
-    // Map genre names to TMDB genre IDs
-    const genreIds = favoriteGenres
-      .map((genre) => GENRE_MAP[genre])
+    // Map genre names to TMDB genre IDs (different for movies vs TV!)
+    const movieGenreIds = favoriteGenres
+      .map((genre) => MOVIE_GENRE_MAP[genre])
       .filter((id): id is number => id !== undefined);
 
-    // If no genres configured, use popular defaults (Drama, Action, Comedy)
-    const effectiveGenreIds = genreIds.length > 0 ? genreIds : [18, 28, 35];
+    const tvGenreIds = favoriteGenres
+      .map((genre) => TV_GENRE_MAP[genre])
+      .filter((id): id is number => id !== undefined);
 
-    // Discover movies and TV shows with those genres in parallel
+    // Deduplicate TV genre IDs (some genres map to the same ID)
+    const uniqueTvGenreIds = [...new Set(tvGenreIds)];
+
+    // If no genres configured, use popular defaults
+    const effectiveMovieGenreIds = movieGenreIds.length > 0 ? movieGenreIds : [18, 28, 35];
+    const effectiveTvGenreIds = uniqueTvGenreIds.length > 0 ? uniqueTvGenreIds : [18, 10759, 35];
+
+    // Discover movies and TV shows with their respective genre IDs
     const [movies, tvShows] = await Promise.all([
-      tmdb.discoverByGenres(effectiveGenreIds, 'movie', 1, language),
-      tmdb.discoverByGenres(effectiveGenreIds, 'tv', 1, language),
+      tmdb.discoverByGenres(effectiveMovieGenreIds, 'movie', 1, language),
+      tmdb.discoverByGenres(effectiveTvGenreIds, 'tv', 1, language),
     ]);
 
     // Convert to MovieResult format and merge
