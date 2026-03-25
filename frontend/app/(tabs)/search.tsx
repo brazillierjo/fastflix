@@ -71,7 +71,7 @@ export default function SearchScreen() {
       setQuery(params.query);
       goBackToHome(); // Reset results so user sees the new query in the input
     }
-  }, [params.query, setQuery]);
+  }, [params.query, params.ts, setQuery, goBackToHome]);
 
   const handleSearch = async () => {
     handleSearchStart();
