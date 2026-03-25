@@ -24,6 +24,7 @@
     "noRecommendations": "Nessuna raccomandazione trovata. Prova ad aggiustare i tuoi criteri di ricerca.",
     "seeMore": "Vedi di più",
     "seeLess": "Vedi meno",
+    "refineResults": "Affina i tuoi risultati...",
     "releaseDate": "Data di uscita:",
     "rating": "Valutazione:",
     "availableOn": "Disponibile su:",
@@ -105,7 +106,10 @@
     "subscription": "Abbonamento",
     "rent": "Noleggio",
     "buy": "Acquisto",
-    "ads": "Gratis (con pubblicità)"
+    "ads": "Gratis (con pubblicità)",
+    "newProvider": "Ora su {{provider}}!",
+    "newAvailable": "Nuova disponibilità",
+    "checkingProviders": "Verifica disponibilità..."
   },
   "subscription": {
     "title": "Passa a FastFlix Pro",
@@ -126,8 +130,16 @@
       "unlimited": {
         "title": "Raccomandazioni illimitate",
         "description": "Ottieni tutte le raccomandazioni di film che desideri"
-      }
+      },
+      "platforms": { "title": "Filtri piattaforme intelligenti", "description": "Solo contenuti dei tuoi servizi di streaming" },
+      "watchlist": { "title": "Lista personale e avvisi", "description": "Salva e segui i film con notifiche" },
+      "dailyPick": { "title": "Scelte giornaliere personalizzate", "description": "Raccomandazioni fresche ogni giorno" },
+      "history": { "title": "Cronologia e profilo gusti", "description": "L'IA impara le tue preferenze" }
     },
+    "socialProof": "Scelto dagli amanti del cinema di tutto il mondo",
+    "bestValue": "MIGLIOR PREZZO",
+    "perWeek": "/settimana",
+    "noCharge": "Nessun addebito fino alla fine della prova",
     "plans": {
       "title": "Scegli la tua formula"
     },
@@ -204,6 +216,26 @@
       "title": "Prova non disponibile",
       "alreadyUsed": "Hai già utilizzato la tua prova gratuita.",
       "message": "Qualcosa è andato storto. Riprova."
+    },
+    "banner": {
+      "day1": "Benvenuto! Giorno {{day}} della tua prova gratuita",
+      "day3": "Giorno {{day}} - Stai scoprendo ottimi contenuti!",
+      "day5": "Solo {{remaining}} giorni rimasti nella tua prova",
+      "day6": "La tua prova termina domani!",
+      "day7": "La tua prova termina oggi",
+      "subscribe": "Abbonati ora",
+      "dismiss": "Ho capito"
+    },
+    "endingModal": {
+      "title5": "La tua prova sta per terminare",
+      "title6": "Ultima occasione per abbonarti!",
+      "title7": "La tua prova termina oggi",
+      "subtitle": "Non perdere l'accesso a:",
+      "feature1": "Raccomandazioni IA illimitate",
+      "feature2": "Watchlist personale",
+      "feature3": "Selezioni giornaliere personalizzate",
+      "remindLater": "Ricordamelo dopo",
+      "understand": "Ho capito"
     }
   },
   "profile": {
@@ -281,7 +313,16 @@
     "availableOn": "Disponibile su",
     "lastChecked": "Ultimo controllo",
     "showMore": "Mostra di più",
-    "showLess": "Mostra meno"
+    "showLess": "Mostra meno",
+    "signInTitle": "Accedi per usare la tua lista",
+    "signInHint": "Salva film e serie TV per dopo. La tua lista si sincronizza su tutti i tuoi dispositivi.",
+    "share": "Condividi la lista",
+    "shareTitle": "La mia lista FastFlix",
+    "shareFooter": "Scopri cosa guardare con FastFlix!",
+    "toWatch": "Da vedere",
+    "watched": "Visti",
+    "markWatched": "Segna come visto",
+    "markUnwatched": "Segna come non visto"
   },
   "common": {
     "cancel": "Annulla",
@@ -290,8 +331,57 @@
     "retry": "Riprova"
   },
   "tabs": {
+    "home": "Home",
+    "search": "Cerca",
+    "watchlist": "La mia lista",
     "movies": "Film",
     "profile": "Profilo"
+  },
+  "onboarding": {
+    "skip": "Salta",
+    "next": "Avanti",
+    "getStarted": "Inizia",
+    "screen1": { "title": "Scopri cosa guardare stasera", "subtitle": "Basta con lo scrolling infinito. Chiedi alla nostra IA e ottieni raccomandazioni perfette." },
+    "screen2": { "title": "L'IA impara i tuoi gusti", "subtitle": "Più usi FastFlix, piu diventa intelligente." },
+    "screen3": { "title": "Le tue piattaforme, i tuoi contenuti", "subtitle": "Filtra per Netflix, Disney+, Prime Video e altro." },
+    "screen4": { "title": "La tua lista intelligente", "subtitle": "Salva film e serie per dopo. Segna cosa hai visto e valuta." }
+  },
+  "collections": {
+    "title": "Collezioni",
+    "cozy": "Serata accogliente",
+    "thriller": "Da brivido",
+    "classic": "Classici senza tempo",
+    "binge": "Da divorare",
+    "family": "Per tutta la famiglia",
+    "hidden": "Gemme nascoste",
+    "laugh": "Risate garantite",
+    "scifi": "Viaggi Sci-Fi"
+  },
+  "forYou": {
+    "title": "Per te",
+    "subtitle": "In base ai tuoi gusti",
+    "signInPrompt": "Accedi per raccomandazioni personalizzate",
+    "empty": "Valuta dei film per ottenere raccomandazioni personalizzate",
+    "loading": "Cerco film che ti piaceranno..."
+  },
+  "home": {
+    "greeting": "Ciao!",
+    "dailyPick": "Scelta del giorno",
+    "dailyPickLoading": "Cerco la tua raccomandazione del giorno...",
+    "trending": "Tendenze sulle tue piattaforme",
+    "trendingLoading": "Caricamento tendenze...",
+    "recentSearches": "Ricerche recenti",
+    "continueExploring": "Continua a esplorare",
+    "searchPlaceholder": "Cosa ti va di guardare?",
+    "quotaRemaining": "{{count}} ricerche rimaste questa settimana",
+    "quotaUnlimited": "Ricerche illimitate",
+    "upgradeForMore": "Aggiorna per ricerche illimitate",
+    "recommendedForYou": "Consigliato per te"
+  },
+  "authGate": {
+    "title": "Accedi per continuare",
+    "subtitle": "Crea un account gratuito per salvare la tua lista, sincronizzare le preferenze e ottenere raccomandazioni personalizzate.",
+    "maybeLater": "Forse piu tardi"
   },
   "languages": {
     "en": "English",
@@ -300,6 +390,34 @@
     "it": "Italiano",
     "es": "Español",
     "de": "Deutsch"
+  },
+  "setup": {
+    "platformsTitle": "Cosa guardi?",
+    "platformsSubtitle": "Seleziona le tue piattaforme di streaming",
+    "genresTitle": "Cosa ti piace?",
+    "genresSubtitle": "Scegli almeno 3 generi",
+    "step": "Passo {{current}} di {{total}}",
+    "continue": "Continua",
+    "back": "Indietro"
+  },
+  "notifications": {
+    "promptTitle": "Non perderti una grande scelta",
+    "promptSubtitle": "Ricevi raccomandazioni giornaliere personalizzate e avvisi quando i film diventano disponibili sulle tue piattaforme.",
+    "featureDaily": "Film del giorno",
+    "featureNew": "Novità sulle tue piattaforme",
+    "featureReminder": "Promemoria della lista",
+    "enable": "Attiva notifiche",
+    "notNow": "Non ora",
+    "dailyTitle": "La tua scelta del giorno è pronta!",
+    "dailyBody": "Scopri la raccomandazione personalizzata di oggi"
+  },
+  "movieDetail": {
+    "synopsis": "Trama",
+    "cast": "Cast",
+    "similar": "Potrebbe piacerti anche",
+    "openTMDB": "Vedi su TMDB",
+    "shareButton": "Condividi",
+    "watchedButton": "Segna come visto"
   },
   "report": {
     "title": "Segnala",

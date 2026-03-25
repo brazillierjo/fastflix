@@ -133,3 +133,126 @@ export const getTabStyle = (isActive: boolean, isDark: boolean): ViewStyle => ({
   paddingHorizontal: 16,
   ...getSquircle(18), // Apple-style squircle corners
 });
+
+// ============================================================================
+// iOS SYSTEM STYLE HELPERS
+// ============================================================================
+
+/**
+ * iOS-style section header spacing
+ */
+export const getSectionStyle = (_isDark: boolean) => ({
+  paddingHorizontal: 16,
+  paddingTop: 24,
+  paddingBottom: 8,
+});
+
+/**
+ * Subtle card style - light shadow in light mode, flat in dark mode
+ */
+export const getSubtleCardStyle = (isDark: boolean): ViewStyle => ({
+  backgroundColor: isDark ? '#1c1c1e' : '#ffffff',
+  borderRadius: 16,
+  ...(isDark
+    ? {}
+    : {
+        shadowColor: '#000',
+        shadowOffset: { width: 0, height: 1 },
+        shadowOpacity: 0.05,
+        shadowRadius: 4,
+      }),
+});
+
+/**
+ * iOS system background color
+ */
+export const getSystemBackground = (isDark: boolean): string =>
+  isDark ? '#000000' : '#f2f2f7';
+
+/**
+ * iOS secondary background color (cards, grouped sections)
+ */
+export const getSecondaryBackground = (isDark: boolean): string =>
+  isDark ? '#1c1c1e' : '#ffffff';
+
+/**
+ * iOS grouped table background color
+ */
+export const getGroupedBackground = (isDark: boolean): string =>
+  isDark ? '#1c1c1e' : '#ffffff';
+
+// ============================================================================
+// iOS TYPOGRAPHY SCALE
+// ============================================================================
+
+/**
+ * iOS-style typography scale (SF Pro is the system font, no need to load it)
+ */
+export const typography = {
+  largeTitle: {
+    fontSize: 34,
+    fontWeight: '700' as const,
+    letterSpacing: 0.37,
+  },
+  title1: { fontSize: 28, fontWeight: '700' as const, letterSpacing: 0.36 },
+  title2: { fontSize: 22, fontWeight: '700' as const, letterSpacing: 0.35 },
+  title3: { fontSize: 20, fontWeight: '600' as const, letterSpacing: 0.38 },
+  headline: {
+    fontSize: 17,
+    fontWeight: '600' as const,
+    letterSpacing: -0.41,
+  },
+  body: { fontSize: 17, fontWeight: '400' as const, letterSpacing: -0.41 },
+  callout: { fontSize: 16, fontWeight: '400' as const, letterSpacing: -0.32 },
+  subheadline: {
+    fontSize: 15,
+    fontWeight: '400' as const,
+    letterSpacing: -0.24,
+  },
+  footnote: {
+    fontSize: 13,
+    fontWeight: '400' as const,
+    letterSpacing: -0.08,
+  },
+  caption1: { fontSize: 12, fontWeight: '400' as const, letterSpacing: 0 },
+  caption2: { fontSize: 11, fontWeight: '400' as const, letterSpacing: 0.07 },
+};
+
+// ============================================================================
+// iOS SYSTEM COLORS
+// ============================================================================
+
+export const iosColors = {
+  // iOS System Colors
+  systemRed: '#FF3B30',
+  systemOrange: '#FF9500',
+  systemYellow: '#FFCC00',
+  systemGreen: '#34C759',
+  systemTeal: '#5AC8FA',
+  systemBlue: '#007AFF',
+  systemIndigo: '#5856D6',
+  systemPurple: '#AF52DE',
+  systemPink: '#FF2D55',
+  // Grays
+  systemGray: '#8E8E93',
+  systemGray2: '#AEAEB2',
+  systemGray3: '#C7C7CC',
+  systemGray4: '#D1D1D6',
+  systemGray5: '#E5E5EA',
+  systemGray6: '#F2F2F7',
+  // Backgrounds
+  light: {
+    background: '#F2F2F7',
+    secondaryBackground: '#FFFFFF',
+    tertiaryBackground: '#F2F2F7',
+    separator: '#C6C6C8',
+    opaqueSeparator: '#C6C6C8',
+  },
+  dark: {
+    background: '#000000',
+    secondaryBackground: '#1C1C1E',
+    tertiaryBackground: '#2C2C2E',
+    separator: '#38383A',
+    opaqueSeparator: '#38383A',
+  },
+};

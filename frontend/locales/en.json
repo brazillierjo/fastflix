@@ -24,6 +24,7 @@
     "noRecommendations": "No recommendations found. Try adjusting your search criteria.",
     "seeMore": "See more",
     "seeLess": "See less",
+    "refineResults": "Refine your results...",
     "releaseDate": "Release date :",
     "rating": "Rating :",
     "availableOn": "Available on :",
@@ -105,7 +106,10 @@
     "subscription": "Subscription",
     "rent": "Rent",
     "buy": "Buy",
-    "ads": "Free (Ads)"
+    "ads": "Free (Ads)",
+    "newProvider": "Now on {{provider}}!",
+    "newAvailable": "New availability",
+    "checkingProviders": "Checking availability..."
   },
   "subscription": {
     "title": "Go FastFlix Pro",
@@ -124,10 +128,30 @@
     },
     "features": {
       "unlimited": {
-        "title": "Unlimited Recommendations",
+        "title": "Unlimited AI Recommendations",
         "description": "Get as many movie recommendations as you want"
+      },
+      "platforms": {
+        "title": "Smart Platform Filters",
+        "description": "Only see content on your streaming services"
+      },
+      "watchlist": {
+        "title": "Personal Watchlist & Alerts",
+        "description": "Save and track movies with notifications"
+      },
+      "dailyPick": {
+        "title": "Personalized Daily Picks",
+        "description": "Fresh recommendations every day"
+      },
+      "history": {
+        "title": "Search History & Taste Profile",
+        "description": "AI learns your preferences over time"
       }
     },
+    "socialProof": "Trusted by movie lovers worldwide",
+    "bestValue": "BEST VALUE",
+    "perWeek": "/week",
+    "noCharge": "No charge until trial ends",
     "plans": {
       "title": "Choose Your Plan"
     },
@@ -204,6 +228,26 @@
       "title": "Trial Unavailable",
       "alreadyUsed": "You have already used your free trial.",
       "message": "Something went wrong. Please try again."
+    },
+    "banner": {
+      "day1": "Welcome! Day {{day}} of your free trial",
+      "day3": "Day {{day}} - You're exploring great content!",
+      "day5": "Only {{remaining}} days left in your trial",
+      "day6": "Your trial ends tomorrow!",
+      "day7": "Your trial ends today",
+      "subscribe": "Subscribe Now",
+      "dismiss": "Got it"
+    },
+    "endingModal": {
+      "title5": "Your trial is ending soon",
+      "title6": "Last chance to subscribe!",
+      "title7": "Your trial ends today",
+      "subtitle": "Don't lose access to:",
+      "feature1": "Unlimited AI recommendations",
+      "feature2": "Personal watchlist",
+      "feature3": "Personalized daily picks",
+      "remindLater": "Remind me later",
+      "understand": "I understand"
     }
   },
   "profile": {
@@ -281,7 +325,25 @@
     "availableOn": "Available on",
     "lastChecked": "Last checked",
     "showMore": "Show more",
-    "showLess": "Show less"
+    "showLess": "Show less",
+    "toWatch": "To Watch",
+    "watched": "Watched",
+    "markWatched": "Mark as Watched",
+    "markUnwatched": "Mark as Unwatched",
+    "signInTitle": "Sign in to use your watchlist",
+    "signInHint": "Save movies and TV shows to watch later. Your watchlist syncs across all your devices.",
+    "share": "Share Watchlist",
+    "shareTitle": "My FastFlix Watchlist",
+    "shareFooter": "Discover what to watch with FastFlix!"
+  },
+  "movieDetail": {
+    "synopsis": "Synopsis",
+    "cast": "Cast",
+    "similar": "You might also like",
+    "openTMDB": "View on TMDB",
+    "share": "Share",
+    "watchedButton": "Mark as Watched",
+    "info": "Info"
   },
   "common": {
     "cancel": "Cancel",
@@ -290,8 +352,69 @@
     "retry": "Retry"
   },
   "tabs": {
+    "home": "Home",
+    "search": "Search",
+    "watchlist": "Watchlist",
     "movies": "Movies",
     "profile": "Profile"
+  },
+  "onboarding": {
+    "skip": "Skip",
+    "next": "Next",
+    "getStarted": "Get Started",
+    "screen1": {
+      "title": "Find exactly what to watch tonight",
+      "subtitle": "No more endless scrolling. Discover movies and TV shows tailored to your mood with AI-powered recommendations."
+    },
+    "screen2": {
+      "title": "AI analyzes your taste",
+      "subtitle": "Describe what you're in the mood for in natural language. Our AI understands genres, actors, time periods, and vibes."
+    },
+    "screen3": {
+      "title": "Filter by your platforms",
+      "subtitle": "Only see content available on your streaming services. Netflix, Prime, Disney+, HBO, Apple TV+, Hulu, and more."
+    },
+    "screen4": {
+      "title": "Your smart watchlist",
+      "subtitle": "Save recommendations for later with a single tap. Track streaming availability so you never miss a great pick."
+    }
+  },
+  "collections": {
+    "title": "Collections",
+    "cozy": "Cozy Night In",
+    "thriller": "Edge of Your Seat",
+    "classic": "Timeless Classics",
+    "binge": "Binge-Worthy",
+    "family": "Family Fun",
+    "hidden": "Hidden Gems",
+    "laugh": "LOL Comedies",
+    "scifi": "Sci-Fi Trips"
+  },
+  "forYou": {
+    "title": "For You",
+    "subtitle": "Based on your taste",
+    "signInPrompt": "Sign in for personalized picks",
+    "empty": "Rate some movies to get personalized recommendations",
+    "loading": "Finding movies you'll love..."
+  },
+  "home": {
+    "greeting": "Hello!",
+    "dailyPick": "Today's Pick",
+    "dailyPickLoading": "Finding your daily recommendation...",
+    "trending": "Trending on your platforms",
+    "trendingLoading": "Loading trending content...",
+    "recentSearches": "Recent searches",
+    "continueExploring": "Continue exploring",
+    "searchPlaceholder": "What do you feel like watching?",
+    "quotaRemaining": "{{count}} searches remaining this week",
+    "quotaUnlimited": "Unlimited searches",
+    "upgradeForMore": "Upgrade for unlimited searches",
+    "recommendedForYou": "Recommended for you"
+  },
+  "authGate": {
+    "title": "Sign in to continue",
+    "subtitle": "Create a free account to save your watchlist, sync your preferences across devices, and get personalized recommendations.",
+    "maybeLater": "Maybe later"
   },
   "languages": {
     "en": "English",
@@ -300,6 +423,34 @@
     "it": "Italiano",
     "es": "Español",
     "de": "Deutsch"
+  },
+  "movieDetail": {
+    "watchedButton": "Mark as Watched",
+    "shareButton": "Share",
+    "synopsis": "Synopsis",
+    "cast": "Cast",
+    "similar": "You might also like",
+    "openTMDB": "View on TMDB"
+  },
+  "setup": {
+    "platformsTitle": "What do you watch on?",
+    "platformsSubtitle": "Select your streaming platforms",
+    "genresTitle": "What do you enjoy?",
+    "genresSubtitle": "Pick at least 3 genres",
+    "step": "Step {{current}} of {{total}}",
+    "continue": "Continue",
+    "back": "Back"
+  },
+  "notifications": {
+    "promptTitle": "Never miss a great pick",
+    "promptSubtitle": "Get daily personalized recommendations and alerts when movies become available on your platforms.",
+    "featureDaily": "Daily movie pick",
+    "featureNew": "New on your platforms",
+    "featureReminder": "Watchlist reminders",
+    "enable": "Enable Notifications",
+    "notNow": "Not now",
+    "dailyTitle": "Your daily pick is ready!",
+    "dailyBody": "Check out today's personalized recommendation"
   },
   "report": {
     "title": "Report",

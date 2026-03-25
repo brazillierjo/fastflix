@@ -4,11 +4,15 @@
  */
 
 import { Ionicons } from '@expo/vector-icons';
+import AuthGate from '@/components/AuthGate';
+import { useAuth } from '@/contexts/AuthContext';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { useWatchlistToggle } from '@/hooks/useWatchlist';
 import { WatchlistProvider } from '@/types/api';
+import AnimatedCheckmark from '@/components/AnimatedCheckmark';
+import { hapticSuccess } from '@/utils/haptics';
 import { MotiView } from 'moti';
-import React from 'react';
+import React, { useState } from 'react';
 import { ActivityIndicator, Text, TouchableOpacity, View } from 'react-native';
 import * as Haptics from 'expo-haptics';
 
@@ -36,26 +40,44 @@ export default function AddToWatchlistButton({
   size = 'medium',
 }: AddToWatchlistButtonProps) {
   const { t } = useLanguage();
+  const { isAuthenticated } = useAuth();
+  const [showAuthGate, setShowAuthGate] = useState(false);
+  const [showCheckmark, setShowCheckmark] = useState(false);
 
-  const { inWatchlist, isLoading, isToggling, toggle } = useWatchlistToggle(
-    tmdbId,
-    mediaType,
-    {
+  const { inWatchlist, isLoading, isToggling, toggleAsync } =
+    useWatchlistToggle(tmdbId, mediaType, {
       title,
       posterPath,
       providers,
       country,
-    }
-  );
+    });
 
   const handlePress = async () => {
+    // If not authenticated, show auth gate instead
+    if (!isAuthenticated) {
+      setShowAuthGate(true);
+      return;
+    }
+
+    const wasInWatchlist = inWatchlist;
+
     // Haptic feedback
     await Haptics.impactAsync(
       inWatchlist
         ? Haptics.ImpactFeedbackStyle.Light
         : Haptics.ImpactFeedbackStyle.Medium
     );
-    toggle();
+
+    try {
+      await toggleAsync();
+      // Show animated checkmark + success haptic when adding to watchlist
+      if (!wasInWatchlist) {
+        hapticSuccess();
+        setShowCheckmark(true);
+      }
+    } catch {
+      // Error handled by mutation
+    }
   };
 
   // Size configurations
@@ -75,79 +97,104 @@ export default function AddToWatchlistButton({
     );
   }
 
+  const authGateModal = (
+    <AuthGate
+      visible={showAuthGate}
+      onClose={() => setShowAuthGate(false)}
+    />
+  );
+
   if (variant === 'icon') {
     return (
-      <TouchableOpacity
-        onPress={handlePress}
-        disabled={isToggling}
-        hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
-        style={{ padding }}
-      >
-        <MotiView
-          animate={{
-            scale: isToggling ? 0.9 : 1,
-          }}
-          transition={{
-            type: 'spring',
-            damping: 15,
-          }}
-        >
-          {isToggling ? (
-            <ActivityIndicator size='small' color='#E50914' />
-          ) : (
-            <Ionicons
-              name={inWatchlist ? 'bookmark' : 'bookmark-outline'}
-              size={iconSize}
-              color={inWatchlist ? '#E50914' : '#ffffff'}
-            />
-          )}
-        </MotiView>
-      </TouchableOpacity>
+      <>
+        <View style={{ position: 'relative' }}>
+          <TouchableOpacity
+            onPress={handlePress}
+            disabled={isToggling}
+            hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
+            style={{ padding }}
+          >
+            <MotiView
+              animate={{
+                scale: isToggling ? 0.9 : 1,
+              }}
+              transition={{
+                type: 'spring',
+                damping: 15,
+              }}
+            >
+              {isToggling ? (
+                <ActivityIndicator size='small' color='#E50914' />
+              ) : (
+                <Ionicons
+                  name={inWatchlist ? 'bookmark' : 'bookmark-outline'}
+                  size={iconSize}
+                  color={inWatchlist ? '#E50914' : '#ffffff'}
+                />
+              )}
+            </MotiView>
+          </TouchableOpacity>
+          <AnimatedCheckmark
+            visible={showCheckmark}
+            onDismiss={() => setShowCheckmark(false)}
+          />
+        </View>
+        {authGateModal}
+      </>
     );
   }
 
   // Button variant
   return (
-    <TouchableOpacity
-      onPress={handlePress}
-      disabled={isToggling}
-      className={`flex-row items-center justify-center gap-2 rounded-xl border-2 px-4 py-3 ${
-        inWatchlist
-          ? 'border-netflix-500 bg-netflix-500/10'
-          : 'border-light-border bg-light-surface dark:border-dark-border dark:bg-dark-surface'
-      }`}
-    >
-      <MotiView
-        animate={{
-          scale: isToggling ? 0.9 : 1,
-          rotate: isToggling ? '10deg' : '0deg',
-        }}
-        transition={{
-          type: 'spring',
-          damping: 15,
-        }}
-      >
-        {isToggling ? (
-          <ActivityIndicator size='small' color='#E50914' />
-        ) : (
-          <Ionicons
-            name={inWatchlist ? 'bookmark' : 'bookmark-outline'}
-            size={20}
-            color={inWatchlist ? '#E50914' : '#a3a3a3'}
-          />
-        )}
-      </MotiView>
-      <Text
-        className={`text-sm font-semibold ${
-          inWatchlist
-            ? 'text-netflix-500'
-            : 'text-light-text dark:text-dark-text'
-        }`}
-      >
-        {inWatchlist
-          ? t('watchlist.inWatchlist') || 'In Watchlist'
-          : t('watchlist.add') || 'Add to Watchlist'}
-      </Text>
-    </TouchableOpacity>
+    <>
+      <View style={{ position: 'relative' }}>
+        <TouchableOpacity
+          onPress={handlePress}
+          disabled={isToggling}
+          className={`flex-row items-center justify-center gap-2 rounded-xl border-2 px-4 py-3 ${
+            inWatchlist
+              ? 'border-netflix-500 bg-netflix-500/10'
+              : 'border-light-border bg-light-surface dark:border-dark-border dark:bg-dark-surface'
+          }`}
+        >
+          <MotiView
+            animate={{
+              scale: isToggling ? 0.9 : 1,
+              rotate: isToggling ? '10deg' : '0deg',
+            }}
+            transition={{
+              type: 'spring',
+              damping: 15,
+            }}
+          >
+            {isToggling ? (
+              <ActivityIndicator size='small' color='#E50914' />
+            ) : (
+              <Ionicons
+                name={inWatchlist ? 'bookmark' : 'bookmark-outline'}
+                size={20}
+                color={inWatchlist ? '#E50914' : '#a3a3a3'}
+              />
+            )}
+          </MotiView>
+          <Text
+            className={`text-sm font-semibold ${
+              inWatchlist
+                ? 'text-netflix-500'
+                : 'text-light-text dark:text-dark-text'
+            }`}
+          >
+            {inWatchlist
+              ? t('watchlist.inWatchlist') || 'In Watchlist'
+              : t('watchlist.add') || 'Add to Watchlist'}
+          </Text>
+        </TouchableOpacity>
+        <AnimatedCheckmark
+          visible={showCheckmark}
+          onDismiss={() => setShowCheckmark(false)}
+        />
+      </View>
+      {authGateModal}
+    </>
   );
 }

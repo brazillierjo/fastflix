@@ -6,6 +6,7 @@
 import type {
   MovieResult,
   TMDBSearchResponse,
+  TMDBTrendingResponse,
   TMDBMovie,
   TMDBTVShow,
   TMDBWatchProviderResponse,
@@ -14,6 +15,7 @@ import type {
   DetailedInfo,
   Genre,
   AvailableProvider,
+  TrendingItem,
 } from './types';
 
 interface CachedData<T> {
@@ -176,6 +178,7 @@ class TMDBService {
   /**
    * Enrich AI recommendations with TMDB metadata
    * This is the main function that combines Gemini titles with TMDB data
+   * Processes titles in batches of 5 for controlled parallelism
    */
   async enrichRecommendations(
     titles: string[],
@@ -185,48 +188,63 @@ class TMDBService {
   ): Promise<MovieResult[]> {
     const enrichedResults: MovieResult[] = [];
     const errors: string[] = [];
+    const BATCH_SIZE = 5;
+    const startTime = Date.now();
 
-    // Process titles in parallel for better performance
-    const promises = titles.map(async (title) => {
-      try {
-        let tmdbResult: (TMDBMovie | TMDBTVShow) | null = null;
+    // Process titles in batches of 5 for controlled parallelism
+    for (let i = 0; i < titles.length; i += BATCH_SIZE) {
+      const batch = titles.slice(i, i + BATCH_SIZE);
+      const batchStart = Date.now();
 
-        // Search based on content type preferences
-        if (includeMovies && includeTvShows) {
-          // Search both (multi search)
-          tmdbResult = await this.searchMulti(title, language);
-        } else if (includeMovies) {
-          // Movies only
-          tmdbResult = await this.searchMovieByTitle(title, language);
-        } else if (includeTvShows) {
-          // TV shows only
-          tmdbResult = await this.searchTVByTitle(title, language);
+      const batchResults = await Promise.all(
+        batch.map(async (title) => {
+          try {
+            let tmdbResult: (TMDBMovie | TMDBTVShow) | null = null;
+
+            // Search based on content type preferences
+            if (includeMovies && includeTvShows) {
+              tmdbResult = await this.searchMulti(title, language);
+            } else if (includeMovies) {
+              tmdbResult = await this.searchMovieByTitle(title, language);
+            } else if (includeTvShows) {
+              tmdbResult = await this.searchTVByTitle(title, language);
+            }
+
+            if (tmdbResult) {
+              return this.convertToMovieResult(tmdbResult);
+            } else {
+              errors.push(title);
+              return null;
+            }
+          } catch {
+            errors.push(title);
+            return null;
+          }
+        })
+      );
+
+      console.log(`📦 TMDB batch ${Math.floor(i / BATCH_SIZE) + 1}/${Math.ceil(titles.length / BATCH_SIZE)} enriched in ${Date.now() - batchStart}ms`);
+
+      // Collect results from this batch
+      for (const result of batchResults) {
+        if (result) {
+          enrichedResults.push(result);
         }
-
-        if (tmdbResult) {
-          return this.convertToMovieResult(tmdbResult);
-        } else {
-          errors.push(title);
-          return null;
-        }
-      } catch {
-        errors.push(title);
-        return null;
       }
-    });
+    }
 
-    const results = await Promise.all(promises);
-
-    // Filter out nulls and deduplicate by tmdb_id
+    // Deduplicate by tmdb_id
     const seenIds = new Set<number>();
-    results.forEach((result) => {
-      if (result && !seenIds.has(result.tmdb_id)) {
+    const deduplicated: MovieResult[] = [];
+    for (const result of enrichedResults) {
+      if (!seenIds.has(result.tmdb_id)) {
         seenIds.add(result.tmdb_id);
-        enrichedResults.push(result);
+        deduplicated.push(result);
       }
-    });
+    }
 
-    return enrichedResults;
+    console.log(`📦 TMDB enrichment complete: ${deduplicated.length} results in ${Date.now() - startTime}ms (${errors.length} failures)`);
+    return deduplicated;
   }
 
   /**
@@ -286,22 +304,27 @@ class TMDBService {
   }
 
   /**
-   * Get watch providers for multiple movies/TV shows in parallel
+   * Get watch providers for multiple movies/TV shows in parallel batches of 5
    */
   async getBatchWatchProviders(
     items: MovieResult[],
     country: string = 'FR'
   ): Promise<{ [key: number]: StreamingProvider[] }> {
     const result: { [key: number]: StreamingProvider[] } = {};
+    const BATCH_SIZE = 5;
 
-    const promises = items.map(async (item) => {
-      const providers = await this.getWatchProviders(item.tmdb_id, item.media_type, country);
-      if (providers.length > 0) {
-        result[item.tmdb_id] = providers;
-      }
-    });
+    for (let i = 0; i < items.length; i += BATCH_SIZE) {
+      const batch = items.slice(i, i + BATCH_SIZE);
+      await Promise.all(
+        batch.map(async (item) => {
+          const providers = await this.getWatchProviders(item.tmdb_id, item.media_type, country);
+          if (providers.length > 0) {
+            result[item.tmdb_id] = providers;
+          }
+        })
+      );
+    }
 
-    await Promise.all(promises);
     return result;
   }
 
@@ -409,7 +432,8 @@ class TMDBService {
   }
 
   /**
-   * Get detailed info and credits for multiple movies/TV shows in parallel
+   * Get detailed info and credits for multiple movies/TV shows in parallel batches of 5
+   * Each item fetches its details + credits in parallel, and items are processed in batches
    */
   async getBatchDetailsAndCredits(
     items: MovieResult[],
@@ -420,25 +444,29 @@ class TMDBService {
   }> {
     const credits: { [key: number]: Cast[] } = {};
     const detailedInfo: { [key: number]: DetailedInfo } = {};
+    const BATCH_SIZE = 5;
 
-    const promises = items.map(async (item) => {
-      // Fetch details and credits in parallel for each item
-      const [details, cast] = await Promise.all([
-        item.media_type === 'movie'
-          ? this.getMovieDetails(item.tmdb_id, language)
-          : this.getTVDetails(item.tmdb_id, language),
-        this.getCredits(item.tmdb_id, item.media_type, language),
-      ]);
+    for (let i = 0; i < items.length; i += BATCH_SIZE) {
+      const batch = items.slice(i, i + BATCH_SIZE);
+      await Promise.all(
+        batch.map(async (item) => {
+          // Fetch details and credits in parallel for each item
+          const [details, cast] = await Promise.all([
+            item.media_type === 'movie'
+              ? this.getMovieDetails(item.tmdb_id, language)
+              : this.getTVDetails(item.tmdb_id, language),
+            this.getCredits(item.tmdb_id, item.media_type, language),
+          ]);
 
-      if (details) {
-        detailedInfo[item.tmdb_id] = details;
-      }
-      if (cast.length > 0) {
-        credits[item.tmdb_id] = cast;
-      }
-    });
-
-    await Promise.all(promises);
+          if (details) {
+            detailedInfo[item.tmdb_id] = details;
+          }
+          if (cast.length > 0) {
+            credits[item.tmdb_id] = cast;
+          }
+        })
+      );
+    }
 
     return { credits, detailedInfo };
   }
@@ -480,6 +508,164 @@ class TMDBService {
         }));
     } catch {
       return [];
+    }
+  }
+  /**
+   * Get trending movies and TV shows for the week
+   */
+  async getTrending(language: string = 'fr-FR'): Promise<TrendingItem[]> {
+    try {
+      const data = await this.makeRequest<TMDBTrendingResponse>('/trending/all/week', {
+        language,
+      });
+
+      if (!data.results || data.results.length === 0) {
+        return [];
+      }
+
+      return data.results
+        .filter(
+          (item): item is TMDBMovie | TMDBTVShow =>
+            item.media_type === 'movie' || item.media_type === 'tv'
+        )
+        .map((item) => {
+          const isMovie = 'title' in item;
+          return {
+            tmdb_id: item.id,
+            title: isMovie ? (item as TMDBMovie).title : (item as TMDBTVShow).name,
+            poster_path: item.poster_path,
+            vote_average: item.vote_average || 0,
+            media_type: (isMovie ? 'movie' : 'tv') as 'movie' | 'tv',
+          };
+        });
+    } catch {
+      return [];
+    }
+  }
+
+  /**
+   * Discover movies or TV shows by genre IDs
+   * Uses TMDB /discover endpoint with genre filtering and vote count minimum
+   */
+  async discoverByGenres(
+    genreIds: number[],
+    mediaType: 'movie' | 'tv',
+    page: number = 1
+  ): Promise<(TMDBMovie | TMDBTVShow)[]> {
+    try {
+      const params: Record<string, string> = {
+        with_genres: genreIds.join(','),
+        sort_by: 'vote_average.desc',
+        'vote_count.gte': '100',
+        page: String(page),
+        include_adult: 'false',
+      };
+
+      const data = await this.makeRequest<TMDBSearchResponse>(
+        `/discover/${mediaType}`,
+        params
+      );
+
+      if (!data.results || data.results.length === 0) {
+        return [];
+      }
+
+      return data.results.map((item) => ({
+        ...item,
+        media_type: mediaType,
+      })) as (TMDBMovie | TMDBTVShow)[];
+    } catch {
+      return [];
+    }
+  }
+
+  /**
+   * Get similar movies or TV shows
+   */
+  async getSimilar(
+    tmdbId: number,
+    mediaType: 'movie' | 'tv',
+    language: string = 'fr-FR'
+  ): Promise<MovieResult[]> {
+    try {
+      const data = await this.makeRequest<TMDBSearchResponse>(
+        `/${mediaType}/${tmdbId}/similar`,
+        { language }
+      );
+
+      if (!data.results || data.results.length === 0) {
+        return [];
+      }
+
+      return data.results.slice(0, 10).map((item) => {
+        const isMovie = mediaType === 'movie';
+        const movie = item as TMDBMovie;
+        const tv = item as TMDBTVShow;
+
+        return {
+          tmdb_id: item.id,
+          title: isMovie ? movie.title : tv.name,
+          original_title: isMovie ? movie.original_title : tv.original_name,
+          media_type: mediaType,
+          overview: item.overview || '',
+          poster_path: item.poster_path,
+          backdrop_path: item.backdrop_path,
+          vote_average: item.vote_average || 0,
+          vote_count: item.vote_count || 0,
+          release_date: isMovie ? movie.release_date : undefined,
+          first_air_date: !isMovie ? tv.first_air_date : undefined,
+          genre_ids: item.genre_ids || [],
+          popularity: item.popularity || 0,
+        };
+      });
+    } catch {
+      return [];
+    }
+  }
+
+  /**
+   * Get full details for a movie or TV show (overview, backdrop, genres, etc.)
+   */
+  async getFullDetails(
+    tmdbId: number,
+    mediaType: 'movie' | 'tv',
+    language: string = 'fr-FR'
+  ): Promise<{
+    overview: string;
+    backdrop_path: string | null;
+    poster_path: string | null;
+    vote_average: number;
+    genres: Genre[];
+    title: string;
+  } | null> {
+    try {
+      if (mediaType === 'movie') {
+        const data = await this.makeRequest<
+          TMDBMovie & { genres: Genre[] }
+        >(`/movie/${tmdbId}`, { language });
+        return {
+          overview: data.overview || '',
+          backdrop_path: data.backdrop_path,
+          poster_path: data.poster_path,
+          vote_average: data.vote_average || 0,
+          genres: data.genres || [],
+          title: data.title,
+        };
+      } else {
+        const data = await this.makeRequest<
+          TMDBTVShow & { genres: Genre[] }
+        >(`/tv/${tmdbId}`, { language });
+        return {
+          overview: data.overview || '',
+          backdrop_path: data.backdrop_path,
+          poster_path: data.poster_path,
+          vote_average: data.vote_average || 0,
+          genres: data.genres || [],
+          title: data.name,
+        };
+      }
+    } catch {
+      return null;
     }
   }
 }

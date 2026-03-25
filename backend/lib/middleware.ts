@@ -80,7 +80,6 @@ export async function requireAuth(request: NextRequest): Promise<AuthResult> {
       error: NextResponse.json(
         {
           error: 'Authentication failed',
-          message: error instanceof Error ? error.message : 'Unknown error',
         },
         { status: 500 }
       ),

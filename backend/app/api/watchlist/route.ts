@@ -11,9 +11,9 @@ import { z } from 'zod';
 
 // Validation schema for adding to watchlist
 const addToWatchlistSchema = z.object({
-  tmdbId: z.number(),
+  tmdbId: z.number().int().positive(),
   mediaType: z.enum(['movie', 'tv']),
-  title: z.string(),
+  title: z.string().min(1).max(500),
   posterPath: z.string().nullable(),
   providers: z
     .array(
@@ -52,6 +52,10 @@ export async function POST(request: NextRequest) {
 
     // Add to watchlist
     const watchlistItem = await db.addToWatchlist(authResult.userId, validatedData);
+
+    // Record activity
+    const today = new Date().toISOString().split('T')[0];
+    await db.recordActivity(authResult.userId, today);
 
     return NextResponse.json({
       success: true,

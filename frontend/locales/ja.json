@@ -24,6 +24,7 @@
     "noRecommendations": "レコメンデーションが見つかりませんでした。検索条件を調整してみてください。",
     "seeMore": "もっと見る",
     "seeLess": "少なく表示",
+    "refineResults": "結果を絞り込む...",
     "releaseDate": "公開日：",
     "rating": "評価：",
     "availableOn": "視聴可能：",
@@ -105,7 +106,10 @@
     "subscription": "サブスク",
     "rent": "レンタル",
     "buy": "購入",
-    "ads": "無料（広告あり）"
+    "ads": "無料（広告あり）",
+    "newProvider": "{{provider}}で配信開始！",
+    "newAvailable": "新しい配信情報",
+    "checkingProviders": "配信状況を確認中..."
   },
   "subscription": {
     "title": "FastFlix Proにアップグレード",
@@ -126,8 +130,16 @@
       "unlimited": {
         "title": "無制限のレコメンデーション",
         "description": "お好きなだけ映画のレコメンデーションを取得"
-      }
+      },
+      "platforms": { "title": "スマートプラットフォームフィルター", "description": "あなたのストリーミングサービスのコンテンツのみ" },
+      "watchlist": { "title": "パーソナルウォッチリスト＆通知", "description": "映画を保存して通知で追跡" },
+      "dailyPick": { "title": "パーソナライズされた毎日のおすすめ", "description": "毎日新鮮なおすすめ" },
+      "history": { "title": "検索履歴＆好みプロフィール", "description": "AIがあなたの好みを学習" }
     },
+    "socialProof": "世界中の映画ファンに信頼されています",
+    "bestValue": "最もお得",
+    "perWeek": "/週",
+    "noCharge": "トライアル終了まで課金なし",
     "plans": {
       "title": "プランを選択"
     },
@@ -204,6 +216,26 @@
       "title": "トライアル利用不可",
       "alreadyUsed": "すでに無料トライアルを使用しています。",
       "message": "問題が発生しました。もう一度お試しください。"
+    },
+    "banner": {
+      "day1": "ようこそ！無料トライアル{{day}}日目",
+      "day3": "{{day}}日目 - 素晴らしいコンテンツを探索中！",
+      "day5": "トライアル残り{{remaining}}日",
+      "day6": "トライアルは明日終了します！",
+      "day7": "トライアルは本日終了します",
+      "subscribe": "今すぐ登録",
+      "dismiss": "了解"
+    },
+    "endingModal": {
+      "title5": "トライアルがまもなく終了します",
+      "title6": "登録のラストチャンス！",
+      "title7": "トライアルは本日終了します",
+      "subtitle": "以下へのアクセスを失わないでください：",
+      "feature1": "無制限のAIレコメンデーション",
+      "feature2": "パーソナルウォッチリスト",
+      "feature3": "パーソナライズされた毎日のおすすめ",
+      "remindLater": "後で通知",
+      "understand": "了解しました"
     }
   },
   "profile": {
@@ -281,7 +313,16 @@
     "availableOn": "視聴可能",
     "lastChecked": "最終確認",
     "showMore": "もっと見る",
-    "showLess": "閉じる"
+    "showLess": "閉じる",
+    "signInTitle": "ウォッチリストを使うにはサインイン",
+    "signInHint": "映画やドラマを後で見るために保存。ウォッチリストはすべてのデバイスで同期されます。",
+    "share": "リストを共有",
+    "shareTitle": "私のFastFlixウォッチリスト",
+    "shareFooter": "FastFlixで何を見るか見つけよう！",
+    "toWatch": "未視聴",
+    "watched": "視聴済み",
+    "markWatched": "視聴済みにする",
+    "markUnwatched": "未視聴にする"
   },
   "common": {
     "cancel": "キャンセル",
@@ -290,8 +331,57 @@
     "retry": "再試行"
   },
   "tabs": {
+    "home": "ホーム",
+    "search": "検索",
+    "watchlist": "ウォッチリスト",
     "movies": "映画",
     "profile": "プロフィール"
+  },
+  "onboarding": {
+    "skip": "スキップ",
+    "next": "次へ",
+    "getStarted": "始める",
+    "screen1": { "title": "今夜何を見るか見つけよう", "subtitle": "終わらないスクロールはもう終わり。AIに気分を伝えて、完璧なおすすめを数秒で。" },
+    "screen2": { "title": "AIがあなたの好みを学習", "subtitle": "使えば使うほど賢くなります。映画を評価してプロフィールを構築。" },
+    "screen3": { "title": "あなたのプラットフォーム、あなたのコンテンツ", "subtitle": "Netflix、Disney+、Prime Videoなどでフィルタリング。" },
+    "screen4": { "title": "スマートウォッチリスト", "subtitle": "映画やドラマを保存。視聴済みをマークして評価し、AIの提案を改善。" }
+  },
+  "collections": {
+    "title": "コレクション",
+    "cozy": "まったり夜",
+    "thriller": "ハラハラドキドキ",
+    "classic": "不朽の名作",
+    "binge": "一気見必至",
+    "family": "家族で楽しむ",
+    "hidden": "隠れた名作",
+    "laugh": "爆笑コメディ",
+    "scifi": "SF の旅"
+  },
+  "forYou": {
+    "title": "あなたへのおすすめ",
+    "subtitle": "あなたの好みに基づいて",
+    "signInPrompt": "サインインしてパーソナライズされたおすすめを取得",
+    "empty": "映画を評価してパーソナライズされたおすすめを取得しましょう",
+    "loading": "お気に入りの映画を探しています..."
+  },
+  "home": {
+    "greeting": "こんにちは！",
+    "dailyPick": "今日のおすすめ",
+    "dailyPickLoading": "今日のおすすめを検索中...",
+    "trending": "あなたのプラットフォームで人気",
+    "trendingLoading": "トレンド読み込み中...",
+    "recentSearches": "最近の検索",
+    "continueExploring": "探索を続ける",
+    "searchPlaceholder": "何を見たい気分ですか？",
+    "quotaRemaining": "今週の残り検索回数: {{count}}",
+    "quotaUnlimited": "無制限検索",
+    "upgradeForMore": "無制限検索にアップグレード",
+    "recommendedForYou": "あなたへのおすすめ"
+  },
+  "authGate": {
+    "title": "続けるにはサインイン",
+    "subtitle": "無料アカウントを作成して、ウォッチリストの保存、設定の同期、パーソナライズされたおすすめを取得しましょう。",
+    "maybeLater": "後で"
   },
   "languages": {
     "en": "English",
@@ -300,6 +390,34 @@
     "it": "Italiano",
     "es": "Español",
     "de": "Deutsch"
+  },
+  "setup": {
+    "platformsTitle": "何で視聴していますか？",
+    "platformsSubtitle": "ストリーミングプラットフォームを選択",
+    "genresTitle": "何が好きですか？",
+    "genresSubtitle": "3つ以上のジャンルを選んでください",
+    "step": "ステップ {{current}} / {{total}}",
+    "continue": "続ける",
+    "back": "戻る"
+  },
+  "notifications": {
+    "promptTitle": "素晴らしい作品を見逃さない",
+    "promptSubtitle": "毎日のパーソナライズされたおすすめと、映画がプラットフォームで利用可能になった時のアラートを受け取りましょう。",
+    "featureDaily": "毎日の映画ピック",
+    "featureNew": "プラットフォームの新着",
+    "featureReminder": "ウォッチリストリマインダー",
+    "enable": "通知を有効にする",
+    "notNow": "後で",
+    "dailyTitle": "今日のおすすめが届きました！",
+    "dailyBody": "今日のパーソナライズされたおすすめをチェック"
+  },
+  "movieDetail": {
+    "synopsis": "あらすじ",
+    "cast": "キャスト",
+    "similar": "こちらもおすすめ",
+    "openTMDB": "TMDBで見る",
+    "shareButton": "共有",
+    "watchedButton": "視聴済みにする"
   },
   "report": {
     "title": "報告",

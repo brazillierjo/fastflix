@@ -1,3 +1,4 @@
+import AuthGate from '@/components/AuthGate';
 import FiltersBottomSheet from '@/components/FiltersBottomSheet';
 import AboutModal from '@/components/settings/AboutModal';
 import AccountModal from '@/components/settings/AccountModal';
@@ -8,9 +9,7 @@ import { AVAILABLE_LANGUAGES } from '@/constants/languages';
 import { useAuth } from '@/contexts/AuthContext';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { useSubscription } from '@/contexts/RevenueCatContext';
-import { useWatchlistCount } from '@/hooks/useWatchlist';
 import { getAppVersion } from '@/utils/appVersion';
-import { useRouter } from 'expo-router';
 import { MotiView } from 'moti';
 import React, { useState } from 'react';
 import {
@@ -23,16 +22,45 @@ import {
   View,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import { typography } from '@/utils/designHelpers';
 
 export default function ProfileScreen() {
   const { language, setLanguage, t } = useLanguage();
-  const { hasUnlimitedAccess, subscriptionInfo } = useSubscription();
+  const { hasUnlimitedAccess, subscriptionInfo, customerInfo } =
+    useSubscription();
   const { user, isAuthenticated } = useAuth();
-  const { count: watchlistCount } = useWatchlistCount();
-  const router = useRouter();
 
   // Determine if user has a paid subscription (not just trial)
   const hasPaidSubscription = subscriptionInfo?.isActive ?? false;
+
+  // Trial countdown calculation
+  const isInTrial = (() => {
+    if (!customerInfo) return false;
+    const activeEntitlements = Object.values(customerInfo.entitlements.active);
+    return activeEntitlements.some(
+      entitlement => entitlement.periodType === 'TRIAL'
+    );
+  })();
+
+  const trialDaysRemaining = (() => {
+    if (!isInTrial || !customerInfo) return 0;
+    const activeEntitlements = Object.values(customerInfo.entitlements.active);
+    const trialEntitlement = activeEntitlements.find(
+      e => e.periodType === 'TRIAL'
+    );
+    if (!trialEntitlement?.expirationDate) return 0;
+    const expiration = new Date(trialEntitlement.expirationDate);
+    const now = new Date();
+    const diffMs = expiration.getTime() - now.getTime();
+    return Math.max(0, Math.ceil(diffMs / (1000 * 60 * 60 * 24)));
+  })();
+
+  const TRIAL_DURATION_DAYS = 7;
+  const trialDaysElapsed = TRIAL_DURATION_DAYS - trialDaysRemaining;
+  const trialProgress = Math.min(
+    100,
+    Math.max(0, (trialDaysElapsed / TRIAL_DURATION_DAYS) * 100)
+  );
 
   // Modal states
   const [showAccountModal, setShowAccountModal] = useState(false);
@@ -41,6 +69,7 @@ export default function ProfileScreen() {
   const [showPlansModal, setShowPlansModal] = useState(false);
   const [showAboutModal, setShowAboutModal] = useState(false);
   const [showFiltersModal, setShowFiltersModal] = useState(false);
+  const [showAuthGate, setShowAuthGate] = useState(false);
 
   const languages = AVAILABLE_LANGUAGES;
   const currentLanguage = languages.find(lang => lang.code === language);
@@ -137,7 +166,10 @@ export default function ProfileScreen() {
           transition={{ type: 'timing', duration: 600 }}
           className='mb-6 px-6 pt-8'
         >
-          <Text className='text-3xl font-bold text-light-text dark:text-dark-text'>
+          <Text
+            style={typography.largeTitle}
+            className='text-light-text dark:text-dark-text'
+          >
             {t('modal.title')}
           </Text>
           <Text className='mt-2 text-base text-light-muted dark:text-dark-muted'>
@@ -170,7 +202,7 @@ export default function ProfileScreen() {
                 if (isAuthenticated) {
                   setShowAccountModal(true);
                 } else {
-                  router.push('/auth');
+                  setShowAuthGate(true);
                 }
               }}
               isFirst
@@ -180,7 +212,7 @@ export default function ProfileScreen() {
         </MotiView>
 
         {/* Subscription Section */}
-        {isAuthenticated && (
+        {isAuthenticated ? (
           <MotiView
             from={{ opacity: 0, translateY: 20 }}
             animate={{ opacity: 1, translateY: 0 }}
@@ -201,31 +233,44 @@ export default function ProfileScreen() {
                   }
                 }}
                 isFirst
-                isLast
+                isLast={!isInTrial}
               />
+              {isInTrial && (
+                <View className='border-t border-light-border bg-light-surface px-4 pb-4 pt-3 dark:border-dark-border dark:bg-dark-surface'>
+                  <Text className='mb-2 text-sm font-medium text-light-text dark:text-dark-text'>
+                    {t('profile.activeTrial') || 'Free Trial Active'} —{' '}
+                    {trialDaysRemaining}{' '}
+                    {trialDaysRemaining === 1
+                      ? t('profile.dayRemaining') || 'day remaining'
+                      : t('profile.daysRemaining') || 'days remaining'}
+                  </Text>
+                  <View className='h-2 overflow-hidden rounded-full bg-neutral-200 dark:bg-neutral-700'>
+                    <View
+                      style={{ width: `${trialProgress}%` }}
+                      className='h-full rounded-full bg-[#E50914]'
+                    />
+                  </View>
+                  <Text className='mt-2 text-xs text-light-muted dark:text-dark-muted'>
+                    {t('profile.trialEndsMessage') ||
+                      'Subscribe before your trial ends to keep unlimited access'}
+                  </Text>
+                </View>
+              )}
             </View>
           </MotiView>
-        )}
-
-        {/* Watchlist Section */}
-        {isAuthenticated && (
+        ) : (
           <MotiView
             from={{ opacity: 0, translateY: 20 }}
             animate={{ opacity: 1, translateY: 0 }}
-            transition={{ delay: 160, type: 'timing', duration: 600 }}
+            transition={{ delay: 150, type: 'timing', duration: 600 }}
             className='mb-6 px-4'
           >
             <View className='overflow-hidden rounded-xl'>
               <SettingsRow
-                icon='bookmark'
-                iconColor='#E50914'
-                title={t('watchlist.title') || 'Watchlist'}
-                subtitle={
-                  watchlistCount > 0
-                    ? `${watchlistCount} ${watchlistCount === 1 ? t('watchlist.item') || 'item' : t('watchlist.items') || 'items'}`
-                    : t('watchlist.emptyShort') || 'No items saved'
-                }
-                onPress={() => router.push('/watchlist')}
+                icon='star'
+                title={t('profile.premiumSubscription') || 'Subscription'}
+                subtitle={t('profile.signInRequired') || 'Sign in to manage'}
+                onPress={() => setShowAuthGate(true)}
                 isFirst
                 isLast
               />
@@ -240,7 +285,10 @@ export default function ProfileScreen() {
           transition={{ delay: 175, type: 'timing', duration: 600 }}
           className='mb-6 px-4'
         >
-          <Text className='mb-2 ml-3 text-sm font-medium uppercase text-light-muted dark:text-dark-muted'>
+          <Text
+            style={typography.footnote}
+            className='mb-2 ml-3 font-medium uppercase text-light-muted dark:text-dark-muted'
+          >
             {t('profile.defaultFiltersSection') || 'Search Filters'}
           </Text>
           <View className='overflow-hidden rounded-xl'>
@@ -262,7 +310,7 @@ export default function ProfileScreen() {
                 icon='options'
                 title={t('profile.defaultFilters') || 'Default Filters'}
                 subtitle={t('profile.signInRequired') || 'Sign in to access'}
-                onPress={() => router.push('/auth')}
+                onPress={() => setShowAuthGate(true)}
                 isFirst
                 isLast
               />
@@ -277,7 +325,10 @@ export default function ProfileScreen() {
           transition={{ delay: 200, type: 'timing', duration: 600 }}
           className='mb-6 px-4'
         >
-          <Text className='mb-2 ml-3 text-sm font-medium uppercase text-light-muted dark:text-dark-muted'>
+          <Text
+            style={typography.footnote}
+            className='mb-2 ml-3 font-medium uppercase text-light-muted dark:text-dark-muted'
+          >
             {t('profile.preferences') || 'Preferences'}
           </Text>
           <View className='overflow-hidden rounded-xl'>
@@ -303,7 +354,10 @@ export default function ProfileScreen() {
           transition={{ delay: 225, type: 'timing', duration: 600 }}
           className='mb-6 px-4'
         >
-          <Text className='mb-2 ml-3 text-sm font-medium uppercase text-light-muted dark:text-dark-muted'>
+          <Text
+            style={typography.footnote}
+            className='mb-2 ml-3 font-medium uppercase text-light-muted dark:text-dark-muted'
+          >
             {t('report.title') || 'Report'}
           </Text>
           <View className='overflow-hidden rounded-xl'>
@@ -374,6 +428,10 @@ export default function ProfileScreen() {
         visible={showFiltersModal}
         onClose={() => setShowFiltersModal(false)}
         saveAsDefault
+      />
+      <AuthGate
+        visible={showAuthGate}
+        onClose={() => setShowAuthGate(false)}
       />
     </SafeAreaView>
   );

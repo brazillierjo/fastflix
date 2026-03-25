@@ -298,9 +298,14 @@ MESSAGE: Test`,
         }),
       }));
 
-      await expect(gemini.generateRecommendationsWithResponse('test', ['movies'])).rejects.toThrow(
-        'Failed to generate AI recommendations'
+      const result = await gemini.generateRecommendationsWithResponse('test', ['movies']);
+
+      expect(result.isFallback).toBe(true);
+      expect(result.recommendations).toEqual([]);
+      expect(result.conversationalResponse).toBe(
+        'Our AI is temporarily unavailable. Please try again in a moment.'
       );
+      expect(result.detectedPlatforms).toEqual([]);
     });
 
     it('should provide default message when MESSAGE section is missing', async () => {

@@ -66,6 +66,7 @@ export interface SearchResponse {
   detailedInfo: { [key: number]: DetailedInfo };
   conversationalResponse: string;
   totalResults: number;
+  conversationHistory?: ConversationMessage[];
 }
 
 export interface StreamingProvider {
@@ -84,6 +85,20 @@ export interface AIRecommendationResult {
   recommendations: string[]; // Just titles from Gemini
   conversationalResponse: string;
   detectedPlatforms: string[]; // Detected streaming platforms from query
+  isFallback?: boolean; // True when AI failed and fallback response is returned
+}
+
+export interface ConversationMessage {
+  role: 'user' | 'assistant';
+  content: string;
+}
+
+export interface UserContext {
+  favoriteGenres?: string[];
+  dislikedGenres?: string[];
+  favoriteDecades?: string[];
+  ratedMovies?: Array<{ title: string; rating: number }>;
+  recentSearches?: string[];
 }
 
 // ============================================================================
@@ -240,6 +255,10 @@ export interface WatchlistItem {
   last_provider_check: string | null;
   providers: StreamingProvider[];
   country: string;
+  watched: boolean;
+  watched_at: string | null;
+  user_rating: number | null;
+  user_note: string | null;
 }
 
 export interface AddToWatchlistRequest {
@@ -249,4 +268,111 @@ export interface AddToWatchlistRequest {
   posterPath: string | null;
   providers: StreamingProvider[];
   country: string;
+}
+
+// ============================================================================
+// Quota Types
+// ============================================================================
+
+export interface UserQuota {
+  user_id: string;
+  date: string;
+  search_count: number;
+  watchlist_additions: number;
+}
+
+export interface QuotaLimits {
+  searches: number; // -1 means unlimited
+  watchlistAdditions: number; // -1 means unlimited
+}
+
+export const FREE_TIER_LIMITS: QuotaLimits = {
+  searches: 3, // per week
+  watchlistAdditions: 5, // per day
+};
+
+export const PREMIUM_LIMITS: QuotaLimits = {
+  searches: -1,
+  watchlistAdditions: -1,
+};
+
+// ============================================================================
+// Search History Types
+// ============================================================================
+
+export interface SearchHistoryEntry {
+  id: number;
+  user_id: string;
+  query: string;
+  results_count: number;
+  created_at: string;
+}
+
+// ============================================================================
+// Taste Profile Types
+// ============================================================================
+
+export interface RatedMovie {
+  tmdb_id: number;
+  rating: number;
+  title: string;
+}
+
+export interface UserTasteProfile {
+  user_id: string;
+  favorite_genres: string[];
+  disliked_genres: string[];
+  favorite_decades: string[];
+  rated_movies: RatedMovie[];
+}
+
+// ============================================================================
+// Trending / Home Types
+// ============================================================================
+
+export interface TrendingItem {
+  tmdb_id: number;
+  title: string;
+  poster_path: string | null;
+  vote_average: number;
+  media_type: 'movie' | 'tv';
+}
+
+export interface DailyPick {
+  tmdb_id: number;
+  title: string;
+  overview: string;
+  poster_path: string | null;
+  backdrop_path: string | null;
+  vote_average: number;
+  media_type: 'movie' | 'tv';
+  genres: Genre[];
+  providers: StreamingProvider[];
+}
+
+export interface HomeResponse {
+  dailyPick: DailyPick | null;
+  trending: TrendingItem[];
+  recentSearches: SearchHistoryEntry[];
+  quota: {
+    used: number;
+    limit: number;
+    isPremium: boolean;
+  };
+}
+
+export interface UserStats {
+  totalSearches: number;
+  watchlistCount: number;
+  watchedCount: number;
+  memberSince: string;
+  currentStreak: number;
+  longestStreak: number;
+}
+
+export interface TMDBTrendingResponse {
+  page: number;
+  results: (TMDBMovie | TMDBTVShow)[];
+  total_pages: number;
+  total_results: number;
 }

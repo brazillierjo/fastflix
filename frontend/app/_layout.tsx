@@ -17,6 +17,7 @@ import {
   TouchableOpacity,
   useColorScheme,
   View,
+  ViewStyle,
 } from 'react-native';
 import 'react-native-reanimated';
 
@@ -27,7 +28,6 @@ import { QueryProvider } from '@/providers/QueryProvider';
 import {
   getGlassShadow,
   getGlassTabStyle,
-  getTabStyle,
   getSquircle,
 } from '@/utils/designHelpers';
 import * as Sentry from '@sentry/react-native';
@@ -79,22 +79,27 @@ function CustomTabBar({ state, descriptors, navigation }: BottomTabBarProps) {
   const colorScheme = useColorScheme();
   const isDark = colorScheme === 'dark';
 
+  // Hide tab bar on onboarding, setup, auth, and index screens
+  const currentRouteName = state.routes[state.index]?.name;
+  const hiddenScreens = ['onboarding', 'setup', 'auth', 'index', 'movie-detail', '+not-found'];
+  if (hiddenScreens.includes(currentRouteName)) {
+    return null;
+  }
+
   return (
     <View style={styles.tabBarWrapper}>
       <View style={styles.tabBarContainer}>
         <BlurView
-          intensity={Platform.OS === 'ios' ? 80 : 60}
+          intensity={Platform.OS === 'ios' ? 40 : 30}
           tint={isDark ? 'dark' : 'light'}
           style={[styles.blurView, getGlassShadow(isDark)]}
         >
           <View style={[styles.tabBarContent, getGlassTabStyle(isDark)]}>
             {state.routes
-              .filter(
-                route =>
-                  route.name !== 'auth' &&
-                  route.name !== '+not-found' &&
-                  route.name !== '_sitemap' &&
-                  route.name !== 'watchlist'
+              .filter(route =>
+                ['home', 'search', 'watchlist', 'profile'].includes(
+                  route.name
+                )
               )
               .map(route => {
                 const { options } = descriptors[route.key];
@@ -114,6 +119,8 @@ function CustomTabBar({ state, descriptors, navigation }: BottomTabBarProps) {
                   }
                 };
 
+                const inactiveColor = isDark ? '#8e8e93' : '#999999';
+
                 return (
                   <TouchableOpacity
                     key={route.key}
@@ -124,43 +131,29 @@ function CustomTabBar({ state, descriptors, navigation }: BottomTabBarProps) {
                     <MotiView
                       animate={{
                         scale: isFocused ? 1 : 0.95,
-                        opacity: isFocused ? 1 : 0.7,
+                        opacity: isFocused ? 1 : 0.5,
                       }}
                       transition={{
                         type: 'timing',
                         duration: 200,
                       }}
                       style={[
-                        getTabStyle(isFocused, isDark),
-                        isFocused && styles.tabButtonActive,
+                        isFocused
+                          ? styles.tabPillActive
+                          : styles.tabPillInactive,
                       ]}
                     >
                       <View style={styles.tabContent}>
                         <View style={styles.tabIcon}>
                           {options.tabBarIcon?.({
-                            color: isFocused
-                              ? '#fff'
-                              : isDark
-                                ? '#a3a3a3'
-                                : '#737373',
+                            color: isFocused ? '#fff' : inactiveColor,
                             focused: isFocused,
-                            size: 24,
+                            size: isFocused ? 20 : 24,
                           })}
                         </View>
-                        <Text
-                          style={[
-                            styles.tabLabel,
-                            {
-                              color: isFocused
-                                ? '#fff'
-                                : isDark
-                                  ? '#a3a3a3'
-                                  : '#737373',
-                            },
-                          ]}
-                        >
-                          {label}
-                        </Text>
+                        {isFocused && (
+                          <Text style={styles.tabLabel}>{label}</Text>
+                        )}
                       </View>
                     </MotiView>
                   </TouchableOpacity>
@@ -186,10 +179,42 @@ function TabsLayout() {
       <Tabs.Screen
         name='index'
         options={{
-          title: t('tabs.movies'),
+          href: null,
+        }}
+      />
+      <Tabs.Screen
+        name='home'
+        options={{
+          title: t('tabs.home'),
           tabBarIcon: ({ color, focused }) => (
             <Ionicons
-              name={focused ? 'film' : 'film-outline'}
+              name={focused ? 'home' : 'home-outline'}
+              size={24}
+              color={color}
+            />
+          ),
+        }}
+      />
+      <Tabs.Screen
+        name='search'
+        options={{
+          title: t('tabs.search'),
+          tabBarIcon: ({ color, focused }) => (
+            <Ionicons
+              name={focused ? 'search' : 'search-outline'}
+              size={24}
+              color={color}
+            />
+          ),
+        }}
+      />
+      <Tabs.Screen
+        name='watchlist'
+        options={{
+          title: t('tabs.watchlist'),
+          tabBarIcon: ({ color, focused }) => (
+            <Ionicons
+              name={focused ? 'bookmark' : 'bookmark-outline'}
               size={24}
               color={color}
             />
@@ -210,13 +235,25 @@ function TabsLayout() {
         }}
       />
       <Tabs.Screen
-        name='watchlist'
+        name='onboarding'
         options={{
-          title: 'Watchlist',
+          href: null,
+        }}
+      />
+      <Tabs.Screen
+        name='setup'
+        options={{
+          href: null,
         }}
       />
       <Tabs.Screen
         name='auth'
+        options={{
+          href: null,
+        }}
+      />
+      <Tabs.Screen
+        name='movie-detail'
         options={{
           href: null,
         }}
@@ -247,7 +284,7 @@ const styles = StyleSheet.create({
     zIndex: 100,
   },
   tabBarContainer: {
-    width: '80%',
+    width: '92%',
     maxWidth: 500, // Limit width on iPad/tablets
   },
   blurView: {
@@ -256,8 +293,8 @@ const styles = StyleSheet.create({
   },
   tabBarContent: {
     flexDirection: 'row',
-    paddingVertical: 8,
-    paddingHorizontal: 12,
+    paddingVertical: 6,
+    paddingHorizontal: 8,
     justifyContent: 'space-around',
     alignItems: 'center',
   },
@@ -265,14 +302,25 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: 'center',
   },
-  tabButtonActive: {
-    width: '100%',
+  tabPillActive: {
+    backgroundColor: '#E50914',
+    paddingVertical: 7,
+    paddingHorizontal: 14,
+    borderRadius: 18,
+    ...Platform.select({
+      ios: { borderCurve: 'continuous' as ViewStyle['borderCurve'] },
+    }),
+  },
+  tabPillInactive: {
+    backgroundColor: 'transparent',
+    paddingVertical: 7,
+    paddingHorizontal: 14,
   },
   tabContent: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
-    gap: 6,
+    gap: 5,
   },
   tabIcon: {
     width: 24,
@@ -281,9 +329,10 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   tabLabel: {
-    fontSize: 15,
+    fontSize: 12,
     fontWeight: '600',
-    letterSpacing: -0.3,
+    letterSpacing: -0.2,
+    color: '#ffffff',
   },
 });
 

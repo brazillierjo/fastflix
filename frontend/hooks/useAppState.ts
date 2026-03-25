@@ -18,7 +18,7 @@
  */
 
 import { useState } from 'react';
-import { StreamingProvider } from '../services/backend-api.service';
+import { StreamingProvider, ConversationMessage } from '../services/backend-api.service';
 import { Cast, DetailedInfo, Movie } from './useBackendMovieSearch';
 
 interface AppState {
@@ -28,6 +28,7 @@ interface AppState {
   credits: { [key: number]: Cast[] };
   detailedInfo: { [key: number]: DetailedInfo };
   geminiResponse: string;
+  conversationHistory: ConversationMessage[];
   showWelcome: boolean;
   showResults: boolean;
 
@@ -47,6 +48,7 @@ export const useAppState = () => {
     [key: number]: DetailedInfo;
   }>({});
   const [geminiResponse, setGeminiResponse] = useState('');
+  const [conversationHistory, setConversationHistory] = useState<ConversationMessage[]>([]);
   const [showWelcome, setShowWelcome] = useState(true);
   const [showResults, setShowResults] = useState(false);
 
@@ -61,6 +63,7 @@ export const useAppState = () => {
     setCredits({});
     setDetailedInfo({});
     setGeminiResponse('');
+    setConversationHistory([]);
   };
 
   const handleSearchSuccess = (data: {
@@ -69,12 +72,14 @@ export const useAppState = () => {
     credits: { [key: number]: Cast[] };
     detailedInfo: { [key: number]: DetailedInfo };
     geminiResponse: string;
+    conversationHistory?: ConversationMessage[];
   }) => {
     setMovies(data.movies);
     setStreamingProviders(data.streamingProviders);
     setCredits(data.credits);
     setDetailedInfo(data.detailedInfo);
     setGeminiResponse(data.geminiResponse);
+    setConversationHistory(data.conversationHistory || []);
     setIsSearching(false);
     setShowResults(true);
   };
@@ -97,6 +102,7 @@ export const useAppState = () => {
     credits,
     detailedInfo,
     geminiResponse,
+    conversationHistory,
     showWelcome,
     showResults,
 
@@ -109,6 +115,7 @@ export const useAppState = () => {
     setCredits,
     setDetailedInfo,
     setGeminiResponse,
+    setConversationHistory,
     setShowWelcome,
     setShowResults,
 

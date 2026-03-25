@@ -158,3 +158,24 @@ export const RATE_LIMITS = {
     },
   },
 };
+
+/**
+ * Tier-based rate limit configuration
+ * Returns rate limit parameters based on user subscription tier
+ */
+export function getRateLimitForTier(isPremium: boolean): {
+  windowMs: number;
+  maxRequests: number;
+} {
+  if (isPremium) {
+    return {
+      windowMs: 60 * 1000, // 1 minute
+      maxRequests: 60, // 60 requests per minute
+    };
+  }
+
+  return {
+    windowMs: 60 * 1000, // 1 minute
+    maxRequests: 10, // 10 requests per minute
+  };
+}

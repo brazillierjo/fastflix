@@ -4,7 +4,7 @@
  */
 
 import { NextRequest, NextResponse } from 'next/server';
-import { rateLimiter, RATE_LIMITS } from './rate-limiter';
+import { rateLimiter, RATE_LIMITS, getRateLimitForTier } from './rate-limiter';
 import { isProductionEnv } from './env';
 
 /**
@@ -197,5 +197,46 @@ export async function applyRateLimit(
   }
 
   // Not rate limited
+  return null;
+}
+
+/**
+ * Apply tier-based rate limiting (free vs premium users)
+ * @param request - Next.js request object
+ * @param endpoint - Endpoint name for the rate limit key
+ * @param isPremium - Whether the user has premium access
+ * @returns Response with 429 status if rate limited, null otherwise
+ */
+export async function applyTierRateLimit(
+  request: NextRequest,
+  endpoint: string,
+  isPremium: boolean
+): Promise<NextResponse | null> {
+  const ip = getClientIP(request);
+  const tierLimits = getRateLimitForTier(isPremium);
+  const key = `tier:${endpoint}:${ip}`;
+
+  const allowed = await rateLimiter.checkLimit(key, tierLimits.maxRequests, tierLimits.windowMs);
+
+  if (!allowed) {
+    const resetTime = await rateLimiter.getResetTime(key);
+    return NextResponse.json(
+      {
+        error: 'Rate limit exceeded',
+        retryAfter: resetTime,
+      },
+      {
+        status: 429,
+        headers: {
+          ...SECURITY_HEADERS,
+          'Retry-After': resetTime.toString(),
+          'X-RateLimit-Limit': tierLimits.maxRequests.toString(),
+          'X-RateLimit-Remaining': '0',
+          'X-RateLimit-Reset': resetTime.toString(),
+        },
+      }
+    );
+  }
+
   return null;
 }

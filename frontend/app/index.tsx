@@ -1,108 +1,34 @@
 import LoadingState from '@/components/LoadingState';
-import MovieResults from '@/components/MovieResults';
-import SearchForm from '@/components/SearchForm';
-import SubscriptionModal from '@/components/SubscriptionModal';
-import WatchlistBottomSheet from '@/components/WatchlistBottomSheet';
 import { useAuth } from '@/contexts/AuthContext';
-import { useLanguage } from '@/contexts/LanguageContext';
-import { useSubscription } from '@/contexts/RevenueCatContext';
-import { useAppState } from '@/hooks/useAppState';
-import { useBackendMovieSearch } from '@/hooks/useBackendMovieSearch';
 import { cn } from '@/utils/cn';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import { Redirect } from 'expo-router';
-import React, { useState } from 'react';
-import {
-  Alert,
-  KeyboardAvoidingView,
-  Platform,
-  StatusBar,
-  View,
-} from 'react-native';
+import React, { useEffect, useState } from 'react';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
-export default function HomeScreen() {
-  const {
-    query,
-    movies,
-    streamingProviders,
-    credits,
-    detailedInfo,
-    geminiResponse,
-    showResults,
-    isSearching,
-    setQuery,
-    goBackToHome,
-    handleSearchSuccess,
-    handleSearchStart,
-    handleSearchEnd,
-  } = useAppState();
+const ONBOARDING_KEY = '@fastflix/onboarding_complete';
+const SETUP_COMPLETE_KEY = '@fastflix/setup_complete';
 
-  const [showSubscriptionModal, setShowSubscriptionModal] = useState(false);
-  const [showWatchlistModal, setShowWatchlistModal] = useState(false);
+export default function IndexScreen() {
+  const { isLoading } = useAuth();
+  const [onboardingComplete, setOnboardingComplete] = useState<boolean | null>(
+    null
+  );
+  const [setupComplete, setSetupComplete] = useState<boolean | null>(null);
 
-  const movieSearchMutation = useBackendMovieSearch();
-  const { t } = useLanguage();
-  const { isAuthenticated, isLoading } = useAuth();
-  useSubscription();
+  // Check if onboarding and setup have been completed
+  useEffect(() => {
+    Promise.all([
+      AsyncStorage.getItem(ONBOARDING_KEY),
+      AsyncStorage.getItem(SETUP_COMPLETE_KEY),
+    ]).then(([onboarding, setup]) => {
+      setOnboardingComplete(onboarding === 'true');
+      setSetupComplete(setup === 'true');
+    });
+  }, []);
 
-  const handleSearch = async () => {
-    handleSearchStart();
-
-    movieSearchMutation.mutate(
-      {
-        query,
-        includeMovies: true,
-        includeTvShows: true,
-      },
-      {
-        onSuccess: async data => {
-          handleSearchSuccess(data);
-        },
-        onError: error => {
-          handleSearchEnd();
-
-          // Handle subscription required error
-          if (error.message === 'subscriptionRequired') {
-            Alert.alert(
-              t('subscription.required.title') || 'Subscription Required',
-              t('subscription.required.message') ||
-                'An active subscription is required to access movie recommendations. Subscribe now to get unlimited access!',
-              [
-                {
-                  text: t('subscription.required.cancel') || 'Cancel',
-                  style: 'cancel',
-                  onPress: () => {
-                    // Reset to welcome screen when user cancels
-                    goBackToHome();
-                  },
-                },
-                {
-                  text: t('subscription.required.subscribe') || 'Subscribe',
-                  onPress: () => setShowSubscriptionModal(true),
-                },
-              ]
-            );
-          }
-        },
-      }
-    );
-  };
-
-  const handleSubscriptionSuccess = () => {
-    // Automatically retry the search after successful subscription
-    if (query.trim()) {
-      // Small delay to ensure subscription is synced with backend
-      setTimeout(() => {
-        handleSearch();
-      }, 500);
-    } else {
-      // If no query, go back to home
-      goBackToHome();
-    }
-  };
-
-  // Show loading while checking authentication
-  if (isLoading) {
+  // Show loading while checking onboarding/setup status
+  if (isLoading || onboardingComplete === null || setupComplete === null) {
     return (
       <SafeAreaView
         className={cn('flex-1 bg-light-background dark:bg-dark-background')}
@@ -112,58 +38,16 @@ export default function HomeScreen() {
     );
   }
 
-  // Redirect to auth screen if not authenticated
-  if (!isAuthenticated) {
-    return <Redirect href='/auth' />;
+  // Redirect to onboarding if not completed
+  if (!onboardingComplete) {
+    return <Redirect href={'/onboarding' as never} />;
   }
 
-  return (
-    <SafeAreaView
-      className={cn('flex-1 bg-light-background dark:bg-dark-background')}
-    >
-      <StatusBar barStyle='dark-content' backgroundColor='#ffffff' />
+  // Redirect to setup if not completed
+  if (!setupComplete) {
+    return <Redirect href={'/setup' as never} />;
+  }
 
-      <KeyboardAvoidingView
-        behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-        className={cn('flex-1')}
-      >
-        <View className={cn('flex-1')}>
-          {movieSearchMutation.isPending ? (
-            <LoadingState isSearching={isSearching} />
-          ) : showResults && movies.length > 0 ? (
-            <MovieResults
-              movies={movies}
-              streamingProviders={streamingProviders}
-              credits={credits}
-              detailedInfo={detailedInfo}
-              geminiResponse={geminiResponse}
-              onGoBack={goBackToHome}
-            />
-          ) : (
-            <SearchForm
-              query={query}
-              setQuery={setQuery}
-              onSearch={handleSearch}
-              loading={movieSearchMutation.isPending}
-              onWatchlistPress={() => setShowWatchlistModal(true)}
-              onSubscriptionPress={() => setShowSubscriptionModal(true)}
-            />
-          )}
-        </View>
-      </KeyboardAvoidingView>
-
-      {/* Subscription Modal */}
-      <SubscriptionModal
-        visible={showSubscriptionModal}
-        onClose={() => setShowSubscriptionModal(false)}
-        onSubscriptionSuccess={handleSubscriptionSuccess}
-      />
-
-      {/* Watchlist Bottom Sheet */}
-      <WatchlistBottomSheet
-        visible={showWatchlistModal}
-        onClose={() => setShowWatchlistModal(false)}
-      />
-    </SafeAreaView>
-  );
+  // Default: redirect to home tab (guest mode - no auth required)
+  return <Redirect href={'/home' as never} />;
 }

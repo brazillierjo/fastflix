@@ -15,12 +15,19 @@ jest.mock('../lib/tmdb', () => ({
     enrichRecommendations: jest.fn(),
     getBatchWatchProviders: jest.fn(),
     getBatchDetailsAndCredits: jest.fn(),
+    getTrending: jest.fn(),
   },
 }));
 
 jest.mock('../lib/db', () => ({
   db: {
     hasAccess: jest.fn(),
+    getUserQuota: jest.fn(),
+    incrementQuota: jest.fn(),
+    addSearchHistory: jest.fn(),
+    getUserTasteProfile: jest.fn(),
+    getSearchHistory: jest.fn(),
+    recordActivity: jest.fn(),
   },
 }));
 
@@ -32,8 +39,12 @@ jest.mock('../lib/api-helpers', () => ({
   applyRateLimit: jest.fn(),
 }));
 
+jest.mock('@sentry/nextjs', () => ({
+  addBreadcrumb: jest.fn(),
+}));
+
 import { NextRequest } from 'next/server';
-import { POST } from '../app/api/search/route';
+import { POST, clearSearchCache } from '../app/api/search/route';
 import { gemini } from '../lib/gemini';
 import { tmdb } from '../lib/tmdb';
 import { db } from '../lib/db';
@@ -51,6 +62,7 @@ function createMockRequest(body: object): NextRequest {
 describe('Search Endpoint', () => {
   beforeEach(() => {
     jest.clearAllMocks();
+    clearSearchCache();
 
     // Default mock implementations
     (requireAuth as jest.Mock).mockResolvedValue({
@@ -62,6 +74,26 @@ describe('Search Endpoint', () => {
     (applyRateLimit as jest.Mock).mockResolvedValue(null);
 
     (db.hasAccess as jest.Mock).mockResolvedValue(true);
+
+    (db.getUserQuota as jest.Mock).mockResolvedValue({
+      user_id: 'user-123',
+      date: new Date().toISOString().split('T')[0],
+      search_count: 0,
+      watchlist_additions: 0,
+    });
+
+    (db.incrementQuota as jest.Mock).mockResolvedValue(undefined);
+    (db.addSearchHistory as jest.Mock).mockResolvedValue(undefined);
+    (db.recordActivity as jest.Mock).mockResolvedValue(undefined);
+
+    (db.getUserTasteProfile as jest.Mock).mockResolvedValue({
+      user_id: 'user-123',
+      favorite_genres: [],
+      disliked_genres: [],
+      favorite_decades: [],
+      rated_movies: [],
+    });
+    (db.getSearchHistory as jest.Mock).mockResolvedValue([]);
 
     (gemini.generateRecommendationsWithResponse as jest.Mock).mockResolvedValue({
       recommendations: ['Movie 1', 'Movie 2', 'Movie 3'],
@@ -108,8 +140,14 @@ describe('Search Endpoint', () => {
   });
 
   describe('Access Control', () => {
-    it('should return 402 when user has no subscription or trial', async () => {
+    it('should return 429 when free user exceeds weekly quota', async () => {
       (db.hasAccess as jest.Mock).mockResolvedValue(false);
+      (db.getUserQuota as jest.Mock).mockResolvedValue({
+        user_id: 'user-123',
+        date: new Date().toISOString().split('T')[0],
+        search_count: 3,
+        watchlist_additions: 0,
+      });
 
       const request = createMockRequest({
         query: 'action movies',
@@ -120,8 +158,28 @@ describe('Search Endpoint', () => {
       const response = await POST(request);
       const data = await response.json();
 
-      expect(response.status).toBe(402);
-      expect(data.error).toBe('Subscription required');
+      expect(response.status).toBe(429);
+      expect(data.error).toBe('Weekly search limit reached');
+    });
+
+    it('should allow free user access when quota not exceeded', async () => {
+      (db.hasAccess as jest.Mock).mockResolvedValue(false);
+      (db.getUserQuota as jest.Mock).mockResolvedValue({
+        user_id: 'user-123',
+        date: new Date().toISOString().split('T')[0],
+        search_count: 1,
+        watchlist_additions: 0,
+      });
+
+      const request = createMockRequest({
+        query: 'action movies',
+        includeMovies: true,
+        includeTvShows: false,
+      });
+
+      const response = await POST(request);
+
+      expect(response.status).toBe(200);
     });
 
     it('should allow access when user has subscription', async () => {
@@ -185,7 +243,9 @@ describe('Search Endpoint', () => {
         ['movies'],
         'en-US',
         undefined,
-        25 // Default recommendations count (no platform filters)
+        25, // Default recommendations count (no platform filters)
+        undefined, // No user context (empty profile)
+        undefined // No conversation history
       );
     });
 
@@ -203,13 +263,15 @@ describe('Search Endpoint', () => {
         ['movies', 'TV shows'],
         expect.any(String),
         undefined,
-        25 // Default recommendations count (no platform filters)
+        25, // Default recommendations count (no platform filters)
+        undefined, // No user context (empty profile)
+        undefined // No conversation history
       );
     });
 
     it('should request more recommendations when platform filters are active', async () => {
       const request = createMockRequest({
-        query: 'action movies',
+        query: 'action movies with specific platforms',
         includeMovies: true,
         includeTvShows: false,
         platforms: [8, 9], // Netflix, Amazon Prime
@@ -218,11 +280,13 @@ describe('Search Endpoint', () => {
       await POST(request);
 
       expect(gemini.generateRecommendationsWithResponse).toHaveBeenCalledWith(
-        'action movies',
+        'action movies with specific platforms',
         ['movies'],
         expect.any(String),
         undefined,
-        40 // Increased recommendations count when platform filters are active
+        40, // Increased recommendations count when platform filters are active
+        undefined, // No user context (empty profile)
+        undefined // No conversation history
       );
     });
 
@@ -417,7 +481,7 @@ describe('Search Endpoint', () => {
       );
 
       const request = createMockRequest({
-        query: 'test',
+        query: 'unique query for gemini error test',
         includeMovies: true,
         includeTvShows: false,
       });
@@ -426,7 +490,7 @@ describe('Search Endpoint', () => {
       const data = await response.json();
 
       expect(response.status).toBe(500);
-      expect(data.error).toBe('AI service unavailable');
+      expect(data.error).toBe('Failed to process recommendation request');
     });
 
     it('should handle TMDB errors gracefully', async () => {

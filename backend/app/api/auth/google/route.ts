@@ -5,19 +5,26 @@
 
 import { NextRequest } from 'next/server';
 import { randomUUID } from 'crypto';
+import { z } from 'zod';
 import { verifyGoogleToken, generateJWT } from '@/lib/auth';
 import { db } from '@/lib/db';
 import { jsonResponse, errorResponse, maskEmail } from '@/lib/api-helpers';
-import type { AuthResponse, GoogleAuthRequest } from '@/lib/types';
+import type { AuthResponse } from '@/lib/types';
+
+const googleAuthSchema = z.object({
+  idToken: z.string().min(1).max(10000),
+});
 
 export async function POST(request: NextRequest) {
   try {
-    const body: GoogleAuthRequest = await request.json();
-    const { idToken } = body;
+    const body = await request.json();
+    const validationResult = googleAuthSchema.safeParse(body);
 
-    if (!idToken) {
-      return errorResponse('Missing idToken', { status: 400, publicMessage: 'Invalid request' });
+    if (!validationResult.success) {
+      return errorResponse('Invalid request data', { status: 400, publicMessage: 'Invalid request' });
     }
+
+    const { idToken } = validationResult.data;
 
     // Step 1: Verify Google token
     console.log('[Auth] Verifying Google ID token...');

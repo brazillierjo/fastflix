@@ -38,7 +38,6 @@ interface SearchFormProps {
   setQuery: (query: string) => void;
   onSearch: () => void;
   loading: boolean;
-  onWatchlistPress?: () => void;
   onSubscriptionPress?: () => void;
 }
 
@@ -52,7 +51,6 @@ export default function SearchForm({
   setQuery,
   onSearch,
   loading,
-  onWatchlistPress,
   onSubscriptionPress,
 }: SearchFormProps) {
   const { t, getRandomPlaceholder } = useLanguage();
@@ -310,7 +308,7 @@ export default function SearchForm({
           >
             {/* Action Buttons */}
             <View className='mb-3 gap-2'>
-              {/* Filters & Watchlist Row */}
+              {/* Filters Row */}
               <View className='flex-row items-center gap-2'>
                 {/* Filters Button */}
                 <TouchableOpacity
@@ -328,25 +326,6 @@ export default function SearchForm({
                     {t('filters.button') || 'Filters'}
                   </Text>
                 </TouchableOpacity>
-
-                {/* Watchlist Button */}
-                {onWatchlistPress && (
-                  <TouchableOpacity
-                    onPress={onWatchlistPress}
-                    style={getSquircle(20)}
-                    className='flex-row items-center gap-1 bg-cinematic-200 px-4 py-2 dark:bg-cinematic-700'
-                    disabled={loading || isTyping}
-                  >
-                    <Ionicons
-                      name='bookmark-outline'
-                      size={16}
-                      color={isDark ? '#a3a3a3' : '#525252'}
-                    />
-                    <Text className='text-sm font-semibold text-light-muted dark:text-dark-muted'>
-                      {t('watchlist.title') || 'Watchlist'}
-                    </Text>
-                  </TouchableOpacity>
-                )}
               </View>
 
               {/* "No idea" Magic Button - Own Row */}

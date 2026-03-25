@@ -4,7 +4,20 @@
  */
 
 import { GoogleGenerativeAI } from '@google/generative-ai';
-import type { AIRecommendationResult } from './types';
+import * as Sentry from '@sentry/nextjs';
+import type { AIRecommendationResult, UserContext, ConversationMessage } from './types';
+
+/**
+ * Sanitize user input to prevent prompt injection attacks
+ */
+function sanitizeInput(input: string): string {
+  return input
+    .replace(/^(system|assistant|user):/gi, '')
+    .replace(/ignore (previous|all|above) instructions/gi, '')
+    .replace(/\{[\s\S]*?\}/g, '') // Remove JSON-like injections
+    .trim()
+    .slice(0, 1000); // Max 1000 chars
+}
 
 class GeminiService {
   private genAI: GoogleGenerativeAI | null = null;
@@ -50,11 +63,25 @@ class GeminiService {
       yearFrom?: number;
       yearTo?: number;
     },
-    maxRecommendations: number = 25
+    maxRecommendations: number = 25,
+    userContext?: UserContext,
+    conversationHistory?: ConversationMessage[]
   ): Promise<AIRecommendationResult> {
     const genAI = this.getClient();
     const modelName = process.env.GEMINI_MODEL || 'gemini-2.5-flash';
     const model = genAI.getGenerativeModel({ model: modelName });
+
+    // Sanitize user query to prevent prompt injection
+    const sanitizedQuery = sanitizeInput(query);
+
+    Sentry.addBreadcrumb({
+      category: 'gemini',
+      message: 'Starting AI recommendation generation',
+      level: 'info',
+      data: { queryLength: sanitizedQuery.length, model: modelName, maxRecommendations },
+    });
+
+    const geminiStartTime = Date.now();
 
     // Map language codes to full language names for clearer instructions
     const languageMap: { [key: string]: string } = {
@@ -103,7 +130,73 @@ When the user uses temporal terms, interpret them STRICTLY as follows:
 
 If the user says "comédie romantique moderne" or "modern romantic comedy", you MUST ONLY suggest films released between ${currentYear - 5} and ${currentYear}. DO NOT suggest films from the 80s, 90s, or 2000s for "modern" queries.`;
 
-    const prompt = `You are an expert AI assistant specializing in cinema and television with encyclopedic knowledge of films and series from around the world. A user asks you: "${query}".${temporalVocabulary}${yearConstraint}
+    // Build user profile section for personalization
+    let userProfileSection = '';
+    if (userContext) {
+      const profileLines: string[] = [];
+
+      if (userContext.favoriteGenres && userContext.favoriteGenres.length > 0) {
+        profileLines.push(`- Favorite genres: [${userContext.favoriteGenres.join(', ')}]`);
+      }
+      if (userContext.dislikedGenres && userContext.dislikedGenres.length > 0) {
+        profileLines.push(`- Genres to avoid: [${userContext.dislikedGenres.join(', ')}]`);
+      }
+      if (userContext.favoriteDecades && userContext.favoriteDecades.length > 0) {
+        profileLines.push(`- Preferred decades: [${userContext.favoriteDecades.join(', ')}]`);
+      }
+
+      const highlyRated = userContext.ratedMovies?.filter((m) => m.rating >= 4);
+      const dislikedMovies = userContext.ratedMovies?.filter((m) => m.rating <= 2);
+
+      if (highlyRated && highlyRated.length > 0) {
+        profileLines.push(
+          `- Recently enjoyed (rated 4-5 stars): [${highlyRated.map((m) => m.title).join(', ')}]`
+        );
+      }
+      if (dislikedMovies && dislikedMovies.length > 0) {
+        profileLines.push(
+          `- Recently disliked (rated 1-2 stars): [${dislikedMovies.map((m) => m.title).join(', ')}]`
+        );
+      }
+      if (userContext.recentSearches && userContext.recentSearches.length > 0) {
+        profileLines.push(
+          `- Recent searches: [${userContext.recentSearches.map((s) => `"${s}"`).join(', ')}]`
+        );
+      }
+
+      if (profileLines.length > 0) {
+        userProfileSection = `
+
+USER PROFILE (use to personalize recommendations):
+${profileLines.join('\n')}
+
+Use this profile to:
+1. PRIORITIZE recommendations matching favorite genres and decades
+2. AVOID genres the user dislikes (unless specifically requested)
+3. Find movies SIMILAR to ones they rated highly
+4. DIVERSIFY beyond recent searches to help discovery
+`;
+      }
+    }
+
+    // Build conversation history section for multi-turn refinement
+    let conversationSection = '';
+    if (conversationHistory && conversationHistory.length > 0) {
+      const historyLines = conversationHistory.map((msg) => {
+        const roleLabel = msg.role === 'user' ? 'User' : 'Assistant';
+        // Sanitize conversation history to prevent prompt injection
+        const sanitizedContent = msg.role === 'user' ? sanitizeInput(msg.content) : msg.content;
+        return `${roleLabel}: ${sanitizedContent}`;
+      });
+      conversationSection = `
+
+CONVERSATION HISTORY (the user is refining their search - use this context to understand what they want):
+${historyLines.join('\n')}
+
+The user's latest message is a REFINEMENT of the above conversation. Take into account what was previously discussed and recommended. If the user asks to exclude something, narrow down, or change direction, adapt your recommendations accordingly.`;
+    }
+
+    const prompt = `You are an expert AI assistant specializing in cinema and television with encyclopedic knowledge of films and series from around the world. A user asks you: "${sanitizedQuery}".${userProfileSection}${conversationSection}${temporalVocabulary}${yearConstraint}
 
 ADVANCED SEARCH STRATEGY:
 
@@ -221,13 +314,35 @@ MESSAGE: [your conversational message]`;
         ? messageMatch[1].trim()
         : 'Here are my recommendations for you!';
 
+      const geminiDuration = Date.now() - geminiStartTime;
+      Sentry.addBreadcrumb({
+        category: 'gemini',
+        message: `AI generation completed in ${geminiDuration}ms`,
+        level: 'info',
+        data: { durationMs: geminiDuration, recommendationCount: recommendations.length },
+      });
+
       return {
         recommendations,
         conversationalResponse,
         detectedPlatforms,
       };
-    } catch {
-      throw new Error('Failed to generate AI recommendations');
+    } catch (error) {
+      const geminiDuration = Date.now() - geminiStartTime;
+      console.error('⚠️ AI recommendation generation failed, returning fallback:', error);
+      Sentry.addBreadcrumb({
+        category: 'gemini',
+        message: 'AI generation failed, returning fallback',
+        level: 'error',
+        data: { durationMs: geminiDuration, error: error instanceof Error ? error.message : 'Unknown' },
+      });
+      return {
+        recommendations: [],
+        conversationalResponse:
+          'Our AI is temporarily unavailable. Please try again in a moment.',
+        detectedPlatforms: [],
+        isFallback: true,
+      };
     }
   }
 }

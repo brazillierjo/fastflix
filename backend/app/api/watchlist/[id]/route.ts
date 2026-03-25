@@ -37,6 +37,10 @@ export async function DELETE(request: NextRequest, { params }: RouteParams) {
       return NextResponse.json({ error: 'Item not found in watchlist' }, { status: 404 });
     }
 
+    // Record activity
+    const today = new Date().toISOString().split('T')[0];
+    await db.recordActivity(authResult.userId, today);
+
     return NextResponse.json({
       success: true,
       data: { deleted: true },

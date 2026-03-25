@@ -15,6 +15,7 @@ import {
   StreamingProvider,
   Cast as BackendCast,
   DetailedInfo as BackendDetailedInfo,
+  ConversationMessage,
 } from '../services/backend-api.service';
 import { APP_CONFIG } from '@/constants/app';
 import { getLanguageForTMDB } from '@/constants/languages';
@@ -48,6 +49,8 @@ interface SearchParams {
   includeFlatrate?: boolean;
   includeRent?: boolean;
   includeBuy?: boolean;
+  // Multi-turn conversation history
+  conversationHistory?: ConversationMessage[];
 }
 
 export interface DetailedInfo {
@@ -66,6 +69,7 @@ interface SearchResult {
   credits: { [key: number]: Cast[] };
   detailedInfo: { [key: number]: DetailedInfo };
   geminiResponse: string;
+  conversationHistory?: ConversationMessage[];
 }
 
 /**
@@ -101,6 +105,7 @@ const searchMoviesWithBackend = async (
     includeFlatrate,
     includeRent,
     includeBuy,
+    conversationHistory,
   } = params;
 
   if (!query.trim()) {
@@ -118,6 +123,7 @@ const searchMoviesWithBackend = async (
       includeFlatrate,
       includeRent,
       includeBuy,
+      conversationHistory,
     });
 
     if (!response.success || !response.data) {
@@ -173,6 +179,7 @@ const searchMoviesWithBackend = async (
       credits,
       detailedInfo,
       geminiResponse: data.conversationalResponse,
+      conversationHistory: data.conversationHistory,
     };
   } catch (error) {
     // Re-throw known errors (like subscriptionRequired) without transforming them
@@ -219,6 +226,7 @@ export const useBackendMovieSearch = () => {
         includeFlatrate: params.includeFlatrate ?? preferences.includeFlatrate,
         includeRent: params.includeRent ?? preferences.includeRent,
         includeBuy: params.includeBuy ?? preferences.includeBuy,
+        conversationHistory: params.conversationHistory,
       };
 
       return searchMoviesWithBackend(mergedParams, tmdbLanguage, country);

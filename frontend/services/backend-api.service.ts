@@ -83,6 +83,11 @@ export interface DetailedInfo {
   tagline?: string;
 }
 
+export interface ConversationMessage {
+  role: 'user' | 'assistant';
+  content: string;
+}
+
 export interface SearchResponse {
   recommendations: MovieResult[];
   streamingProviders: { [key: number]: StreamingProvider[] };
@@ -90,6 +95,7 @@ export interface SearchResponse {
   detailedInfo: { [key: number]: DetailedInfo };
   conversationalResponse: string;
   totalResults: number;
+  conversationHistory?: ConversationMessage[];
 }
 
 interface HealthCheckResponse {
@@ -245,6 +251,8 @@ class BackendAPIService {
     includeFlatrate?: boolean;
     includeRent?: boolean;
     includeBuy?: boolean;
+    // Multi-turn conversation
+    conversationHistory?: ConversationMessage[];
   }): Promise<APIResponse<SearchResponse>> {
     try {
       // Authentication is now required - no deviceId needed
@@ -269,6 +277,9 @@ class BackendAPIService {
       }
       if (params.includeBuy !== undefined) {
         requestBody.includeBuy = params.includeBuy;
+      }
+      if (params.conversationHistory && params.conversationHistory.length > 0) {
+        requestBody.conversationHistory = params.conversationHistory;
       }
 
       return await this.makeRequest<SearchResponse>('/api/search', {
@@ -477,6 +488,136 @@ class BackendAPIService {
   > {
     return await this.makeRequest('/api/watchlist/refresh-providers', {
       method: 'POST',
+    });
+  }
+
+  // ==========================================================================
+  // Home / Discovery Methods
+  // ==========================================================================
+
+  /**
+   * Get home screen data (daily pick, trending, recent searches, quota)
+   */
+  async getHomeData(): Promise<
+    APIResponse<{
+      dailyPick: any;
+      trending: any[];
+      recentSearches: any[];
+      quota: any;
+    }>
+  > {
+    return await this.makeRequest('/api/home', {
+      method: 'GET',
+    });
+  }
+
+  /**
+   * Get trending content on user's platforms
+   */
+  async getTrending(): Promise<APIResponse<any[]>> {
+    return await this.makeRequest('/api/trending', {
+      method: 'GET',
+    });
+  }
+
+  /**
+   * Get daily pick recommendation
+   */
+  async getDailyPick(): Promise<APIResponse<any>> {
+    return await this.makeRequest('/api/daily-pick', {
+      method: 'GET',
+    });
+  }
+
+  /**
+   * Get similar content for a given TMDB item
+   */
+  async getSimilar(
+    tmdbId: number,
+    type: string
+  ): Promise<APIResponse<any[]>> {
+    return await this.makeRequest(`/api/similar/${tmdbId}?type=${type}`, {
+      method: 'GET',
+    });
+  }
+
+  /**
+   * Get user stats (search count, watchlist count, etc.)
+   */
+  async getUserStats(): Promise<APIResponse<any>> {
+    return await this.makeRequest('/api/user/stats', {
+      method: 'GET',
+    });
+  }
+
+  /**
+   * Get personalized "For You" recommendations based on taste profile
+   */
+  async getForYou(params?: {
+    language?: string;
+    country?: string;
+  }): Promise<
+    APIResponse<{
+      recommendations: MovieResult[];
+      streamingProviders: { [key: number]: StreamingProvider[] };
+    }>
+  > {
+    const queryParams = new URLSearchParams();
+    if (params?.language) queryParams.set('language', params.language);
+    if (params?.country) queryParams.set('country', params.country);
+    const qs = queryParams.toString();
+    return await this.makeRequest(`/api/for-you${qs ? `?${qs}` : ''}`, {
+      method: 'GET',
+    });
+  }
+
+  // ==========================================================================
+  // Notification Methods
+  // ==========================================================================
+
+  /**
+   * Register a push notification token with the backend
+   */
+  async registerPushToken(
+    token: string,
+    platform: 'ios' | 'android' = 'ios'
+  ): Promise<APIResponse<{ registered: boolean }>> {
+    return await this.makeRequest('/api/notifications/register', {
+      method: 'POST',
+      body: JSON.stringify({ token, platform }),
+    });
+  }
+
+  /**
+   * Check availability changes for watchlist items
+   */
+  async checkAvailability(): Promise<
+    APIResponse<{
+      changes: Array<{
+        watchlistId: string;
+        title: string;
+        newProviders: Array<{ name: string; logo: string }>;
+        removedProviders: Array<{ name: string; logo: string }>;
+      }>;
+      checkedCount: number;
+      message: string;
+    }>
+  > {
+    return await this.makeRequest('/api/watchlist/check-availability', {
+      method: 'GET',
+    });
+  }
+
+  /**
+   * Mark a watchlist item as watched with optional rating and note
+   */
+  async markWatched(
+    watchlistId: string,
+    data: { watched: boolean; rating?: number; note?: string }
+  ): Promise<APIResponse<void>> {
+    return await this.makeRequest(`/api/watchlist/${watchlistId}/watched`, {
+      method: 'POST',
+      body: JSON.stringify(data),
     });
   }
 }

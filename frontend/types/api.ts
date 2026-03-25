@@ -38,6 +38,7 @@ export interface WatchlistItem {
   last_provider_check: string | null;
   providers: WatchlistProvider[];
   country: string;
+  watched?: number;
 }
 
 export interface WatchlistProvider {

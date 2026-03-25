@@ -24,12 +24,14 @@ interface WatchlistItemProps {
   item: WatchlistItemType;
   onRemove: (itemId: string) => void;
   isRemoving?: boolean;
+  newProviderNames?: string[];
 }
 
-export default function WatchlistItem({
+function WatchlistItemComponent({
   item,
   onRemove,
   isRemoving = false,
+  newProviderNames = [],
 }: WatchlistItemProps) {
   const { t } = useLanguage();
   const colorScheme = useColorScheme();
@@ -170,7 +172,7 @@ export default function WatchlistItem({
                   {item.providers.slice(0, 4).map((provider, idx) => (
                     <View
                       key={`${item.id}-provider-${idx}`}
-                      className='rounded-md bg-dark-surface dark:bg-light-surface'
+                      className='relative rounded-md bg-dark-surface dark:bg-light-surface'
                     >
                       <Image
                         source={{
@@ -179,6 +181,9 @@ export default function WatchlistItem({
                         className='h-7 w-7 rounded-md'
                         resizeMode='contain'
                       />
+                      {newProviderNames.includes(provider.provider_name) && (
+                        <View className='absolute -right-1 -top-1 h-3 w-3 rounded-full bg-green-500 border border-white dark:border-dark-card' />
+                      )}
                     </View>
                   ))}
                   {item.providers.length > 4 && (
@@ -246,25 +251,40 @@ export default function WatchlistItem({
                     const badge = getAvailabilityBadge(
                       provider.availability_type
                     );
+                    const isNew = newProviderNames.includes(provider.provider_name);
                     return (
                       <View
                         key={`${item.id}-provider-detail-${idx}`}
                         className='flex-row items-center gap-2 rounded-lg bg-light-surface p-2 dark:bg-dark-surface'
                       >
-                        <Image
-                          source={{
-                            uri: `https://image.tmdb.org/t/p/w92${provider.logo_path}`,
-                          }}
-                          className='h-8 w-8 rounded-md'
-                          resizeMode='contain'
-                        />
+                        <View className='relative'>
+                          <Image
+                            source={{
+                              uri: `https://image.tmdb.org/t/p/w92${provider.logo_path}`,
+                            }}
+                            className='h-8 w-8 rounded-md'
+                            resizeMode='contain'
+                          />
+                          {isNew && (
+                            <View className='absolute -right-1 -top-1 h-3 w-3 rounded-full bg-green-500 border border-white dark:border-dark-surface' />
+                          )}
+                        </View>
                         <View>
-                          <Text
-                            className='text-xs font-medium text-light-text dark:text-dark-text'
-                            numberOfLines={1}
-                          >
-                            {provider.provider_name}
-                          </Text>
+                          <View className='flex-row items-center gap-1'>
+                            <Text
+                              className='text-xs font-medium text-light-text dark:text-dark-text'
+                              numberOfLines={1}
+                            >
+                              {provider.provider_name}
+                            </Text>
+                            {isNew && (
+                              <View className='rounded-sm bg-green-500/20 px-1'>
+                                <Text className='text-[9px] font-bold text-green-500'>
+                                  NEW
+                                </Text>
+                              </View>
+                            )}
+                          </View>
                           {badge && (
                             <View className='flex-row items-center gap-1'>
                               <Ionicons
@@ -321,3 +341,5 @@ export default function WatchlistItem({
     </TouchableOpacity>
   );
 }
+
+export default React.memo(WatchlistItemComponent);

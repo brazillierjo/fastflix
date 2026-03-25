@@ -23,6 +23,16 @@ export const searchRequestSchema = z.object({
   includeFlatrate: z.boolean().optional(), // Include content available via subscription
   includeRent: z.boolean().optional(), // Include content available for rent
   includeBuy: z.boolean().optional(), // Include content available for purchase
+  // Multi-turn conversation history
+  conversationHistory: z
+    .array(
+      z.object({
+        role: z.enum(['user', 'assistant']),
+        content: z.string().max(2000),
+      })
+    )
+    .max(10) // Limit conversation depth
+    .optional(),
 });
 
 /**

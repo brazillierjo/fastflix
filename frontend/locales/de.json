@@ -24,6 +24,7 @@
     "noRecommendations": "Keine Empfehlungen gefunden. Versuche, deine Suchkriterien anzupassen.",
     "seeMore": "Mehr anzeigen",
     "seeLess": "Weniger anzeigen",
+    "refineResults": "Ergebnisse verfeinern...",
     "releaseDate": "Erscheinungsdatum:",
     "rating": "Bewertung:",
     "availableOn": "Verfügbar auf:",
@@ -105,7 +106,10 @@
     "subscription": "Abo",
     "rent": "Leihen",
     "buy": "Kaufen",
-    "ads": "Gratis (Werbung)"
+    "ads": "Gratis (Werbung)",
+    "newProvider": "Jetzt auf {{provider}}!",
+    "newAvailable": "Neue Verfugbarkeit",
+    "checkingProviders": "Verfugbarkeit wird gepruft..."
   },
   "subscription": {
     "title": "Werde FastFlix Pro",
@@ -126,8 +130,16 @@
       "unlimited": {
         "title": "Unbegrenzte Empfehlungen",
         "description": "Erhalte so viele Filmempfehlungen wie du möchtest"
-      }
+      },
+      "platforms": { "title": "Intelligente Plattform-Filter", "description": "Nur Inhalte deiner Streaming-Dienste" },
+      "watchlist": { "title": "Personliche Merkliste & Benachrichtigungen", "description": "Filme speichern und verfolgen" },
+      "dailyPick": { "title": "Personalisierte tagliche Tipps", "description": "Jeden Tag frische Empfehlungen" },
+      "history": { "title": "Suchverlauf & Geschmacksprofil", "description": "KI lernt deine Vorlieben" }
     },
+    "socialProof": "Von Filmliebhabern weltweit vertraut",
+    "bestValue": "BESTER PREIS",
+    "perWeek": "/Woche",
+    "noCharge": "Keine Kosten bis zum Ende der Testphase",
     "plans": {
       "title": "Wähle deinen Plan"
     },
@@ -204,6 +216,26 @@
       "title": "Testversion nicht verfügbar",
       "alreadyUsed": "Du hast deine kostenlose Testversion bereits genutzt.",
       "message": "Etwas ist schief gelaufen. Bitte versuche es erneut."
+    },
+    "banner": {
+      "day1": "Willkommen! Tag {{day}} deiner kostenlosen Testversion",
+      "day3": "Tag {{day}} - Du entdeckst tolle Inhalte!",
+      "day5": "Nur noch {{remaining}} Tage in deiner Testversion",
+      "day6": "Deine Testversion endet morgen!",
+      "day7": "Deine Testversion endet heute",
+      "subscribe": "Jetzt abonnieren",
+      "dismiss": "Verstanden"
+    },
+    "endingModal": {
+      "title5": "Deine Testversion endet bald",
+      "title6": "Letzte Chance zum Abonnieren!",
+      "title7": "Deine Testversion endet heute",
+      "subtitle": "Verliere nicht den Zugang zu:",
+      "feature1": "Unbegrenzte KI-Empfehlungen",
+      "feature2": "Persönliche Watchlist",
+      "feature3": "Personalisierte tägliche Auswahl",
+      "remindLater": "Später erinnern",
+      "understand": "Verstanden"
     }
   },
   "profile": {
@@ -281,7 +313,16 @@
     "availableOn": "Verfügbar auf",
     "lastChecked": "Zuletzt geprüft",
     "showMore": "Mehr anzeigen",
-    "showLess": "Weniger anzeigen"
+    "showLess": "Weniger anzeigen",
+    "signInTitle": "Melde dich an, um deine Merkliste zu nutzen",
+    "signInHint": "Speichere Filme und Serien fürspater. Deine Merkliste wird auf allen Geraten synchronisiert.",
+    "share": "Merkliste teilen",
+    "shareTitle": "Meine FastFlix Merkliste",
+    "shareFooter": "Finde heraus, was du schauen sollst mit FastFlix!",
+    "toWatch": "Noch ansehen",
+    "watched": "Gesehen",
+    "markWatched": "Als gesehen markieren",
+    "markUnwatched": "Als nicht gesehen markieren"
   },
   "common": {
     "cancel": "Abbrechen",
@@ -290,8 +331,57 @@
     "retry": "Erneut versuchen"
   },
   "tabs": {
+    "home": "Start",
+    "search": "Suche",
+    "watchlist": "Merkliste",
     "movies": "Filme",
     "profile": "Profil"
+  },
+  "onboarding": {
+    "skip": "Überspringen",
+    "next": "Weiter",
+    "getStarted": "Los geht's",
+    "screen1": { "title": "Finde heraus, was du heute Abend schauen sollst", "subtitle": "Schluss mit endlosem Scrollen. Sag unserer KI, worauf du Lust hast." },
+    "screen2": { "title": "KI lernt deinen Geschmack", "subtitle": "Je mehr du FastFlix nutzt, desto besser werden die Empfehlungen." },
+    "screen3": { "title": "Deine Plattformen, dein Content", "subtitle": "Filtere nach Netflix, Disney+, Prime Video und mehr." },
+    "screen4": { "title": "Deine smarte Merkliste", "subtitle": "Speichere Filme und Serien fürspater. Bewerte und verfolge alles." }
+  },
+  "collections": {
+    "title": "Sammlungen",
+    "cozy": "Gemutlicher Abend",
+    "thriller": "Nervenkitzel",
+    "classic": "Zeitlose Klassiker",
+    "binge": "Zum Bingen",
+    "family": "Familienspass",
+    "hidden": "Geheimtipps",
+    "laugh": "Lachgarantie",
+    "scifi": "Sci-Fi Reisen"
+  },
+  "forYou": {
+    "title": "Für dich",
+    "subtitle": "Basierend auf deinem Geschmack",
+    "signInPrompt": "Melde dich an für personalisierte Empfehlungen",
+    "empty": "Bewerte Filme, um personalisierte Empfehlungen zu erhalten",
+    "loading": "Finde Filme, die dir gefallen werden..."
+  },
+  "home": {
+    "greeting": "Hallo!",
+    "dailyPick": "Tipp des Tages",
+    "dailyPickLoading": "Suche deine Tagesempfehlung...",
+    "trending": "Trends auf deinen Plattformen",
+    "trendingLoading": "Lade Trends...",
+    "recentSearches": "Letzte Suchen",
+    "continueExploring": "Weiter entdecken",
+    "searchPlaceholder": "Worauf hast du Lust?",
+    "quotaRemaining": "{{count}} Suchen diese Woche verbleibend",
+    "quotaUnlimited": "Unbegrenzte Suchen",
+    "upgradeForMore": "Upgrade fürunbegrenzte Suchen",
+    "recommendedForYou": "Empfohlen fürdich"
+  },
+  "authGate": {
+    "title": "Melde dich an, um fortzufahren",
+    "subtitle": "Erstelle ein kostenloses Konto, um deine Merkliste zu speichern, Einstellungen zu synchronisieren und personalisierte Empfehlungen zu erhalten.",
+    "maybeLater": "Vielleicht spater"
   },
   "languages": {
     "en": "English",
@@ -300,6 +390,34 @@
     "it": "Italiano",
     "es": "Español",
     "de": "Deutsch"
+  },
+  "setup": {
+    "platformsTitle": "Was schaust du?",
+    "platformsSubtitle": "Wähle deine Streaming-Plattformen",
+    "genresTitle": "Was gefällt dir?",
+    "genresSubtitle": "Wähle mindestens 3 Genres",
+    "step": "Schritt {{current}} von {{total}}",
+    "continue": "Weiter",
+    "back": "Zurück"
+  },
+  "notifications": {
+    "promptTitle": "Verpasse keinen guten Film",
+    "promptSubtitle": "Erhalte tagliche personalisierte Empfehlungen und Benachrichtigungen, wenn Filme auf deinen Plattformen verfügbar werden.",
+    "featureDaily": "Taglicher Filmtipp",
+    "featureNew": "Neu auf deinen Plattformen",
+    "featureReminder": "Merklisten-Erinnerungen",
+    "enable": "Benachrichtigungen aktivieren",
+    "notNow": "Nicht jetzt",
+    "dailyTitle": "Dein Tipp des Tages ist da!",
+    "dailyBody": "Entdecke die personalisierte Empfehlung von heute"
+  },
+  "movieDetail": {
+    "synopsis": "Handlung",
+    "cast": "Besetzung",
+    "similar": "Das konnte dir auch gefallen",
+    "openTMDB": "Auf TMDB ansehen",
+    "shareButton": "Teilen",
+    "watchedButton": "Als gesehen markieren"
   },
   "report": {
     "title": "Melden",

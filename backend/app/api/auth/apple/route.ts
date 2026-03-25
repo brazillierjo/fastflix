@@ -5,22 +5,40 @@
 
 import { NextRequest } from 'next/server';
 import { randomUUID } from 'crypto';
+import { z } from 'zod';
 import { verifyAppleToken, generateJWT } from '@/lib/auth';
 import { db } from '@/lib/db';
 import { jsonResponse, errorResponse, maskEmail } from '@/lib/api-helpers';
-import type { AuthResponse, AppleAuthRequest } from '@/lib/types';
+import type { AuthResponse } from '@/lib/types';
+
+const appleAuthSchema = z.object({
+  identityToken: z.string().min(1).max(10000),
+  user: z
+    .object({
+      email: z.string().email().max(255).optional(),
+      name: z
+        .object({
+          firstName: z.string().max(100).optional(),
+          lastName: z.string().max(100).optional(),
+        })
+        .optional(),
+    })
+    .optional(),
+});
 
 export async function POST(request: NextRequest) {
   try {
-    const body: AppleAuthRequest = await request.json();
-    const { identityToken, user } = body;
+    const body = await request.json();
+    const validationResult = appleAuthSchema.safeParse(body);
 
-    if (!identityToken) {
-      return errorResponse('Missing identityToken', {
+    if (!validationResult.success) {
+      return errorResponse('Invalid request data', {
         status: 400,
         publicMessage: 'Invalid request',
       });
     }
+
+    const { identityToken, user } = validationResult.data;
 
     // Step 1: Verify Apple token
     console.log('[Auth] Verifying Apple identity token...');
