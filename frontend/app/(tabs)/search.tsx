@@ -11,6 +11,7 @@ import { useAppState } from '@/hooks/useAppState';
 import { useBackendMovieSearch } from '@/hooks/useBackendMovieSearch';
 import { ConversationMessage } from '@/services/backend-api.service';
 import { cn } from '@/utils/cn';
+import { useQueryClient } from '@tanstack/react-query';
 import React, { useEffect, useRef, useState } from 'react';
 import {
   Alert,
@@ -45,6 +46,7 @@ export default function SearchScreen() {
   const [isRefining, setIsRefining] = useState(false);
 
   const timersRef = useRef<ReturnType<typeof setTimeout>[]>([]);
+  const queryClient = useQueryClient();
   const movieSearchMutation = useBackendMovieSearch();
   const { t } = useLanguage();
   const { isAuthenticated, isLoading } = useAuth();
@@ -70,6 +72,9 @@ export default function SearchScreen() {
       {
         onSuccess: async data => {
           handleSearchSuccess(data);
+
+          // Invalidate home data so recent searches update
+          queryClient.invalidateQueries({ queryKey: ['homeData'] });
 
           // Track local search count for notification prompt
           const newCount = await incrementSearchCount();
