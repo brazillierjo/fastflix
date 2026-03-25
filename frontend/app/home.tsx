@@ -19,7 +19,6 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { MotiView } from 'moti';
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import {
-  ActivityIndicator,
   Image,
   RefreshControl,
   ScrollView,
@@ -29,6 +28,7 @@ import {
   View,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import { Skeleton } from '@/components/Skeleton';
 
 const SETUP_GENRES_KEY = '@fastflix/setup_genres';
 const SETUP_PLATFORMS_KEY = '@fastflix/setup_platforms';
@@ -164,8 +164,26 @@ export default function HomeScreen() {
   // Show loading while checking authentication
   if (isLoading) {
     return (
-      <SafeAreaView className='flex-1 items-center justify-center bg-light-background dark:bg-dark-background'>
-        <ActivityIndicator size='large' color='#E50914' />
+      <SafeAreaView className='flex-1 bg-light-background dark:bg-dark-background'>
+        <View className='px-6 pt-8'>
+          <Skeleton width='60%' height={28} borderRadius={8} />
+          <Skeleton width='40%' height={14} borderRadius={6} style={{ marginTop: 8 }} />
+        </View>
+        <View className='mt-6 px-6'>
+          <Skeleton width='100%' height={52} borderRadius={16} />
+        </View>
+        <View className='mt-6 px-6'>
+          <Skeleton width='50%' height={18} borderRadius={6} />
+          <Skeleton width='100%' height={200} borderRadius={16} style={{ marginTop: 12 }} />
+        </View>
+        <View className='mt-6 px-6'>
+          <Skeleton width='60%' height={18} borderRadius={6} />
+          <View className='mt-3 flex-row gap-3'>
+            {[1, 2, 3, 4].map(i => (
+              <Skeleton key={i} width={130} height={195} borderRadius={12} />
+            ))}
+          </View>
+        </View>
       </SafeAreaView>
     );
   }
@@ -378,20 +396,18 @@ export default function HomeScreen() {
                 )}
               </View>
             </View>
+          ) : isHomeLoading ? (
+            <Skeleton width='100%' height={200} borderRadius={16} />
           ) : (
             <View
               style={[getSquircle(16), getCardShadow(isDark)]}
               className='items-center justify-center border border-light-border bg-light-surface px-6 py-10 dark:border-dark-border dark:bg-dark-surface'
             >
-              {isHomeLoading ? (
-                <ActivityIndicator size='small' color='#E50914' />
-              ) : (
-                <Ionicons
-                  name='film-outline'
-                  size={48}
-                  color={isDark ? '#525252' : '#a3a3a3'}
-                />
-              )}
+              <Ionicons
+                name='film-outline'
+                size={48}
+                color={isDark ? '#525252' : '#a3a3a3'}
+              />
               <Text className='mt-4 text-center text-base text-light-muted dark:text-dark-muted'>
                 {t('home.dailyPickLoading')}
               </Text>
@@ -453,33 +469,23 @@ export default function HomeScreen() {
                     </View>
                   </MotiView>
                 ))
-              : [1, 2, 3, 4].map(i => (
-                  <MotiView
-                    key={i}
-                    from={{ opacity: 0, scale: 0.9 }}
-                    animate={{ opacity: 1, scale: 1 }}
-                    transition={{
-                      delay: 300 + i * 80,
-                      type: 'timing',
-                      duration: 400,
-                    }}
-                  >
+              : isHomeLoading
+                ? [1, 2, 3, 4].map(i => (
+                    <Skeleton key={i} width={130} height={195} borderRadius={12} />
+                  ))
+                : [1, 2, 3, 4].map(i => (
                     <View
+                      key={i}
                       style={[getSquircle(12), getCardShadow(isDark)]}
                       className='h-44 w-32 items-center justify-center border border-light-border bg-light-surface dark:border-dark-border dark:bg-dark-surface'
                     >
-                      {isHomeLoading ? (
-                        <ActivityIndicator size='small' color='#525252' />
-                      ) : (
-                        <Ionicons
-                          name='image-outline'
-                          size={28}
-                          color={isDark ? '#404040' : '#d4d4d4'}
-                        />
-                      )}
+                      <Ionicons
+                        name='image-outline'
+                        size={28}
+                        color={isDark ? '#404040' : '#d4d4d4'}
+                      />
                     </View>
-                  </MotiView>
-                ))}
+                  ))}
           </ScrollView>
         </MotiView>
 

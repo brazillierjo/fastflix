@@ -26,6 +26,7 @@ import Animated, {
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { backendAPIService } from '@/services/backend-api.service';
+import { Skeleton } from '@/components/Skeleton';
 import { cn } from '@/utils/cn';
 import {
   getCardShadow,
@@ -92,6 +93,7 @@ export default function MovieDetailScreen() {
   }>();
 
   const [similarMovies, setSimilarMovies] = useState<SimilarMovie[]>([]);
+  const [loadingSimilar, setLoadingSimilar] = useState(true);
 
   const tmdbId = parseInt(params.tmdbId || '0', 10);
   const mediaType = (params.mediaType || 'movie') as 'movie' | 'tv';
@@ -116,6 +118,7 @@ export default function MovieDetailScreen() {
   // Fetch similar movies from API
   useEffect(() => {
     if (tmdbId > 0) {
+      setLoadingSimilar(true);
       backendAPIService
         .getSimilar(tmdbId, mediaType)
         .then(res => {
@@ -136,7 +139,12 @@ export default function MovieDetailScreen() {
         })
         .catch(() => {
           // Silent fail
+        })
+        .finally(() => {
+          setLoadingSimilar(false);
         });
+    } else {
+      setLoadingSimilar(false);
     }
   }, [tmdbId, mediaType]);
 
@@ -730,60 +738,72 @@ export default function MovieDetailScreen() {
             animate={{ opacity: 1, translateY: 0 }}
             transition={{ type: 'timing', duration: 400, delay: 350 }}
           >
-            {similarMovies.length > 0 && <View className='mb-6'>
+            <View className='mb-6'>
               <Text className='mb-3 text-lg font-semibold text-light-text dark:text-dark-text'>
                 {t('movieDetail.similar')}
               </Text>
-              <ScrollView
-                horizontal
-                showsHorizontalScrollIndicator={false}
-                contentContainerStyle={{ gap: 12 }}
-              >
-                {similarMovies.map((similar, idx) => (
-                  <TouchableOpacity
-                    key={`similar-${similar.id}-${idx}`}
-                    onPress={() => handleSimilarPress(similar)}
-                    activeOpacity={0.7}
-                    style={{ width: 120 }}
-                  >
-                    <View
-                      style={[
-                        getSquircle(12),
-                        { width: 120, height: 180, overflow: 'hidden' },
-                      ]}
-                      className='mb-1.5 items-center justify-center bg-light-surface dark:bg-dark-surface'
+              {loadingSimilar ? (
+                <ScrollView
+                  horizontal
+                  showsHorizontalScrollIndicator={false}
+                  contentContainerStyle={{ gap: 12 }}
+                >
+                  {[1, 2, 3, 4].map(i => (
+                    <Skeleton key={i} width={120} height={180} borderRadius={12} />
+                  ))}
+                </ScrollView>
+              ) : similarMovies.length > 0 ? (
+                <ScrollView
+                  horizontal
+                  showsHorizontalScrollIndicator={false}
+                  contentContainerStyle={{ gap: 12 }}
+                >
+                  {similarMovies.map((similar, idx) => (
+                    <TouchableOpacity
+                      key={`similar-${similar.id}-${idx}`}
+                      onPress={() => handleSimilarPress(similar)}
+                      activeOpacity={0.7}
+                      style={{ width: 120 }}
                     >
-                      {similar.posterPath ? (
-                        <Image
-                          source={{
-                            uri: `https://image.tmdb.org/t/p/w342${similar.posterPath}`,
-                          }}
-                          style={{ width: 120, height: 180 }}
-                          resizeMode='cover'
-                        />
-                      ) : (
-                        <View className='flex-1 items-center justify-center'>
-                          <Ionicons
-                            name='film-outline'
-                            size={32}
-                            color={isDark ? '#555' : '#bbb'}
+                      <View
+                        style={[
+                          getSquircle(12),
+                          { width: 120, height: 180, overflow: 'hidden' },
+                        ]}
+                        className='mb-1.5 items-center justify-center bg-light-surface dark:bg-dark-surface'
+                      >
+                        {similar.posterPath ? (
+                          <Image
+                            source={{
+                              uri: `https://image.tmdb.org/t/p/w342${similar.posterPath}`,
+                            }}
+                            style={{ width: 120, height: 180 }}
+                            resizeMode='cover'
                           />
-                          <Text className='mt-2 text-xs text-light-textMuted dark:text-dark-textMuted'>
-                            {t('movieDetail.similar')}
-                          </Text>
-                        </View>
-                      )}
-                    </View>
-                    <Text
-                      className='text-xs font-medium text-light-text dark:text-dark-text'
-                      numberOfLines={2}
-                    >
-                      {similar.title}
-                    </Text>
-                  </TouchableOpacity>
-                ))}
-              </ScrollView>
-            </View>}
+                        ) : (
+                          <View className='flex-1 items-center justify-center'>
+                            <Ionicons
+                              name='film-outline'
+                              size={32}
+                              color={isDark ? '#555' : '#bbb'}
+                            />
+                            <Text className='mt-2 text-xs text-light-textMuted dark:text-dark-textMuted'>
+                              {t('movieDetail.similar')}
+                            </Text>
+                          </View>
+                        )}
+                      </View>
+                      <Text
+                        className='text-xs font-medium text-light-text dark:text-dark-text'
+                        numberOfLines={2}
+                      >
+                        {similar.title}
+                      </Text>
+                    </TouchableOpacity>
+                  ))}
+                </ScrollView>
+              ) : null}
+            </View>
           </MotiView>
 
           {/* TMDB Link Button */}

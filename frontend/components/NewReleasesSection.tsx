@@ -19,6 +19,7 @@ import {
   View,
 } from 'react-native';
 import { useRouter } from 'expo-router';
+import { Skeleton } from '@/components/Skeleton';
 
 const TMDB_IMAGE_BASE = 'https://image.tmdb.org/t/p';
 
@@ -128,15 +129,8 @@ export default function NewReleasesSection({
       {/* Content */}
       {isLoading ? (
         <View className='mt-3 flex-row gap-3 px-6'>
-          {[1, 2, 3].map(i => (
-            <MotiView
-              key={i}
-              from={{ opacity: 0.4 }}
-              animate={{ opacity: 1 }}
-              transition={{ type: 'timing', duration: 800, loop: true }}
-              style={[getSquircle(12), { width: 130, height: 195 }]}
-              className='bg-light-border dark:bg-dark-border'
-            />
+          {[1, 2, 3, 4].map(i => (
+            <Skeleton key={i} width={130} height={195} borderRadius={12} />
           ))}
         </View>
       ) : (

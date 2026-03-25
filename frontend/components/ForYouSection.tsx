@@ -11,6 +11,7 @@ import {
   getSquircle,
   typography,
 } from '@/utils/designHelpers';
+import { Skeleton } from '@/components/Skeleton';
 import { useQuery } from '@tanstack/react-query';
 import { backendAPIService, MovieResult, StreamingProvider } from '@/services/backend-api.service';
 import { useRouter } from 'expo-router';
@@ -34,23 +35,20 @@ interface ForYouData {
 }
 
 /**
- * Skeleton loading row placeholder
+ * Skeleton loading row placeholder using Skeleton shimmer component
  */
-function SkeletonRow({ isDark }: { isDark: boolean }) {
+function ForYouSkeletonRow({ isDark }: { isDark: boolean }) {
   return (
     <View
       style={[getSquircle(12), getCardShadow(isDark)]}
       className='flex-row border border-light-border bg-light-surface p-3 dark:border-dark-border dark:bg-dark-surface'
     >
-      <View
-        style={getSquircle(8)}
-        className='h-28 w-20 bg-light-border dark:bg-dark-border'
-      />
+      <Skeleton width={80} height={112} borderRadius={8} />
       <View className='ml-3 flex-1 justify-center'>
-        <View className='mb-2 h-4 w-3/4 rounded bg-light-border dark:bg-dark-border' />
-        <View className='mb-2 h-3 w-1/2 rounded bg-light-border dark:bg-dark-border' />
-        <View className='h-3 w-full rounded bg-light-border dark:bg-dark-border' />
-        <View className='mt-1 h-3 w-2/3 rounded bg-light-border dark:bg-dark-border' />
+        <Skeleton width='75%' height={16} borderRadius={6} />
+        <Skeleton width='40%' height={12} borderRadius={4} style={{ marginTop: 8 }} />
+        <Skeleton width='100%' height={12} borderRadius={4} style={{ marginTop: 6 }} />
+        <Skeleton width='65%' height={12} borderRadius={4} style={{ marginTop: 4 }} />
       </View>
     </View>
   );
@@ -188,22 +186,8 @@ export default function ForYouSection({ delay = 400 }: { delay?: number }) {
       {/* Loading state */}
       {isAuthenticated && isLoading && (
         <View className='gap-3'>
-          <Text className='text-xs text-light-muted dark:text-dark-muted'>
-            {t('forYou.loading')}
-          </Text>
           {[1, 2, 3].map((i) => (
-            <MotiView
-              key={i}
-              from={{ opacity: 0.4 }}
-              animate={{ opacity: 1 }}
-              transition={{
-                type: 'timing',
-                duration: 800,
-                loop: true,
-              }}
-            >
-              <SkeletonRow isDark={isDark} />
-            </MotiView>
+            <ForYouSkeletonRow key={i} isDark={isDark} />
           ))}
         </View>
       )}
