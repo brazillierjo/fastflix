@@ -113,7 +113,7 @@ export default function CollectionsSection({ delay = 350 }: { delay?: number }) 
     const translatedQuery = t(queryKey) || queryKey;
     router.push({
       pathname: '/search' as never,
-      params: { query: translatedQuery },
+      params: { query: translatedQuery, ts: String(Date.now()) },
     });
   };
 

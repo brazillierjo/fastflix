@@ -24,7 +24,7 @@ import {
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 export default function SearchScreen() {
-  const params = useLocalSearchParams<{ query?: string }>();
+  const params = useLocalSearchParams<{ query?: string; ts?: string }>();
   const {
     query,
     movies,
@@ -63,11 +63,13 @@ export default function SearchScreen() {
   }, []);
 
   // Pre-fill query from route params (e.g. from collections)
-  const hasPrefilledRef = useRef(false);
+  // Uses `ts` param to detect new navigations even with same query
+  const lastTs = useRef<string | undefined>(undefined);
   useEffect(() => {
-    if (params.query && !hasPrefilledRef.current) {
-      hasPrefilledRef.current = true;
+    if (params.query && params.ts && params.ts !== lastTs.current) {
+      lastTs.current = params.ts;
       setQuery(params.query);
+      goBackToHome(); // Reset results so user sees the new query in the input
     }
   }, [params.query, setQuery]);
 
