@@ -90,11 +90,24 @@ function CustomTabBar({ state, descriptors, navigation }: BottomTabBarProps) {
     <View style={styles.tabBarWrapper}>
       <View style={styles.tabBarContainer}>
         <BlurView
-          intensity={Platform.OS === 'ios' ? 40 : 30}
-          tint={isDark ? 'dark' : 'light'}
-          style={[styles.blurView, getGlassShadow(isDark)]}
+          intensity={Platform.OS === 'ios' ? 80 : 60}
+          tint={isDark ? 'systemChromeMaterialDark' : 'systemChromeMaterial'}
+          style={styles.blurView}
         >
-          <View style={[styles.tabBarContent, getGlassTabStyle(isDark)]}>
+          <View
+            style={[
+              styles.tabBarContent,
+              {
+                backgroundColor: isDark
+                  ? 'rgba(30, 30, 30, 0.6)'
+                  : 'rgba(255, 255, 255, 0.7)',
+                borderWidth: 0.5,
+                borderColor: isDark
+                  ? 'rgba(255, 255, 255, 0.08)'
+                  : 'rgba(0, 0, 0, 0.06)',
+              },
+            ]}
+          >
             {state.routes
               .filter(route =>
                 ['home', 'search', 'watchlist', 'profile'].includes(
@@ -119,43 +132,41 @@ function CustomTabBar({ state, descriptors, navigation }: BottomTabBarProps) {
                   }
                 };
 
-                const inactiveColor = isDark ? '#8e8e93' : '#999999';
-
                 return (
                   <TouchableOpacity
                     key={route.key}
                     onPress={onPress}
                     style={styles.tabButton}
-                    activeOpacity={0.7}
+                    activeOpacity={0.6}
                   >
-                    <MotiView
-                      animate={{
-                        scale: isFocused ? 1 : 0.95,
-                        opacity: isFocused ? 1 : 0.5,
-                      }}
-                      transition={{
-                        type: 'timing',
-                        duration: 200,
-                      }}
-                      style={[
-                        isFocused
-                          ? styles.tabPillActive
-                          : styles.tabPillInactive,
-                      ]}
-                    >
-                      <View style={styles.tabContent}>
-                        <View style={styles.tabIcon}>
-                          {options.tabBarIcon?.({
-                            color: isFocused ? '#fff' : inactiveColor,
-                            focused: isFocused,
-                            size: isFocused ? 20 : 24,
-                          })}
-                        </View>
-                        {isFocused && (
-                          <Text style={styles.tabLabel}>{label}</Text>
-                        )}
+                    <View style={styles.tabContent}>
+                      <View style={styles.tabIcon}>
+                        {options.tabBarIcon?.({
+                          color: isFocused
+                            ? '#E50914'
+                            : isDark
+                              ? '#8e8e93'
+                              : '#8e8e93',
+                          focused: isFocused,
+                          size: 22,
+                        })}
                       </View>
-                    </MotiView>
+                      <Text
+                        style={[
+                          styles.tabLabel,
+                          {
+                            color: isFocused
+                              ? '#E50914'
+                              : isDark
+                                ? '#8e8e93'
+                                : '#8e8e93',
+                            fontWeight: isFocused ? '600' : '400',
+                          },
+                        ]}
+                      >
+                        {label}
+                      </Text>
+                    </View>
                   </TouchableOpacity>
                 );
               })}
@@ -277,23 +288,23 @@ function TabsLayout() {
 const styles = StyleSheet.create({
   tabBarWrapper: {
     position: 'absolute',
-    bottom: 20,
+    bottom: 0,
     left: 0,
     right: 0,
     alignItems: 'center',
     zIndex: 100,
+    paddingBottom: Platform.OS === 'ios' ? 0 : 8,
   },
   tabBarContainer: {
-    width: '92%',
-    maxWidth: 500, // Limit width on iPad/tablets
+    width: '100%',
   },
   blurView: {
-    ...getSquircle(24), // Apple squircle corners for tab bar
     overflow: 'hidden',
   },
   tabBarContent: {
     flexDirection: 'row',
-    paddingVertical: 6,
+    paddingTop: 8,
+    paddingBottom: Platform.OS === 'ios' ? 28 : 12,
     paddingHorizontal: 8,
     justifyContent: 'space-around',
     alignItems: 'center',
@@ -302,25 +313,10 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: 'center',
   },
-  tabPillActive: {
-    backgroundColor: '#E50914',
-    paddingVertical: 7,
-    paddingHorizontal: 14,
-    borderRadius: 18,
-    ...Platform.select({
-      ios: { borderCurve: 'continuous' as ViewStyle['borderCurve'] },
-    }),
-  },
-  tabPillInactive: {
-    backgroundColor: 'transparent',
-    paddingVertical: 7,
-    paddingHorizontal: 14,
-  },
   tabContent: {
-    flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
-    gap: 5,
+    gap: 2,
   },
   tabIcon: {
     width: 24,
@@ -329,10 +325,8 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   tabLabel: {
-    fontSize: 12,
-    fontWeight: '600',
-    letterSpacing: -0.2,
-    color: '#ffffff',
+    fontSize: 10,
+    letterSpacing: -0.1,
   },
 });
 
