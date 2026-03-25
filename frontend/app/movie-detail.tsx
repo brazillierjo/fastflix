@@ -3,7 +3,7 @@ import { BlurView } from 'expo-blur';
 import { LinearGradient } from 'expo-linear-gradient';
 import { MotiView } from 'moti';
 import { useRouter, useLocalSearchParams } from 'expo-router';
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   Dimensions,
   Image,
@@ -25,6 +25,7 @@ import Animated, {
 } from 'react-native-reanimated';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useLanguage } from '@/contexts/LanguageContext';
+import { backendAPIService } from '@/services/backend-api.service';
 import { cn } from '@/utils/cn';
 import {
   getCardShadow,
@@ -69,16 +70,7 @@ interface SimilarMovie {
   voteAverage: number;
 }
 
-// Placeholder similar movies for now
-const PLACEHOLDER_SIMILAR: SimilarMovie[] = [
-  {
-    id: 0,
-    title: 'Coming Soon',
-    posterPath: '',
-    mediaType: 'movie',
-    voteAverage: 0,
-  },
-];
+// No more placeholders - similar movies are fetched from API
 
 export default function MovieDetailScreen() {
   const router = useRouter();
@@ -99,6 +91,8 @@ export default function MovieDetailScreen() {
     detailedInfoJson: string;
   }>();
 
+  const [similarMovies, setSimilarMovies] = useState<SimilarMovie[]>([]);
+
   const tmdbId = parseInt(params.tmdbId || '0', 10);
   const mediaType = (params.mediaType || 'movie') as 'movie' | 'tv';
   const title = params.title || '';
@@ -118,6 +112,33 @@ export default function MovieDetailScreen() {
     : {};
 
   const bgColor = isDark ? '#000000' : '#F2F2F7';
+
+  // Fetch similar movies from API
+  useEffect(() => {
+    if (tmdbId > 0) {
+      backendAPIService
+        .getSimilar(tmdbId, mediaType)
+        .then(res => {
+          if (res.success && res.data) {
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            const rawData = res.data as any;
+            const items = (Array.isArray(rawData) ? rawData : rawData?.items || [])
+              .slice(0, 10)
+              .map((item: { id?: number; tmdb_id?: number; title?: string; name?: string; poster_path?: string; media_type?: string; vote_average?: number }) => ({
+                id: item.id || item.tmdb_id || 0,
+                title: item.title || item.name || '',
+                posterPath: item.poster_path || '',
+                mediaType: (item.media_type || mediaType) as 'movie' | 'tv',
+                voteAverage: item.vote_average || 0,
+              }));
+            setSimilarMovies(items);
+          }
+        })
+        .catch(() => {
+          // Silent fail
+        });
+    }
+  }, [tmdbId, mediaType]);
 
   // Scroll-driven animations
   const scrollY = useSharedValue(0);
@@ -235,7 +256,7 @@ export default function MovieDetailScreen() {
   };
 
   const handleSimilarPress = (similar: SimilarMovie) => {
-    if (similar.id === 0) return; // Placeholder
+    if (similar.id === 0) return;
     router.push({
       pathname: '/movie-detail' as never,
       params: {
@@ -709,7 +730,7 @@ export default function MovieDetailScreen() {
             animate={{ opacity: 1, translateY: 0 }}
             transition={{ type: 'timing', duration: 400, delay: 350 }}
           >
-            <View className='mb-6'>
+            {similarMovies.length > 0 && <View className='mb-6'>
               <Text className='mb-3 text-lg font-semibold text-light-text dark:text-dark-text'>
                 {t('movieDetail.similar')}
               </Text>
@@ -718,7 +739,7 @@ export default function MovieDetailScreen() {
                 showsHorizontalScrollIndicator={false}
                 contentContainerStyle={{ gap: 12 }}
               >
-                {PLACEHOLDER_SIMILAR.map((similar, idx) => (
+                {similarMovies.map((similar, idx) => (
                   <TouchableOpacity
                     key={`similar-${similar.id}-${idx}`}
                     onPress={() => handleSimilarPress(similar)}
@@ -762,7 +783,7 @@ export default function MovieDetailScreen() {
                   </TouchableOpacity>
                 ))}
               </ScrollView>
-            </View>
+            </View>}
           </MotiView>
 
           {/* TMDB Link Button */}

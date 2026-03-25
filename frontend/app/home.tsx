@@ -493,7 +493,7 @@ export default function HomeScreen() {
         <ForYouSection delay={375} />
 
         {/* Recent Searches - only for authenticated users */}
-        {isAuthenticated && (
+        {isAuthenticated && recentSearches.length > 0 && (
           <MotiView
             from={{ opacity: 0, translateY: 15 }}
             animate={{ opacity: 1, translateY: 0 }}
@@ -507,14 +507,7 @@ export default function HomeScreen() {
               {t('home.recentSearches')}
             </Text>
             <View className='flex-row flex-wrap gap-2'>
-              {(recentSearches.length > 0
-                ? recentSearches
-                : [
-                    { query: 'Action thrillers' },
-                    { query: '90s comedies' },
-                    { query: 'Sci-fi series' },
-                  ]
-              ).map((item, i) => {
+              {recentSearches.map((item, i) => {
                 const label =
                   typeof item === 'string' ? item : item.query || item.label || '';
                 return (
