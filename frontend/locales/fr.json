@@ -441,6 +441,17 @@
     "dailyTitle": "Votre sélection du jour est prête !",
     "dailyBody": "Découvrez la recommandation personnalisée du jour"
   },
+  "loading": {
+    "analyzing": "Analyse de votre demande...",
+    "searching": "Recherche parmi des milliers de titres...",
+    "ranking": "Classement par pertinence et note...",
+    "finalizing": "Préparation de vos recommandations...",
+    "funFact1": "En moyenne, on passe 7 minutes à choisir quoi regarder",
+    "funFact2": "Il y a plus de 500 000 films référencés sur TMDB",
+    "funFact3": "Notre IA prend en compte vos genres, plateformes et humeur",
+    "funFact4": "On vérifie la disponibilité sur tous vos services de streaming",
+    "funFact5": "Chaque recommandation est classée par les notes de la communauté"
+  },
   "report": {
     "title": "Signaler",
     "bugReport": "Signaler un bug",

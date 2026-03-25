@@ -425,6 +425,17 @@
     "shareButton": "Compartir",
     "watchedButton": "Marcar como vista"
   },
+  "loading": {
+    "analyzing": "Analizando tu solicitud...",
+    "searching": "Buscando entre miles de títulos...",
+    "ranking": "Clasificando por relevancia y nota...",
+    "finalizing": "Preparando tus recomendaciones...",
+    "funFact1": "En promedio, pasamos 7 minutos eligiendo qué ver",
+    "funFact2": "Hay más de 500.000 películas en TMDB",
+    "funFact3": "Nuestra IA tiene en cuenta géneros, plataformas y estado de ánimo",
+    "funFact4": "Verificamos la disponibilidad en todos tus servicios de streaming",
+    "funFact5": "Cada recomendación se clasifica por notas de la comunidad"
+  },
   "report": {
     "title": "Reportar",
     "bugReport": "Reportar error",

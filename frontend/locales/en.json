@@ -458,6 +458,17 @@
     "dailyTitle": "Your daily pick is ready!",
     "dailyBody": "Check out today's personalized recommendation"
   },
+  "loading": {
+    "analyzing": "Analyzing your request...",
+    "searching": "Searching through thousands of titles...",
+    "ranking": "Ranking by relevance and rating...",
+    "finalizing": "Preparing your recommendations...",
+    "funFact1": "The average person spends 7 minutes deciding what to watch",
+    "funFact2": "There are over 500,000 movies listed on TMDB",
+    "funFact3": "Our AI considers your genres, platforms, and mood",
+    "funFact4": "We check availability on all your streaming services",
+    "funFact5": "Each recommendation is ranked by community ratings"
+  },
   "report": {
     "title": "Report",
     "bugReport": "Bug Report",
