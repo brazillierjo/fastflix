@@ -359,7 +359,17 @@
     "family": "Familienspass",
     "hidden": "Geheimtipps",
     "laugh": "Lachgarantie",
-    "scifi": "Sci-Fi Reisen"
+    "scifi": "Sci-Fi Reisen",
+    "query": {
+      "cozy": "Gemütliche Wohlfühlfilme für einen regnerischen Abend",
+      "thriller": "Intensive psychologische Thriller die fesseln",
+      "classic": "Zeitlose Filmklassiker die jeder sehen sollte",
+      "binge": "Süchtig machende Serien zum Durchschauen",
+      "family": "Familienfreundliche Filme für alle Altersgruppen",
+      "hidden": "Unterschätzte Geheimtipps die kaum jemand kennt",
+      "laugh": "Die lustigsten Komödien zum Totlachen",
+      "scifi": "Faszinierende Sci-Fi Filme und Serien"
+    }
   },
   "forYou": {
     "title": "Für dich",

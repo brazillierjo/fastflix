@@ -33,7 +33,7 @@ const COLLECTIONS: Collection[] = [
     id: 'cozy',
     icon: 'cafe',
     titleKey: 'collections.cozy',
-    query: 'cozy feel-good movies for a rainy day',
+    query: 'collections.query.cozy',
     color: '#3B2415',
     colorLight: '#FDF2E9',
     iconColor: '#E67E22',
@@ -42,7 +42,7 @@ const COLLECTIONS: Collection[] = [
     id: 'thriller',
     icon: 'eye',
     titleKey: 'collections.thriller',
-    query: 'intense psychological thrillers that keep you on edge',
+    query: 'collections.query.thriller',
     color: '#1A1A2E',
     colorLight: '#EDE7F6',
     iconColor: '#9B59B6',
@@ -51,7 +51,7 @@ const COLLECTIONS: Collection[] = [
     id: 'classic',
     icon: 'ribbon',
     titleKey: 'collections.classic',
-    query: 'timeless classic movies everyone should watch',
+    query: 'collections.query.classic',
     color: '#1B2631',
     colorLight: '#E8EAF6',
     iconColor: '#5DADE2',
@@ -60,7 +60,7 @@ const COLLECTIONS: Collection[] = [
     id: 'binge',
     icon: 'tv',
     titleKey: 'collections.binge',
-    query: 'addictive TV series perfect for binge watching',
+    query: 'collections.query.binge',
     color: '#0B3D2E',
     colorLight: '#E8F8F5',
     iconColor: '#2ECC71',
@@ -69,7 +69,7 @@ const COLLECTIONS: Collection[] = [
     id: 'family',
     icon: 'people',
     titleKey: 'collections.family',
-    query: 'family friendly movies for all ages',
+    query: 'collections.query.family',
     color: '#3B2507',
     colorLight: '#FEF9E7',
     iconColor: '#F39C12',
@@ -78,7 +78,7 @@ const COLLECTIONS: Collection[] = [
     id: 'hidden',
     icon: 'diamond',
     titleKey: 'collections.hidden',
-    query: 'hidden gem movies that are underrated',
+    query: 'collections.query.hidden',
     color: '#1A2A2A',
     colorLight: '#E0F7FA',
     iconColor: '#00BCD4',
@@ -87,7 +87,7 @@ const COLLECTIONS: Collection[] = [
     id: 'laugh',
     icon: 'happy',
     titleKey: 'collections.laugh',
-    query: 'funniest comedies that will make you laugh',
+    query: 'collections.query.laugh',
     color: '#3A3500',
     colorLight: '#FFFDE7',
     iconColor: '#F1C40F',
@@ -96,7 +96,7 @@ const COLLECTIONS: Collection[] = [
     id: 'scifi',
     icon: 'planet',
     titleKey: 'collections.scifi',
-    query: 'mind-bending sci-fi movies and series',
+    query: 'collections.query.scifi',
     color: '#0D0D3B',
     colorLight: '#E8EAF6',
     iconColor: '#7C4DFF',
@@ -109,10 +109,11 @@ export default function CollectionsSection({ delay = 350 }: { delay?: number }) 
   const colorScheme = useColorScheme();
   const isDark = colorScheme === 'dark';
 
-  const handlePress = (query: string) => {
+  const handlePress = (queryKey: string) => {
+    const translatedQuery = t(queryKey) || queryKey;
     router.push({
       pathname: '/search' as never,
-      params: { query },
+      params: { query: translatedQuery },
     });
   };
 

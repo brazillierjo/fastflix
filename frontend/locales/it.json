@@ -359,7 +359,17 @@
     "family": "Per tutta la famiglia",
     "hidden": "Gemme nascoste",
     "laugh": "Risate garantite",
-    "scifi": "Viaggi Sci-Fi"
+    "scifi": "Viaggi Sci-Fi",
+    "query": {
+      "cozy": "Film rilassanti e confortanti per una serata accogliente",
+      "thriller": "Thriller psicologici intensi che tengono col fiato sospeso",
+      "classic": "Film classici intramontabili che tutti dovrebbero vedere",
+      "binge": "Serie avvincenti perfette da guardare in maratona",
+      "family": "Film per tutta la famiglia",
+      "hidden": "Gioielli nascosti e sottovalutati",
+      "laugh": "Le commedie più divertenti che fanno ridere a crepapelle",
+      "scifi": "Film e serie di fantascienza che sconvolgono la mente"
+    }
   },
   "forYou": {
     "title": "Per te",

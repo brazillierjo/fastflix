@@ -392,7 +392,17 @@
     "family": "Family Fun",
     "hidden": "Hidden Gems",
     "laugh": "LOL Comedies",
-    "scifi": "Sci-Fi Trips"
+    "scifi": "Sci-Fi Trips",
+    "query": {
+      "cozy": "Cozy feel-good movies for a rainy day",
+      "thriller": "Intense psychological thrillers that keep you on edge",
+      "classic": "Timeless classic movies everyone should watch",
+      "binge": "Addictive TV series perfect for binge watching",
+      "family": "Family friendly movies for all ages",
+      "hidden": "Hidden gem movies that are underrated",
+      "laugh": "Funniest comedies that will make you laugh",
+      "scifi": "Mind-bending sci-fi movies and series"
+    }
   },
   "forYou": {
     "title": "For You",

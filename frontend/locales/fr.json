@@ -383,7 +383,17 @@
     "family": "En famille",
     "hidden": "Perles rares",
     "laugh": "Fous rires",
-    "scifi": "Voyages Sci-Fi"
+    "scifi": "Voyages Sci-Fi",
+    "query": {
+      "cozy": "Films réconfortants et doux pour une soirée cocooning",
+      "thriller": "Thrillers psychologiques intenses et captivants",
+      "classic": "Films classiques intemporels que tout le monde devrait voir",
+      "binge": "Séries addictives parfaites à binger",
+      "family": "Films pour toute la famille",
+      "hidden": "Pépites méconnues et sous-estimées",
+      "laugh": "Comédies hilarantes qui font pleurer de rire",
+      "scifi": "Films et séries de science-fiction qui retournent le cerveau"
+    }
   },
   "forYou": {
     "title": "Pour vous",
