@@ -372,6 +372,8 @@
     "trendingLoading": "Caricamento tendenze...",
     "recentSearches": "Ricerche recenti",
     "continueExploring": "Continua a esplorare",
+    "continueExploringHint": "Riprendi da dove hai lasciato e scopri nuovi consigli.",
+    "explore": "Esplora",
     "searchPlaceholder": "Cosa ti va di guardare?",
     "quotaRemaining": "{{count}} ricerche rimaste questa settimana",
     "quotaUnlimited": "Ricerche illimitate",

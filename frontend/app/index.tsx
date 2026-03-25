@@ -10,7 +10,7 @@ const ONBOARDING_KEY = '@fastflix/onboarding_complete';
 const SETUP_COMPLETE_KEY = '@fastflix/setup_complete';
 
 export default function IndexScreen() {
-  const { isLoading } = useAuth();
+  const { isAuthenticated, isLoading } = useAuth();
   const [onboardingComplete, setOnboardingComplete] = useState<boolean | null>(
     null
   );
@@ -27,7 +27,7 @@ export default function IndexScreen() {
     });
   }, []);
 
-  // Show loading while checking onboarding/setup status
+  // Show loading while checking statuses
   if (isLoading || onboardingComplete === null || setupComplete === null) {
     return (
       <SafeAreaView
@@ -38,16 +38,18 @@ export default function IndexScreen() {
     );
   }
 
-  // Redirect to onboarding if not completed
+  // Flow: Onboarding → Setup → Auth → Home
   if (!onboardingComplete) {
     return <Redirect href={'/onboarding' as never} />;
   }
 
-  // Redirect to setup if not completed
   if (!setupComplete) {
     return <Redirect href={'/setup' as never} />;
   }
 
-  // Default: redirect to home tab (guest mode - no auth required)
+  if (!isAuthenticated) {
+    return <Redirect href='/auth' />;
+  }
+
   return <Redirect href={'/home' as never} />;
 }

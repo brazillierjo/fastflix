@@ -498,7 +498,10 @@ class BackendAPIService {
   /**
    * Get home screen data (daily pick, trending, recent searches, quota)
    */
-  async getHomeData(): Promise<
+  async getHomeData(params?: {
+    language?: string;
+    country?: string;
+  }): Promise<
     APIResponse<{
       dailyPick: any;
       trending: any[];
@@ -506,27 +509,39 @@ class BackendAPIService {
       quota: any;
     }>
   > {
-    return await this.makeRequest('/api/home', {
-      method: 'GET',
-    });
+    const qs = new URLSearchParams();
+    if (params?.language) qs.set('language', params.language);
+    if (params?.country) qs.set('country', params.country);
+    const query = qs.toString() ? `?${qs.toString()}` : '';
+    return await this.makeRequest(`/api/home${query}`, { method: 'GET' });
   }
 
   /**
    * Get trending content on user's platforms
    */
-  async getTrending(): Promise<APIResponse<any[]>> {
-    return await this.makeRequest('/api/trending', {
-      method: 'GET',
-    });
+  async getTrending(params?: {
+    language?: string;
+    country?: string;
+  }): Promise<APIResponse<any[]>> {
+    const qs = new URLSearchParams();
+    if (params?.language) qs.set('language', params.language);
+    if (params?.country) qs.set('country', params.country);
+    const query = qs.toString() ? `?${qs.toString()}` : '';
+    return await this.makeRequest(`/api/trending${query}`, { method: 'GET' });
   }
 
   /**
    * Get daily pick recommendation
    */
-  async getDailyPick(): Promise<APIResponse<any>> {
-    return await this.makeRequest('/api/daily-pick', {
-      method: 'GET',
-    });
+  async getDailyPick(params?: {
+    language?: string;
+    country?: string;
+  }): Promise<APIResponse<any>> {
+    const qs = new URLSearchParams();
+    if (params?.language) qs.set('language', params.language);
+    if (params?.country) qs.set('country', params.country);
+    const query = qs.toString() ? `?${qs.toString()}` : '';
+    return await this.makeRequest(`/api/daily-pick${query}`, { method: 'GET' });
   }
 
   /**

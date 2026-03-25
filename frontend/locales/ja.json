@@ -372,6 +372,8 @@
     "trendingLoading": "トレンド読み込み中...",
     "recentSearches": "最近の検索",
     "continueExploring": "探索を続ける",
+    "continueExploringHint": "前回の続きから、新しいおすすめを見つけましょう。",
+    "explore": "探索する",
     "searchPlaceholder": "何を見たい気分ですか？",
     "quotaRemaining": "今週の残り検索回数: {{count}}",
     "quotaUnlimited": "無制限検索",

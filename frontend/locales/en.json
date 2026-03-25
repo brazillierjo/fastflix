@@ -405,6 +405,8 @@
     "trendingLoading": "Loading trending content...",
     "recentSearches": "Recent searches",
     "continueExploring": "Continue exploring",
+    "continueExploringHint": "Pick up where you left off and discover new recommendations.",
+    "explore": "Explore",
     "searchPlaceholder": "What do you feel like watching?",
     "quotaRemaining": "{{count}} searches remaining this week",
     "quotaUnlimited": "Unlimited searches",

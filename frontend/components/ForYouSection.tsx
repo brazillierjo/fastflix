@@ -63,25 +63,32 @@ function SkeletonRow({ isDark }: { isDark: boolean }) {
 export default function ForYouSection({ delay = 400 }: { delay?: number }) {
   const { t } = useLanguage();
   const { isAuthenticated } = useAuth();
+  const { language, country } = useLanguage();
   const router = useRouter();
   const colorScheme = useColorScheme();
   const isDark = colorScheme === 'dark';
+
+  const tmdbLanguage = language?.includes('-') ? language : `${language || 'en'}-${(country || 'US').toUpperCase()}`;
+  const tmdbCountry = (country || 'US').toUpperCase();
 
   const {
     data,
     isLoading,
   } = useQuery<ForYouData>({
-    queryKey: FOR_YOU_QUERY_KEY,
+    queryKey: [FOR_YOU_QUERY_KEY, tmdbLanguage, tmdbCountry],
     queryFn: async (): Promise<ForYouData> => {
-      const response = await backendAPIService.getForYou();
+      const response = await backendAPIService.getForYou({
+        language: tmdbLanguage,
+        country: tmdbCountry,
+      });
       if (response.success && response.data) {
         return response.data;
       }
       return { recommendations: [], streamingProviders: {} };
     },
     enabled: isAuthenticated,
-    staleTime: 1000 * 60 * 30, // 30 minutes
-    gcTime: 1000 * 60 * 60, // 1 hour
+    staleTime: 1000 * 60 * 30,
+    gcTime: 1000 * 60 * 60,
   });
 
   const recommendations = data?.recommendations ?? [];

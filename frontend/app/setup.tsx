@@ -167,7 +167,7 @@ export default function SetupScreen() {
     await AsyncStorage.setItem(SETUP_COUNTRY_KEY, deviceCountry);
     await AsyncStorage.setItem(SETUP_COMPLETE_KEY, 'true');
 
-    router.replace('/home' as never);
+    router.replace('/auth');
   }, [selectedPlatforms, selectedGenres, router]);
 
   const canProceedStep1 = selectedPlatforms.length >= 1;

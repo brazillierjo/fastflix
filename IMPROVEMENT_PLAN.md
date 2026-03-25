@@ -410,13 +410,6 @@ L'analyse du code revele plusieurs problemes fondamentaux :
   - 15-30 secondes montrant le flow : recherche -> resultats -> watchlist
   - Debut accrocheur dans les 3 premieres secondes
 
-### 9.2 Optimisation Google Play (pour le lancement Android)
-
-- [ ] **Titre** : "FastFlix - AI Movie Recommendations" (30 chars max)
-- [ ] **Short description** : keywords naturels (80 chars)
-- [ ] **Full description** : Keywords repetes 3-5x naturellement (4000 chars)
-- [ ] **Screenshots** Android adaptes
-- [ ] **Feature graphic** (1024x500)
 
 ### 9.3 Localisation ASO
 
@@ -431,11 +424,6 @@ L'analyse du code revele plusieurs problemes fondamentaux :
   - Le website existe mais verifier qu'il est optimise pour la conversion
   - CTA clair vers l'App Store
   - SEO pour "what to watch" / "movie recommendations"
-
-- [ ] **Strategie de contenu**
-  - Blog/social media avec des listes de recommandations
-  - "Top 10 films a voir ce weekend sur Netflix"
-  - Partage automatique depuis l'app (watchlist partageable)
 
 - [x] **In-app review prompt** ✅
   - useInAppReview hook avec expo-store-review

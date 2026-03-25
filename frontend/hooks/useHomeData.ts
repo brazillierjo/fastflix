@@ -6,6 +6,7 @@
 import { useQuery } from '@tanstack/react-query';
 import { backendAPIService } from '@/services/backend-api.service';
 import { useAuth } from '@/contexts/AuthContext';
+import { useLanguage } from '@/contexts/LanguageContext';
 import { AppState, AppStateStatus } from 'react-native';
 import { useEffect, useRef } from 'react';
 import Constants from 'expo-constants';
@@ -30,6 +31,11 @@ interface HomeData {
 export function useHomeData() {
   const appState = useRef(AppState.currentState);
   const { isAuthenticated } = useAuth();
+  const { language, country } = useLanguage();
+
+  // Map language code to TMDB language format
+  const tmdbLanguage = language?.includes('-') ? language : `${language || 'en'}-${(country || 'US').toUpperCase()}`;
+  const tmdbCountry = (country || 'US').toUpperCase();
 
   const {
     data,
@@ -38,19 +44,23 @@ export function useHomeData() {
     refetch,
     isRefetching,
   } = useQuery<HomeData>({
-    queryKey: [HOME_DATA_QUERY_KEY, isAuthenticated],
+    queryKey: [HOME_DATA_QUERY_KEY, isAuthenticated, tmdbLanguage, tmdbCountry],
     queryFn: async (): Promise<HomeData> => {
       if (isAuthenticated) {
-        // Authenticated: use the full /api/home endpoint
-        const response = await backendAPIService.getHomeData();
+        const response = await backendAPIService.getHomeData({
+          language: tmdbLanguage,
+          country: tmdbCountry,
+        });
         if (response.success && response.data) {
           return response.data;
         }
       }
 
-      // Guest mode: fetch public trending only (no auth needed)
+      // Fallback: fetch public trending
       try {
-        const res = await fetch(`${API_URL}/api/trending/public`);
+        const res = await fetch(
+          `${API_URL}/api/trending/public?language=${tmdbLanguage}`
+        );
         const json = await res.json();
         return {
           dailyPick: null,
