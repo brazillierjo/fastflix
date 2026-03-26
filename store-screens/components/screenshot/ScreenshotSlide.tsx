@@ -48,16 +48,10 @@ export const ScreenshotSlide = forwardRef<HTMLDivElement, ScreenshotSlideProps>(
         <div
           className="absolute right-0 left-0 z-10 flex flex-col items-center"
           style={{
-            paddingLeft: Math.round(80 * textScale),
-            paddingRight: Math.round(80 * textScale),
+            paddingLeft: Math.round(60 * textScale),
+            paddingRight: Math.round(60 * textScale),
             ...(isTextTop
-              ? isTabletRatio
-                ? {
-                    top: 0,
-                    height: Math.round(height * 0.18),
-                    justifyContent: "center",
-                  }
-                : { top: Math.round(60 * textScale) }
+              ? { top: Math.round(50 * textScale) }
               : { bottom: Math.round(120 * textScale) }),
           }}
         >
@@ -66,30 +60,14 @@ export const ScreenshotSlide = forwardRef<HTMLDivElement, ScreenshotSlideProps>(
               style={{
                 fontFamily: "var(--font-nunito)",
                 fontWeight: 800,
-                fontSize: Math.round(105 * textScale),
-                lineHeight: 1.1,
+                fontSize: Math.round(100 * textScale),
+                lineHeight: 1.05,
                 color: "#ffffff",
                 textAlign: "center",
                 letterSpacing: -1 * textScale,
               }}
             >
               {slide.title}
-            </div>
-          )}
-          {slide.subtitle && (
-            <div
-              style={{
-                fontFamily: "var(--font-nunito)",
-                fontWeight: 600,
-                fontSize: Math.round(54 * textScale),
-                lineHeight: 1.25,
-                color: "rgba(255,255,255,0.85)",
-                textAlign: "center",
-                marginTop: Math.round(20 * textScale),
-                letterSpacing: -0.3 * textScale,
-              }}
-            >
-              {slide.subtitle}
             </div>
           )}
         </div>
@@ -102,8 +80,8 @@ export const ScreenshotSlide = forwardRef<HTMLDivElement, ScreenshotSlideProps>(
             transform: "translateX(-50%)",
             ...(isTextTop
               ? isTabletRatio
-                ? { top: Math.round(height * 0.18) }
-                : { bottom: Math.round(-60 * scale) }
+                ? { top: Math.round(height * 0.14) }
+                : { bottom: Math.round(-40 * scale) }
               : { top: Math.round(-60 * scale) }),
           }}
         >
