@@ -376,15 +376,15 @@ export default function SearchForm({
             }}
             className='mb-5'
           >
-            {/* Action Buttons */}
-            <View className='mb-3 gap-2'>
+            {/* Action Buttons Row */}
+            <View className='mb-3 flex-row items-center justify-between'>
               {/* "No idea" Magic Button */}
               <Animated.View style={buttonAnimatedStyle}>
                 <TouchableOpacity
                   onPress={handleNoIdea}
                   style={getSquircle(20)}
                   className={cn(
-                    'flex-row items-center gap-2 self-start px-4 py-2',
+                    'flex-row items-center gap-2 px-4 py-2',
                     isTyping
                       ? 'bg-netflix-500/20'
                       : 'bg-gradient-to-r from-netflix-500/10 to-purple-500/10'
@@ -403,6 +403,25 @@ export default function SearchForm({
                   </Text>
                 </TouchableOpacity>
               </Animated.View>
+
+              {/* Filters Button */}
+              <TouchableOpacity
+                onPress={() => setShowFiltersModal(true)}
+                disabled={loading || isTyping}
+                activeOpacity={0.7}
+                style={getSquircle(20)}
+                className='flex-row items-center gap-1.5 px-4 py-2'
+                hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
+              >
+                <Ionicons
+                  name='options-outline'
+                  size={16}
+                  color={isDark ? '#a3a3a3' : '#737373'}
+                />
+                <Text className='text-sm text-light-textSecondary dark:text-dark-textSecondary'>
+                  {t('profile.defaultFilters')}
+                </Text>
+              </TouchableOpacity>
             </View>
 
             {/* Animated Input Container */}
@@ -435,10 +454,10 @@ export default function SearchForm({
                 />
               </Animated.View>
 
-              {/* Input with animated border + filter icon */}
+              {/* Input with animated border */}
               <Animated.View style={animatedBorderStyle}>
                 <View
-                  className='flex-row border-2 bg-light-surface focus:border-netflix-500 dark:bg-dark-surface'
+                  className='border-2 bg-light-surface focus:border-netflix-500 dark:bg-dark-surface'
                   style={{
                     borderRadius: 14,
                     ...(Platform.OS === 'ios' && {
@@ -454,27 +473,13 @@ export default function SearchForm({
                     onFocus={handleInputFocus}
                     placeholder={animatedPlaceholder || ' '}
                     placeholderTextColor={getPlaceholderColor(isDark)}
-                    className='flex-1 pb-5 pl-5 pr-2 pt-5 text-base text-light-text dark:text-dark-text'
+                    className='pb-5 pl-5 pr-5 pt-5 text-base text-light-text dark:text-dark-text'
                     multiline
                     textAlignVertical='top'
                     scrollEnabled={false}
                     editable={!isTyping}
                     style={{ minHeight: 90, maxHeight: 130 }}
                   />
-                  <View className='justify-center pr-4'>
-                    <TouchableOpacity
-                      onPress={() => setShowFiltersModal(true)}
-                      disabled={loading || isTyping}
-                      activeOpacity={0.7}
-                      hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
-                    >
-                      <Ionicons
-                        name='options-outline'
-                        size={22}
-                        color={isDark ? '#a3a3a3' : '#737373'}
-                      />
-                    </TouchableOpacity>
-                  </View>
                 </View>
               </Animated.View>
             </View>
