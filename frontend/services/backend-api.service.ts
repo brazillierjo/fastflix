@@ -571,6 +571,25 @@ class BackendAPIService {
   }
 
   /**
+   * Get full details, credits, and providers for a single movie/TV show
+   */
+  async getDetails(params: {
+    tmdbId: number;
+    mediaType: string;
+    language?: string;
+    country?: string;
+  }): Promise<APIResponse<any>> {
+    const qs = new URLSearchParams();
+    qs.set('tmdbId', String(params.tmdbId));
+    qs.set('mediaType', params.mediaType);
+    if (params.language) qs.set('language', params.language);
+    if (params.country) qs.set('country', params.country);
+    return await this.makeRequest(`/api/details?${qs.toString()}`, {
+      method: 'GET',
+    });
+  }
+
+  /**
    * Get user stats (search count, watchlist count, etc.)
    */
   async getUserStats(): Promise<APIResponse<any>> {

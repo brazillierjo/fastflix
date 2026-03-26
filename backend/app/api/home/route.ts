@@ -87,9 +87,8 @@ export async function GET(request: NextRequest) {
       };
     }
 
-    // Top 10 trending with providers
-    const trendingTop10Raw = trending.slice(0, 10);
-    const trendingAsResults = trendingTop10Raw.map((item) => ({
+    // Fetch providers for all trending items so we can filter properly
+    const allTrendingAsResults = trending.map((item) => ({
       tmdb_id: item.tmdb_id,
       title: item.title,
       media_type: item.media_type,
@@ -101,7 +100,7 @@ export async function GET(request: NextRequest) {
       genre_ids: [],
       popularity: 0,
     }));
-    const trendingProviders = await tmdb.getBatchWatchProviders(trendingAsResults, country);
+    const trendingProviders = await tmdb.getBatchWatchProviders(allTrendingAsResults, country);
 
     // Filter providers by user's availability & platform preferences
     const allowFlatrate = preferences.includeFlatrate;
@@ -109,8 +108,12 @@ export async function GET(request: NextRequest) {
     const allowBuy = preferences.includeBuy;
     const hasAvailabilityFilter = allowFlatrate || allowRent || allowBuy;
     const platformSet = preferences.platforms.length > 0 ? new Set(preferences.platforms) : null;
+    const hasFilters = hasAvailabilityFilter || platformSet !== null;
 
-    const trendingTop10: TrendingItem[] = trendingTop10Raw.map((item) => {
+    const trendingFiltered: TrendingItem[] = [];
+    for (const item of trending) {
+      if (trendingFiltered.length >= 10) break;
+
       let itemProviders = trendingProviders[item.tmdb_id] || [];
 
       if (hasAvailabilityFilter) {
@@ -127,14 +130,19 @@ export async function GET(request: NextRequest) {
         itemProviders = itemProviders.filter((p) => platformSet.has(p.provider_id));
       }
 
-      return {
+      // Skip items with no matching providers when user has filters
+      if (hasFilters && itemProviders.length === 0) continue;
+
+      trendingFiltered.push({
         ...item,
         providers: itemProviders.map((p) => ({
           provider_name: p.provider_name,
           logo_path: p.logo_path,
         })),
-      };
-    });
+      });
+    }
+
+    const trendingTop10 = trendingFiltered;
 
     const response: HomeResponse = {
       dailyPick,

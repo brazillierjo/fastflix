@@ -78,7 +78,7 @@ export default function MovieDetailScreen() {
   const insets = useSafeAreaInsets();
   const colorScheme = useColorScheme();
   const isDark = colorScheme === 'dark';
-  const { t, country } = useLanguage();
+  const { t, language: langCode, country } = useLanguage();
 
   const params = useLocalSearchParams<{
     tmdbId: string;
@@ -94,26 +94,69 @@ export default function MovieDetailScreen() {
 
   const [similarMovies, setSimilarMovies] = useState<SimilarMovie[]>([]);
   const [loadingSimilar, setLoadingSimilar] = useState(true);
+  const [loadingDetails, setLoadingDetails] = useState(false);
 
   const tmdbId = parseInt(params.tmdbId || '0', 10);
   const mediaType = (params.mediaType || 'movie') as 'movie' | 'tv';
-  const title = params.title || '';
-  const posterPath = params.posterPath || '';
-  const voteAverage = parseFloat(params.voteAverage || '0');
-  const overview = params.overview || '';
+  const [title, setTitle] = useState(params.title || '');
+  const [posterPath, setPosterPath] = useState(params.posterPath || '');
+  const [voteAverage, setVoteAverage] = useState(parseFloat(params.voteAverage || '0'));
+  const [overview, setOverview] = useState(params.overview || '');
 
   // Parse JSON data passed via route params
-  const providers: StreamingProvider[] = params.providersJson
-    ? JSON.parse(params.providersJson)
-    : [];
-  const cast: CastMember[] = params.creditsJson
-    ? JSON.parse(params.creditsJson)
-    : [];
-  const detailedInfo: DetailedInfoData = params.detailedInfoJson
-    ? JSON.parse(params.detailedInfoJson)
-    : {};
+  const [providers, setProviders] = useState<StreamingProvider[]>(() => {
+    try { return params.providersJson ? JSON.parse(params.providersJson) : []; }
+    catch { return []; }
+  });
+  const [cast, setCast] = useState<CastMember[]>(() => {
+    try { return params.creditsJson ? JSON.parse(params.creditsJson) : []; }
+    catch { return []; }
+  });
+  const [detailedInfo, setDetailedInfo] = useState<DetailedInfoData>(() => {
+    try { return params.detailedInfoJson ? JSON.parse(params.detailedInfoJson) : {}; }
+    catch { return {}; }
+  });
 
   const bgColor = isDark ? '#000000' : '#F2F2F7';
+
+  const tmdbLanguage = langCode?.includes('-') ? langCode : `${langCode || 'en'}-${(country || 'US').toUpperCase()}`;
+  const tmdbCountry = (country || 'US').toUpperCase();
+
+  // Auto-fetch full details when opened with minimal data
+  const needsDetails = !overview && !detailedInfo?.genres?.length && cast.length === 0;
+
+  useEffect(() => {
+    if (tmdbId > 0 && needsDetails) {
+      setLoadingDetails(true);
+      backendAPIService
+        .getDetails({
+          tmdbId,
+          mediaType,
+          language: tmdbLanguage,
+          country: tmdbCountry,
+        })
+        .then(res => {
+          if (res.success && res.data) {
+            const d = res.data;
+            if (d.overview) setOverview(d.overview);
+            if (d.title) setTitle(d.title);
+            if (d.poster_path) setPosterPath(d.poster_path);
+            if (d.vote_average) setVoteAverage(d.vote_average);
+            if (d.providers?.length > 0) setProviders(d.providers);
+            if (d.credits?.length > 0) setCast(d.credits);
+            if (d.detailedInfo && Object.keys(d.detailedInfo).length > 0) {
+              setDetailedInfo(d.detailedInfo);
+            }
+          }
+        })
+        .catch(() => {
+          // Silent fail
+        })
+        .finally(() => {
+          setLoadingDetails(false);
+        });
+    }
+  }, [tmdbId, mediaType, needsDetails, tmdbLanguage, tmdbCountry]);
 
   // Fetch similar movies from API
   useEffect(() => {
@@ -490,7 +533,14 @@ export default function MovieDetailScreen() {
           </MotiView>
 
           {/* Synopsis Section */}
-          {overview ? (
+          {loadingDetails && !overview ? (
+            <View className='mb-6'>
+              <Skeleton width={100} height={20} borderRadius={6} />
+              <Skeleton width='100%' height={14} borderRadius={4} style={{ marginTop: 12 }} />
+              <Skeleton width='100%' height={14} borderRadius={4} style={{ marginTop: 6 }} />
+              <Skeleton width='70%' height={14} borderRadius={4} style={{ marginTop: 6 }} />
+            </View>
+          ) : overview ? (
             <MotiView
               from={{ opacity: 0, translateY: 15 }}
               animate={{ opacity: 1, translateY: 0 }}
@@ -602,6 +652,19 @@ export default function MovieDetailScreen() {
           </MotiView>
 
           {/* Streaming Section */}
+          {loadingDetails && providers.length === 0 && (
+            <View className='mb-6'>
+              <Skeleton width={140} height={20} borderRadius={6} />
+              <View style={{ marginTop: 12, gap: 10 }}>
+                {[1, 2].map(i => (
+                  <View key={i} className='flex-row items-center gap-3'>
+                    <Skeleton width={34} height={34} borderRadius={8} />
+                    <Skeleton width={120} height={14} borderRadius={4} />
+                  </View>
+                ))}
+              </View>
+            </View>
+          )}
           {providers.length > 0 && (
             <MotiView
               from={{ opacity: 0, translateY: 15 }}
