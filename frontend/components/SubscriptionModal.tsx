@@ -240,30 +240,30 @@ export default function SubscriptionModal({
     {
       icon: 'sparkles' as const,
       label:
-        t('subscription.features.unlimitedAI') ||
+        t('subscription.features.unlimited.title') ||
         'Unlimited AI recommendations',
     },
     {
       icon: 'funnel' as const,
       label:
-        t('subscription.features.smartFilters') ||
+        t('subscription.features.platforms.title') ||
         'Smart streaming platform filters',
     },
     {
       icon: 'bookmark' as const,
       label:
-        t('subscription.features.watchlist') ||
+        t('subscription.features.watchlist.title') ||
         'Personal watchlist with alerts',
     },
     {
       icon: 'star' as const,
       label:
-        t('subscription.features.dailyPicks') || 'Personalized daily picks',
+        t('subscription.features.dailyPick.title') || 'Personalized daily picks',
     },
     {
       icon: 'time' as const,
       label:
-        t('subscription.features.history') || 'Search history & taste profile',
+        t('subscription.features.history.title') || 'Search history & taste profile',
     },
   ];
 
