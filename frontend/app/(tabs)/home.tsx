@@ -39,7 +39,7 @@ const SETUP_PLATFORMS_KEY = '@fastflix/setup_platforms';
 const TMDB_IMAGE_BASE = 'https://image.tmdb.org/t/p';
 
 export default function HomeScreen() {
-  const { t } = useLanguage();
+  const { t, language } = useLanguage();
   const { user, isAuthenticated, isLoading } = useAuth();
   const { hasUnlimitedAccess, customerInfo } = useSubscription();
   const router = useRouter();
@@ -191,12 +191,12 @@ export default function HomeScreen() {
   // Format current date (memoized to avoid recreating on every render)
   const currentDate = useMemo(
     () =>
-      new Date().toLocaleDateString(undefined, {
+      new Date().toLocaleDateString(language || 'en', {
         weekday: 'long',
         month: 'long',
         day: 'numeric',
       }),
-    []
+    [language]
   );
 
   const onRefresh = useCallback(() => {

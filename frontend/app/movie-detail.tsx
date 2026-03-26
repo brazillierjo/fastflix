@@ -27,7 +27,7 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { useAuth } from '@/contexts/AuthContext';
 import { backendAPIService } from '@/services/backend-api.service';
-import { useMovieRating, useRateMovie } from '@/hooks/useRating';
+import { useMovieRating, useRateMovie, useDeleteRating } from '@/hooks/useRating';
 import { Skeleton } from '@/components/Skeleton';
 import { cn } from '@/utils/cn';
 import {
@@ -125,6 +125,7 @@ export default function MovieDetailScreen() {
   // Watched + Rating system (2-step: mark watched → optional stars)
   const { rating: savedRating, isWatched: savedIsWatched } = useMovieRating(tmdbId);
   const { rateMovie, isRating } = useRateMovie();
+  const { deleteRating, isDeleting } = useDeleteRating();
   const [localRating, setLocalRating] = useState(0);
   const [isWatched, setIsWatched] = useState(false);
   const [ratingConfirmed, setRatingConfirmed] = useState(false);
@@ -150,6 +151,17 @@ export default function MovieDetailScreen() {
         },
       }
     );
+  };
+
+  const handleUnmarkWatched = () => {
+    if (isDeleting || !isAuthenticated) return;
+    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+    deleteRating(tmdbId, {
+      onSuccess: () => {
+        setIsWatched(false);
+        setLocalRating(0);
+      },
+    });
   };
 
   const handleRate = (stars: number) => {
@@ -610,7 +622,7 @@ export default function MovieDetailScreen() {
                     style={[getSquircle(14), getCardShadow(isDark)]}
                     className='border border-light-border bg-light-card px-4 py-4 dark:border-dark-border dark:bg-dark-card'
                   >
-                    {/* Watched badge */}
+                    {/* Watched badge + undo */}
                     <View className='mb-3 flex-row items-center justify-center gap-2'>
                       <View className='rounded-full bg-green-500/15 p-1'>
                         <Ionicons name='checkmark-circle' size={16} color='#22c55e' />
@@ -618,6 +630,13 @@ export default function MovieDetailScreen() {
                       <Text className='text-sm font-medium text-green-500'>
                         {t('movieDetail.watchedConfirm')}
                       </Text>
+                      <TouchableOpacity
+                        onPress={handleUnmarkWatched}
+                        disabled={isDeleting}
+                        hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}
+                      >
+                        <Ionicons name='close-circle' size={18} color={isDark ? '#525252' : '#a3a3a3'} />
+                      </TouchableOpacity>
                     </View>
 
                     {/* Star rating */}

@@ -428,7 +428,12 @@
     "genresSubtitle": "3つ以上のジャンルを選んでください",
     "step": "ステップ {{current}} / {{total}}",
     "continue": "続ける",
-    "back": "戻る"
+    "back": "戻る",
+    "country": {
+      "title": "どこにいますか？",
+      "subtitle": "お住まいの地域で利用可能な配信サービスを表示します",
+      "search": "国を検索..."
+    }
   },
   "notifications": {
     "promptTitle": "素晴らしい作品を見逃さない",

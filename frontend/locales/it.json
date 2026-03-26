@@ -428,7 +428,12 @@
     "genresSubtitle": "Scegli almeno 3 generi",
     "step": "Passo {{current}} di {{total}}",
     "continue": "Continua",
-    "back": "Indietro"
+    "back": "Indietro",
+    "country": {
+      "title": "Dove ti trovi?",
+      "subtitle": "Ci aiuta a mostrare le piattaforme disponibili nella tua zona",
+      "search": "Cerca paese..."
+    }
   },
   "notifications": {
     "promptTitle": "Non perderti una grande scelta",

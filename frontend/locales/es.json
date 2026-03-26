@@ -428,7 +428,12 @@
     "genresSubtitle": "Elige al menos 3 géneros",
     "step": "Paso {{current}} de {{total}}",
     "continue": "Continuar",
-    "back": "Atras"
+    "back": "Atras",
+    "country": {
+      "title": "¿Dónde estás?",
+      "subtitle": "Esto nos ayuda a mostrar la disponibilidad de streaming en tu región",
+      "search": "Buscar países..."
+    }
   },
   "notifications": {
     "promptTitle": "No te pierdas una gran elección",

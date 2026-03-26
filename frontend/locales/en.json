@@ -464,7 +464,12 @@
     "genresSubtitle": "Pick at least 3 genres",
     "step": "Step {{current}} of {{total}}",
     "continue": "Continue",
-    "back": "Back"
+    "back": "Back",
+    "country": {
+      "title": "Where are you?",
+      "subtitle": "This helps us show streaming availability in your region",
+      "search": "Search countries..."
+    }
   },
   "notifications": {
     "promptTitle": "Never miss a great pick",

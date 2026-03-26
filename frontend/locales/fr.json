@@ -452,7 +452,12 @@
     "genresSubtitle": "Choisissez au moins 3 genres",
     "step": "Étape {{current}} sur {{total}}",
     "continue": "Continuer",
-    "back": "Retour"
+    "back": "Retour",
+    "country": {
+      "title": "Où êtes-vous ?",
+      "subtitle": "Cela nous aide à afficher les plateformes disponibles dans votre région",
+      "search": "Rechercher un pays..."
+    }
   },
   "notifications": {
     "promptTitle": "Ne ratez plus un bon film",

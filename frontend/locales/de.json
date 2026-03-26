@@ -428,7 +428,12 @@
     "genresSubtitle": "Wähle mindestens 3 Genres",
     "step": "Schritt {{current}} von {{total}}",
     "continue": "Weiter",
-    "back": "Zurück"
+    "back": "Zurück",
+    "country": {
+      "title": "Wo bist du?",
+      "subtitle": "So zeigen wir Streaming-Verfügbarkeit in deiner Region",
+      "search": "Land suchen..."
+    }
   },
   "notifications": {
     "promptTitle": "Verpasse keinen guten Film",
