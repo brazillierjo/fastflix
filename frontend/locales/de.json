@@ -132,10 +132,22 @@
         "title": "Unbegrenzte Empfehlungen",
         "description": "Erhalte so viele Filmempfehlungen wie du möchtest"
       },
-      "platforms": { "title": "Intelligente Plattform-Filter", "description": "Nur Inhalte deiner Streaming-Dienste" },
-      "watchlist": { "title": "Personliche Merkliste & Benachrichtigungen", "description": "Filme speichern und verfolgen" },
-      "dailyPick": { "title": "Personalisierte tagliche Tipps", "description": "Jeden Tag frische Empfehlungen" },
-      "history": { "title": "Suchverlauf & Geschmacksprofil", "description": "KI lernt deine Vorlieben" }
+      "platforms": {
+        "title": "Intelligente Plattform-Filter",
+        "description": "Nur Inhalte deiner Streaming-Dienste"
+      },
+      "watchlist": {
+        "title": "Personliche Merkliste & Benachrichtigungen",
+        "description": "Filme speichern und verfolgen"
+      },
+      "dailyPick": {
+        "title": "Personalisierte tagliche Tipps",
+        "description": "Jeden Tag frische Empfehlungen"
+      },
+      "history": {
+        "title": "Suchverlauf & Geschmacksprofil",
+        "description": "KI lernt deine Vorlieben"
+      }
     },
     "socialProof": "Von Filmliebhabern weltweit vertraut",
     "socialProofSub": "4,9 Sterne von unserer Community bewertet",
@@ -355,10 +367,22 @@
     "next": "Weiter",
     "getStarted": "Los geht's",
     "alreadyHaveAccount": "Ich habe bereits ein Konto",
-    "screen1": { "title": "Finde heraus, was du heute Abend schauen sollst", "subtitle": "Schluss mit endlosem Scrollen. Sag unserer KI, worauf du Lust hast." },
-    "screen2": { "title": "KI lernt deinen Geschmack", "subtitle": "Je mehr du FastFlix nutzt, desto besser werden die Empfehlungen." },
-    "screen3": { "title": "Deine Plattformen, dein Content", "subtitle": "Filtere nach Netflix, Disney+, Prime Video und mehr." },
-    "screen4": { "title": "Deine smarte Merkliste", "subtitle": "Speichere Filme und Serien fürspater. Bewerte und verfolge alles." }
+    "screen1": {
+      "title": "Finde heraus, was du heute Abend schauen sollst",
+      "subtitle": "Schluss mit endlosem Scrollen. Sag unserer KI, worauf du Lust hast."
+    },
+    "screen2": {
+      "title": "KI lernt deinen Geschmack",
+      "subtitle": "Je mehr du FastFlix nutzt, desto besser werden die Empfehlungen."
+    },
+    "screen3": {
+      "title": "Deine Plattformen, dein Content",
+      "subtitle": "Filtere nach Netflix, Disney+, Prime Video und mehr."
+    },
+    "screen4": {
+      "title": "Deine smarte Merkliste",
+      "subtitle": "Speichere Filme und Serien fürspater. Bewerte und verfolge alles."
+    }
   },
   "newReleases": {
     "title": "Neu diese Woche",
@@ -464,7 +488,7 @@
     "createdBy": "Erstellt von",
     "networks": "Sender",
     "episodes": "Episoden",
-    "nextEpisode": "N\u00e4chste",
+    "nextEpisode": "Nächste",
     "lastEpisode": "Letzte",
     "budget": "Budget",
     "boxOffice": "Einspielergebnis",
@@ -518,6 +542,14 @@
     "yearsOld": "Jahre alt",
     "movies": "Filme",
     "tvShows": "Serien",
-    "viewOnIMDb": "Auf IMDb ansehen"
+    "viewOnIMDb": "Auf IMDb ansehen",
+    "addToFavorites": "Zu Favoriten hinzufügen",
+    "removeFromFavorites": "Aus Favoriten entfernen"
+  },
+  "favoriteActors": {
+    "sectionTitle": "Meine Lieblingsschauspieler",
+    "emptyHome": "Markiere Schauspieler als Favoriten",
+    "removeTitle": "Aus Favoriten entfernen",
+    "removeMessage": "Möchten Sie diesen Schauspieler aus Ihren Favoriten entfernen?"
   }
 }

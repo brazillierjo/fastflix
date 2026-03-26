@@ -542,6 +542,14 @@
     "yearsOld": "歳",
     "movies": "映画",
     "tvShows": "ドラマ",
-    "viewOnIMDb": "IMDbで見る"
+    "viewOnIMDb": "IMDbで見る",
+    "addToFavorites": "お気に入りに追加",
+    "removeFromFavorites": "お気に入りから削除"
+  },
+  "favoriteActors": {
+    "sectionTitle": "お気に入りの俳優",
+    "emptyHome": "俳優をお気に入りに追加しましょう",
+    "removeTitle": "お気に入りから削除",
+    "removeMessage": "この俳優をお気に入りから削除しますか？"
   }
 }

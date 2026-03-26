@@ -1,6 +1,7 @@
 import { Ionicons } from '@expo/vector-icons';
 import ForYouSection from '@/components/ForYouSection';
 import QuickSearch from '@/components/QuickSearch';
+import FavoriteActorsSection from '@/components/FavoriteActorsSection';
 import MyRatingsSection from '@/components/MyRatingsSection';
 import NewReleasesSection from '@/components/NewReleasesSection';
 import WatchlistSection from '@/components/WatchlistSection';
@@ -627,11 +628,20 @@ export default function HomeScreen() {
           <WatchlistSection />
         </MotiView>
 
+        {/* My Favorite Actors */}
+        <MotiView
+          from={hasAnimated.current ? undefined : { opacity: 0, translateY: 12 }}
+          animate={{ opacity: 1, translateY: 0 }}
+          transition={{ type: 'timing', duration: 400, delay: 450 }}
+        >
+          <FavoriteActorsSection />
+        </MotiView>
+
         {/* My Ratings */}
         <MotiView
           from={hasAnimated.current ? undefined : { opacity: 0, translateY: 12 }}
           animate={{ opacity: 1, translateY: 0 }}
-          transition={{ type: 'timing', duration: 400, delay: 500 }}
+          transition={{ type: 'timing', duration: 400, delay: 550 }}
         >
           <MyRatingsSection />
         </MotiView>

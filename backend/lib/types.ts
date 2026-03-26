@@ -347,12 +347,20 @@ export interface RatedMovie {
   poster_path?: string;
 }
 
+export interface FavoriteActor {
+  tmdb_id: number;
+  name: string;
+  profile_path?: string;
+  known_for_department?: string;
+}
+
 export interface UserTasteProfile {
   user_id: string;
   favorite_genres: string[];
   disliked_genres: string[];
   favorite_decades: string[];
   rated_movies: RatedMovie[];
+  favorite_actors: FavoriteActor[];
 }
 
 // ============================================================================

@@ -508,10 +508,10 @@
     "ratingSaved": "Note enregistrée !",
     "markWatched": "J'ai vu",
     "watchedConfirm": "Vu",
-    "crew": "\u00c9quipe",
-    "createdBy": "Cr\u00e9\u00e9 par",
+    "crew": "Équipe",
+    "createdBy": "Créé par",
     "networks": "Diffuseurs",
-    "episodes": "\u00c9pisodes",
+    "episodes": "Épisodes",
     "nextEpisode": "Prochain",
     "lastEpisode": "Dernier",
     "budget": "budget",
@@ -538,10 +538,18 @@
     "birthInfo": "Informations personnelles",
     "filmography": "Filmographie",
     "noFilmography": "Aucune filmographie disponible",
-    "diedAt": "d\u00e9c\u00e9d\u00e9 \u00e0",
+    "diedAt": "décédé à",
     "yearsOld": "ans",
     "movies": "films",
-    "tvShows": "s\u00e9ries",
-    "viewOnIMDb": "Voir sur IMDb"
+    "tvShows": "séries",
+    "viewOnIMDb": "Voir sur IMDb",
+    "addToFavorites": "Ajouter aux favoris",
+    "removeFromFavorites": "Retirer des favoris"
+  },
+  "favoriteActors": {
+    "sectionTitle": "Mes acteurs favoris",
+    "emptyHome": "Aimez des acteurs pour les ajouter à vos favoris",
+    "removeTitle": "Retirer des favoris",
+    "removeMessage": "Voulez-vous retirer cet acteur de vos favoris ?"
   }
 }

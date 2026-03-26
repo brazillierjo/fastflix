@@ -13,6 +13,7 @@ import type {
   SearchHistoryEntry,
   UserTasteProfile,
   RatedMovie,
+  FavoriteActor,
   UserStats,
 } from './types';
 
@@ -952,6 +953,7 @@ class DatabaseService {
       disliked_genres: [],
       favorite_decades: [],
       rated_movies: [],
+      favorite_actors: [],
     };
 
     try {
@@ -983,6 +985,7 @@ class DatabaseService {
         disliked_genres: parseJsonArray<string>(row.disliked_genres),
         favorite_decades: parseJsonArray<string>(row.favorite_decades),
         rated_movies: parseJsonArray<RatedMovie>(row.rated_movies),
+        favorite_actors: parseJsonArray<FavoriteActor>(row.favorite_actors),
       };
     } catch {
       return defaultProfile;
@@ -1008,14 +1011,15 @@ class DatabaseService {
       if (existing.rows.length === 0) {
         // Insert new profile
         await this.client!.execute({
-          sql: `INSERT INTO user_taste_profile (user_id, favorite_genres, disliked_genres, favorite_decades, rated_movies)
-                VALUES (?, ?, ?, ?, ?)`,
+          sql: `INSERT INTO user_taste_profile (user_id, favorite_genres, disliked_genres, favorite_decades, rated_movies, favorite_actors)
+                VALUES (?, ?, ?, ?, ?, ?)`,
           args: [
             userId,
             JSON.stringify(data.favorite_genres || []),
             JSON.stringify(data.disliked_genres || []),
             JSON.stringify(data.favorite_decades || []),
             JSON.stringify(data.rated_movies || []),
+            JSON.stringify(data.favorite_actors || []),
           ],
         });
       } else {
@@ -1041,6 +1045,11 @@ class DatabaseService {
         if (data.rated_movies !== undefined) {
           updates.push('rated_movies = ?');
           args.push(JSON.stringify(data.rated_movies));
+        }
+
+        if (data.favorite_actors !== undefined) {
+          updates.push('favorite_actors = ?');
+          args.push(JSON.stringify(data.favorite_actors));
         }
 
         if (updates.length > 0) {
@@ -1090,8 +1099,8 @@ class DatabaseService {
 
         // Ensure profile exists first
         await this.client!.execute({
-          sql: `INSERT OR IGNORE INTO user_taste_profile (user_id, favorite_genres, disliked_genres, favorite_decades, rated_movies)
-                VALUES (?, '[]', '[]', '[]', '[]')`,
+          sql: `INSERT OR IGNORE INTO user_taste_profile (user_id, favorite_genres, disliked_genres, favorite_decades, rated_movies, favorite_actors)
+                VALUES (?, '[]', '[]', '[]', '[]', '[]')`,
           args: [userId],
         });
 
@@ -1129,6 +1138,78 @@ class DatabaseService {
     const ratedMovies = profile.rated_movies.filter((m) => m.tmdb_id !== tmdbId);
 
     return this.updateTasteProfile(userId, { rated_movies: ratedMovies });
+  }
+
+  /**
+   * Add or update a favorite actor in the user's taste profile
+   */
+  async favoriteActor(
+    userId: string,
+    tmdbId: number,
+    name: string,
+    profilePath?: string,
+    knownForDepartment?: string
+  ): Promise<UserTasteProfile> {
+    this.initialize();
+
+    const maxRetries = 3;
+    for (let attempt = 0; attempt < maxRetries; attempt++) {
+      try {
+        const profile = await this.getUserTasteProfile(userId);
+        const favoriteActors = [...profile.favorite_actors];
+
+        const existingIndex = favoriteActors.findIndex((a) => a.tmdb_id === tmdbId);
+        const entry: FavoriteActor = { tmdb_id: tmdbId, name, ...(profilePath ? { profile_path: profilePath } : {}), ...(knownForDepartment ? { known_for_department: knownForDepartment } : {}) };
+
+        if (existingIndex >= 0) {
+          favoriteActors[existingIndex] = entry;
+        } else {
+          favoriteActors.push(entry);
+        }
+
+        const newJson = JSON.stringify(favoriteActors);
+
+        // Ensure profile exists first
+        await this.client!.execute({
+          sql: `INSERT OR IGNORE INTO user_taste_profile (user_id, favorite_genres, disliked_genres, favorite_decades, rated_movies, favorite_actors)
+                VALUES (?, '[]', '[]', '[]', '[]', '[]')`,
+          args: [userId],
+        });
+
+        // Compare-and-swap: only update if data hasn't changed since our read
+        const currentJson = JSON.stringify(profile.favorite_actors);
+        const result = await this.client!.execute({
+          sql: `UPDATE user_taste_profile SET favorite_actors = ? WHERE user_id = ? AND favorite_actors = ?`,
+          args: [newJson, userId, currentJson],
+        });
+
+        if (result.rowsAffected > 0) {
+          return this.getUserTasteProfile(userId);
+        }
+
+        // Concurrent modification detected - retry
+        console.warn(`⚠️ favoriteActor CAS retry ${attempt + 1}/${maxRetries} for user ${userId}`);
+      } catch (error) {
+        if (attempt === maxRetries - 1) throw error;
+      }
+    }
+
+    // Final fallback: force update (last resort)
+    return this.updateTasteProfile(userId, {
+      favorite_actors: (await this.getUserTasteProfile(userId)).favorite_actors,
+    });
+  }
+
+  /**
+   * Remove an actor from the user's favorite actors list
+   */
+  async unfavoriteActor(userId: string, tmdbId: number): Promise<UserTasteProfile> {
+    this.initialize();
+
+    const profile = await this.getUserTasteProfile(userId);
+    const favoriteActors = profile.favorite_actors.filter((a) => a.tmdb_id !== tmdbId);
+
+    return this.updateTasteProfile(userId, { favorite_actors: favoriteActors });
   }
 
   // ==========================================================================

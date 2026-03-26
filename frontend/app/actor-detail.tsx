@@ -11,6 +11,7 @@
 
 import { Ionicons } from '@expo/vector-icons';
 import { BlurView } from 'expo-blur';
+import * as Haptics from 'expo-haptics';
 import { LinearGradient } from 'expo-linear-gradient';
 import { MotiView } from 'moti';
 import { useRouter, useLocalSearchParams } from 'expo-router';
@@ -34,7 +35,9 @@ import Animated, {
   useSharedValue,
 } from 'react-native-reanimated';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { useAuth } from '@/contexts/AuthContext';
 import { useLanguage } from '@/contexts/LanguageContext';
+import { useIsFavoriteActor, useFavoriteActorToggle } from '@/hooks/useFavoriteActors';
 import { backendAPIService } from '@/services/backend-api.service';
 import { Skeleton } from '@/components/Skeleton';
 import {
@@ -90,6 +93,26 @@ export default function ActorDetailScreen() {
   const [person, setPerson] = useState<PersonDetails | null>(null);
   const [loading, setLoading] = useState(true);
   const [bioExpanded, setBioExpanded] = useState(false);
+
+  const { isAuthenticated } = useAuth();
+  const personIdNum = Number(personId);
+  const { isFavorite } = useIsFavoriteActor(personIdNum);
+  const { addFavorite, removeFavorite, isToggling } = useFavoriteActorToggle();
+
+  const handleToggleFavorite = () => {
+    if (!isAuthenticated || !person || isToggling) return;
+    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
+    if (isFavorite) {
+      removeFavorite(personIdNum);
+    } else {
+      addFavorite({
+        tmdb_id: personIdNum,
+        name: person.name,
+        profile_path: person.profile_path || undefined,
+        known_for_department: person.known_for_department || undefined,
+      });
+    }
+  };
 
   const bgColor = isDark ? '#000000' : '#F2F2F7';
   const tmdbLanguage = langCode?.includes('-')
@@ -539,6 +562,44 @@ export default function ActorDetailScreen() {
               </View>
             </MotiView>
           ) : null}
+
+          {/* Favorite Actor Button */}
+          {isAuthenticated && person && (
+            <MotiView
+              from={{ opacity: 0, translateY: 15 }}
+              animate={{ opacity: 1, translateY: 0 }}
+              transition={{ type: 'timing', duration: 400, delay: 250 }}
+            >
+              <TouchableOpacity
+                onPress={handleToggleFavorite}
+                disabled={isToggling}
+                activeOpacity={0.7}
+                style={[getSquircle(14)]}
+                className={`mb-4 flex-row items-center justify-center gap-2 px-4 py-3 ${
+                  isFavorite
+                    ? 'bg-red-500/15 border border-red-500/30'
+                    : 'border border-light-border bg-light-surface dark:border-dark-border dark:bg-dark-surface'
+                }`}
+              >
+                <Ionicons
+                  name={isFavorite ? 'heart' : 'heart-outline'}
+                  size={20}
+                  color={isFavorite ? '#ef4444' : isDark ? '#a3a3a3' : '#737373'}
+                />
+                <Text
+                  className={`text-sm font-medium ${
+                    isFavorite
+                      ? 'text-red-500'
+                      : 'text-light-textSecondary dark:text-dark-textSecondary'
+                  }`}
+                >
+                  {isFavorite
+                    ? t('actorDetail.removeFromFavorites') || 'Remove from favorites'
+                    : t('actorDetail.addToFavorites') || 'Add to favorites'}
+                </Text>
+              </TouchableOpacity>
+            </MotiView>
+          )}
 
           {/* IMDb Link */}
           {person?.imdb_id && (

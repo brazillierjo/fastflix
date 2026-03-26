@@ -741,6 +741,25 @@ class BackendAPIService {
     });
   }
 
+  async favoriteActor(params: {
+    tmdb_id: number;
+    name: string;
+    profile_path?: string;
+    known_for_department?: string;
+  }): Promise<APIResponse<{ profile: unknown }>> {
+    return await this.makeRequest('/api/user/taste-profile/favorite-actors', {
+      method: 'POST',
+      body: JSON.stringify(params),
+    });
+  }
+
+  async unfavoriteActor(tmdbId: number): Promise<APIResponse<{ profile: unknown }>> {
+    return await this.makeRequest('/api/user/taste-profile/favorite-actors', {
+      method: 'DELETE',
+      body: JSON.stringify({ tmdb_id: tmdbId }),
+    });
+  }
+
   // ==========================================================================
   // Account Management
   // ==========================================================================

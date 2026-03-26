@@ -15,11 +15,19 @@ interface RatedMovie {
   poster_path?: string;
 }
 
+interface FavoriteActor {
+  tmdb_id: number;
+  name: string;
+  profile_path?: string;
+  known_for_department?: string;
+}
+
 interface TasteProfile {
   favorite_genres: string[];
   disliked_genres: string[];
   favorite_decades: string[];
   rated_movies: RatedMovie[];
+  favorite_actors: FavoriteActor[];
 }
 
 export const TASTE_PROFILE_KEY = ['tasteProfile'];
@@ -38,9 +46,13 @@ export function useTasteProfile() {
     queryFn: async (): Promise<TasteProfile> => {
       const response = await backendAPIService.getTasteProfile();
       if (response.success && response.data?.profile) {
-        return response.data.profile;
+        const profile = response.data.profile as TasteProfile;
+        return {
+          ...profile,
+          favorite_actors: profile.favorite_actors ?? [],
+        };
       }
-      return { favorite_genres: [], disliked_genres: [], favorite_decades: [], rated_movies: [] };
+      return { favorite_genres: [], disliked_genres: [], favorite_decades: [], rated_movies: [], favorite_actors: [] };
     },
     enabled: isAuthenticated,
     staleTime: 1000 * 60 * 5,

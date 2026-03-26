@@ -109,6 +109,10 @@ export default Sentry.wrap(function RootLayout() {
                   options={{ gestureEnabled: true, animation: 'slide_from_right' }}
                 />
                 <Stack.Screen
+                  name='favorite-actors-list'
+                  options={{ headerShown: false }}
+                />
+                <Stack.Screen
                   name='watched-list'
                   options={{ headerShown: false }}
                 />

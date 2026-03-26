@@ -542,6 +542,14 @@
     "yearsOld": "años",
     "movies": "películas",
     "tvShows": "series",
-    "viewOnIMDb": "Ver en IMDb"
+    "viewOnIMDb": "Ver en IMDb",
+    "addToFavorites": "Agregar a favoritos",
+    "removeFromFavorites": "Eliminar de favoritos"
+  },
+  "favoriteActors": {
+    "sectionTitle": "Mis actores favoritos",
+    "emptyHome": "Dale me gusta a actores para agregarlos a tus favoritos",
+    "removeTitle": "Eliminar de favoritos",
+    "removeMessage": "¿Quieres eliminar este actor de tus favoritos?"
   }
 }
