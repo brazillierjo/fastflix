@@ -9,13 +9,13 @@ import { APP_STORE_LINKS } from '@/lib/constants';
 import {
   Smartphone,
   Tablet,
-  Brain,
   MessageSquare,
   Filter,
-  Shield,
-  Bookmark,
   Download,
   Sparkles,
+  Star,
+  TrendingUp,
+  Heart,
 } from 'lucide-react';
 
 export default function Home() {
@@ -28,7 +28,7 @@ export default function Home() {
       description: t('flexiblePromptsDesc'),
     },
     {
-      icon: Brain,
+      icon: Heart,
       title: t('aiPowered'),
       description: t('aiPoweredDesc'),
     },
@@ -38,14 +38,19 @@ export default function Home() {
       description: t('platformFilteringDesc'),
     },
     {
-      icon: Bookmark,
-      title: t('watchlist'),
-      description: t('watchlistDesc'),
+      icon: Sparkles,
+      title: t('forYou'),
+      description: t('forYouDesc'),
     },
     {
-      icon: Shield,
-      title: t('zeroDataCollection'),
-      description: t('zeroDataCollectionDesc'),
+      icon: TrendingUp,
+      title: t('dailyPick'),
+      description: t('dailyPickDesc'),
+    },
+    {
+      icon: Star,
+      title: t('watchlistFeature'),
+      description: t('watchlistFeatureDesc'),
     },
   ];
 
@@ -103,7 +108,7 @@ export default function Home() {
               {t('featuresDescription')}
             </p>
           </div>
-          <div className='mt-16 grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-5'>
+          <div className='mt-16 grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-3'>
             {features.map((feature, index) => {
               const Icon = feature.icon;
               return (
