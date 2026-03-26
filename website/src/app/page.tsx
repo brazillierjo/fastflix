@@ -6,13 +6,12 @@ import { useLanguage } from '@/contexts/LanguageContext';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { APP_STORE_LINKS } from '@/lib/constants';
+import { AppStoreBadge } from '@/components/AppStoreBadge';
 import {
   Smartphone,
   Tablet,
   MessageSquare,
   Filter,
-  Download,
   Sparkles,
   Star,
   TrendingUp,
@@ -86,17 +85,8 @@ export default function Home() {
             <p className='mx-auto mt-4 max-w-2xl text-lg text-gray-500'>
               {t('heroSubDescription')}
             </p>
-            <div className='mt-10 flex items-center justify-center gap-x-6'>
-              <Button size='lg' asChild>
-                <a
-                  href={APP_STORE_LINKS.ios}
-                  target='_blank'
-                  rel='noopener noreferrer'
-                >
-                  <Download className='mr-2 h-4 w-4' />
-                  {t('downloadIOS')}
-                </a>
-              </Button>
+            <div className='mt-10 flex items-center justify-center'>
+              <AppStoreBadge />
             </div>
 
             <p className='mt-4 text-sm text-gray-500'>
@@ -278,15 +268,7 @@ export default function Home() {
               {t('ctaSubtitle')}
             </h3>
             <div className='mt-8 flex items-center justify-center gap-x-6'>
-              <Button
-                size='lg'
-                variant='secondary'
-                className='px-8 py-3'
-                onClick={() => window.open(APP_STORE_LINKS.ios, '_blank')}
-              >
-                <Download className='mr-2 h-4 w-4' />
-                {t('downloadForIOS')}
-              </Button>
+              <AppStoreBadge />
               <Link href='/support'>
                 <Button
                   size='lg'
