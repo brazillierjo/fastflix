@@ -15,6 +15,7 @@ export default function IndexScreen() {
   const [setupComplete, setSetupComplete] = useState<boolean | null>(null);
 
   // Check if onboarding and setup have been completed
+  // Re-check when auth state changes (e.g. after account deletion clears flags)
   useEffect(() => {
     Promise.all([
       AsyncStorage.getItem(ONBOARDING_KEY),
@@ -23,7 +24,7 @@ export default function IndexScreen() {
       setOnboardingComplete(onboarding === 'true');
       setSetupComplete(setup === 'true');
     });
-  }, []);
+  }, [isAuthenticated]);
 
   // Hide splash screen once all routing decisions are resolved
   const isReady = !isLoading && onboardingComplete !== null && setupComplete !== null;

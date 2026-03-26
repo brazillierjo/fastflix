@@ -16,6 +16,7 @@ import { Alert, AppState, AppStateStatus } from 'react-native';
 import { useLanguage } from './LanguageContext';
 import { useSubscription } from './RevenueCatContext';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { useRouter } from 'expo-router';
 import { authService, User } from '../services/auth.service';
 import { backendAPIService } from '../services/backend-api.service';
 
@@ -42,6 +43,7 @@ interface AuthProviderProps {
 export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   const { t } = useLanguage();
   const { linkUserToRevenueCat } = useSubscription();
+  const router = useRouter();
   const [user, setUser] = useState<User | null>(null);
   const [isLoading, setIsLoading] = useState(true);
 
@@ -250,6 +252,8 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
         '@fastflix/setup_country',
       ]);
       setUser(null);
+      // Navigate to index which will redirect to onboarding
+      router.replace('/');
     } catch (error) {
       console.error('Delete account error:', error);
       Alert.alert(
