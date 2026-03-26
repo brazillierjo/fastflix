@@ -1,6 +1,7 @@
 /**
  * MyRatingsSection - "Déjà vus" section for the home screen
- * Shows movies/shows the user has watched, with optional star ratings
+ * Shows movies/shows the user has watched, with poster + optional star ratings
+ * Limited to 7 items with "See more" button linking to full list
  */
 
 import { Ionicons } from '@expo/vector-icons';
@@ -17,12 +18,16 @@ import { useRouter } from 'expo-router';
 import React from 'react';
 import {
   Alert,
+  Image,
   ScrollView,
   Text,
   TouchableOpacity,
   useColorScheme,
   View,
 } from 'react-native';
+
+const TMDB_IMAGE_BASE = 'https://image.tmdb.org/t/p';
+const MAX_ITEMS = 7;
 
 function StarDisplay({ rating, size = 10 }: { rating: number; size?: number }) {
   if (rating <= 0) return null;
@@ -54,28 +59,32 @@ export default function MyRatingsSection() {
 
   // Most recent first
   const sortedItems = [...ratedMovies].reverse();
+  const displayItems = sortedItems.slice(0, MAX_ITEMS);
+  const hasMore = sortedItems.length > MAX_ITEMS;
 
   return (
-    <View
-      className='mt-8 px-6'
-    >
-      <Text
-        style={typography.title3}
-        className='mb-3 text-light-text dark:text-dark-text'
-      >
-        {t('ratings.sectionTitle')}
-      </Text>
+    <View className='mt-8'>
+      <View className='mb-3 px-6'>
+        <Text
+          style={typography.title3}
+          className='text-light-text dark:text-dark-text'
+        >
+          {t('ratings.sectionTitle')}
+        </Text>
+      </View>
 
       {/* Empty state */}
       {!isLoading && ratedMovies.length === 0 && (
-        <View
-          style={[getSquircle(14)]}
-          className='flex-row items-center gap-3 border border-dashed border-light-border bg-light-surface/50 px-4 py-4 dark:border-dark-border dark:bg-dark-surface/50'
-        >
-          <Ionicons name='eye-outline' size={24} color={isDark ? '#525252' : '#a3a3a3'} />
-          <Text className='flex-1 text-sm text-light-muted dark:text-dark-muted'>
-            {t('ratings.emptyHome')}
-          </Text>
+        <View className='px-6'>
+          <View
+            style={[getSquircle(14)]}
+            className='flex-row items-center gap-3 border border-dashed border-light-border bg-light-surface/50 px-4 py-4 dark:border-dark-border dark:bg-dark-surface/50'
+          >
+            <Ionicons name='eye-outline' size={24} color={isDark ? '#525252' : '#a3a3a3'} />
+            <Text className='flex-1 text-sm text-light-muted dark:text-dark-muted'>
+              {t('ratings.emptyHome')}
+            </Text>
+          </View>
         </View>
       )}
 
@@ -83,22 +92,20 @@ export default function MyRatingsSection() {
         <ScrollView
           horizontal
           showsHorizontalScrollIndicator={false}
-          contentContainerStyle={{ gap: 12 }}
+          contentContainerStyle={{ paddingHorizontal: 24, gap: 12 }}
         >
-          {[1, 2, 3].map((i) => (
-            <Skeleton key={i} width={160} height={72} borderRadius={12} />
+          {[1, 2, 3, 4].map((i) => (
+            <Skeleton key={i} width={130} height={195} borderRadius={12} />
           ))}
         </ScrollView>
       ) : (
         <ScrollView
           horizontal
           showsHorizontalScrollIndicator={false}
-          contentContainerStyle={{ gap: 10 }}
+          contentContainerStyle={{ paddingHorizontal: 24, gap: 12 }}
         >
-          {sortedItems.map((item, i) => (
-            <View
-              key={`${item.tmdb_id}-${i}`}
-            >
+          {displayItems.map((item, i) => (
+            <View key={`${item.tmdb_id}-${i}`}>
               <TouchableOpacity
                 onPress={() =>
                   router.push({
@@ -107,7 +114,7 @@ export default function MyRatingsSection() {
                       tmdbId: String(item.tmdb_id),
                       mediaType: item.media_type || 'movie',
                       title: item.title || '',
-                      posterPath: '',
+                      posterPath: item.poster_path || '',
                       voteAverage: '0',
                       overview: '',
                       providersJson: '[]',
@@ -131,30 +138,67 @@ export default function MyRatingsSection() {
                   );
                 }}
                 activeOpacity={0.7}
-                style={[getSquircle(12), getCardShadow(isDark), { width: 160 }]}
-                className='border border-light-border bg-light-surface p-3 dark:border-dark-border dark:bg-dark-surface'
+                style={{ width: 130 }}
               >
-                <Text
-                  className='text-sm font-semibold text-light-text dark:text-dark-text'
-                  numberOfLines={2}
+                <View
+                  style={[getSquircle(12), getCardShadow(isDark)]}
+                  className='h-[195px] overflow-hidden border border-light-border bg-light-surface dark:border-dark-border dark:bg-dark-surface'
                 >
-                  {item.title}
-                </Text>
-                <View className='mt-2 flex-row items-center gap-2'>
-                  {item.rating > 0 ? (
-                    <StarDisplay rating={item.rating} size={12} />
+                  {item.poster_path ? (
+                    <Image
+                      source={{ uri: `${TMDB_IMAGE_BASE}/w342${item.poster_path}` }}
+                      className='h-full w-full'
+                      resizeMode='cover'
+                    />
                   ) : (
-                    <View className='flex-row items-center gap-1'>
-                      <Ionicons name='checkmark-circle' size={12} color='#22c55e' />
-                      <Text className='text-xs text-green-500'>
-                        {t('movieDetail.watchedConfirm')}
-                      </Text>
+                    <View className='flex-1 items-center justify-center'>
+                      <Ionicons
+                        name='film-outline'
+                        size={28}
+                        color={isDark ? '#404040' : '#d4d4d4'}
+                      />
+                    </View>
+                  )}
+                  {/* Rating badge */}
+                  {item.rating > 0 ? (
+                    <View className='absolute bottom-1.5 left-1.5 flex-row items-center gap-0.5 rounded-full bg-black/70 px-1.5 py-0.5'>
+                      <StarDisplay rating={item.rating} size={8} />
+                    </View>
+                  ) : (
+                    <View className='absolute right-1.5 top-1.5 rounded-full bg-green-500/90 p-1'>
+                      <Ionicons name='checkmark' size={10} color='#fff' />
                     </View>
                   )}
                 </View>
+                <Text
+                  className='mt-1.5 text-xs font-medium text-light-text dark:text-dark-text'
+                  numberOfLines={1}
+                >
+                  {item.title}
+                </Text>
               </TouchableOpacity>
             </View>
           ))}
+
+          {/* See more button */}
+          {hasMore && (
+            <TouchableOpacity
+              onPress={() => router.push('/watched-list' as never)}
+              activeOpacity={0.7}
+              style={{ width: 130 }}
+              className='items-center justify-center'
+            >
+              <View
+                style={[getSquircle(12)]}
+                className='h-[195px] w-full items-center justify-center border border-dashed border-light-border bg-light-surface/50 dark:border-dark-border dark:bg-dark-surface/50'
+              >
+                <Ionicons name='chevron-forward-circle-outline' size={32} color={isDark ? '#525252' : '#a3a3a3'} />
+                <Text className='mt-2 text-xs font-medium text-light-muted dark:text-dark-muted'>
+                  {t('common.seeMore')}
+                </Text>
+              </View>
+            </TouchableOpacity>
+          )}
         </ScrollView>
       )}
     </View>

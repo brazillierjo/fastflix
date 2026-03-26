@@ -14,6 +14,7 @@ const rateMovieSchema = z.object({
   rating: z.number().int().min(0).max(5), // 0 = watched but not rated
   title: z.string().min(1).max(500),
   media_type: z.enum(['movie', 'tv']).optional(),
+  poster_path: z.string().max(500).optional(),
 });
 
 /**
@@ -39,7 +40,8 @@ export async function POST(request: NextRequest) {
       validatedData.tmdb_id,
       validatedData.rating,
       validatedData.title,
-      validatedData.media_type
+      validatedData.media_type,
+      validatedData.poster_path
     );
 
     return NextResponse.json({

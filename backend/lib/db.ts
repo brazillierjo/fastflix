@@ -1066,7 +1066,8 @@ class DatabaseService {
     tmdbId: number,
     rating: number,
     title: string,
-    mediaType?: 'movie' | 'tv'
+    mediaType?: 'movie' | 'tv',
+    posterPath?: string
   ): Promise<UserTasteProfile> {
     this.initialize();
 
@@ -1077,7 +1078,7 @@ class DatabaseService {
         const ratedMovies = [...profile.rated_movies];
 
         const existingIndex = ratedMovies.findIndex((m) => m.tmdb_id === tmdbId);
-        const entry = { tmdb_id: tmdbId, rating, title, ...(mediaType ? { media_type: mediaType } : {}) };
+        const entry = { tmdb_id: tmdbId, rating, title, ...(mediaType ? { media_type: mediaType } : {}), ...(posterPath ? { poster_path: posterPath } : {}) };
 
         if (existingIndex >= 0) {
           ratedMovies[existingIndex] = entry;

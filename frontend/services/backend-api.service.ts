@@ -720,6 +720,7 @@ class BackendAPIService {
     rating: number;
     title: string;
     media_type?: 'movie' | 'tv';
+    poster_path?: string;
   }): Promise<APIResponse<{ profile: unknown }>> {
     return await this.makeRequest('/api/user/taste-profile/rate', {
       method: 'POST',

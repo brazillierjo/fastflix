@@ -343,6 +343,7 @@ export interface RatedMovie {
   rating: number;
   title: string;
   media_type?: 'movie' | 'tv';
+  poster_path?: string;
 }
 
 export interface UserTasteProfile {

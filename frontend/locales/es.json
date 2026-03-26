@@ -352,7 +352,8 @@
     "done": "Listo",
     "close": "Cerrar",
     "retry": "Reintentar",
-    "remove": "Eliminar"
+    "remove": "Eliminar",
+    "seeMore": "Ver más"
   },
   "tabs": {
     "home": "Inicio",

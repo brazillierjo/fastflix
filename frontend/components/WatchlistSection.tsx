@@ -26,6 +26,7 @@ import {
 } from 'react-native';
 
 const TMDB_IMAGE_BASE = 'https://image.tmdb.org/t/p';
+const MAX_ITEMS = 7;
 
 export default function WatchlistSection() {
   const { t } = useLanguage();
@@ -37,6 +38,9 @@ export default function WatchlistSection() {
   const { items, isLoading, removeFromWatchlist } = useWatchlist();
 
   if (!isAuthenticated) return null;
+
+  const displayItems = items.slice(0, MAX_ITEMS);
+  const hasMore = items.length > MAX_ITEMS;
 
   return (
     <View
@@ -82,7 +86,7 @@ export default function WatchlistSection() {
           showsHorizontalScrollIndicator={false}
           contentContainerStyle={{ paddingHorizontal: 24, gap: 12 }}
         >
-          {items.map((item, i) => (
+          {displayItems.map((item, i) => (
             <View
               key={item.id}
             >
@@ -168,6 +172,26 @@ export default function WatchlistSection() {
               </TouchableOpacity>
             </View>
           ))}
+
+          {/* See more button */}
+          {hasMore && (
+            <TouchableOpacity
+              onPress={() => router.push('/watchlist-full' as never)}
+              activeOpacity={0.7}
+              style={{ width: 130 }}
+              className='items-center justify-center'
+            >
+              <View
+                style={[getSquircle(12)]}
+                className='h-[195px] w-full items-center justify-center border border-dashed border-light-border bg-light-surface/50 dark:border-dark-border dark:bg-dark-surface/50'
+              >
+                <Ionicons name='chevron-forward-circle-outline' size={32} color={isDark ? '#525252' : '#a3a3a3'} />
+                <Text className='mt-2 text-xs font-medium text-light-muted dark:text-dark-muted'>
+                  {t('common.seeMore')}
+                </Text>
+              </View>
+            </TouchableOpacity>
+          )}
         </ScrollView>
       )}
     </View>

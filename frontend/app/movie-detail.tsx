@@ -171,7 +171,7 @@ export default function MovieDetailScreen() {
     setIsWatched(true);
     // Save as watched (rating 0 = no rating yet)
     rateMovie(
-      { tmdb_id: tmdbId, rating: 0, title, media_type: mediaType },
+      { tmdb_id: tmdbId, rating: 0, title, media_type: mediaType, poster_path: posterPath || undefined },
       {
         onSuccess: () => {
           Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
@@ -198,7 +198,7 @@ export default function MovieDetailScreen() {
     Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
 
     rateMovie(
-      { tmdb_id: tmdbId, rating: newRating, title, media_type: mediaType },
+      { tmdb_id: tmdbId, rating: newRating, title, media_type: mediaType, poster_path: posterPath || undefined },
       {
         onSuccess: () => {
           if (newRating > 0) {

@@ -352,7 +352,8 @@
     "done": "完了",
     "close": "閉じる",
     "retry": "再試行",
-    "remove": "削除"
+    "remove": "削除",
+    "seeMore": "もっと見る"
   },
   "tabs": {
     "home": "ホーム",

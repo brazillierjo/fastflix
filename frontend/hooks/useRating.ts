@@ -11,6 +11,7 @@ interface RatedMovie {
   rating: number;
   title: string;
   media_type?: 'movie' | 'tv';
+  poster_path?: string;
 }
 
 interface TasteProfile {
@@ -64,6 +65,7 @@ export function useRateMovie() {
       rating: number;
       title: string;
       media_type?: 'movie' | 'tv';
+      poster_path?: string;
     }) => {
       const response = await backendAPIService.rateMovie(params);
       if (!response.success) {

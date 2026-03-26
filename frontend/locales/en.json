@@ -380,7 +380,8 @@
     "done": "Done",
     "close": "Close",
     "retry": "Retry",
-    "remove": "Remove"
+    "remove": "Remove",
+    "seeMore": "See more"
   },
   "tabs": {
     "home": "Home",

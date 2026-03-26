@@ -340,7 +340,8 @@
     "done": "Fertig",
     "close": "Schließen",
     "retry": "Erneut versuchen",
-    "remove": "Entfernen"
+    "remove": "Entfernen",
+    "seeMore": "Mehr anzeigen"
   },
   "tabs": {
     "home": "Start",

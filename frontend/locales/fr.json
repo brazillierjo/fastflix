@@ -352,7 +352,8 @@
     "done": "OK",
     "close": "Fermer",
     "retry": "Réessayer",
-    "remove": "Supprimer"
+    "remove": "Supprimer",
+    "seeMore": "Voir plus"
   },
   "tabs": {
     "home": "Accueil",

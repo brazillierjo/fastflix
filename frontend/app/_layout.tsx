@@ -108,6 +108,14 @@ export default Sentry.wrap(function RootLayout() {
                   name='actor-detail'
                   options={{ gestureEnabled: true, animation: 'slide_from_right' }}
                 />
+                <Stack.Screen
+                  name='watched-list'
+                  options={{ headerShown: false }}
+                />
+                <Stack.Screen
+                  name='watchlist-full'
+                  options={{ headerShown: false }}
+                />
                 <Stack.Screen name='+not-found' />
               </Stack>
               <StatusBar style='auto' />
