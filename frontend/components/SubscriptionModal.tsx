@@ -53,7 +53,7 @@ export default function SubscriptionModal({
     isTrialEligible,
   } = useSubscription();
 
-  const [selectedPlan, setSelectedPlan] = useState<PlanType>('annual');
+  const [selectedPlan, setSelectedPlan] = useState<PlanType>('quarterly');
   const [purchasing, setPurchasing] = useState(false);
   const [isLoadingOfferings, setIsLoadingOfferings] = useState(false);
   const colorScheme = useColorScheme();
@@ -515,79 +515,44 @@ export default function SubscriptionModal({
               {t('subscription.plans.title') || 'Choose Your Plan'}
             </Text>
 
-            {/* Annual Plan - BEST VALUE (shown first) */}
-            {annualPackage && (
+            {/* Monthly Plan */}
+            {monthlyPackage && (
               <TouchableOpacity
-                onPress={() => setSelectedPlan('annual')}
+                onPress={() => setSelectedPlan('monthly')}
                 style={getSquircle(18)}
                 className={cn(
-                  'relative mb-3 border-2 p-4',
-                  selectedPlan === 'annual'
+                  'mb-3 border-2 p-4',
+                  selectedPlan === 'monthly'
                     ? 'border-emerald-500 bg-emerald-500/5 dark:bg-emerald-500/10'
                     : 'border-light-border bg-light-background dark:border-dark-border dark:bg-dark-surface'
                 )}
               >
-                {/* Best Value Badge */}
-                <View
-                  className='absolute -top-3 left-4 flex-row items-center rounded-full px-3 py-1'
-                  style={{ backgroundColor: greenPrimary }}
-                >
-                  <Ionicons
-                    name='trophy'
-                    size={12}
-                    color='white'
-                    style={{ marginRight: 4 }}
-                  />
-                  <Text className='text-xs font-bold text-white'>
-                    {t('subscription.bestValue') || 'BEST VALUE'}
-                  </Text>
-                </View>
-
-                <View className='mt-2 flex-row items-center justify-between'>
+                <View className='flex-row items-center justify-between'>
                   <View className='flex-1'>
                     <Text className='text-base font-semibold text-light-text dark:text-dark-text'>
-                      {t('subscription.annual.title') || 'Annual'}
+                      {t('subscription.monthly.title') || 'Monthly'}
                     </Text>
-                    <View className='flex-row items-center gap-2'>
-                      {annualSavings > 0 && (
-                        <View
-                          className='rounded-full px-2 py-0.5'
-                          style={{ backgroundColor: greenBg }}
-                        >
-                          <Text
-                            className='text-xs font-bold'
-                            style={{ color: greenDark }}
-                          >
-                            -{annualSavings}%
-                          </Text>
-                        </View>
-                      )}
-                      <Text className='text-xs text-light-muted dark:text-dark-muted'>
-                        {`${t('subscription.annual.just') || 'Just'} ${formatNumericPrice(annualPerWeek)}${t('subscription.annual.perWeek') || '/week'}`}
-                      </Text>
-                    </View>
+                    <Text className='text-xs text-light-muted dark:text-dark-muted'>
+                      {t('subscription.monthly.description') ||
+                        'Flexible monthly billing'}
+                    </Text>
                   </View>
                   <View className='items-end'>
-                    {annualSavings > 0 && (
-                      <Text className='text-sm text-light-muted line-through dark:text-dark-muted'>
-                        {formatNumericPrice(annualComparisonPrice)}
-                      </Text>
-                    )}
                     <Text
                       className='text-xl font-bold'
                       style={{ color: greenPrimary }}
                     >
-                      {formatPrice(annualPackage.product.priceString)}
+                      {formatPrice(monthlyPackage.product.priceString)}
                     </Text>
                     <Text className='text-xs text-light-muted dark:text-dark-muted'>
-                      {t('subscription.annual.period') || '/year'}
+                      {t('subscription.monthly.period') || '/month'}
                     </Text>
                   </View>
                 </View>
               </TouchableOpacity>
             )}
 
-            {/* Quarterly Plan - POPULAR */}
+            {/* Quarterly Plan - POPULAR (default selected) */}
             {quarterlyPackage && (
               <TouchableOpacity
                 onPress={() => setSelectedPlan('quarterly')}
@@ -661,37 +626,72 @@ export default function SubscriptionModal({
               </TouchableOpacity>
             )}
 
-            {/* Monthly Plan - Anchor */}
-            {monthlyPackage && (
+            {/* Annual Plan - BEST VALUE */}
+            {annualPackage && (
               <TouchableOpacity
-                onPress={() => setSelectedPlan('monthly')}
+                onPress={() => setSelectedPlan('annual')}
                 style={getSquircle(18)}
                 className={cn(
-                  'mb-3 border-2 p-4',
-                  selectedPlan === 'monthly'
+                  'relative mb-3 border-2 p-4',
+                  selectedPlan === 'annual'
                     ? 'border-emerald-500 bg-emerald-500/5 dark:bg-emerald-500/10'
                     : 'border-light-border bg-light-background dark:border-dark-border dark:bg-dark-surface'
                 )}
               >
-                <View className='flex-row items-center justify-between'>
+                {/* Best Value Badge */}
+                <View
+                  className='absolute -top-3 left-4 flex-row items-center rounded-full px-3 py-1'
+                  style={{ backgroundColor: greenPrimary }}
+                >
+                  <Ionicons
+                    name='trophy'
+                    size={12}
+                    color='white'
+                    style={{ marginRight: 4 }}
+                  />
+                  <Text className='text-xs font-bold text-white'>
+                    {t('subscription.bestValue') || 'BEST VALUE'}
+                  </Text>
+                </View>
+
+                <View className='mt-2 flex-row items-center justify-between'>
                   <View className='flex-1'>
                     <Text className='text-base font-semibold text-light-text dark:text-dark-text'>
-                      {t('subscription.monthly.title') || 'Monthly'}
+                      {t('subscription.annual.title') || 'Annual'}
                     </Text>
-                    <Text className='text-xs text-light-muted dark:text-dark-muted'>
-                      {t('subscription.monthly.description') ||
-                        'Flexible monthly billing'}
-                    </Text>
+                    <View className='flex-row items-center gap-2'>
+                      {annualSavings > 0 && (
+                        <View
+                          className='rounded-full px-2 py-0.5'
+                          style={{ backgroundColor: greenBg }}
+                        >
+                          <Text
+                            className='text-xs font-bold'
+                            style={{ color: greenDark }}
+                          >
+                            -{annualSavings}%
+                          </Text>
+                        </View>
+                      )}
+                      <Text className='text-xs text-light-muted dark:text-dark-muted'>
+                        {`${t('subscription.annual.just') || 'Just'} ${formatNumericPrice(annualPerWeek)}${t('subscription.annual.perWeek') || '/week'}`}
+                      </Text>
+                    </View>
                   </View>
                   <View className='items-end'>
+                    {annualSavings > 0 && (
+                      <Text className='text-sm text-light-muted line-through dark:text-dark-muted'>
+                        {formatNumericPrice(annualComparisonPrice)}
+                      </Text>
+                    )}
                     <Text
                       className='text-xl font-bold'
                       style={{ color: greenPrimary }}
                     >
-                      {formatPrice(monthlyPackage.product.priceString)}
+                      {formatPrice(annualPackage.product.priceString)}
                     </Text>
                     <Text className='text-xs text-light-muted dark:text-dark-muted'>
-                      {t('subscription.monthly.period') || '/month'}
+                      {t('subscription.annual.period') || '/year'}
                     </Text>
                   </View>
                 </View>
