@@ -86,7 +86,8 @@ export async function GET(request: NextRequest) {
         },
       }
     );
-  } catch {
+  } catch (error) {
+    console.error('❌ /api/trending:', error);
     return NextResponse.json({ error: 'Failed to fetch trending' }, { status: 500 });
   }
 }

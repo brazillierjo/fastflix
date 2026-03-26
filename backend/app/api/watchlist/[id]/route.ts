@@ -45,7 +45,8 @@ export async function DELETE(request: NextRequest, { params }: RouteParams) {
       success: true,
       data: { deleted: true },
     });
-  } catch {
+  } catch (error) {
+    console.error('❌ /api/watchlist/[id]:', error);
     return NextResponse.json({ error: 'Failed to remove from watchlist' }, { status: 500 });
   }
 }

@@ -7,6 +7,7 @@ import * as Updates from 'expo-updates';
 import React, { useEffect } from 'react';
 import 'react-native-reanimated';
 
+import { ErrorBoundary } from '@/components/ErrorBoundary';
 import { AuthProvider } from '@/contexts/AuthContext';
 import { LanguageProvider } from '@/contexts/LanguageContext';
 import { SubscriptionProvider } from '@/contexts/RevenueCatContext';
@@ -70,40 +71,42 @@ export default Sentry.wrap(function RootLayout() {
   }, []);
 
   return (
-    <QueryProvider>
-      <LanguageProvider>
-        <SubscriptionProvider>
-          <AuthProvider>
-            <Stack
-              screenOptions={{
-                headerShown: false,
-                gestureEnabled: true, // Enable swipe-back on all screens
-                animation: 'slide_from_right', // iOS-native slide animation
-              }}
-            >
-              <Stack.Screen name='(tabs)' />
-              <Stack.Screen
-                name='onboarding'
-                options={{ gestureEnabled: false, animation: 'fade' }}
-              />
-              <Stack.Screen
-                name='setup'
-                options={{ gestureEnabled: false, animation: 'fade' }}
-              />
-              <Stack.Screen
-                name='auth'
-                options={{ gestureEnabled: false, animation: 'slide_from_bottom' }}
-              />
-              <Stack.Screen
-                name='movie-detail'
-                options={{ gestureEnabled: true, animation: 'slide_from_right' }}
-              />
-              <Stack.Screen name='+not-found' />
-            </Stack>
-            <StatusBar style='auto' />
-          </AuthProvider>
-        </SubscriptionProvider>
-      </LanguageProvider>
-    </QueryProvider>
+    <ErrorBoundary>
+      <QueryProvider>
+        <LanguageProvider>
+          <SubscriptionProvider>
+            <AuthProvider>
+              <Stack
+                screenOptions={{
+                  headerShown: false,
+                  gestureEnabled: true, // Enable swipe-back on all screens
+                  animation: 'slide_from_right', // iOS-native slide animation
+                }}
+              >
+                <Stack.Screen name='(tabs)' />
+                <Stack.Screen
+                  name='onboarding'
+                  options={{ gestureEnabled: false, animation: 'fade' }}
+                />
+                <Stack.Screen
+                  name='setup'
+                  options={{ gestureEnabled: false, animation: 'fade' }}
+                />
+                <Stack.Screen
+                  name='auth'
+                  options={{ gestureEnabled: false, animation: 'slide_from_bottom' }}
+                />
+                <Stack.Screen
+                  name='movie-detail'
+                  options={{ gestureEnabled: true, animation: 'slide_from_right' }}
+                />
+                <Stack.Screen name='+not-found' />
+              </Stack>
+              <StatusBar style='auto' />
+            </AuthProvider>
+          </SubscriptionProvider>
+        </LanguageProvider>
+      </QueryProvider>
+    </ErrorBoundary>
   );
 });

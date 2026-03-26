@@ -213,7 +213,8 @@ export async function GET(request: NextRequest) {
       },
       { headers: { 'Cache-Control': 'public, max-age=3600' } }
     );
-  } catch {
+  } catch (error) {
+    console.error('❌ /api/new-releases:', error);
     return NextResponse.json(
       { error: 'Failed to fetch new releases' },
       { status: 500 }

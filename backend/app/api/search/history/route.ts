@@ -26,7 +26,8 @@ export async function GET(request: NextRequest) {
       success: true,
       data: { history },
     });
-  } catch {
+  } catch (error) {
+    console.error('❌ /api/search/history:', error);
     return NextResponse.json({ error: 'Failed to fetch search history' }, { status: 500 });
   }
 }

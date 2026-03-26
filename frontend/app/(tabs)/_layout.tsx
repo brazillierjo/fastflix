@@ -13,6 +13,7 @@ import {
   View,
 } from 'react-native';
 
+import { OfflineBanner } from '@/components/OfflineBanner';
 import { useLanguage } from '@/contexts/LanguageContext';
 
 function CustomTabBar({ state, descriptors, navigation }: BottomTabBarProps) {
@@ -113,6 +114,8 @@ export default function TabsLayout() {
   const { t } = useLanguage();
 
   return (
+    <>
+    <OfflineBanner />
     <Tabs
       tabBar={props => <CustomTabBar {...props} />}
       screenOptions={{ headerShown: false }}
@@ -165,6 +168,7 @@ export default function TabsLayout() {
         }}
       />
     </Tabs>
+    </>
   );
 }
 

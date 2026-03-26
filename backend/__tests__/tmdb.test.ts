@@ -60,7 +60,7 @@ describe('TMDB Service', () => {
       expect(result?.id).toBe(603);
       expect(result?.title).toBe('The Matrix');
       expect(result?.media_type).toBe('movie');
-      expect(mockFetch).toHaveBeenCalledWith(expect.stringContaining('/search/movie'));
+      expect(mockFetch).toHaveBeenCalledWith(expect.stringContaining('/search/movie'), expect.any(Object));
     });
 
     it('should return null when no results found', async () => {
@@ -112,7 +112,7 @@ describe('TMDB Service', () => {
 
       await tmdb.searchMovieByTitle('Test', 'de-DE');
 
-      expect(mockFetch).toHaveBeenCalledWith(expect.stringContaining('language=de-DE'));
+      expect(mockFetch).toHaveBeenCalledWith(expect.stringContaining('language=de-DE'), expect.any(Object));
     });
   });
 
@@ -314,7 +314,7 @@ describe('TMDB Service', () => {
 
       await tmdb.enrichRecommendations(['Test'], true, true);
 
-      expect(mockFetch).toHaveBeenCalledWith(expect.stringContaining('/search/multi'));
+      expect(mockFetch).toHaveBeenCalledWith(expect.stringContaining('/search/multi'), expect.any(Object));
     });
 
     it('should search only TV when movies disabled', async () => {
@@ -328,7 +328,7 @@ describe('TMDB Service', () => {
 
       await tmdb.enrichRecommendations(['Test Show'], false, true);
 
-      expect(mockFetch).toHaveBeenCalledWith(expect.stringContaining('/search/tv'));
+      expect(mockFetch).toHaveBeenCalledWith(expect.stringContaining('/search/tv'), expect.any(Object));
     });
   });
 

@@ -279,7 +279,13 @@ DETECTED_PLATFORMS: [comma-separated list of platforms]
 MESSAGE: [your conversational message]`;
 
     try {
-      const result = await model.generateContent(prompt);
+      const timeoutPromise = new Promise<never>((_, reject) =>
+        setTimeout(() => reject(new Error('Gemini API timeout after 15s')), 15000)
+      );
+      const result = await Promise.race([
+        model.generateContent(prompt),
+        timeoutPromise,
+      ]);
       const response = await result.response;
       const text = response.text().trim();
 

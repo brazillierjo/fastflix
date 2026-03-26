@@ -1012,27 +1012,52 @@ class DatabaseService {
   ): Promise<UserTasteProfile> {
     this.initialize();
 
-    try {
-      const profile = await this.getUserTasteProfile(userId);
-      const ratedMovies = profile.rated_movies;
+    const maxRetries = 3;
+    for (let attempt = 0; attempt < maxRetries; attempt++) {
+      try {
+        const profile = await this.getUserTasteProfile(userId);
+        const ratedMovies = [...profile.rated_movies];
 
-      // Find existing rating for this movie
-      const existingIndex = ratedMovies.findIndex((m) => m.tmdb_id === tmdbId);
+        const existingIndex = ratedMovies.findIndex((m) => m.tmdb_id === tmdbId);
+        const entry = { tmdb_id: tmdbId, rating, title, ...(mediaType ? { media_type: mediaType } : {}) };
 
-      const entry = { tmdb_id: tmdbId, rating, title, ...(mediaType ? { media_type: mediaType } : {}) };
+        if (existingIndex >= 0) {
+          ratedMovies[existingIndex] = entry;
+        } else {
+          ratedMovies.push(entry);
+        }
 
-      if (existingIndex >= 0) {
-        // Update existing rating
-        ratedMovies[existingIndex] = entry;
-      } else {
-        // Add new rating
-        ratedMovies.push(entry);
+        const newJson = JSON.stringify(ratedMovies);
+
+        // Ensure profile exists first
+        await this.client!.execute({
+          sql: `INSERT OR IGNORE INTO user_taste_profile (user_id, favorite_genres, disliked_genres, favorite_decades, rated_movies)
+                VALUES (?, '[]', '[]', '[]', '[]')`,
+          args: [userId],
+        });
+
+        // Compare-and-swap: only update if data hasn't changed since our read
+        const currentJson = JSON.stringify(profile.rated_movies);
+        const result = await this.client!.execute({
+          sql: `UPDATE user_taste_profile SET rated_movies = ? WHERE user_id = ? AND rated_movies = ?`,
+          args: [newJson, userId, currentJson],
+        });
+
+        if (result.rowsAffected > 0) {
+          return this.getUserTasteProfile(userId);
+        }
+
+        // Concurrent modification detected - retry
+        console.warn(`⚠️ rateMovie CAS retry ${attempt + 1}/${maxRetries} for user ${userId}`);
+      } catch (error) {
+        if (attempt === maxRetries - 1) throw error;
       }
-
-      return this.updateTasteProfile(userId, { rated_movies: ratedMovies });
-    } catch (error) {
-      throw error;
     }
+
+    // Final fallback: force update (last resort)
+    return this.updateTasteProfile(userId, {
+      rated_movies: (await this.getUserTasteProfile(userId)).rated_movies,
+    });
   }
 
   // ==========================================================================

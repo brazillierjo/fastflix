@@ -41,7 +41,8 @@ export async function GET(request: NextRequest) {
       { success: true, data: { items: itemsWithProviders } },
       { headers: { 'Cache-Control': 'public, max-age=3600' } }
     );
-  } catch {
+  } catch (error) {
+    console.error('❌ /api/trending/public:', error);
     return NextResponse.json(
       { error: 'Failed to fetch trending' },
       { status: 500 }

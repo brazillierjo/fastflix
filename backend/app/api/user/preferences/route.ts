@@ -37,7 +37,8 @@ export async function GET(request: NextRequest) {
       success: true,
       data: { preferences },
     });
-  } catch {
+  } catch (error) {
+    console.error('❌ /api/user/preferences:', error);
     return NextResponse.json({ error: 'Failed to fetch preferences' }, { status: 500 });
   }
 }

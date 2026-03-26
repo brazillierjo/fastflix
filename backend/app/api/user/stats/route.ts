@@ -26,7 +26,8 @@ export async function GET(request: NextRequest) {
       success: true,
       data: stats,
     });
-  } catch {
+  } catch (error) {
+    console.error('❌ /api/user/stats:', error);
     return NextResponse.json({ error: 'Failed to fetch user stats' }, { status: 500 });
   }
 }

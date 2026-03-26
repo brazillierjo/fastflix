@@ -41,13 +41,14 @@ let cacheHits = 0;
 let cacheMisses = 0;
 
 function getCacheKey(
+  userId: string,
   query: string,
   contentTypes: string[],
   conversationHistory?: ConversationMessage[]
 ): string {
   return crypto
     .createHash('md5')
-    .update(JSON.stringify({ query, contentTypes, conversationHistory: conversationHistory || [] }))
+    .update(JSON.stringify({ userId, query, contentTypes, conversationHistory: conversationHistory || [] }))
     .digest('hex');
 }
 
@@ -213,7 +214,7 @@ export async function POST(request: NextRequest) {
 
     // Step 5a: Check AI result cache
     cleanExpiredCache();
-    const cacheKey = getCacheKey(query, contentTypes, conversationHistory);
+    const cacheKey = getCacheKey(userId, query, contentTypes, conversationHistory);
     const cachedEntry = searchCache.get(cacheKey);
     let aiResult: AIRecommendationResult;
 

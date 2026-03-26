@@ -52,7 +52,8 @@ export async function GET(request: NextRequest) {
         },
       },
     });
-  } catch {
+  } catch (error) {
+    console.error('❌ /api/quotas:', error);
     return NextResponse.json({ error: 'Failed to fetch quota information' }, { status: 500 });
   }
 }

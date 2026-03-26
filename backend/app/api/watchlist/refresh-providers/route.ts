@@ -40,7 +40,8 @@ export async function POST(request: NextRequest) {
         const providers = await tmdb.getWatchProviders(item.tmdb_id, item.media_type, item.country);
         await db.updateWatchlistProviders(item.id, providers);
         return { id: item.id, success: true };
-      } catch {
+      } catch (error) {
+        console.error(`❌ /api/watchlist/refresh-providers item ${item.id}:`, error);
         return { id: item.id, success: false };
       }
     });
@@ -56,7 +57,8 @@ export async function POST(request: NextRequest) {
         message: `Refreshed ${successCount} of ${itemsToRefresh.length} items`,
       },
     });
-  } catch {
+  } catch (error) {
+    console.error('❌ /api/watchlist/refresh-providers:', error);
     return NextResponse.json({ error: 'Failed to refresh providers' }, { status: 500 });
   }
 }

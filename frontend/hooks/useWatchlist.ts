@@ -185,7 +185,7 @@ export function useWatchlistToggle(
   // Add to watchlist mutation
   const addMutation = useMutation({
     mutationFn: async () => {
-      console.log('🎬 Adding to watchlist:', {
+      if (__DEV__) console.log('🎬 Adding to watchlist:', {
         tmdbId,
         mediaType,
         ...itemData,
@@ -195,7 +195,7 @@ export function useWatchlistToggle(
         mediaType,
         ...itemData,
       });
-      console.log('🎬 Add to watchlist response:', response);
+      if (__DEV__) console.log('🎬 Add to watchlist response:', response);
       if (!response.success) {
         throw new Error(
           response.error?.message || 'Failed to add to watchlist'
@@ -204,12 +204,12 @@ export function useWatchlistToggle(
       return response.data?.item;
     },
     onSuccess: data => {
-      console.log('✅ Successfully added to watchlist:', data);
+      if (__DEV__) console.log('✅ Successfully added to watchlist:', data);
       queryClient.invalidateQueries({ queryKey: WATCHLIST_QUERY_KEY });
       queryClient.invalidateQueries({ queryKey: WATCHLIST_CHECK_QUERY_KEY });
     },
     onError: error => {
-      console.error('❌ Failed to add to watchlist:', error);
+      if (__DEV__) console.error('❌ Failed to add to watchlist:', error);
     },
   });
 

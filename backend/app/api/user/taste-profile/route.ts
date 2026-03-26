@@ -34,7 +34,8 @@ export async function GET(request: NextRequest) {
       success: true,
       data: { profile },
     });
-  } catch {
+  } catch (error) {
+    console.error('❌ /api/user/taste-profile:', error);
     return NextResponse.json({ error: 'Failed to fetch taste profile' }, { status: 500 });
   }
 }

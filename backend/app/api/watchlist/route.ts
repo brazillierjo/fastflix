@@ -104,7 +104,8 @@ export async function GET(request: NextRequest) {
         mediaType: mediaType || 'all',
       },
     });
-  } catch {
+  } catch (error) {
+    console.error('❌ /api/watchlist:', error);
     return NextResponse.json({ error: 'Failed to fetch watchlist' }, { status: 500 });
   }
 }

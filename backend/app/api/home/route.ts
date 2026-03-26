@@ -56,14 +56,14 @@ export async function GET(request: NextRequest) {
     const today = new Date().toISOString().split('T')[0];
 
     // Fetch everything in parallel (reuse isPremium from rate limit check)
-    const [trending, recentSearches, quota, isPremium, preferences, tasteProfile] = await Promise.all([
+    const [trending, recentSearches, quota, preferences, tasteProfile] = await Promise.all([
       tmdb.getTrending(language),
       db.getSearchHistory(userId, 5),
       db.getUserQuota(userId, today),
-      db.hasAccess(userId),
       db.getUserPreferences(userId),
       db.getUserTasteProfile(userId),
     ]);
+    const isPremium = isPremiumForRL;
 
     // Build set of already-watched TMDB IDs to exclude
     const watchedIds = getWatchedTmdbIds(tasteProfile);
@@ -210,7 +210,8 @@ export async function GET(request: NextRequest) {
         },
       }
     );
-  } catch {
+  } catch (error) {
+    console.error('❌ /api/home:', error);
     return NextResponse.json({ error: 'Failed to load home data' }, { status: 500 });
   }
 }

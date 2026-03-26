@@ -19,8 +19,12 @@ import {
   KeyboardAvoidingView,
   Platform,
   StatusBar,
+  Text,
+  TouchableOpacity,
+  useColorScheme,
   View,
 } from 'react-native';
+import { Ionicons } from '@expo/vector-icons';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 export default function SearchScreen() {
@@ -51,6 +55,8 @@ export default function SearchScreen() {
   const queryClient = useQueryClient();
   const movieSearchMutation = useBackendMovieSearch();
   const { t } = useLanguage();
+  const colorScheme = useColorScheme();
+  const isDark = colorScheme === 'dark';
   const { isAuthenticated, isLoading } = useAuth();
   useSubscription();
 
@@ -189,6 +195,22 @@ export default function SearchScreen() {
         <View className={cn('flex-1')}>
           {movieSearchMutation.isPending ? (
             <LoadingState isSearching={isSearching} />
+          ) : movieSearchMutation.isError ? (
+            <View className='flex-1 items-center justify-center px-6'>
+              <Ionicons name='cloud-offline-outline' size={48} color={isDark ? '#6b7280' : '#9ca3af'} />
+              <Text className='mt-4 text-center text-lg font-semibold text-light-text dark:text-dark-text'>
+                {t('search.errorTitle') || 'Oups, \u00e7a n\'a pas march\u00e9'}
+              </Text>
+              <Text className='mt-2 text-center text-sm text-light-muted dark:text-dark-muted'>
+                {t('search.errorMessage') || 'V\u00e9rifiez votre connexion et r\u00e9essayez.'}
+              </Text>
+              <TouchableOpacity
+                className='mt-6 rounded-xl bg-netflix-500 px-6 py-3'
+                onPress={() => movieSearchMutation.reset()}
+              >
+                <Text className='font-semibold text-white'>{t('common.retry') || 'R\u00e9essayer'}</Text>
+              </TouchableOpacity>
+            </View>
           ) : showResults && movies.length > 0 ? (
             <MovieResults
               movies={movies}

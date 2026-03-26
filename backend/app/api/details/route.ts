@@ -65,7 +65,8 @@ export async function GET(request: NextRequest) {
         },
       }
     );
-  } catch {
+  } catch (error) {
+    console.error('❌ /api/details:', error);
     return NextResponse.json(
       { error: 'Failed to fetch details' },
       { status: 500 }

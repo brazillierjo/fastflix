@@ -44,7 +44,8 @@ export async function GET(request: NextRequest, { params }: RouteParams) {
       success: true,
       data: result,
     });
-  } catch {
+  } catch (error) {
+    console.error('❌ /api/watchlist/check:', error);
     return NextResponse.json({ error: 'Failed to check watchlist' }, { status: 500 });
   }
 }

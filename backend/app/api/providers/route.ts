@@ -46,7 +46,8 @@ export async function GET(request: NextRequest) {
         totalResults: providers.length,
       },
     });
-  } catch {
+  } catch (error) {
+    console.error('❌ /api/providers:', error);
     return NextResponse.json({ error: 'Failed to fetch providers' }, { status: 500 });
   }
 }

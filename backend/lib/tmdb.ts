@@ -65,7 +65,7 @@ class TMDBService {
     }
 
     try {
-      const response = await fetch(url.toString());
+      const response = await fetch(url.toString(), { signal: AbortSignal.timeout(10000) });
 
       if (!response.ok) {
         throw new Error(`TMDB API error: ${response.status} ${response.statusText}`);

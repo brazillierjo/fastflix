@@ -188,7 +188,7 @@ export default function HomeScreen() {
   );
 
   const onRefresh = useCallback(() => {
-    refetch();
+    refetch().catch(() => {});
   }, [refetch]);
 
   // Show loading while checking authentication
@@ -297,7 +297,7 @@ export default function HomeScreen() {
             </View>
             <Text
               style={{
-                fontSize: 9,
+                fontSize: 11,
                 fontWeight: '700',
                 textAlign: 'center',
                 marginTop: 3,

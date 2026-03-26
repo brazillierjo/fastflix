@@ -90,7 +90,8 @@ export async function GET(request: NextRequest) {
             removedProviders,
           });
         }
-      } catch {
+      } catch (error) {
+        console.error('❌ /api/watchlist/check-availability item check:', error);
         // Skip items that fail to check
       }
     });
@@ -108,7 +109,8 @@ export async function GET(request: NextRequest) {
             : 'No provider changes detected',
       },
     });
-  } catch {
+  } catch (error) {
+    console.error('❌ /api/watchlist/check-availability:', error);
     return NextResponse.json(
       { error: 'Failed to check availability' },
       { status: 500 }

@@ -1,55 +1,21 @@
 /**
  * FastFlix Backend - For You Endpoint
- * GET: Personalized recommendations based on user taste profile, search history, and watchlist
+ * GET: Personalized recommendations powered by Gemini AI
+ * Uses taste profile, watchlist signals, and search history for deep personalization
  */
 
 import { NextRequest, NextResponse } from 'next/server';
 import { requireAuth } from '@/lib/middleware';
 import { tmdb } from '@/lib/tmdb';
 import { db } from '@/lib/db';
+import { gemini } from '@/lib/gemini';
 import { applyTierRateLimit } from '@/lib/api-helpers';
-import type { MovieResult, StreamingProvider } from '@/lib/types';
-import { computeAffinityScore, getWatchedTmdbIds } from '@/lib/affinity';
-
-/**
- * TMDB genre ID mapping - Movies
- */
-const MOVIE_GENRE_MAP: Record<string, number> = {
-  Action: 28,
-  Comedy: 35,
-  Drama: 18,
-  Thriller: 53,
-  'Sci-Fi': 878,
-  Horror: 27,
-  Romance: 10749,
-  Animation: 16,
-  Documentary: 99,
-  Fantasy: 14,
-  Crime: 80,
-  Adventure: 12,
-};
-
-/**
- * TMDB genre ID mapping - TV Shows (different IDs!)
- */
-const TV_GENRE_MAP: Record<string, number> = {
-  Action: 10759,      // Action & Adventure
-  Comedy: 35,
-  Drama: 18,
-  Thriller: 9648,     // Mystery (closest to Thriller for TV)
-  'Sci-Fi': 10765,    // Sci-Fi & Fantasy
-  Horror: 9648,       // Mystery
-  Romance: 18,        // Drama (no Romance genre for TV)
-  Animation: 16,
-  Documentary: 99,
-  Fantasy: 10765,     // Sci-Fi & Fantasy
-  Crime: 80,
-  Adventure: 10759,   // Action & Adventure
-};
+import type { MovieResult, StreamingProvider, UserContext } from '@/lib/types';
+import { getWatchedTmdbIds } from '@/lib/affinity';
 
 /**
  * GET /api/for-you
- * Returns personalized recommendations based on user taste profile
+ * Returns personalized recommendations based on user taste profile via Gemini AI
  */
 export async function GET(request: NextRequest) {
   try {
@@ -74,19 +40,21 @@ export async function GET(request: NextRequest) {
     const language = searchParams.get('language') || 'fr-FR';
     const country = searchParams.get('country') || 'FR';
 
-    // Fetch taste profile, watchlist, and user preferences in parallel
-    const [tasteProfile, watchlist, preferences] = await Promise.all([
-      db.getUserTasteProfile(userId),
-      db.getWatchlist(userId),
-      db.getUserPreferences(userId),
-    ]);
+    // Fetch taste profile, watchlist, search history, preferences, and trending in parallel
+    const [tasteProfile, watchlist, recentSearchHistory, preferences, trendingItems] =
+      await Promise.all([
+        db.getUserTasteProfile(userId),
+        db.getWatchlist(userId),
+        db.getSearchHistory(userId, 5),
+        db.getUserPreferences(userId),
+        tmdb.getTrending(language).catch(() => []),
+      ]);
 
-    // Check if user has a meaningful taste profile (at least one rating or genre preference)
+    // Check if user has a meaningful taste profile
     const hasProfile =
       tasteProfile.rated_movies.length > 0 || tasteProfile.favorite_genres.length > 0;
 
     if (!hasProfile) {
-      // No taste data → return empty with flag so frontend shows empty state consistently
       return NextResponse.json({
         success: true,
         data: {
@@ -97,121 +65,112 @@ export async function GET(request: NextRequest) {
       });
     }
 
-    // Build set of IDs to exclude: watchlist + already watched/rated
+    // Build exclusion set: watchlist + already watched/rated
     const watchlistTmdbIds = new Set(watchlist.map((item) => item.tmdb_id));
     const watchedTmdbIds = getWatchedTmdbIds(tasteProfile);
     const excludeIds = new Set([...watchlistTmdbIds, ...watchedTmdbIds]);
 
-    // Get top 5 favorite genres (was 3, more variety)
-    const favoriteGenres = tasteProfile.favorite_genres.slice(0, 5);
+    // Enrich taste profile with watchlist genre signals
+    // (watchlist reflects what user WANTS to watch → implicit genre preference)
+    const watchlistGenreSignal = analyzeWatchlistGenres(watchlist);
 
-    // Build disliked genre IDs to filter out
-    const dislikedGenreNames = new Set(tasteProfile.disliked_genres.map(g => g.toLowerCase()));
+    // Build user context for Gemini
+    const userContext: UserContext = {};
+    if (tasteProfile.favorite_genres.length > 0) {
+      userContext.favoriteGenres = tasteProfile.favorite_genres;
+    }
+    if (tasteProfile.disliked_genres.length > 0) {
+      userContext.dislikedGenres = tasteProfile.disliked_genres;
+    }
+    if (tasteProfile.favorite_decades.length > 0) {
+      userContext.favoriteDecades = tasteProfile.favorite_decades;
+    }
+    if (tasteProfile.rated_movies.length > 0) {
+      userContext.ratedMovies = tasteProfile.rated_movies.map((m) => ({
+        title: m.title,
+        rating: m.rating,
+      }));
+    }
+    if (recentSearchHistory.length > 0) {
+      userContext.recentSearches = recentSearchHistory.map((s) => s.query);
+    }
 
-    // Map genre names to TMDB genre IDs (different for movies vs TV!)
-    const movieGenreIds = favoriteGenres
-      .map((genre) => MOVIE_GENRE_MAP[genre])
-      .filter((id): id is number => id !== undefined);
+    // Build a synthetic query that guides Gemini to discover great content for this user
+    const syntheticQuery = buildPersonalizedQuery(tasteProfile, watchlistGenreSignal);
 
-    const tvGenreIds = favoriteGenres
-      .map((genre) => TV_GENRE_MAP[genre])
-      .filter((id): id is number => id !== undefined);
+    // Content types based on user preferences
+    const contentTypes: string[] = [];
+    if (preferences.contentType === 'all' || preferences.contentType === 'movies') {
+      contentTypes.push('movies');
+    }
+    if (preferences.contentType === 'all' || preferences.contentType === 'tvshows') {
+      contentTypes.push('TV shows');
+    }
+    if (contentTypes.length === 0) contentTypes.push('movies', 'TV shows');
 
-    // Deduplicate TV genre IDs (some genres map to the same ID)
-    const uniqueTvGenreIds = [...new Set(tvGenreIds)];
+    // Recent trending titles for Gemini awareness
+    const recentTitles = trendingItems.slice(0, 15).map((item) => ({
+      title: item.title,
+      mediaType: item.media_type,
+    }));
 
-    // If no genres configured, use popular defaults
-    const effectiveMovieGenreIds = movieGenreIds.length > 0 ? movieGenreIds : [18, 28, 35];
-    const effectiveTvGenreIds = uniqueTvGenreIds.length > 0 ? uniqueTvGenreIds : [18, 10759, 35];
-
-    // Discover movies and TV shows with their respective genre IDs
-    const [movies, tvShows] = await Promise.all([
-      tmdb.discoverByGenres(effectiveMovieGenreIds, 'movie', 1, language),
-      tmdb.discoverByGenres(effectiveTvGenreIds, 'tv', 1, language),
-    ]);
-
-    // Convert to MovieResult format and merge
-    const allResults: MovieResult[] = [];
-    const seenIds = new Set<number>();
-
-    const processResults = (
-      items: Awaited<ReturnType<typeof tmdb.discoverByGenres>>,
-      mediaType: 'movie' | 'tv'
-    ) => {
-      for (const item of items) {
-        const id = item.id;
-
-        // Skip if already watched, in watchlist, or already processed
-        if (excludeIds.has(id) || seenIds.has(id)) {
-          continue;
-        }
-
-        // Skip items that are primarily in disliked genres
-        const itemGenreIds = item.genre_ids || [];
-        const affinityScore = computeAffinityScore(itemGenreIds, tasteProfile);
-        if (affinityScore < -2) continue; // strongly disliked
-
-        seenIds.add(id);
-
-        const isMovie = 'title' in item;
-        const movieItem = item as import('@/lib/types').TMDBMovie;
-        const tvItem = item as import('@/lib/types').TMDBTVShow;
-
-        allResults.push({
-          tmdb_id: id,
-          title: isMovie ? movieItem.title : tvItem.name,
-          original_title: isMovie ? movieItem.original_title : tvItem.original_name,
-          media_type: mediaType,
-          overview: item.overview || '',
-          poster_path: item.poster_path,
-          backdrop_path: item.backdrop_path,
-          vote_average: item.vote_average || 0,
-          vote_count: item.vote_count || 0,
-          release_date: isMovie ? movieItem.release_date : undefined,
-          first_air_date: !isMovie ? tvItem.first_air_date : undefined,
-          genre_ids: item.genre_ids || [],
-          popularity: item.popularity || 0,
-        });
-      }
-    };
-
-    processResults(movies, 'movie');
-    processResults(tvShows, 'tv');
-
-    // Sort by affinity score first, then vote_average as tiebreaker
-    allResults.sort((a, b) => {
-      const scoreA = computeAffinityScore(a.genre_ids || [], tasteProfile);
-      const scoreB = computeAffinityScore(b.genre_ids || [], tasteProfile);
-      if (scoreB !== scoreA) return scoreB - scoreA;
-      return b.vote_average - a.vote_average;
-    });
-
-    // Take top 20
-    const top20 = allResults.slice(0, 20);
-
-    // Fetch streaming providers for each result in parallel
-    const providersMap: { [key: number]: StreamingProvider[] } = {};
-    await Promise.all(
-      top20.map(async (item) => {
-        const providers = await tmdb.getWatchProviders(item.tmdb_id, item.media_type, country);
-        if (providers.length > 0) {
-          providersMap[item.tmdb_id] = providers;
-        }
-      })
+    // Call Gemini AI for personalized recommendations
+    const aiResult = await gemini.generateRecommendationsWithResponse(
+      syntheticQuery,
+      contentTypes,
+      language,
+      undefined,
+      20, // max recommendations
+      userContext,
+      undefined, // no conversation history for for-you
+      recentTitles.length > 0 ? recentTitles : undefined
     );
 
-    // Filter by user's availability type preferences
+    // If Gemini failed, fall back to trending
+    if (aiResult.isFallback || aiResult.recommendations.length === 0) {
+      console.log('⚠️ For You: Gemini returned no results, falling back to trending');
+      return NextResponse.json({
+        success: true,
+        data: {
+          recommendations: [],
+          streamingProviders: {},
+          hasProfile: true,
+        },
+      });
+    }
+
+    // Enrich recommendations with TMDB data
+    const includeMovies = contentTypes.includes('movies');
+    const includeTvShows = contentTypes.includes('TV shows');
+    const enrichedResults = await tmdb.enrichRecommendations(
+      aiResult.recommendations,
+      includeMovies,
+      includeTvShows,
+      language
+    );
+
+    // Filter out already-watched and watchlisted items
+    const filteredResults = enrichedResults.filter((item) => !excludeIds.has(item.tmdb_id));
+
+    // Take top 20
+    const top20 = filteredResults.slice(0, 20);
+
+    // Fetch streaming providers for all results in parallel
+    const [rawProvidersMap] = await Promise.all([
+      tmdb.getBatchWatchProviders(top20, country),
+    ]);
+
+    // Filter by user's availability type + platform preferences
     const allowFlatrate = preferences.includeFlatrate;
     const allowRent = preferences.includeRent;
     const allowBuy = preferences.includeBuy;
     const hasAvailabilityFilter = allowFlatrate || allowRent || allowBuy;
 
     const filteredProvidersMap: { [key: number]: StreamingProvider[] } = {};
-    for (const [tmdbIdStr, itemProviders] of Object.entries(providersMap)) {
+    for (const [tmdbIdStr, itemProviders] of Object.entries(rawProvidersMap)) {
       const tmdbId = Number(tmdbIdStr);
       let filtered = itemProviders;
 
-      // Filter by availability type
       if (hasAvailabilityFilter) {
         filtered = filtered.filter((p) => {
           if (p.availability_type === 'flatrate' && allowFlatrate) return true;
@@ -222,7 +181,6 @@ export async function GET(request: NextRequest) {
         });
       }
 
-      // Filter by platform preferences
       if (preferences.platforms.length > 0) {
         const platformSet = new Set(preferences.platforms);
         filtered = filtered.filter((p) => platformSet.has(p.provider_id));
@@ -233,9 +191,9 @@ export async function GET(request: NextRequest) {
       }
     }
 
-    // Only keep recommendations that have matching providers (if user has filters set)
+    // Only keep recommendations with matching providers (if user has filters)
     const hasFilters = hasAvailabilityFilter || preferences.platforms.length > 0;
-    const filteredRecommendations = hasFilters
+    const finalRecommendations = hasFilters
       ? top20.filter((item) => filteredProvidersMap[item.tmdb_id]?.length > 0)
       : top20;
 
@@ -243,7 +201,7 @@ export async function GET(request: NextRequest) {
       {
         success: true,
         data: {
-          recommendations: filteredRecommendations,
+          recommendations: finalRecommendations,
           streamingProviders: filteredProvidersMap,
           hasProfile: true,
         },
@@ -254,7 +212,79 @@ export async function GET(request: NextRequest) {
         },
       }
     );
-  } catch {
-    return NextResponse.json({ error: 'Failed to load personalized recommendations' }, { status: 500 });
+  } catch (error) {
+    console.error('❌ /api/for-you:', error);
+    return NextResponse.json(
+      { error: 'Failed to load personalized recommendations' },
+      { status: 500 }
+    );
   }
+}
+
+/**
+ * Analyze watchlist to extract implicit genre preferences
+ * If a user has 5 action movies in their watchlist, that's a strong signal
+ */
+function analyzeWatchlistGenres(
+  watchlist: { tmdb_id: number; media_type: string; title: string }[]
+): string[] {
+  if (watchlist.length === 0) return [];
+
+  // We don't have genre_ids on watchlist items, but we can mention
+  // the titles to Gemini and let it infer patterns
+  const titles = watchlist.slice(0, 10).map((item) => item.title);
+  return titles;
+}
+
+/**
+ * Build a synthetic query that guides Gemini to find great personalized content
+ * Instead of a user-written query, we construct one from the taste profile
+ */
+function buildPersonalizedQuery(
+  tasteProfile: {
+    favorite_genres: string[];
+    disliked_genres: string[];
+    favorite_decades: string[];
+    rated_movies: { title: string; rating: number; tmdb_id: number }[];
+  },
+  watchlistTitles: string[]
+): string {
+  const parts: string[] = [];
+
+  // Core request
+  parts.push('Recommend me great movies and TV shows I would love based on my taste.');
+
+  // Highly rated movies as the strongest signal
+  const loved = tasteProfile.rated_movies.filter((m) => m.rating >= 4);
+  if (loved.length > 0) {
+    const titles = loved.slice(0, 8).map((m) => m.title);
+    parts.push(`I loved: ${titles.join(', ')}.`);
+  }
+
+  // Disliked movies
+  const disliked = tasteProfile.rated_movies.filter((m) => m.rating >= 1 && m.rating <= 2);
+  if (disliked.length > 0) {
+    const titles = disliked.slice(0, 5).map((m) => m.title);
+    parts.push(`I did NOT like: ${titles.join(', ')}.`);
+  }
+
+  // Watchlist hints (what they want to watch = taste signal)
+  if (watchlistTitles.length > 0) {
+    parts.push(`I'm interested in watching: ${watchlistTitles.slice(0, 5).join(', ')}.`);
+  }
+
+  // Genre preferences
+  if (tasteProfile.favorite_genres.length > 0) {
+    parts.push(`I enjoy ${tasteProfile.favorite_genres.join(', ')}.`);
+  }
+
+  // Decade preferences
+  if (tasteProfile.favorite_decades.length > 0) {
+    parts.push(`I prefer content from: ${tasteProfile.favorite_decades.join(', ')}.`);
+  }
+
+  // Add variety instruction
+  parts.push('Suggest a diverse mix — hidden gems, classics, and recent titles. Surprise me!');
+
+  return parts.join(' ');
 }

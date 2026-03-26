@@ -107,7 +107,8 @@ export async function GET(request: NextRequest) {
         },
       }
     );
-  } catch {
+  } catch (error) {
+    console.error('❌ /api/daily-pick:', error);
     return NextResponse.json({ error: 'Failed to generate daily pick' }, { status: 500 });
   }
 }

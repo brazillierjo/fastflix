@@ -29,7 +29,8 @@ export async function GET(request: NextRequest) {
         headers: { 'Cache-Control': 'public, max-age=86400' }, // Cache 24h
       }
     );
-  } catch {
+  } catch (error) {
+    console.error('❌ /api/providers/public:', error);
     return NextResponse.json(
       { error: 'Failed to fetch providers' },
       { status: 500 }
