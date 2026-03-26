@@ -1,5 +1,6 @@
 import { Ionicons } from '@expo/vector-icons';
 import ForYouSection from '@/components/ForYouSection';
+import QuickSearch from '@/components/QuickSearch';
 import MyRatingsSection from '@/components/MyRatingsSection';
 import NewReleasesSection from '@/components/NewReleasesSection';
 import WatchlistSection from '@/components/WatchlistSection';
@@ -570,6 +571,9 @@ export default function HomeScreen() {
                   ))}
           </ScrollView>
         </View>
+
+        {/* Quick Search */}
+        <QuickSearch />
 
         {/* New Releases This Week */}
         <NewReleasesSection />

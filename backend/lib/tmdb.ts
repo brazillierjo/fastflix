@@ -178,6 +178,65 @@ class TMDBService {
   }
 
   /**
+   * Search for movies, TV shows, AND actors (returns multiple results)
+   */
+  async searchMultiAll(
+    query: string,
+    language: string = 'fr-FR',
+    limit: number = 10
+  ): Promise<Array<{
+    id: number;
+    media_type: 'movie' | 'tv' | 'person';
+    title: string;
+    poster_path: string | null;
+    profile_path?: string | null;
+    vote_average?: number;
+    release_date?: string;
+    first_air_date?: string;
+    known_for_department?: string;
+  }>> {
+    try {
+      const data = await this.makeRequest<{
+        results: Array<{
+          id: number;
+          media_type: 'movie' | 'tv' | 'person';
+          title?: string;
+          name?: string;
+          poster_path?: string | null;
+          profile_path?: string | null;
+          vote_average?: number;
+          release_date?: string;
+          first_air_date?: string;
+          known_for_department?: string;
+        }>;
+      }>('/search/multi', {
+        query,
+        language,
+        include_adult: 'false',
+      });
+
+      if (!data.results) return [];
+
+      return data.results
+        .filter(r => r.media_type === 'movie' || r.media_type === 'tv' || r.media_type === 'person')
+        .slice(0, limit)
+        .map(r => ({
+          id: r.id,
+          media_type: r.media_type,
+          title: r.title || r.name || '',
+          poster_path: r.poster_path || null,
+          profile_path: r.media_type === 'person' ? (r.profile_path || null) : undefined,
+          vote_average: r.vote_average,
+          release_date: r.release_date,
+          first_air_date: r.first_air_date,
+          known_for_department: r.known_for_department,
+        }));
+    } catch {
+      return [];
+    }
+  }
+
+  /**
    * Convert TMDB movie/TV result to MovieResult format
    */
   private convertToMovieResult(tmdbResult: TMDBMovie | TMDBTVShow): MovieResult {

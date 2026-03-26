@@ -745,6 +745,32 @@ class BackendAPIService {
       method: 'GET',
     });
   }
+  // ==========================================================================
+  // Quick Search (TMDB multi-search)
+  // ==========================================================================
+
+  async searchTMDB(
+    query: string,
+    language?: string
+  ): Promise<APIResponse<{ results: TMDBQuickSearchResult[] }>> {
+    const qs = new URLSearchParams({ q: query });
+    if (language) qs.set('language', language);
+    return await this.makeRequest(`/api/tmdb-search?${qs.toString()}`, {
+      method: 'GET',
+    });
+  }
+}
+
+export interface TMDBQuickSearchResult {
+  id: number;
+  media_type: 'movie' | 'tv' | 'person';
+  title: string;
+  poster_path: string | null;
+  profile_path?: string | null;
+  vote_average?: number;
+  release_date?: string;
+  first_air_date?: string;
+  known_for_department?: string;
 }
 
 // Export singleton instance

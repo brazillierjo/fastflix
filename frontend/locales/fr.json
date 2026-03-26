@@ -430,7 +430,9 @@
     "quotaUnlimited": "Recherches illimitées",
     "upgradeForMore": "Passez en Pro pour des recherches illimitées",
     "recommendedForYou": "Recommandé pour vous",
-    "searchCTA": "On se trouve quelque chose à regarder ?"
+    "searchCTA": "On se trouve quelque chose à regarder ?",
+    "quickSearch": "Recherche rapide",
+    "quickSearchPlaceholder": "Film, série, acteur..."
   },
   "authGate": {
     "title": "Connectez-vous pour continuer",

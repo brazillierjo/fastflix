@@ -442,7 +442,9 @@
     "quotaUnlimited": "Unlimited searches",
     "upgradeForMore": "Upgrade for unlimited searches",
     "recommendedForYou": "Recommended for you",
-    "searchCTA": "Let's find something to watch?"
+    "searchCTA": "Let's find something to watch?",
+    "quickSearch": "Quick search",
+    "quickSearchPlaceholder": "Movie, series, actor..."
   },
   "authGate": {
     "title": "Sign in to continue",

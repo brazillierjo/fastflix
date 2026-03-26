@@ -406,7 +406,9 @@
     "quotaUnlimited": "無制限検索",
     "upgradeForMore": "無制限検索にアップグレード",
     "recommendedForYou": "あなたへのおすすめ",
-    "searchCTA": "何か観るものを探しましょう？"
+    "searchCTA": "何か観るものを探しましょう？",
+    "quickSearch": "クイック検索",
+    "quickSearchPlaceholder": "映画、ドラマ、俳優..."
   },
   "authGate": {
     "title": "続けるにはサインイン",

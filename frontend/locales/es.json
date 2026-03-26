@@ -406,7 +406,9 @@
     "quotaUnlimited": "Busquedas ilimitadas",
     "upgradeForMore": "Mejora para busquedas ilimitadas",
     "recommendedForYou": "Recomendado para ti",
-    "searchCTA": "¿Buscamos algo para ver?"
+    "searchCTA": "¿Buscamos algo para ver?",
+    "quickSearch": "Búsqueda rápida",
+    "quickSearchPlaceholder": "Película, serie, actor..."
   },
   "authGate": {
     "title": "Inicia sesion para continuar",
