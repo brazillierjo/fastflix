@@ -55,7 +55,6 @@ export default function SearchForm({
 }: SearchFormProps) {
   const { t, getRandomPlaceholder } = useLanguage();
   const { hasUnlimitedAccess, isTrialEligible } = useSubscription();
-  const [placeholder, setPlaceholder] = useState('');
   const [showFiltersModal, setShowFiltersModal] = useState(false);
   const [isTyping, setIsTyping] = useState(false);
   const colorScheme = useColorScheme();
@@ -66,18 +65,89 @@ export default function SearchForm({
   const shimmerPosition = useSharedValue(0);
   const buttonScale = useSharedValue(1);
 
-  // Refs for typewriter
+  // Refs for "No idea" typewriter
   const typewriterRef = useRef<ReturnType<typeof setInterval> | null>(null);
   const currentIndexRef = useRef(0);
   const targetTextRef = useRef('');
   const currentTextRef = useRef('');
 
-  // Generate a random placeholder when component mounts or language changes
-  useEffect(() => {
-    setPlaceholder(getRandomPlaceholder());
-  }, [getRandomPlaceholder]);
+  // Animated placeholder typewriter (cycles through examples)
+  const [animatedPlaceholder, setAnimatedPlaceholder] = useState('');
+  const placeholderTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const placeholderIntervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
+  const placeholderPhaseRef = useRef<'typing' | 'pause' | 'erasing'>('typing');
+  const placeholderTextRef = useRef('');
+  const placeholderTargetRef = useRef('');
+  const placeholderIdxRef = useRef(0);
 
-  // Cleanup typewriter on unmount
+  useEffect(() => {
+    // Don't animate if user has typed something or "No idea" is typing
+    if (query || isTyping) {
+      setAnimatedPlaceholder('');
+      return;
+    }
+
+    let cancelled = false;
+    placeholderTargetRef.current = getRandomPlaceholder();
+    placeholderIdxRef.current = 0;
+    placeholderTextRef.current = '';
+    placeholderPhaseRef.current = 'typing';
+
+    const tick = () => {
+      if (cancelled) return;
+      const phase = placeholderPhaseRef.current;
+      const target = placeholderTargetRef.current;
+
+      if (phase === 'typing') {
+        if (placeholderIdxRef.current < target.length) {
+          placeholderIdxRef.current++;
+          placeholderTextRef.current = target.slice(0, placeholderIdxRef.current);
+          setAnimatedPlaceholder(placeholderTextRef.current);
+        } else {
+          // Done typing — pause
+          placeholderPhaseRef.current = 'pause';
+          if (placeholderIntervalRef.current) clearInterval(placeholderIntervalRef.current);
+          placeholderTimerRef.current = setTimeout(() => {
+            if (cancelled) return;
+            placeholderPhaseRef.current = 'erasing';
+            placeholderIntervalRef.current = setInterval(tick, 20);
+          }, 2000);
+          return;
+        }
+      } else if (phase === 'erasing') {
+        if (placeholderIdxRef.current > 0) {
+          placeholderIdxRef.current--;
+          placeholderTextRef.current = target.slice(0, placeholderIdxRef.current);
+          setAnimatedPlaceholder(placeholderTextRef.current);
+        } else {
+          // Done erasing — pick new text and start typing
+          if (placeholderIntervalRef.current) clearInterval(placeholderIntervalRef.current);
+          placeholderTimerRef.current = setTimeout(() => {
+            if (cancelled) return;
+            placeholderTargetRef.current = getRandomPlaceholder();
+            placeholderIdxRef.current = 0;
+            placeholderPhaseRef.current = 'typing';
+            placeholderIntervalRef.current = setInterval(tick, 35);
+          }, 400);
+          return;
+        }
+      }
+    };
+
+    // Start after a short delay
+    placeholderTimerRef.current = setTimeout(() => {
+      if (cancelled) return;
+      placeholderIntervalRef.current = setInterval(tick, 35);
+    }, 500);
+
+    return () => {
+      cancelled = true;
+      if (placeholderTimerRef.current) clearTimeout(placeholderTimerRef.current);
+      if (placeholderIntervalRef.current) clearInterval(placeholderIntervalRef.current);
+    };
+  }, [query, isTyping, getRandomPlaceholder]);
+
+  // Cleanup "No idea" typewriter on unmount
   useEffect(() => {
     return () => {
       if (typewriterRef.current) {
@@ -382,14 +452,14 @@ export default function SearchForm({
                     value={query}
                     onChangeText={handleManualInput}
                     onFocus={handleInputFocus}
-                    placeholder={`e.g.: ${placeholder}`}
+                    placeholder={animatedPlaceholder || ' '}
                     placeholderTextColor={getPlaceholderColor(isDark)}
-                    className='flex-1 pb-6 pl-6 pr-2 pt-6 text-lg text-light-text dark:text-dark-text'
+                    className='flex-1 pb-5 pl-5 pr-2 pt-5 text-base text-light-text dark:text-dark-text'
                     multiline
                     textAlignVertical='top'
                     scrollEnabled={false}
                     editable={!isTyping}
-                    style={{ minHeight: 100, maxHeight: 140 }}
+                    style={{ minHeight: 90, maxHeight: 130 }}
                   />
                   <View className='justify-center pr-4'>
                     <TouchableOpacity
