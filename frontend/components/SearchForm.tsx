@@ -308,27 +308,7 @@ export default function SearchForm({
           >
             {/* Action Buttons */}
             <View className='mb-3 gap-2'>
-              {/* Filters Row */}
-              <View className='flex-row items-center gap-2'>
-                {/* Filters Button */}
-                <TouchableOpacity
-                  onPress={() => setShowFiltersModal(true)}
-                  style={getSquircle(20)}
-                  className='flex-row items-center gap-1 bg-cinematic-200 px-4 py-2 dark:bg-cinematic-700'
-                  disabled={loading || isTyping}
-                >
-                  <Ionicons
-                    name='options-outline'
-                    size={16}
-                    color={isDark ? '#a3a3a3' : '#525252'}
-                  />
-                  <Text className='text-sm font-semibold text-light-muted dark:text-dark-muted'>
-                    {t('filters.button') || 'Filters'}
-                  </Text>
-                </TouchableOpacity>
-              </View>
-
-              {/* "No idea" Magic Button - Own Row */}
+              {/* "No idea" Magic Button */}
               <Animated.View style={buttonAnimatedStyle}>
                 <TouchableOpacity
                   onPress={handleNoIdea}
@@ -385,30 +365,48 @@ export default function SearchForm({
                 />
               </Animated.View>
 
-              {/* Input with animated border */}
+              {/* Input with animated border + filter icon */}
               <Animated.View style={animatedBorderStyle}>
-                <TextInput
-                  ref={textInputRef}
-                  value={query}
-                  onChangeText={handleManualInput}
-                  onFocus={handleInputFocus}
-                  placeholder={`e.g.: ${placeholder}`}
-                  placeholderTextColor={getPlaceholderColor(isDark)}
-                  className='border-2 bg-light-surface p-6 text-lg text-light-text focus:border-netflix-500 dark:bg-dark-surface dark:text-dark-text'
-                  multiline
-                  textAlignVertical='top'
-                  scrollEnabled={false}
-                  editable={!isTyping}
-                  style={[
-                    {
-                      borderRadius: 14,
-                      ...(Platform.OS === 'ios' && {
-                        borderCurve: 'continuous' as const,
-                      }),
-                    },
-                    { minHeight: 100, maxHeight: 140 },
-                  ]}
-                />
+                <View
+                  className='flex-row border-2 bg-light-surface focus:border-netflix-500 dark:bg-dark-surface'
+                  style={{
+                    borderRadius: 14,
+                    ...(Platform.OS === 'ios' && {
+                      borderCurve: 'continuous' as const,
+                    }),
+                    borderColor: 'transparent',
+                  }}
+                >
+                  <TextInput
+                    ref={textInputRef}
+                    value={query}
+                    onChangeText={handleManualInput}
+                    onFocus={handleInputFocus}
+                    placeholder={`e.g.: ${placeholder}`}
+                    placeholderTextColor={getPlaceholderColor(isDark)}
+                    className='flex-1 p-6 text-lg text-light-text dark:text-dark-text'
+                    multiline
+                    textAlignVertical='top'
+                    scrollEnabled={false}
+                    editable={!isTyping}
+                    style={{ minHeight: 100, maxHeight: 140 }}
+                  />
+                  <View className='items-center justify-start pt-5 pr-2'>
+                    <View className='mb-2 h-6 w-px bg-light-border dark:bg-dark-border' />
+                    <TouchableOpacity
+                      onPress={() => setShowFiltersModal(true)}
+                      disabled={loading || isTyping}
+                      className='items-center justify-center px-3 py-1'
+                      activeOpacity={0.7}
+                    >
+                      <Ionicons
+                        name='options-outline'
+                        size={22}
+                        color={isDark ? '#a3a3a3' : '#737373'}
+                      />
+                    </TouchableOpacity>
+                  </View>
+                </View>
               </Animated.View>
             </View>
 
