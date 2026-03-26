@@ -49,6 +49,13 @@ interface Cast {
   profile_path?: string;
 }
 
+interface CrewMember {
+  id: number;
+  name: string;
+  job: string;
+  profile_path?: string;
+}
+
 interface DetailedInfo {
   genres?: { id: number; name: string }[];
   runtime?: number;
@@ -63,6 +70,7 @@ interface MovieResultsProps {
   movies: Movie[];
   streamingProviders: { [key: number]: StreamingProvider[] };
   credits: { [key: number]: Cast[] };
+  crew: { [key: number]: CrewMember[] };
   detailedInfo: { [key: number]: DetailedInfo };
   geminiResponse: string;
   conversationHistory?: ConversationMessage[];
@@ -75,6 +83,7 @@ export default function MovieResults({
   movies,
   streamingProviders,
   credits,
+  crew,
   detailedInfo,
   geminiResponse,
   conversationHistory = [],
@@ -94,6 +103,7 @@ export default function MovieResults({
     (movie: Movie) => {
       const movieProviders = streamingProviders[movie.id] || [];
       const movieCredits = credits[movie.id] || [];
+      const movieCrew = crew[movie.id] || [];
       const movieDetailedInfo = detailedInfo[movie.id] || {};
 
       router.push({
@@ -107,11 +117,12 @@ export default function MovieResults({
           overview: movie.overview || '',
           providersJson: JSON.stringify(movieProviders),
           creditsJson: JSON.stringify(movieCredits),
+          crewJson: JSON.stringify(movieCrew),
           detailedInfoJson: JSON.stringify(movieDetailedInfo),
         },
       });
     },
-    [streamingProviders, credits, detailedInfo, router]
+    [streamingProviders, credits, crew, detailedInfo, router]
   );
 
   const handleRefine = () => {

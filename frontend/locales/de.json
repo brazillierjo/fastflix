@@ -458,7 +458,23 @@
     "rateThis": "Ihre Bewertung?",
     "ratingSaved": "Bewertung gespeichert!",
     "markWatched": "Gesehen",
-    "watchedConfirm": "Gesehen"
+    "watchedConfirm": "Gesehen",
+    "crew": "Team",
+    "createdBy": "Erstellt von",
+    "networks": "Sender",
+    "episodes": "Episoden",
+    "nextEpisode": "N\u00e4chste",
+    "lastEpisode": "Letzte",
+    "budget": "Budget",
+    "boxOffice": "Einspielergebnis",
+    "partOf": "Teil von",
+    "originalLanguage": "Originalsprache",
+    "production": "Produktion",
+    "originalTitle": "Originaltitel",
+    "viewOnIMDb": "Auf IMDb ansehen",
+    "inProduction": "Derzeit in Produktion",
+    "spokenLanguages": "Sprachen",
+    "productionCountries": "Produziert in"
   },
   "loading": {
     "analyzing": "Analysiere deine Anfrage...",
@@ -500,6 +516,7 @@
     "diedAt": "gestorben mit",
     "yearsOld": "Jahre alt",
     "movies": "Filme",
-    "tvShows": "Serien"
+    "tvShows": "Serien",
+    "viewOnIMDb": "Auf IMDb ansehen"
   }
 }

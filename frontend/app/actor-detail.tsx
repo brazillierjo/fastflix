@@ -18,6 +18,7 @@ import React, { useEffect, useState } from 'react';
 import {
   Dimensions,
   Image,
+  Linking,
   Platform,
   ScrollView,
   StatusBar,
@@ -65,6 +66,9 @@ interface PersonDetails {
   place_of_birth: string | null;
   profile_path: string | null;
   known_for_department: string | null;
+  also_known_as?: string[];
+  imdb_id?: string | null;
+  gender?: number;
   movie_credits?: FilmographyItem[];
   tv_credits?: FilmographyItem[];
 }
@@ -184,9 +188,25 @@ export default function ActorDetailScreen() {
 
   const displayName = person?.name || params.name || '';
   const biography = person?.biography || '';
-  const BIO_TRUNCATE_LENGTH = 300;
+  const BIO_TRUNCATE_LENGTH = 400;
   const isBioLong = biography.length > BIO_TRUNCATE_LENGTH;
-  const displayBio = bioExpanded ? biography : biography.slice(0, BIO_TRUNCATE_LENGTH);
+  const displayBio = React.useMemo(() => {
+    if (bioExpanded || !isBioLong) return biography;
+    const truncated = biography.slice(0, BIO_TRUNCATE_LENGTH);
+    // Find last sentence end (. ! ?) to avoid cutting mid-sentence
+    const lastSentenceEnd = Math.max(
+      truncated.lastIndexOf('. '),
+      truncated.lastIndexOf('! '),
+      truncated.lastIndexOf('? '),
+      truncated.lastIndexOf('.\n'),
+    );
+    if (lastSentenceEnd > BIO_TRUNCATE_LENGTH * 0.5) {
+      return truncated.slice(0, lastSentenceEnd + 1);
+    }
+    // Fallback: cut at last space
+    const lastSpace = truncated.lastIndexOf(' ');
+    return lastSpace > 0 ? truncated.slice(0, lastSpace) : truncated;
+  }, [biography, bioExpanded, isBioLong]);
 
   // Format dates according to locale
   const formatDate = (dateStr: string | null | undefined): string | null => {
@@ -307,6 +327,15 @@ export default function ActorDetailScreen() {
                     </View>
                   )}
                 </View>
+              )}
+              {person?.also_known_as && person.also_known_as.length > 0 && (
+                <Text
+                  className='mt-1 text-xs text-white/70'
+                  numberOfLines={1}
+                  style={{ textShadowColor: 'rgba(0,0,0,0.6)', textShadowOffset: { width: 0, height: 1 }, textShadowRadius: 3 }}
+                >
+                  {person.also_known_as.slice(0, 3).join(' · ')}
+                </Text>
               )}
             </View>
           </View>
@@ -510,6 +539,26 @@ export default function ActorDetailScreen() {
               </View>
             </MotiView>
           ) : null}
+
+          {/* IMDb Link */}
+          {person?.imdb_id && (
+            <MotiView
+              from={{ opacity: 0, translateY: 15 }}
+              animate={{ opacity: 1, translateY: 0 }}
+              transition={{ type: 'timing', duration: 400, delay: 175 }}
+            >
+              <TouchableOpacity
+                onPress={() => Linking.openURL(`https://www.imdb.com/name/${person.imdb_id}`)}
+                style={getSquircle(14)}
+                className='mb-6 flex-row items-center justify-center gap-2 border-2 border-[#f5c518] bg-[#f5c518]/10 py-3'
+              >
+                <Ionicons name='open-outline' size={18} color='#f5c518' />
+                <Text className='text-base font-semibold text-[#f5c518]'>
+                  {t('actorDetail.viewOnIMDb') || 'View on IMDb'}
+                </Text>
+              </TouchableOpacity>
+            </MotiView>
+          )}
 
           {/* Filmography Section */}
           <MotiView

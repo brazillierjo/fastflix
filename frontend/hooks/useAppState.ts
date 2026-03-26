@@ -19,13 +19,14 @@
 
 import { useState } from 'react';
 import { StreamingProvider, ConversationMessage } from '../services/backend-api.service';
-import { Cast, DetailedInfo, Movie } from './useBackendMovieSearch';
+import { Cast, CrewMember, DetailedInfo, Movie } from './useBackendMovieSearch';
 
 interface AppState {
   query: string;
   movies: Movie[];
   streamingProviders: { [key: number]: StreamingProvider[] };
   credits: { [key: number]: Cast[] };
+  crew: { [key: number]: CrewMember[] };
   detailedInfo: { [key: number]: DetailedInfo };
   geminiResponse: string;
   isFallback: boolean;
@@ -45,6 +46,9 @@ export const useAppState = () => {
   const [credits, setCredits] = useState<{
     [key: number]: Cast[];
   }>({});
+  const [crew, setCrew] = useState<{
+    [key: number]: CrewMember[];
+  }>({});
   const [detailedInfo, setDetailedInfo] = useState<{
     [key: number]: DetailedInfo;
   }>({});
@@ -63,6 +67,7 @@ export const useAppState = () => {
     setQuery('');
     setStreamingProviders({});
     setCredits({});
+    setCrew({});
     setDetailedInfo({});
     setGeminiResponse('');
     setIsFallback(false);
@@ -73,6 +78,7 @@ export const useAppState = () => {
     movies: Movie[];
     streamingProviders: { [key: number]: StreamingProvider[] };
     credits: { [key: number]: Cast[] };
+    crew: { [key: number]: CrewMember[] };
     detailedInfo: { [key: number]: DetailedInfo };
     geminiResponse: string;
     conversationHistory?: ConversationMessage[];
@@ -81,6 +87,7 @@ export const useAppState = () => {
     setMovies(data.movies);
     setStreamingProviders(data.streamingProviders);
     setCredits(data.credits);
+    setCrew(data.crew || {});
     setDetailedInfo(data.detailedInfo);
     setGeminiResponse(data.geminiResponse);
     setIsFallback(data.isFallback || false);
@@ -105,6 +112,7 @@ export const useAppState = () => {
     movies,
     streamingProviders,
     credits,
+    crew,
     detailedInfo,
     geminiResponse,
     isFallback,
@@ -119,6 +127,7 @@ export const useAppState = () => {
     setMovies,
     setStreamingProviders,
     setCredits,
+    setCrew,
     setDetailedInfo,
     setGeminiResponse,
     setConversationHistory,

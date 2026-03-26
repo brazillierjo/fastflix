@@ -560,25 +560,50 @@ describe('TMDB Service', () => {
 
       mockFetch.mockResolvedValueOnce({
         ok: true,
-        json: () => Promise.resolve({ cast }),
+        json: () => Promise.resolve({ cast, crew: [] }),
       });
 
       const credits = await tmdb.getCredits(603, 'movie');
 
-      expect(credits).toHaveLength(10);
-      expect(credits[0].name).toBe('Actor 1');
-      expect(credits[9].name).toBe('Actor 10');
+      expect(credits.cast).toHaveLength(10);
+      expect(credits.cast[0].name).toBe('Actor 1');
+      expect(credits.cast[9].name).toBe('Actor 10');
     });
 
-    it('should return empty array when no cast', async () => {
+    it('should return empty arrays when no cast', async () => {
       mockFetch.mockResolvedValueOnce({
         ok: true,
-        json: () => Promise.resolve({ cast: [] }),
+        json: () => Promise.resolve({ cast: [], crew: [] }),
       });
 
       const credits = await tmdb.getCredits(1, 'movie');
 
-      expect(credits).toHaveLength(0);
+      expect(credits.cast).toHaveLength(0);
+      expect(credits.crew).toHaveLength(0);
+    });
+
+    it('should extract key crew members limited to 5', async () => {
+      const crew = [
+        { id: 1, name: 'Director 1', job: 'Director', profile_path: null },
+        { id: 2, name: 'Writer 1', job: 'Writer', profile_path: null },
+        { id: 3, name: 'Writer 2', job: 'Screenplay', profile_path: null },
+        { id: 4, name: 'Creator 1', job: 'Creator', profile_path: null },
+        { id: 5, name: 'EP 1', job: 'Executive Producer', profile_path: null },
+        { id: 6, name: 'EP 2', job: 'Executive Producer', profile_path: null },
+        { id: 7, name: 'Cameraman', job: 'Camera Operator', profile_path: null },
+      ];
+
+      mockFetch.mockResolvedValueOnce({
+        ok: true,
+        json: () => Promise.resolve({ cast: [], crew }),
+      });
+
+      const credits = await tmdb.getCredits(603, 'movie');
+
+      expect(credits.crew).toHaveLength(5);
+      expect(credits.crew.map(c => c.job)).toEqual([
+        'Director', 'Writer', 'Screenplay', 'Creator', 'Executive Producer',
+      ]);
     });
   });
 

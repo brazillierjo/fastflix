@@ -14,6 +14,7 @@ import {
   SearchResponse,
   StreamingProvider,
   Cast as BackendCast,
+  CrewMember as BackendCrewMember,
   DetailedInfo as BackendDetailedInfo,
   ConversationMessage,
 } from '../services/backend-api.service';
@@ -40,6 +41,13 @@ export interface Cast {
   profile_path?: string;
 }
 
+export interface CrewMember {
+  id: number;
+  name: string;
+  job: string;
+  profile_path?: string;
+}
+
 interface SearchParams {
   query: string;
   includeMovies: boolean;
@@ -61,12 +69,25 @@ export interface DetailedInfo {
   number_of_episodes?: number;
   status?: string;
   first_air_year?: number;
+  tagline?: string;
+  budget?: number;
+  revenue?: number;
+  production_companies?: Array<{ id: number; name: string; logo_path: string | null }>;
+  original_language?: string;
+  original_title?: string;
+  imdb_id?: string;
+  belongs_to_collection?: { id: number; name: string; poster_path: string | null } | null;
+  created_by?: Array<{ id: number; name: string; profile_path: string | null }>;
+  networks?: Array<{ id: number; name: string; logo_path: string | null }>;
+  last_episode_to_air?: { episode_number: number; season_number: number; name: string; air_date: string } | null;
+  next_episode_to_air?: { episode_number: number; season_number: number; name: string; air_date: string } | null;
 }
 
 interface SearchResult {
   movies: Movie[];
   streamingProviders: { [key: number]: StreamingProvider[] };
   credits: { [key: number]: Cast[] };
+  crew: { [key: number]: CrewMember[] };
   detailedInfo: { [key: number]: DetailedInfo };
   geminiResponse: string;
   conversationHistory?: ConversationMessage[];
@@ -145,13 +166,25 @@ const searchMoviesWithBackend = async (
     const streamingProviders = data.streamingProviders || {};
 
     // Transform credits from backend format to frontend format
+    // Backend now returns { cast: Cast[], crew: CrewMember[] } per movie ID
     const credits: { [key: number]: Cast[] } = {};
+    const crew: { [key: number]: CrewMember[] } = {};
     if (data.credits) {
-      Object.entries(data.credits).forEach(([id, castList]) => {
-        credits[Number(id)] = castList.map((c: BackendCast) => ({
+      Object.entries(data.credits).forEach(([id, creditsData]) => {
+        const numId = Number(id);
+        // Handle both old format (Cast[]) and new format ({ cast, crew })
+        const castArray = Array.isArray(creditsData) ? creditsData : creditsData.cast || [];
+        const crewArray = Array.isArray(creditsData) ? [] : creditsData.crew || [];
+        credits[numId] = castArray.map((c: BackendCast) => ({
           id: c.id,
           name: c.name,
           character: c.character,
+          profile_path: c.profile_path || undefined,
+        }));
+        crew[numId] = crewArray.map((c: BackendCrewMember) => ({
+          id: c.id,
+          name: c.name,
+          job: c.job,
           profile_path: c.profile_path || undefined,
         }));
       });
@@ -170,6 +203,18 @@ const searchMoviesWithBackend = async (
           number_of_episodes: backendInfo.number_of_episodes,
           status: backendInfo.status,
           first_air_year: backendInfo.first_air_year,
+          tagline: backendInfo.tagline,
+          budget: backendInfo.budget,
+          revenue: backendInfo.revenue,
+          production_companies: backendInfo.production_companies,
+          original_language: backendInfo.original_language,
+          original_title: backendInfo.original_title,
+          imdb_id: backendInfo.imdb_id,
+          belongs_to_collection: backendInfo.belongs_to_collection,
+          created_by: backendInfo.created_by,
+          networks: backendInfo.networks,
+          last_episode_to_air: backendInfo.last_episode_to_air,
+          next_episode_to_air: backendInfo.next_episode_to_air,
         };
       });
     }
@@ -178,6 +223,7 @@ const searchMoviesWithBackend = async (
       movies,
       streamingProviders,
       credits,
+      crew,
       detailedInfo,
       geminiResponse: data.conversationalResponse,
       conversationHistory: data.conversationHistory,

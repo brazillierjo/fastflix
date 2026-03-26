@@ -132,10 +132,22 @@
         "title": "Recomendaciones ilimitadas",
         "description": "Obtén tantas recomendaciones de películas como quieras"
       },
-      "platforms": { "title": "Filtros inteligentes de plataformas", "description": "Solo contenido de tus servicios de streaming" },
-      "watchlist": { "title": "Lista personal y alertas", "description": "Guarda y sigue películas con notificaciones" },
-      "dailyPick": { "title": "Selecciones diarias personalizadas", "description": "Recomendaciones frescas cada dia" },
-      "history": { "title": "Historial y perfil de gustos", "description": "La IA aprende tus preferencias" }
+      "platforms": {
+        "title": "Filtros inteligentes de plataformas",
+        "description": "Solo contenido de tus servicios de streaming"
+      },
+      "watchlist": {
+        "title": "Lista personal y alertas",
+        "description": "Guarda y sigue películas con notificaciones"
+      },
+      "dailyPick": {
+        "title": "Selecciones diarias personalizadas",
+        "description": "Recomendaciones frescas cada dia"
+      },
+      "history": {
+        "title": "Historial y perfil de gustos",
+        "description": "La IA aprende tus preferencias"
+      }
     },
     "socialProof": "Adoptado por cinéfilos de todo el mundo",
     "socialProofSub": "Valorado con 4.9 estrellas por nuestra comunidad",
@@ -354,10 +366,22 @@
     "next": "Siguiente",
     "getStarted": "Empezar",
     "alreadyHaveAccount": "Ya tengo una cuenta",
-    "screen1": { "title": "Descubre que ver esta noche", "subtitle": "Basta de scroll infinito. Dile a nuestra IA que te apetece y obtén recomendaciones perfectas." },
-    "screen2": { "title": "La IA aprende tus gustos", "subtitle": "Cuanto más uses FastFlix, más inteligente se vuelve." },
-    "screen3": { "title": "Tus plataformas, tu contenido", "subtitle": "Filtra por Netflix, Disney+, Prime Video y mas." },
-    "screen4": { "title": "Tu lista inteligente", "subtitle": "Guarda películas y series para más tarde. Marca lo visto y valora." }
+    "screen1": {
+      "title": "Descubre que ver esta noche",
+      "subtitle": "Basta de scroll infinito. Dile a nuestra IA que te apetece y obtén recomendaciones perfectas."
+    },
+    "screen2": {
+      "title": "La IA aprende tus gustos",
+      "subtitle": "Cuanto más uses FastFlix, más inteligente se vuelve."
+    },
+    "screen3": {
+      "title": "Tus plataformas, tu contenido",
+      "subtitle": "Filtra por Netflix, Disney+, Prime Video y mas."
+    },
+    "screen4": {
+      "title": "Tu lista inteligente",
+      "subtitle": "Guarda películas y series para más tarde. Marca lo visto y valora."
+    }
   },
   "newReleases": {
     "title": "Estrenos de la semana",
@@ -458,7 +482,23 @@
     "rateThis": "¿Tu puntuación?",
     "ratingSaved": "¡Puntuación guardada!",
     "markWatched": "Ya lo vi",
-    "watchedConfirm": "Visto"
+    "watchedConfirm": "Visto",
+    "crew": "Equipo",
+    "createdBy": "Creado por",
+    "networks": "Cadenas",
+    "episodes": "Episodios",
+    "nextEpisode": "Próximo",
+    "lastEpisode": "Último",
+    "budget": "presupuesto",
+    "boxOffice": "taquilla",
+    "partOf": "Parte de",
+    "originalLanguage": "Idioma original",
+    "production": "Producción",
+    "originalTitle": "Título original",
+    "viewOnIMDb": "Ver en IMDb",
+    "inProduction": "Actualmente en producción",
+    "spokenLanguages": "Idiomas",
+    "productionCountries": "Producido en"
   },
   "loading": {
     "analyzing": "Analizando tu solicitud...",
@@ -500,6 +540,7 @@
     "diedAt": "falleció a los",
     "yearsOld": "años",
     "movies": "películas",
-    "tvShows": "series"
+    "tvShows": "series",
+    "viewOnIMDb": "Ver en IMDb"
   }
 }

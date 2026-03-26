@@ -132,10 +132,22 @@
         "title": "Raccomandazioni illimitate",
         "description": "Ottieni tutte le raccomandazioni di film che desideri"
       },
-      "platforms": { "title": "Filtri piattaforme intelligenti", "description": "Solo contenuti dei tuoi servizi di streaming" },
-      "watchlist": { "title": "Lista personale e avvisi", "description": "Salva e segui i film con notifiche" },
-      "dailyPick": { "title": "Scelte giornaliere personalizzate", "description": "Raccomandazioni fresche ogni giorno" },
-      "history": { "title": "Cronologia e profilo gusti", "description": "L'IA impara le tue preferenze" }
+      "platforms": {
+        "title": "Filtri piattaforme intelligenti",
+        "description": "Solo contenuti dei tuoi servizi di streaming"
+      },
+      "watchlist": {
+        "title": "Lista personale e avvisi",
+        "description": "Salva e segui i film con notifiche"
+      },
+      "dailyPick": {
+        "title": "Scelte giornaliere personalizzate",
+        "description": "Raccomandazioni fresche ogni giorno"
+      },
+      "history": {
+        "title": "Cronologia e profilo gusti",
+        "description": "L'IA impara le tue preferenze"
+      }
     },
     "socialProof": "Scelto dagli amanti del cinema di tutto il mondo",
     "socialProofSub": "Valutato 4.9 stelle dalla nostra comunità",
@@ -354,10 +366,22 @@
     "next": "Avanti",
     "getStarted": "Inizia",
     "alreadyHaveAccount": "Ho già un account",
-    "screen1": { "title": "Scopri cosa guardare stasera", "subtitle": "Basta con lo scrolling infinito. Chiedi alla nostra IA e ottieni raccomandazioni perfette." },
-    "screen2": { "title": "L'IA impara i tuoi gusti", "subtitle": "Più usi FastFlix, piu diventa intelligente." },
-    "screen3": { "title": "Le tue piattaforme, i tuoi contenuti", "subtitle": "Filtra per Netflix, Disney+, Prime Video e altro." },
-    "screen4": { "title": "La tua lista intelligente", "subtitle": "Salva film e serie per dopo. Segna cosa hai visto e valuta." }
+    "screen1": {
+      "title": "Scopri cosa guardare stasera",
+      "subtitle": "Basta con lo scrolling infinito. Chiedi alla nostra IA e ottieni raccomandazioni perfette."
+    },
+    "screen2": {
+      "title": "L'IA impara i tuoi gusti",
+      "subtitle": "Più usi FastFlix, piu diventa intelligente."
+    },
+    "screen3": {
+      "title": "Le tue piattaforme, i tuoi contenuti",
+      "subtitle": "Filtra per Netflix, Disney+, Prime Video e altro."
+    },
+    "screen4": {
+      "title": "La tua lista intelligente",
+      "subtitle": "Salva film e serie per dopo. Segna cosa hai visto e valuta."
+    }
   },
   "newReleases": {
     "title": "Novità della settimana",
@@ -458,7 +482,23 @@
     "rateThis": "Il tuo voto?",
     "ratingSaved": "Voto salvato!",
     "markWatched": "Già visto",
-    "watchedConfirm": "Visto"
+    "watchedConfirm": "Visto",
+    "crew": "Troupe",
+    "createdBy": "Creato da",
+    "networks": "Reti",
+    "episodes": "Episodi",
+    "nextEpisode": "Prossimo",
+    "lastEpisode": "Ultimo",
+    "budget": "budget",
+    "boxOffice": "incassi",
+    "partOf": "Parte di",
+    "originalLanguage": "Lingua originale",
+    "production": "Produzione",
+    "originalTitle": "Titolo originale",
+    "viewOnIMDb": "Vedi su IMDb",
+    "inProduction": "Attualmente in produzione",
+    "spokenLanguages": "Lingue",
+    "productionCountries": "Prodotto in"
   },
   "loading": {
     "analyzing": "Analisi della tua richiesta...",
@@ -500,6 +540,7 @@
     "diedAt": "deceduto a",
     "yearsOld": "anni",
     "movies": "film",
-    "tvShows": "serie TV"
+    "tvShows": "serie TV",
+    "viewOnIMDb": "Vedi su IMDb"
   }
 }

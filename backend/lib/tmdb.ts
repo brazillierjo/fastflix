@@ -12,6 +12,7 @@ import type {
   TMDBWatchProviderResponse,
   StreamingProvider,
   Cast,
+  CrewMember,
   DetailedInfo,
   Genre,
   AvailableProvider,
@@ -423,6 +424,15 @@ class TMDBService {
         runtime: number | null;
         release_date: string;
         tagline: string;
+        budget: number;
+        revenue: number;
+        production_companies: Array<{ id: number; name: string; logo_path: string | null }>;
+        production_countries: Array<{ iso_3166_1: string; name: string }>;
+        original_language: string;
+        original_title: string;
+        imdb_id: string | null;
+        spoken_languages: Array<{ english_name: string; iso_639_1: string; name: string }>;
+        belongs_to_collection: { id: number; name: string; poster_path: string | null; backdrop_path: string | null } | null;
       }>(`/movie/${tmdbId}`, { language });
 
       const releaseYear = data.release_date ? new Date(data.release_date).getFullYear() : undefined;
@@ -432,6 +442,17 @@ class TMDBService {
         runtime: data.runtime || undefined,
         release_year: releaseYear,
         tagline: data.tagline || undefined,
+        budget: data.budget || undefined,
+        revenue: data.revenue || undefined,
+        production_companies: data.production_companies?.map(c => ({ id: c.id, name: c.name, logo_path: c.logo_path })) || undefined,
+        production_countries: data.production_countries || undefined,
+        original_language: data.original_language || undefined,
+        original_title: data.original_title || undefined,
+        imdb_id: data.imdb_id || undefined,
+        spoken_languages: data.spoken_languages || undefined,
+        belongs_to_collection: data.belongs_to_collection
+          ? { id: data.belongs_to_collection.id, name: data.belongs_to_collection.name, poster_path: data.belongs_to_collection.poster_path }
+          : null,
       };
     } catch {
       return null;
@@ -451,6 +472,13 @@ class TMDBService {
         status: string;
         first_air_date: string;
         tagline: string;
+        created_by: Array<{ id: number; name: string; profile_path: string | null }>;
+        networks: Array<{ id: number; name: string; logo_path: string | null }>;
+        original_language: string;
+        origin_country: string[];
+        last_episode_to_air: { episode_number: number; season_number: number; name: string; air_date: string } | null;
+        next_episode_to_air: { episode_number: number; season_number: number; name: string; air_date: string } | null;
+        in_production: boolean;
       }>(`/tv/${tmdbId}`, { language });
 
       const firstAirYear = data.first_air_date
@@ -471,6 +499,17 @@ class TMDBService {
         status: data.status,
         first_air_year: firstAirYear,
         tagline: data.tagline || undefined,
+        created_by: data.created_by?.map(c => ({ id: c.id, name: c.name, profile_path: c.profile_path })) || undefined,
+        networks: data.networks?.map(n => ({ id: n.id, name: n.name, logo_path: n.logo_path })) || undefined,
+        original_language: data.original_language || undefined,
+        origin_country: data.origin_country || undefined,
+        last_episode_to_air: data.last_episode_to_air
+          ? { episode_number: data.last_episode_to_air.episode_number, season_number: data.last_episode_to_air.season_number, name: data.last_episode_to_air.name, air_date: data.last_episode_to_air.air_date }
+          : null,
+        next_episode_to_air: data.next_episode_to_air
+          ? { episode_number: data.next_episode_to_air.episode_number, season_number: data.next_episode_to_air.season_number, name: data.next_episode_to_air.name, air_date: data.next_episode_to_air.air_date }
+          : null,
+        in_production: data.in_production,
       };
     } catch {
       return null;
@@ -478,13 +517,18 @@ class TMDBService {
   }
 
   /**
-   * Get credits (cast) for a movie or TV show
+   * Key crew jobs to extract from credits
+   */
+  private static KEY_CREW_JOBS = new Set(['Director', 'Writer', 'Screenplay', 'Creator', 'Executive Producer']);
+
+  /**
+   * Get credits (cast and key crew) for a movie or TV show
    */
   async getCredits(
     tmdbId: number,
     mediaType: 'movie' | 'tv',
     language: string = 'fr-FR'
-  ): Promise<Cast[]> {
+  ): Promise<{ cast: Cast[]; crew: CrewMember[] }> {
     try {
       const endpoint = `/${mediaType}/${tmdbId}/credits`;
       const data = await this.makeRequest<{
@@ -495,14 +539,16 @@ class TMDBService {
           profile_path: string | null;
           order: number;
         }>;
+        crew: Array<{
+          id: number;
+          name: string;
+          job: string;
+          profile_path: string | null;
+        }>;
       }>(endpoint, { language });
 
-      if (!data.cast || data.cast.length === 0) {
-        return [];
-      }
-
       // Return top 10 cast members sorted by order
-      return data.cast
+      const cast = (data.cast || [])
         .sort((a, b) => a.order - b.order)
         .slice(0, 10)
         .map((actor) => ({
@@ -511,8 +557,25 @@ class TMDBService {
           character: actor.character,
           profile_path: actor.profile_path,
         }));
+
+      // Extract key crew members (Director, Writer, Screenplay, Creator, Executive Producer), limit to 5
+      const seenCrewIds = new Set<number>();
+      const crew: CrewMember[] = [];
+      for (const member of data.crew || []) {
+        if (TMDBService.KEY_CREW_JOBS.has(member.job) && !seenCrewIds.has(member.id) && crew.length < 5) {
+          seenCrewIds.add(member.id);
+          crew.push({
+            id: member.id,
+            name: member.name,
+            job: member.job,
+            profile_path: member.profile_path,
+          });
+        }
+      }
+
+      return { cast, crew };
     } catch {
-      return [];
+      return { cast: [], crew: [] };
     }
   }
 
@@ -524,10 +587,10 @@ class TMDBService {
     items: MovieResult[],
     language: string = 'fr-FR'
   ): Promise<{
-    credits: { [key: number]: Cast[] };
+    credits: { [key: number]: { cast: Cast[]; crew: CrewMember[] } };
     detailedInfo: { [key: number]: DetailedInfo };
   }> {
-    const credits: { [key: number]: Cast[] } = {};
+    const credits: { [key: number]: { cast: Cast[]; crew: CrewMember[] } } = {};
     const detailedInfo: { [key: number]: DetailedInfo } = {};
     const BATCH_SIZE = 5;
 
@@ -536,7 +599,7 @@ class TMDBService {
       await Promise.all(
         batch.map(async (item) => {
           // Fetch details and credits in parallel for each item
-          const [details, cast] = await Promise.all([
+          const [details, creditsResult] = await Promise.all([
             item.media_type === 'movie'
               ? this.getMovieDetails(item.tmdb_id, language)
               : this.getTVDetails(item.tmdb_id, language),
@@ -546,8 +609,8 @@ class TMDBService {
           if (details) {
             detailedInfo[item.tmdb_id] = details;
           }
-          if (cast.length > 0) {
-            credits[item.tmdb_id] = cast;
+          if (creditsResult.cast.length > 0 || creditsResult.crew.length > 0) {
+            credits[item.tmdb_id] = creditsResult;
           }
         })
       );
@@ -726,6 +789,9 @@ class TMDBService {
     place_of_birth: string | null;
     profile_path: string | null;
     known_for_department: string;
+    also_known_as: string[];
+    imdb_id: string | null;
+    gender: number;
     movie_credits: Array<{
       id: number;
       title: string;
@@ -755,6 +821,9 @@ class TMDBService {
         place_of_birth: string | null;
         profile_path: string | null;
         known_for_department: string;
+        also_known_as: string[];
+        imdb_id: string | null;
+        gender: number;
         movie_credits: {
           cast: Array<{
             id: number;
@@ -819,6 +888,9 @@ class TMDBService {
         place_of_birth: data.place_of_birth,
         profile_path: data.profile_path,
         known_for_department: data.known_for_department || '',
+        also_known_as: data.also_known_as || [],
+        imdb_id: data.imdb_id || null,
+        gender: data.gender ?? 0,
         movie_credits: movieCredits,
         tv_credits: tvCredits,
       };

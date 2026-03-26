@@ -36,7 +36,7 @@ export async function GET(request: NextRequest) {
     }
 
     // Fetch details, credits, and providers in parallel
-    const [fullDetails, detailedInfo, credits, providers] = await Promise.all([
+    const [fullDetails, detailedInfo, creditsResult, providers] = await Promise.all([
       tmdb.getFullDetails(tmdbId, mediaType, language),
       mediaType === 'movie'
         ? tmdb.getMovieDetails(tmdbId, language)
@@ -55,7 +55,8 @@ export async function GET(request: NextRequest) {
           vote_average: fullDetails?.vote_average || 0,
           title: fullDetails?.title || '',
           providers,
-          credits,
+          credits: creditsResult.cast,
+          crew: creditsResult.crew,
           detailedInfo: detailedInfo || {},
         },
       },

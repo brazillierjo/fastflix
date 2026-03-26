@@ -47,6 +47,13 @@ export interface Genre {
   name: string;
 }
 
+export interface CrewMember {
+  id: number;
+  name: string;
+  job: string;
+  profile_path: string | null;
+}
+
 export interface DetailedInfo {
   genres: Genre[];
   runtime?: number; // For movies (in minutes)
@@ -57,12 +64,29 @@ export interface DetailedInfo {
   status?: string; // For TV shows (Returning Series, Ended, etc.)
   first_air_year?: number; // For TV shows
   tagline?: string;
+  // Movie-specific enriched fields
+  budget?: number;
+  revenue?: number;
+  production_companies?: Array<{ id: number; name: string; logo_path: string | null }>;
+  production_countries?: Array<{ iso_3166_1: string; name: string }>;
+  original_language?: string;
+  original_title?: string;
+  imdb_id?: string;
+  spoken_languages?: Array<{ english_name: string; iso_639_1: string; name: string }>;
+  belongs_to_collection?: { id: number; name: string; poster_path: string | null } | null;
+  // TV-specific enriched fields
+  created_by?: Array<{ id: number; name: string; profile_path: string | null }>;
+  networks?: Array<{ id: number; name: string; logo_path: string | null }>;
+  origin_country?: string[];
+  last_episode_to_air?: { episode_number: number; season_number: number; name: string; air_date: string } | null;
+  next_episode_to_air?: { episode_number: number; season_number: number; name: string; air_date: string } | null;
+  in_production?: boolean;
 }
 
 export interface SearchResponse {
   recommendations: MovieResult[];
   streamingProviders: { [key: number]: StreamingProvider[] };
-  credits: { [key: number]: Cast[] };
+  credits: { [key: number]: { cast: Cast[]; crew: CrewMember[] } };
   detailedInfo: { [key: number]: DetailedInfo };
   conversationalResponse: string;
   totalResults: number;

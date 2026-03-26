@@ -132,10 +132,22 @@
         "title": "無制限のレコメンデーション",
         "description": "お好きなだけ映画のレコメンデーションを取得"
       },
-      "platforms": { "title": "スマートプラットフォームフィルター", "description": "あなたのストリーミングサービスのコンテンツのみ" },
-      "watchlist": { "title": "パーソナルウォッチリスト＆通知", "description": "映画を保存して通知で追跡" },
-      "dailyPick": { "title": "パーソナライズされた毎日のおすすめ", "description": "毎日新鮮なおすすめ" },
-      "history": { "title": "検索履歴＆好みプロフィール", "description": "AIがあなたの好みを学習" }
+      "platforms": {
+        "title": "スマートプラットフォームフィルター",
+        "description": "あなたのストリーミングサービスのコンテンツのみ"
+      },
+      "watchlist": {
+        "title": "パーソナルウォッチリスト＆通知",
+        "description": "映画を保存して通知で追跡"
+      },
+      "dailyPick": {
+        "title": "パーソナライズされた毎日のおすすめ",
+        "description": "毎日新鮮なおすすめ"
+      },
+      "history": {
+        "title": "検索履歴＆好みプロフィール",
+        "description": "AIがあなたの好みを学習"
+      }
     },
     "socialProof": "世界中の映画ファンに信頼されています",
     "socialProofSub": "コミュニティで4.9つ星の評価",
@@ -354,10 +366,22 @@
     "next": "次へ",
     "getStarted": "始める",
     "alreadyHaveAccount": "アカウントをお持ちの方",
-    "screen1": { "title": "今夜何を見るか見つけよう", "subtitle": "終わらないスクロールはもう終わり。AIに気分を伝えて、完璧なおすすめを数秒で。" },
-    "screen2": { "title": "AIがあなたの好みを学習", "subtitle": "使えば使うほど賢くなります。映画を評価してプロフィールを構築。" },
-    "screen3": { "title": "あなたのプラットフォーム、あなたのコンテンツ", "subtitle": "Netflix、Disney+、Prime Videoなどでフィルタリング。" },
-    "screen4": { "title": "スマートウォッチリスト", "subtitle": "映画やドラマを保存。視聴済みをマークして評価し、AIの提案を改善。" }
+    "screen1": {
+      "title": "今夜何を見るか見つけよう",
+      "subtitle": "終わらないスクロールはもう終わり。AIに気分を伝えて、完璧なおすすめを数秒で。"
+    },
+    "screen2": {
+      "title": "AIがあなたの好みを学習",
+      "subtitle": "使えば使うほど賢くなります。映画を評価してプロフィールを構築。"
+    },
+    "screen3": {
+      "title": "あなたのプラットフォーム、あなたのコンテンツ",
+      "subtitle": "Netflix、Disney+、Prime Videoなどでフィルタリング。"
+    },
+    "screen4": {
+      "title": "スマートウォッチリスト",
+      "subtitle": "映画やドラマを保存。視聴済みをマークして評価し、AIの提案を改善。"
+    }
   },
   "newReleases": {
     "title": "今週の新作",
@@ -458,7 +482,23 @@
     "rateThis": "あなたの評価は？",
     "ratingSaved": "評価を保存しました！",
     "markWatched": "視聴済み",
-    "watchedConfirm": "視聴済み"
+    "watchedConfirm": "視聴済み",
+    "crew": "スタッフ",
+    "createdBy": "制作",
+    "networks": "放送局",
+    "episodes": "エピソード",
+    "nextEpisode": "次回",
+    "lastEpisode": "最新",
+    "budget": "予算",
+    "boxOffice": "興行収入",
+    "partOf": "シリーズ",
+    "originalLanguage": "原語",
+    "production": "制作会社",
+    "originalTitle": "原題",
+    "viewOnIMDb": "IMDbで見る",
+    "inProduction": "制作中",
+    "spokenLanguages": "言語",
+    "productionCountries": "制作国"
   },
   "loading": {
     "analyzing": "リクエストを分析中...",
@@ -500,6 +540,7 @@
     "diedAt": "歳で死去",
     "yearsOld": "歳",
     "movies": "映画",
-    "tvShows": "ドラマ"
+    "tvShows": "ドラマ",
+    "viewOnIMDb": "IMDbで見る"
   }
 }

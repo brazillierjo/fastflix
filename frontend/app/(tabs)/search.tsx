@@ -34,6 +34,7 @@ export default function SearchScreen() {
     movies,
     streamingProviders,
     credits,
+    crew,
     detailedInfo,
     geminiResponse,
     isFallback,
@@ -217,6 +218,7 @@ export default function SearchScreen() {
               movies={movies}
               streamingProviders={streamingProviders}
               credits={credits}
+              crew={crew}
               detailedInfo={detailedInfo}
               geminiResponse={isFallback ? t('errors.aiFallbackMessage') : geminiResponse}
               conversationHistory={conversationHistory}

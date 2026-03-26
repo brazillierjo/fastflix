@@ -66,6 +66,13 @@ export interface Cast {
   profile_path: string | null;
 }
 
+export interface CrewMember {
+  id: number;
+  name: string;
+  job: string;
+  profile_path: string | null;
+}
+
 interface Genre {
   id: number;
   name: string;
@@ -81,6 +88,19 @@ export interface DetailedInfo {
   status?: string;
   first_air_year?: number;
   tagline?: string;
+  // Movie-specific enriched fields
+  budget?: number;
+  revenue?: number;
+  production_companies?: Array<{ id: number; name: string; logo_path: string | null }>;
+  original_language?: string;
+  original_title?: string;
+  imdb_id?: string;
+  belongs_to_collection?: { id: number; name: string; poster_path: string | null } | null;
+  // TV-specific enriched fields
+  created_by?: Array<{ id: number; name: string; profile_path: string | null }>;
+  networks?: Array<{ id: number; name: string; logo_path: string | null }>;
+  last_episode_to_air?: { episode_number: number; season_number: number; name: string; air_date: string } | null;
+  next_episode_to_air?: { episode_number: number; season_number: number; name: string; air_date: string } | null;
 }
 
 export interface ConversationMessage {
@@ -91,7 +111,7 @@ export interface ConversationMessage {
 export interface SearchResponse {
   recommendations: MovieResult[];
   streamingProviders: { [key: number]: StreamingProvider[] };
-  credits: { [key: number]: Cast[] };
+  credits: { [key: number]: { cast: Cast[]; crew: CrewMember[] } };
   detailedInfo: { [key: number]: DetailedInfo };
   conversationalResponse: string;
   totalResults: number;

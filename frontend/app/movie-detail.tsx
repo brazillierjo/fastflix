@@ -56,6 +56,13 @@ interface CastMember {
   profile_path?: string | null;
 }
 
+interface CrewMemberData {
+  id: number;
+  name: string;
+  job: string;
+  profile_path?: string | null;
+}
+
 interface DetailedInfoData {
   genres?: { id: number; name: string }[];
   runtime?: number;
@@ -64,6 +71,21 @@ interface DetailedInfoData {
   number_of_episodes?: number;
   status?: string;
   first_air_year?: number;
+  tagline?: string;
+  budget?: number;
+  revenue?: number;
+  production_companies?: Array<{ id: number; name: string; logo_path: string | null }>;
+  original_language?: string;
+  original_title?: string;
+  imdb_id?: string;
+  belongs_to_collection?: { id: number; name: string; poster_path: string | null } | null;
+  created_by?: Array<{ id: number; name: string; profile_path: string | null }>;
+  networks?: Array<{ id: number; name: string; logo_path: string | null }>;
+  last_episode_to_air?: { episode_number: number; season_number: number; name: string; air_date: string } | null;
+  next_episode_to_air?: { episode_number: number; season_number: number; name: string; air_date: string } | null;
+  in_production?: boolean;
+  production_countries?: Array<{ iso_3166_1: string; name: string }>;
+  spoken_languages?: Array<{ english_name: string; iso_639_1: string; name: string }>;
 }
 
 interface SimilarMovie {
@@ -92,6 +114,7 @@ export default function MovieDetailScreen() {
     overview: string;
     providersJson: string;
     creditsJson: string;
+    crewJson: string;
     detailedInfoJson: string;
   }>();
 
@@ -113,6 +136,10 @@ export default function MovieDetailScreen() {
   });
   const [cast, setCast] = useState<CastMember[]>(() => {
     try { return params.creditsJson ? JSON.parse(params.creditsJson) : []; }
+    catch { return []; }
+  });
+  const [crewMembers, setCrewMembers] = useState<CrewMemberData[]>(() => {
+    try { return params.crewJson ? JSON.parse(params.crewJson) : []; }
     catch { return []; }
   });
   const [detailedInfo, setDetailedInfo] = useState<DetailedInfoData>(() => {
@@ -213,6 +240,7 @@ export default function MovieDetailScreen() {
             if (d.vote_average) setVoteAverage(d.vote_average);
             if (providers.length === 0 && d.providers?.length > 0) setProviders(d.providers);
             if (cast.length === 0 && d.credits?.length > 0) setCast(d.credits);
+            if (crewMembers.length === 0 && d.crew?.length > 0) setCrewMembers(d.crew);
             if (!detailedInfo?.genres?.length && d.detailedInfo && Object.keys(d.detailedInfo).length > 0) {
               setDetailedInfo(d.detailedInfo);
             }
@@ -391,6 +419,30 @@ export default function MovieDetailScreen() {
         detailedInfoJson: '{}',
       },
     });
+  };
+
+  // Derive director and key crew from crew data
+  const director = crewMembers.find(c => c.job === 'Director');
+  const keyCrew = crewMembers.filter(c =>
+    ['Director', 'Writer', 'Screenplay', 'Producer'].includes(c.job)
+  ).slice(0, 6);
+
+  // Format budget/revenue as compact currency
+  const formatCurrency = (amount: number): string => {
+    if (amount >= 1_000_000_000) return `$${(amount / 1_000_000_000).toFixed(1)}B`;
+    if (amount >= 1_000_000) return `$${(amount / 1_000_000).toFixed(0)}M`;
+    if (amount >= 1_000) return `$${(amount / 1_000).toFixed(0)}K`;
+    return `$${amount}`;
+  };
+
+  // Language code to display name
+  const getLanguageName = (code: string): string => {
+    const map: { [k: string]: string } = {
+      en: 'English', fr: 'French', es: 'Spanish', de: 'German',
+      it: 'Italian', ja: 'Japanese', ko: 'Korean', zh: 'Chinese',
+      pt: 'Portuguese', ru: 'Russian', ar: 'Arabic', hi: 'Hindi',
+    };
+    return map[code] || code.toUpperCase();
   };
 
   const releaseYear =
@@ -677,6 +729,19 @@ export default function MovieDetailScreen() {
             </MotiView>
           )}
 
+          {/* Tagline */}
+          {detailedInfo.tagline ? (
+            <MotiView
+              from={{ opacity: 0, translateY: 10 }}
+              animate={{ opacity: 1, translateY: 0 }}
+              transition={{ type: 'timing', duration: 400, delay: 130 }}
+            >
+              <Text className='mb-4 text-base italic text-light-textSecondary dark:text-dark-textSecondary'>
+                &ldquo;{detailedInfo.tagline}&rdquo;
+              </Text>
+            </MotiView>
+          ) : null}
+
           {/* Synopsis Section */}
           {loadingDetails && !overview ? (
             <View className='mb-6'>
@@ -872,6 +937,382 @@ export default function MovieDetailScreen() {
                   </View>
                 </View>
               </View>
+            </MotiView>
+          )}
+
+          {/* Director / Key Crew Section */}
+          {keyCrew.length > 0 && (
+            <MotiView
+              from={{ opacity: 0, translateY: 15 }}
+              animate={{ opacity: 1, translateY: 0 }}
+              transition={{ type: 'timing', duration: 400, delay: 270 }}
+            >
+              <View className='mb-6'>
+                <Text className='mb-3 text-lg font-semibold text-light-text dark:text-dark-text'>
+                  {t('movieDetail.crew') || 'Crew'}
+                </Text>
+                <ScrollView
+                  horizontal
+                  showsHorizontalScrollIndicator={false}
+                  contentContainerStyle={{ gap: 12 }}
+                >
+                  {keyCrew.map((member, idx) => (
+                    <TouchableOpacity
+                      key={`crew-${member.id}-${idx}`}
+                      activeOpacity={0.7}
+                      onPress={() =>
+                        router.push({
+                          pathname: '/actor-detail' as never,
+                          params: {
+                            personId: String(member.id),
+                            name: member.name,
+                            profilePath: member.profile_path || '',
+                          },
+                        })
+                      }
+                    >
+                      <View className='items-center' style={{ width: 80 }}>
+                        <View
+                          style={{ width: 64, height: 64, borderRadius: 32, overflow: 'hidden' }}
+                          className='mb-1.5 bg-light-surface dark:bg-dark-surface'
+                        >
+                          {member.profile_path ? (
+                            <Image
+                              source={{ uri: `https://image.tmdb.org/t/p/w185${member.profile_path}` }}
+                              style={{ width: 64, height: 64 }}
+                              resizeMode='cover'
+                            />
+                          ) : (
+                            <View className='flex-1 items-center justify-center'>
+                              <Ionicons name='person' size={28} color={isDark ? '#555' : '#bbb'} />
+                            </View>
+                          )}
+                        </View>
+                        <Text className='text-center text-xs font-medium text-light-text dark:text-dark-text' numberOfLines={2}>
+                          {member.name}
+                        </Text>
+                        <Text className='text-center text-xs text-light-textMuted dark:text-dark-textMuted' numberOfLines={1}>
+                          {member.job}
+                        </Text>
+                      </View>
+                    </TouchableOpacity>
+                  ))}
+                </ScrollView>
+              </View>
+            </MotiView>
+          )}
+
+          {/* TV: Created By */}
+          {mediaType === 'tv' && detailedInfo.created_by && detailedInfo.created_by.length > 0 && (
+            <MotiView
+              from={{ opacity: 0, translateY: 15 }}
+              animate={{ opacity: 1, translateY: 0 }}
+              transition={{ type: 'timing', duration: 400, delay: 275 }}
+            >
+              <View className='mb-6'>
+                <Text className='mb-2 text-lg font-semibold text-light-text dark:text-dark-text'>
+                  {t('movieDetail.createdBy') || 'Created by'}
+                </Text>
+                <ScrollView
+                  horizontal
+                  showsHorizontalScrollIndicator={false}
+                  contentContainerStyle={{ gap: 12 }}
+                >
+                  {detailedInfo.created_by.map((creator, idx) => (
+                    <TouchableOpacity
+                      key={`creator-${creator.id}-${idx}`}
+                      activeOpacity={0.7}
+                      onPress={() =>
+                        router.push({
+                          pathname: '/actor-detail' as never,
+                          params: {
+                            personId: String(creator.id),
+                            name: creator.name,
+                            profilePath: creator.profile_path || '',
+                          },
+                        })
+                      }
+                    >
+                      <View className='items-center' style={{ width: 80 }}>
+                        <View
+                          style={{ width: 64, height: 64, borderRadius: 32, overflow: 'hidden' }}
+                          className='mb-1.5 bg-light-surface dark:bg-dark-surface'
+                        >
+                          {creator.profile_path ? (
+                            <Image
+                              source={{ uri: `https://image.tmdb.org/t/p/w185${creator.profile_path}` }}
+                              style={{ width: 64, height: 64 }}
+                              resizeMode='cover'
+                            />
+                          ) : (
+                            <View className='flex-1 items-center justify-center'>
+                              <Ionicons name='person' size={28} color={isDark ? '#555' : '#bbb'} />
+                            </View>
+                          )}
+                        </View>
+                        <Text className='text-center text-xs font-medium text-light-text dark:text-dark-text' numberOfLines={2}>
+                          {creator.name}
+                        </Text>
+                      </View>
+                    </TouchableOpacity>
+                  ))}
+                </ScrollView>
+              </View>
+            </MotiView>
+          )}
+
+          {/* TV: Networks */}
+          {mediaType === 'tv' && detailedInfo.networks && detailedInfo.networks.length > 0 && (
+            <MotiView
+              from={{ opacity: 0, translateY: 15 }}
+              animate={{ opacity: 1, translateY: 0 }}
+              transition={{ type: 'timing', duration: 400, delay: 280 }}
+            >
+              <View className='mb-6'>
+                <Text className='mb-2 text-lg font-semibold text-light-text dark:text-dark-text'>
+                  {t('movieDetail.networks') || 'Networks'}
+                </Text>
+                <View className='flex-row flex-wrap gap-3'>
+                  {detailedInfo.networks.map((network) => (
+                    <View
+                      key={`network-${network.id}`}
+                      style={[getSquircle(10)]}
+                      className='flex-row items-center gap-2 bg-light-surface px-3 py-2 dark:bg-dark-surface'
+                    >
+                      {network.logo_path ? (
+                        <Image
+                          source={{ uri: `https://image.tmdb.org/t/p/w92${network.logo_path}` }}
+                          style={{ width: 24, height: 24 }}
+                          resizeMode='contain'
+                        />
+                      ) : null}
+                      <Text className='text-sm font-medium text-light-text dark:text-dark-text'>
+                        {network.name}
+                      </Text>
+                    </View>
+                  ))}
+                </View>
+              </View>
+            </MotiView>
+          )}
+
+          {/* TV: Next / Last Episode */}
+          {mediaType === 'tv' && (detailedInfo.next_episode_to_air || detailedInfo.last_episode_to_air) && (
+            <MotiView
+              from={{ opacity: 0, translateY: 15 }}
+              animate={{ opacity: 1, translateY: 0 }}
+              transition={{ type: 'timing', duration: 400, delay: 285 }}
+            >
+              <View className='mb-6'>
+                <Text className='mb-2 text-lg font-semibold text-light-text dark:text-dark-text'>
+                  {t('movieDetail.episodes') || 'Episodes'}
+                </Text>
+                <View
+                  style={[getSquircle(14), getCardShadow(isDark)]}
+                  className='bg-light-card p-3 dark:bg-dark-card'
+                >
+                  {detailedInfo.next_episode_to_air && (
+                    <View className='mb-2 flex-row items-center gap-2'>
+                      <View className='rounded-full bg-green-500/15 p-1'>
+                        <Ionicons name='arrow-forward-circle' size={16} color='#22c55e' />
+                      </View>
+                      <View className='flex-1'>
+                        <Text className='text-sm font-medium text-light-text dark:text-dark-text'>
+                          {t('movieDetail.nextEpisode') || 'Next'}: S{detailedInfo.next_episode_to_air.season_number}E{detailedInfo.next_episode_to_air.episode_number}
+                        </Text>
+                        <Text className='text-xs text-light-textMuted dark:text-dark-textMuted'>
+                          {detailedInfo.next_episode_to_air.name} - {detailedInfo.next_episode_to_air.air_date}
+                        </Text>
+                      </View>
+                    </View>
+                  )}
+                  {detailedInfo.last_episode_to_air && (
+                    <View className='flex-row items-center gap-2'>
+                      <View className='rounded-full bg-blue-500/15 p-1'>
+                        <Ionicons name='checkmark-circle' size={16} color='#3b82f6' />
+                      </View>
+                      <View className='flex-1'>
+                        <Text className='text-sm font-medium text-light-text dark:text-dark-text'>
+                          {t('movieDetail.lastEpisode') || 'Latest'}: S{detailedInfo.last_episode_to_air.season_number}E{detailedInfo.last_episode_to_air.episode_number}
+                        </Text>
+                        <Text className='text-xs text-light-textMuted dark:text-dark-textMuted'>
+                          {detailedInfo.last_episode_to_air.name} - {detailedInfo.last_episode_to_air.air_date}
+                        </Text>
+                      </View>
+                    </View>
+                  )}
+                </View>
+              </View>
+            </MotiView>
+          )}
+
+          {/* Budget / Revenue */}
+          {mediaType === 'movie' && detailedInfo.budget && detailedInfo.budget > 0 && (
+            <MotiView
+              from={{ opacity: 0, translateY: 15 }}
+              animate={{ opacity: 1, translateY: 0 }}
+              transition={{ type: 'timing', duration: 400, delay: 280 }}
+            >
+              <View className='mb-4 flex-row items-center gap-2'>
+                <Ionicons name='cash-outline' size={16} color={isDark ? '#a3a3a3' : '#737373'} />
+                <Text className='text-sm text-light-textSecondary dark:text-dark-textSecondary'>
+                  {formatCurrency(detailedInfo.budget)} {t('movieDetail.budget') || 'budget'}
+                  {detailedInfo.revenue && detailedInfo.revenue > 0
+                    ? ` · ${formatCurrency(detailedInfo.revenue)} ${t('movieDetail.boxOffice') || 'box office'}`
+                    : ''}
+                </Text>
+              </View>
+            </MotiView>
+          )}
+
+          {/* Collection / Franchise */}
+          {detailedInfo.belongs_to_collection && (
+            <MotiView
+              from={{ opacity: 0, translateY: 15 }}
+              animate={{ opacity: 1, translateY: 0 }}
+              transition={{ type: 'timing', duration: 400, delay: 285 }}
+            >
+              <View className='mb-4 flex-row items-center gap-2'>
+                <Ionicons name='albums-outline' size={16} color={isDark ? '#a3a3a3' : '#737373'} />
+                <Text className='text-sm text-light-textSecondary dark:text-dark-textSecondary'>
+                  {t('movieDetail.partOf') || 'Part of'} {detailedInfo.belongs_to_collection.name}
+                </Text>
+              </View>
+            </MotiView>
+          )}
+
+          {/* Original Language */}
+          {detailedInfo.original_language && detailedInfo.original_language !== langCode?.slice(0, 2) && (
+            <MotiView
+              from={{ opacity: 0, translateY: 15 }}
+              animate={{ opacity: 1, translateY: 0 }}
+              transition={{ type: 'timing', duration: 400, delay: 288 }}
+            >
+              <View className='mb-4 flex-row items-center gap-2'>
+                <Ionicons name='language-outline' size={16} color={isDark ? '#a3a3a3' : '#737373'} />
+                <Text className='text-sm text-light-textSecondary dark:text-dark-textSecondary'>
+                  {t('movieDetail.originalLanguage') || 'Original'}: {getLanguageName(detailedInfo.original_language)}
+                </Text>
+              </View>
+            </MotiView>
+          )}
+
+          {/* Production Companies */}
+          {detailedInfo.production_companies && detailedInfo.production_companies.length > 0 && (
+            <MotiView
+              from={{ opacity: 0, translateY: 15 }}
+              animate={{ opacity: 1, translateY: 0 }}
+              transition={{ type: 'timing', duration: 400, delay: 290 }}
+            >
+              <View className='mb-6'>
+                <Text className='mb-2 text-lg font-semibold text-light-text dark:text-dark-text'>
+                  {t('movieDetail.production') || 'Production'}
+                </Text>
+                <View className='flex-row flex-wrap gap-3'>
+                  {detailedInfo.production_companies.slice(0, 5).map((company) => (
+                    <View
+                      key={`company-${company.id}`}
+                      style={[getSquircle(10)]}
+                      className='flex-row items-center gap-2 bg-light-surface px-3 py-2 dark:bg-dark-surface'
+                    >
+                      {company.logo_path ? (
+                        <Image
+                          source={{ uri: `https://image.tmdb.org/t/p/w92${company.logo_path}` }}
+                          style={{ width: 24, height: 24 }}
+                          resizeMode='contain'
+                        />
+                      ) : null}
+                      <Text className='text-sm font-medium text-light-text dark:text-dark-text'>
+                        {company.name}
+                      </Text>
+                    </View>
+                  ))}
+                </View>
+              </View>
+            </MotiView>
+          )}
+
+          {/* Original Title */}
+          {detailedInfo.original_title && detailedInfo.original_title !== title && (
+            <MotiView
+              from={{ opacity: 0, translateY: 15 }}
+              animate={{ opacity: 1, translateY: 0 }}
+              transition={{ type: 'timing', duration: 400, delay: 292 }}
+            >
+              <View className='mb-4 flex-row items-center gap-2'>
+                <Ionicons name='text-outline' size={16} color={isDark ? '#a3a3a3' : '#737373'} />
+                <Text className='text-sm text-light-textSecondary dark:text-dark-textSecondary'>
+                  {t('movieDetail.originalTitle') || 'Original title'}: {detailedInfo.original_title}
+                </Text>
+              </View>
+            </MotiView>
+          )}
+
+          {/* Production Countries */}
+          {detailedInfo.production_countries && detailedInfo.production_countries.length > 0 && (
+            <MotiView
+              from={{ opacity: 0, translateY: 15 }}
+              animate={{ opacity: 1, translateY: 0 }}
+              transition={{ type: 'timing', duration: 400, delay: 294 }}
+            >
+              <View className='mb-4 flex-row items-center gap-2'>
+                <Ionicons name='globe-outline' size={16} color={isDark ? '#a3a3a3' : '#737373'} />
+                <Text className='text-sm text-light-textSecondary dark:text-dark-textSecondary'>
+                  {detailedInfo.production_countries.map(c => c.name).join(', ')}
+                </Text>
+              </View>
+            </MotiView>
+          )}
+
+          {/* Spoken Languages */}
+          {detailedInfo.spoken_languages && detailedInfo.spoken_languages.length > 0 && (
+            <MotiView
+              from={{ opacity: 0, translateY: 15 }}
+              animate={{ opacity: 1, translateY: 0 }}
+              transition={{ type: 'timing', duration: 400, delay: 296 }}
+            >
+              <View className='mb-4 flex-row items-center gap-2'>
+                <Ionicons name='chatbubble-ellipses-outline' size={16} color={isDark ? '#a3a3a3' : '#737373'} />
+                <Text className='text-sm text-light-textSecondary dark:text-dark-textSecondary'>
+                  {t('movieDetail.spokenLanguages') || 'Languages'}: {detailedInfo.spoken_languages.map(l => l.name || l.english_name).join(', ')}
+                </Text>
+              </View>
+            </MotiView>
+          )}
+
+          {/* In Production badge (TV) */}
+          {mediaType === 'tv' && detailedInfo.in_production && (
+            <MotiView
+              from={{ opacity: 0, translateY: 15 }}
+              animate={{ opacity: 1, translateY: 0 }}
+              transition={{ type: 'timing', duration: 400, delay: 298 }}
+            >
+              <View className='mb-4 flex-row items-center gap-2'>
+                <View className='h-2 w-2 rounded-full bg-green-500' />
+                <Text className='text-sm font-medium text-green-500'>
+                  {t('movieDetail.inProduction') || 'Currently in production'}
+                </Text>
+              </View>
+            </MotiView>
+          )}
+
+          {/* IMDb Link */}
+          {detailedInfo.imdb_id && (
+            <MotiView
+              from={{ opacity: 0, translateY: 15 }}
+              animate={{ opacity: 1, translateY: 0 }}
+              transition={{ type: 'timing', duration: 400, delay: 299 }}
+            >
+              <TouchableOpacity
+                onPress={() => Linking.openURL(`https://www.imdb.com/title/${detailedInfo.imdb_id}`)}
+                className='mb-6 flex-row items-center gap-2'
+                activeOpacity={0.7}
+              >
+                <Ionicons name='open-outline' size={16} color='#f5c518' />
+                <Text className='text-sm font-medium' style={{ color: '#f5c518' }}>
+                  {t('movieDetail.viewOnIMDb') || 'View on IMDb'}
+                </Text>
+              </TouchableOpacity>
             </MotiView>
           )}
 

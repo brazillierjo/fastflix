@@ -357,7 +357,23 @@
     "rateThis": "What's your rating?",
     "ratingSaved": "Rating saved!",
     "markWatched": "I've watched this",
-    "watchedConfirm": "Watched"
+    "watchedConfirm": "Watched",
+    "crew": "Crew",
+    "createdBy": "Created by",
+    "networks": "Networks",
+    "episodes": "Episodes",
+    "nextEpisode": "Next",
+    "lastEpisode": "Latest",
+    "budget": "budget",
+    "boxOffice": "box office",
+    "partOf": "Part of",
+    "originalLanguage": "Original",
+    "production": "Production",
+    "originalTitle": "Original title",
+    "viewOnIMDb": "View on IMDb",
+    "inProduction": "Currently in production",
+    "spokenLanguages": "Languages",
+    "productionCountries": "Produced in"
   },
   "common": {
     "cancel": "Cancel",
@@ -524,6 +540,7 @@
     "diedAt": "died at",
     "yearsOld": "years old",
     "movies": "movies",
-    "tvShows": "TV shows"
+    "tvShows": "TV shows",
+    "viewOnIMDb": "View on IMDb"
   }
 }

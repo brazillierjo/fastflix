@@ -506,7 +506,23 @@
     "rateThis": "Votre note ?",
     "ratingSaved": "Note enregistrée !",
     "markWatched": "J'ai vu",
-    "watchedConfirm": "Vu"
+    "watchedConfirm": "Vu",
+    "crew": "\u00c9quipe",
+    "createdBy": "Cr\u00e9\u00e9 par",
+    "networks": "Diffuseurs",
+    "episodes": "\u00c9pisodes",
+    "nextEpisode": "Prochain",
+    "lastEpisode": "Dernier",
+    "budget": "budget",
+    "boxOffice": "recettes",
+    "partOf": "Fait partie de",
+    "originalLanguage": "Langue originale",
+    "production": "Production",
+    "originalTitle": "Titre original",
+    "viewOnIMDb": "Voir sur IMDb",
+    "inProduction": "En cours de production",
+    "spokenLanguages": "Langues",
+    "productionCountries": "Produit en"
   },
   "ratings": {
     "sectionTitle": "Déjà vus",
@@ -521,9 +537,10 @@
     "birthInfo": "Informations personnelles",
     "filmography": "Filmographie",
     "noFilmography": "Aucune filmographie disponible",
-    "diedAt": "décédé à",
+    "diedAt": "d\u00e9c\u00e9d\u00e9 \u00e0",
     "yearsOld": "ans",
     "movies": "films",
-    "tvShows": "séries"
+    "tvShows": "s\u00e9ries",
+    "viewOnIMDb": "Voir sur IMDb"
   }
 }

@@ -394,7 +394,12 @@ export default function HomeScreen() {
         </View>
 
         {/* Daily Pick Card */}
-        <View className='mt-6 px-6'>
+        <MotiView
+          from={{ opacity: 0, translateY: 12 }}
+          animate={{ opacity: 1, translateY: 0 }}
+          transition={{ type: 'timing', duration: 400, delay: 50 }}
+          className='mt-6 px-6'
+        >
           <Text
             style={typography.title3}
             className='mb-3 text-light-text dark:text-dark-text'
@@ -476,7 +481,7 @@ export default function HomeScreen() {
               </Text>
             </View>
           )}
-        </View>
+        </MotiView>
 
         {/* Trending Section */}
         <View className='mt-8'>
@@ -576,23 +581,53 @@ export default function HomeScreen() {
         </View>
 
         {/* Quick Search */}
-        <View onLayout={(e) => { quickSearchY.current = e.nativeEvent.layout.y; }}>
-          <QuickSearch onFocusInput={() => {
-            scrollViewRef.current?.scrollTo({ y: quickSearchY.current - 20, animated: true });
-          }} />
-        </View>
+        <MotiView
+          from={{ opacity: 0, translateY: 12 }}
+          animate={{ opacity: 1, translateY: 0 }}
+          transition={{ type: 'timing', duration: 400, delay: 100 }}
+        >
+          <View onLayout={(e) => { quickSearchY.current = e.nativeEvent.layout.y; }}>
+            <QuickSearch onFocusInput={() => {
+              scrollViewRef.current?.scrollTo({ y: quickSearchY.current - 20, animated: true });
+            }} />
+          </View>
+        </MotiView>
 
         {/* New Releases This Week */}
-        <NewReleasesSection />
+        <MotiView
+          from={{ opacity: 0, translateY: 12 }}
+          animate={{ opacity: 1, translateY: 0 }}
+          transition={{ type: 'timing', duration: 400, delay: 200 }}
+        >
+          <NewReleasesSection />
+        </MotiView>
 
         {/* For You - Personalized Recommendations */}
-        <ForYouSection />
+        <MotiView
+          from={{ opacity: 0, translateY: 12 }}
+          animate={{ opacity: 1, translateY: 0 }}
+          transition={{ type: 'timing', duration: 400, delay: 300 }}
+        >
+          <ForYouSection />
+        </MotiView>
 
         {/* My Watchlist */}
-        <WatchlistSection />
+        <MotiView
+          from={{ opacity: 0, translateY: 12 }}
+          animate={{ opacity: 1, translateY: 0 }}
+          transition={{ type: 'timing', duration: 400, delay: 400 }}
+        >
+          <WatchlistSection />
+        </MotiView>
 
         {/* My Ratings */}
-        <MyRatingsSection />
+        <MotiView
+          from={{ opacity: 0, translateY: 12 }}
+          animate={{ opacity: 1, translateY: 0 }}
+          transition={{ type: 'timing', duration: 400, delay: 500 }}
+        >
+          <MyRatingsSection />
+        </MotiView>
 
         {/* Recent Searches - only for authenticated users */}
         {isAuthenticated && recentSearches.length > 0 && (
