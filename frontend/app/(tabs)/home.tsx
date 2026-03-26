@@ -72,6 +72,8 @@ export default function HomeScreen() {
   const [ctaText, setCtaText] = useState('');
   const ctaIndexRef = useRef(0);
   const ctaTimerRef = useRef<ReturnType<typeof setInterval> | null>(null);
+  const scrollViewRef = useRef<ScrollView>(null);
+  const quickSearchY = useRef(0);
 
   useEffect(() => {
     // Reset on text change
@@ -257,6 +259,7 @@ export default function HomeScreen() {
   return (
     <SafeAreaView className='flex-1 bg-light-background dark:bg-dark-background'>
       <ScrollView
+        ref={scrollViewRef}
         className='flex-1'
         contentContainerStyle={{ paddingBottom: 120 }}
         showsVerticalScrollIndicator={false}
@@ -573,7 +576,11 @@ export default function HomeScreen() {
         </View>
 
         {/* Quick Search */}
-        <QuickSearch />
+        <View onLayout={(e) => { quickSearchY.current = e.nativeEvent.layout.y; }}>
+          <QuickSearch onFocusInput={() => {
+            scrollViewRef.current?.scrollTo({ y: quickSearchY.current - 20, animated: true });
+          }} />
+        </View>
 
         {/* New Releases This Week */}
         <NewReleasesSection />

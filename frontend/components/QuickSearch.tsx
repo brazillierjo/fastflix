@@ -29,7 +29,11 @@ const TMDB_IMAGE_BASE = 'https://image.tmdb.org/t/p';
 const DEBOUNCE_MS = 350;
 const MIN_CHARS = 3;
 
-export default function QuickSearch() {
+interface QuickSearchProps {
+  onFocusInput?: () => void;
+}
+
+export default function QuickSearch({ onFocusInput }: QuickSearchProps) {
   const { t, language, country } = useLanguage();
   const router = useRouter();
   const colorScheme = useColorScheme();
@@ -161,6 +165,7 @@ export default function QuickSearch() {
           ref={inputRef}
           value={query}
           onChangeText={setQuery}
+          onFocus={onFocusInput}
           placeholder={t('home.quickSearchPlaceholder') || 'Movie, series, actor...'}
           placeholderTextColor={isDark ? '#525252' : '#a3a3a3'}
           className='ml-2 flex-1 text-base text-light-text dark:text-dark-text'
