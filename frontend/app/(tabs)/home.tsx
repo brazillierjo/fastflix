@@ -586,20 +586,19 @@ export default function HomeScreen() {
         </View>
 
         {/* Quick Search */}
-        <MotiView
-          from={hasAnimated.current ? undefined : { opacity: 0, translateY: 12 }}
-          animate={{ opacity: 1, translateY: 0 }}
-          transition={{ type: 'timing', duration: 400, delay: 100 }}
-        >
-          <View onLayout={(e) => { quickSearchY.current = e.nativeEvent.layout.y; }}>
+        <View onLayout={(e) => { quickSearchY.current = e.nativeEvent.layout.y; }}>
+          <MotiView
+            from={hasAnimated.current ? undefined : { opacity: 0, translateY: 12 }}
+            animate={{ opacity: 1, translateY: 0 }}
+            transition={{ type: 'timing', duration: 400, delay: 100 }}
+          >
             <QuickSearch onFocusInput={() => {
-              // Small delay to let keyboard animation start, then scroll input to top
               setTimeout(() => {
                 scrollViewRef.current?.scrollTo({ y: quickSearchY.current - 10, animated: true });
-              }, 100);
+              }, 150);
             }} />
-          </View>
-        </MotiView>
+          </MotiView>
+        </View>
 
         {/* New Releases This Week */}
         <MotiView
