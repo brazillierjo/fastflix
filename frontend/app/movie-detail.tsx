@@ -616,13 +616,13 @@ export default function MovieDetailScreen() {
 
         {/* Content below hero */}
         <View className='px-4'>
-          {/* Action Buttons Row */}
+          {/* Action Buttons Row — Watchlist + Watched + Share all on one line */}
           <MotiView
             from={{ opacity: 0, translateY: 15 }}
             animate={{ opacity: 1, translateY: 0 }}
             transition={{ type: 'timing', duration: 400, delay: 100 }}
           >
-            <View className='mb-6 mt-2 flex-row gap-2'>
+            <View className='mb-4 mt-2 flex-row gap-2'>
               {/* Watchlist button */}
               <View className='flex-1'>
                 <AddToWatchlistButton
@@ -642,10 +642,37 @@ export default function MovieDetailScreen() {
                 />
               </View>
 
+              {/* Watched toggle button */}
+              {isAuthenticated && (
+                <TouchableOpacity
+                  onPress={isWatched ? handleUnmarkWatched : handleMarkWatched}
+                  disabled={isRating || isDeleting}
+                  activeOpacity={0.7}
+                  className={`flex-row items-center justify-center gap-1.5 rounded-xl border-2 px-3 py-3 ${
+                    isWatched
+                      ? 'border-green-500/30 bg-green-500/10'
+                      : 'border-light-border bg-light-surface dark:border-dark-border dark:bg-dark-surface'
+                  }`}
+                >
+                  <Ionicons
+                    name={isWatched ? 'checkmark-circle' : 'eye-outline'}
+                    size={20}
+                    color={isWatched ? '#22c55e' : isDark ? '#a3a3a3' : '#737373'}
+                  />
+                  <Text className={`text-sm font-medium ${
+                    isWatched
+                      ? 'text-green-500'
+                      : 'text-light-textSecondary dark:text-dark-textSecondary'
+                  }`}>
+                    {isWatched ? t('movieDetail.watchedConfirm') : t('movieDetail.markWatched')}
+                  </Text>
+                </TouchableOpacity>
+              )}
+
               {/* Share button */}
               <TouchableOpacity
                 onPress={handleShare}
-                className='flex-row items-center justify-center rounded-xl border-2 border-light-border bg-light-surface px-4 py-3 dark:border-dark-border dark:bg-dark-surface'
+                className='flex-row items-center justify-center rounded-xl border-2 border-light-border bg-light-surface px-3 py-3 dark:border-dark-border dark:bg-dark-surface'
               >
                 <Ionicons
                   name='share-outline'
@@ -656,90 +683,42 @@ export default function MovieDetailScreen() {
             </View>
           </MotiView>
 
-          {/* Watched + Rating Section (2-step flow) */}
-          {isAuthenticated && (
+          {/* Star Rating — slides in when watched */}
+          {isAuthenticated && isWatched && (
             <MotiView
-              from={{ opacity: 0, translateY: 15 }}
+              from={{ opacity: 0, translateY: -8 }}
               animate={{ opacity: 1, translateY: 0 }}
-              transition={{ type: 'timing', duration: 400, delay: 120 }}
+              transition={{ type: 'timing', duration: 250 }}
               className='mb-6'
             >
-              {!isWatched ? (
-                /* Step 1: "J'ai vu" button — same design as watchlist button */
-                <TouchableOpacity
-                  onPress={handleMarkWatched}
-                  disabled={isRating}
-                  activeOpacity={0.7}
-                  className='flex-row items-center justify-center gap-2 rounded-xl border-2 border-light-border bg-light-surface px-4 py-3 dark:border-dark-border dark:bg-dark-surface'
-                >
-                  <Ionicons name='eye-outline' size={20} color={isDark ? '#a3a3a3' : '#737373'} />
-                  <Text className='text-base font-medium text-light-textSecondary dark:text-dark-textSecondary'>
-                    {t('movieDetail.markWatched')}
-                  </Text>
-                </TouchableOpacity>
-              ) : (
-                /* Step 2: Watched confirmed + optional star rating */
-                <MotiView
-                  from={{ opacity: 0, scale: 0.95 }}
-                  animate={{ opacity: 1, scale: 1 }}
-                  transition={{ type: 'timing', duration: 300 }}
-                >
-                  <View
-                    style={[getSquircle(14), getCardShadow(isDark)]}
-                    className='border border-light-border bg-light-card px-4 py-4 dark:border-dark-border dark:bg-dark-card'
-                  >
-                    {/* Watched badge + undo */}
-                    <View className='mb-3 flex-row items-center justify-center gap-2'>
-                      <View className='rounded-full bg-green-500/15 p-1'>
-                        <Ionicons name='checkmark-circle' size={16} color='#22c55e' />
-                      </View>
-                      <Text className='text-sm font-medium text-green-500'>
-                        {t('movieDetail.watchedConfirm')}
-                      </Text>
-                      <TouchableOpacity
-                        onPress={handleUnmarkWatched}
-                        disabled={isDeleting}
-                        hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}
-                      >
-                        <Ionicons name='close-circle' size={18} color={isDark ? '#525252' : '#a3a3a3'} />
-                      </TouchableOpacity>
-                    </View>
-
-                    {/* Star rating */}
-                    <Text className='mb-2 text-center text-sm text-light-textSecondary dark:text-dark-textSecondary'>
-                      {t('movieDetail.rateThis')}
-                    </Text>
-                    <View className='flex-row items-center justify-center gap-3'>
-                      {[1, 2, 3, 4, 5].map((star) => (
-                        <TouchableOpacity
-                          key={star}
-                          onPress={() => handleRate(star)}
-                          disabled={isRating}
-                          hitSlop={{ top: 10, bottom: 10, left: 6, right: 6 }}
-                          activeOpacity={0.7}
-                        >
-                          <Ionicons
-                            name={star <= localRating ? 'star' : 'star-outline'}
-                            size={32}
-                            color={star <= localRating ? '#E50914' : isDark ? '#404040' : '#d4d4d4'}
-                          />
-                        </TouchableOpacity>
-                      ))}
-                    </View>
-                    {ratingConfirmed && (
-                      <MotiView
-                        from={{ opacity: 0, translateY: 5 }}
-                        animate={{ opacity: 1, translateY: 0 }}
-                        transition={{ type: 'timing', duration: 200 }}
-                      >
-                        <Text className='mt-2 text-center text-xs font-medium text-green-500'>
-                          {t('movieDetail.ratingSaved')}
-                        </Text>
-                      </MotiView>
-                    )}
-                  </View>
-                </MotiView>
-              )}
+              <View
+                style={[getSquircle(12)]}
+                className='flex-row items-center justify-between border border-light-border bg-light-surface/80 px-4 py-3 dark:border-dark-border dark:bg-dark-surface/80'
+              >
+                <Text className='text-sm text-light-textSecondary dark:text-dark-textSecondary'>
+                  {t('movieDetail.rateThis')}
+                </Text>
+                <View className='flex-row items-center gap-2'>
+                  {[1, 2, 3, 4, 5].map((star) => (
+                    <TouchableOpacity
+                      key={star}
+                      onPress={() => handleRate(star)}
+                      disabled={isRating}
+                      hitSlop={{ top: 10, bottom: 10, left: 4, right: 4 }}
+                      activeOpacity={0.7}
+                    >
+                      <Ionicons
+                        name={star <= localRating ? 'star' : 'star-outline'}
+                        size={26}
+                        color={star <= localRating ? '#E50914' : isDark ? '#404040' : '#d4d4d4'}
+                      />
+                    </TouchableOpacity>
+                  ))}
+                </View>
+                {ratingConfirmed && (
+                  <Ionicons name='checkmark' size={16} color='#22c55e' />
+                )}
+              </View>
             </MotiView>
           )}
 
