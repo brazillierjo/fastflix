@@ -94,8 +94,10 @@ export default function ForYouSection() {
   const allRecommendations = data?.recommendations ?? [];
   const streamingProviders = data?.streamingProviders ?? {};
   const hasProfile = data?.hasProfile ?? false;
+  const filteredByTab = allRecommendations.filter(r => r.media_type === activeTab);
+  // Show filtered results if available, otherwise show all to avoid empty state
   const recommendations = hasProfile
-    ? allRecommendations.filter(r => r.media_type === activeTab)
+    ? (filteredByTab.length > 0 ? filteredByTab : allRecommendations)
     : [];
 
   const navigateToDetail = (item: MovieResult) => {

@@ -177,11 +177,13 @@ export default function MovieDetailScreen() {
   const tmdbLanguage = langCode?.includes('-') ? langCode : `${langCode || 'en'}-${(country || 'US').toUpperCase()}`;
   const tmdbCountry = (country || 'US').toUpperCase();
 
-  // Auto-fetch full details when opened with minimal data
-  const needsDetails = !overview && !detailedInfo?.genres?.length && cast.length === 0;
+  // Auto-fetch full details when opened with minimal data (any missing field triggers fetch)
+  const needsDetails = !overview || !detailedInfo?.genres?.length || cast.length === 0;
+  const hasFetchedDetails = React.useRef(false);
 
   useEffect(() => {
-    if (tmdbId > 0 && needsDetails) {
+    if (tmdbId > 0 && needsDetails && !hasFetchedDetails.current) {
+      hasFetchedDetails.current = true;
       setLoadingDetails(true);
       backendAPIService
         .getDetails({
@@ -193,13 +195,13 @@ export default function MovieDetailScreen() {
         .then(res => {
           if (res.success && res.data) {
             const d = res.data;
-            if (d.overview) setOverview(d.overview);
+            if (!overview && d.overview) setOverview(d.overview);
             if (d.title) setTitle(d.title);
             if (d.poster_path) setPosterPath(d.poster_path);
             if (d.vote_average) setVoteAverage(d.vote_average);
-            if (d.providers?.length > 0) setProviders(d.providers);
-            if (d.credits?.length > 0) setCast(d.credits);
-            if (d.detailedInfo && Object.keys(d.detailedInfo).length > 0) {
+            if (providers.length === 0 && d.providers?.length > 0) setProviders(d.providers);
+            if (cast.length === 0 && d.credits?.length > 0) setCast(d.credits);
+            if (!detailedInfo?.genres?.length && d.detailedInfo && Object.keys(d.detailedInfo).length > 0) {
               setDetailedInfo(d.detailedInfo);
             }
           }
@@ -871,48 +873,62 @@ export default function MovieDetailScreen() {
                   contentContainerStyle={{ gap: 12 }}
                 >
                   {cast.slice(0, 10).map((actor, idx) => (
-                    <View
+                    <TouchableOpacity
                       key={`cast-${actor.id}-${idx}`}
-                      className='items-center'
-                      style={{ width: 80 }}
+                      activeOpacity={0.7}
+                      onPress={() =>
+                        router.push({
+                          pathname: '/actor-detail' as never,
+                          params: {
+                            personId: String(actor.id),
+                            name: actor.name,
+                            profilePath: actor.profile_path || '',
+                          },
+                        })
+                      }
                     >
                       <View
-                        style={[
-                          { width: 64, height: 64, borderRadius: 32, overflow: 'hidden' },
-                        ]}
-                        className='mb-1.5 bg-light-surface dark:bg-dark-surface'
+                        className='items-center'
+                        style={{ width: 80 }}
                       >
-                        {actor.profile_path ? (
-                          <Image
-                            source={{
-                              uri: `https://image.tmdb.org/t/p/w185${actor.profile_path}`,
-                            }}
-                            style={{ width: 64, height: 64 }}
-                            resizeMode='cover'
-                          />
-                        ) : (
-                          <View className='flex-1 items-center justify-center'>
-                            <Ionicons
-                              name='person'
-                              size={28}
-                              color={isDark ? '#555' : '#bbb'}
+                        <View
+                          style={[
+                            { width: 64, height: 64, borderRadius: 32, overflow: 'hidden' },
+                          ]}
+                          className='mb-1.5 bg-light-surface dark:bg-dark-surface'
+                        >
+                          {actor.profile_path ? (
+                            <Image
+                              source={{
+                                uri: `https://image.tmdb.org/t/p/w185${actor.profile_path}`,
+                              }}
+                              style={{ width: 64, height: 64 }}
+                              resizeMode='cover'
                             />
-                          </View>
-                        )}
+                          ) : (
+                            <View className='flex-1 items-center justify-center'>
+                              <Ionicons
+                                name='person'
+                                size={28}
+                                color={isDark ? '#555' : '#bbb'}
+                              />
+                            </View>
+                          )}
+                        </View>
+                        <Text
+                          className='text-center text-xs font-medium text-light-text dark:text-dark-text'
+                          numberOfLines={2}
+                        >
+                          {actor.name}
+                        </Text>
+                        <Text
+                          className='text-center text-xs text-light-textMuted dark:text-dark-textMuted'
+                          numberOfLines={1}
+                        >
+                          {actor.character}
+                        </Text>
                       </View>
-                      <Text
-                        className='text-center text-xs font-medium text-light-text dark:text-dark-text'
-                        numberOfLines={2}
-                      >
-                        {actor.name}
-                      </Text>
-                      <Text
-                        className='text-center text-xs text-light-textMuted dark:text-dark-textMuted'
-                        numberOfLines={1}
-                      >
-                        {actor.character}
-                      </Text>
-                    </View>
+                    </TouchableOpacity>
                   ))}
                 </ScrollView>
               </View>

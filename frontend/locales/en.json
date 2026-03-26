@@ -69,7 +69,8 @@
   "errors": {
     "title": "Error",
     "enterRequest": "Please enter a request",
-    "searchError": "An error occurred during the search"
+    "searchError": "An error occurred during the search",
+    "aiFallbackMessage": "Our AI is temporarily unavailable. Here are some popular recommendations in the meantime."
   },
   "modal": {
     "title": "User profile"
@@ -336,7 +337,9 @@
     "shareTitle": "My FastFlix Watchlist",
     "shareFooter": "Discover what to watch with FastFlix!",
     "sectionTitle": "To Watch",
-    "emptyHome": "Add films to your list from any movie page"
+    "emptyHome": "Add films to your list from any movie page",
+    "removeTitle": "Remove from watchlist",
+    "removeMessage": "Are you sure you want to remove this item from your watchlist?"
   },
   "movieDetail": {
     "watchedButton": "Mark as Watched",
@@ -354,7 +357,8 @@
     "cancel": "Cancel",
     "done": "Done",
     "close": "Close",
-    "retry": "Retry"
+    "retry": "Retry",
+    "remove": "Remove"
   },
   "tabs": {
     "home": "Home",
@@ -367,6 +371,7 @@
     "skip": "Skip",
     "next": "Next",
     "getStarted": "Get Started",
+    "alreadyHaveAccount": "I already have an account",
     "screen1": {
       "title": "Find exactly what to watch tonight",
       "subtitle": "No more endless scrolling. Discover movies and TV shows tailored to your mood with AI-powered recommendations."
@@ -492,6 +497,16 @@
   },
   "ratings": {
     "sectionTitle": "Already Watched",
-    "emptyHome": "Mark films as watched to track what you've seen"
+    "emptyHome": "Mark films as watched to track what you've seen",
+    "removeTitle": "Remove from watched",
+    "removeMessage": "Are you sure you want to remove this item from your watched list?"
+  },
+  "actorDetail": {
+    "biography": "Biography",
+    "readMore": "Read more",
+    "readLess": "Read less",
+    "birthInfo": "Personal Info",
+    "filmography": "Filmography",
+    "noFilmography": "No filmography available"
   }
 }

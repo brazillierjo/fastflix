@@ -86,6 +86,34 @@ export function useRateMovie() {
 }
 
 /**
+ * Hook for deleting a movie from the user's rated/watched list
+ */
+export function useDeleteRating() {
+  const queryClient = useQueryClient();
+
+  const mutation = useMutation({
+    mutationFn: async (tmdbId: number) => {
+      const response = await backendAPIService.deleteRating(tmdbId);
+      if (!response.success) {
+        throw new Error(response.error?.message || 'Failed to delete rating');
+      }
+      return response.data;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: TASTE_PROFILE_KEY });
+      queryClient.invalidateQueries({ queryKey: ['forYou'] });
+    },
+  });
+
+  return {
+    deleteRating: mutation.mutate,
+    deleteRatingAsync: mutation.mutateAsync,
+    isDeleting: mutation.isPending,
+    error: mutation.error,
+  };
+}
+
+/**
  * Hook to get the current user's watched/rating status for a specific movie
  */
 export function useMovieRating(tmdbId: number) {

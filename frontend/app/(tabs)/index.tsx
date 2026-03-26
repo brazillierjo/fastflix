@@ -1,10 +1,8 @@
-import LoadingState from '@/components/LoadingState';
 import { useAuth } from '@/contexts/AuthContext';
-import { cn } from '@/utils/cn';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { Redirect } from 'expo-router';
+import * as SplashScreen from 'expo-splash-screen';
 import React, { useEffect, useState } from 'react';
-import { SafeAreaView } from 'react-native-safe-area-context';
 
 const ONBOARDING_KEY = '@fastflix/onboarding_complete';
 const SETUP_COMPLETE_KEY = '@fastflix/setup_complete';
@@ -27,15 +25,17 @@ export default function IndexScreen() {
     });
   }, []);
 
-  // Show loading while checking statuses
-  if (isLoading || onboardingComplete === null || setupComplete === null) {
-    return (
-      <SafeAreaView
-        className={cn('flex-1 bg-light-background dark:bg-dark-background')}
-      >
-        <LoadingState isSearching={false} />
-      </SafeAreaView>
-    );
+  // Hide splash screen once all routing decisions are resolved
+  const isReady = !isLoading && onboardingComplete !== null && setupComplete !== null;
+  useEffect(() => {
+    if (isReady) {
+      SplashScreen.hideAsync();
+    }
+  }, [isReady]);
+
+  // Keep splash visible while checking statuses
+  if (!isReady) {
+    return null;
   }
 
   // Flow: Onboarding → Setup → Auth → Home

@@ -57,3 +57,44 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ error: 'Failed to rate movie' }, { status: 500 });
   }
 }
+
+// Validation schema for deleting a rating
+const deleteRatingSchema = z.object({
+  tmdb_id: z.number().int().positive(),
+});
+
+/**
+ * DELETE /api/user/taste-profile/rate
+ * Remove a movie from the user's rated movies list
+ */
+export async function DELETE(request: NextRequest) {
+  try {
+    const authResult = await requireAuth(request);
+
+    if (!authResult.success || !authResult.userId) {
+      return authResult.error!;
+    }
+
+    const body = await request.json();
+    const validatedData = deleteRatingSchema.parse(body);
+
+    const updatedProfile = await db.removeRating(
+      authResult.userId,
+      validatedData.tmdb_id
+    );
+
+    return NextResponse.json({
+      success: true,
+      data: { profile: updatedProfile },
+    });
+  } catch (error) {
+    if (error instanceof z.ZodError) {
+      return NextResponse.json(
+        { error: 'Invalid request data', details: error.issues },
+        { status: 400 }
+      );
+    }
+
+    return NextResponse.json({ error: 'Failed to remove rating' }, { status: 500 });
+  }
+}

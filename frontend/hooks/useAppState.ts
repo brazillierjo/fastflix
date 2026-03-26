@@ -28,6 +28,7 @@ interface AppState {
   credits: { [key: number]: Cast[] };
   detailedInfo: { [key: number]: DetailedInfo };
   geminiResponse: string;
+  isFallback: boolean;
   conversationHistory: ConversationMessage[];
   showWelcome: boolean;
   showResults: boolean;
@@ -48,6 +49,7 @@ export const useAppState = () => {
     [key: number]: DetailedInfo;
   }>({});
   const [geminiResponse, setGeminiResponse] = useState('');
+  const [isFallback, setIsFallback] = useState(false);
   const [conversationHistory, setConversationHistory] = useState<ConversationMessage[]>([]);
   const [showWelcome, setShowWelcome] = useState(true);
   const [showResults, setShowResults] = useState(false);
@@ -63,6 +65,7 @@ export const useAppState = () => {
     setCredits({});
     setDetailedInfo({});
     setGeminiResponse('');
+    setIsFallback(false);
     setConversationHistory([]);
   };
 
@@ -73,12 +76,14 @@ export const useAppState = () => {
     detailedInfo: { [key: number]: DetailedInfo };
     geminiResponse: string;
     conversationHistory?: ConversationMessage[];
+    isFallback?: boolean;
   }) => {
     setMovies(data.movies);
     setStreamingProviders(data.streamingProviders);
     setCredits(data.credits);
     setDetailedInfo(data.detailedInfo);
     setGeminiResponse(data.geminiResponse);
+    setIsFallback(data.isFallback || false);
     setConversationHistory(data.conversationHistory || []);
     setIsSearching(false);
     setShowResults(true);
@@ -102,6 +107,7 @@ export const useAppState = () => {
     credits,
     detailedInfo,
     geminiResponse,
+    isFallback,
     conversationHistory,
     showWelcome,
     showResults,

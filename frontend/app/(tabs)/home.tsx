@@ -367,7 +367,7 @@ export default function HomeScreen() {
                 {ctaText}
                 {ctaText.length < ctaFullText.length
                   ? <Text style={{ opacity: 0.6 }}>|</Text>
-                  : ' 🍿'}
+                  : '\u00A0🍿'}
               </Text>
             </View>
           </TouchableOpacity>
@@ -382,7 +382,24 @@ export default function HomeScreen() {
             {t('home.dailyPick')}
           </Text>
           {dailyPick ? (
-            <View
+            <TouchableOpacity
+              activeOpacity={0.8}
+              onPress={() =>
+                router.push({
+                  pathname: '/movie-detail' as never,
+                  params: {
+                    tmdbId: String(dailyPick.tmdb_id || dailyPick.id),
+                    mediaType: dailyPick.media_type || 'movie',
+                    title: dailyPick.title || dailyPick.name || '',
+                    posterPath: dailyPick.poster_path || '',
+                    voteAverage: String(dailyPick.vote_average || 0),
+                    overview: dailyPick.overview || '',
+                    providersJson: JSON.stringify(dailyPick.providers || []),
+                    creditsJson: JSON.stringify([]),
+                    detailedInfoJson: JSON.stringify({}),
+                  },
+                })
+              }
               style={[getSquircle(16), getCardShadow(isDark)]}
               className='overflow-hidden border border-light-border bg-light-surface dark:border-dark-border dark:bg-dark-surface'
             >
@@ -421,7 +438,7 @@ export default function HomeScreen() {
                   </Text>
                 )}
               </View>
-            </View>
+            </TouchableOpacity>
           ) : isHomeLoading ? (
             <Skeleton width='100%' height={200} borderRadius={16} />
           ) : (

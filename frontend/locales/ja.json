@@ -69,7 +69,8 @@
   "errors": {
     "title": "エラー",
     "enterRequest": "リクエストを入力してください",
-    "searchError": "検索中にエラーが発生しました"
+    "searchError": "検索中にエラーが発生しました",
+    "aiFallbackMessage": "AIが一時的に利用できません。人気のおすすめをご覧ください。"
   },
   "modal": {
     "title": "ユーザープロフィール"
@@ -324,13 +325,16 @@
     "watched": "視聴済み",
     "markWatched": "視聴済みにする",
     "markUnwatched": "未視聴にする",
-    "emptyHome": "映画ページからリストに追加できます"
+    "emptyHome": "映画ページからリストに追加できます",
+    "removeTitle": "リストから削除",
+    "removeMessage": "このアイテムをリストから削除しますか？"
   },
   "common": {
     "cancel": "キャンセル",
     "done": "完了",
     "close": "閉じる",
-    "retry": "再試行"
+    "retry": "再試行",
+    "remove": "削除"
   },
   "tabs": {
     "home": "ホーム",
@@ -343,6 +347,7 @@
     "skip": "スキップ",
     "next": "次へ",
     "getStarted": "始める",
+    "alreadyHaveAccount": "アカウントをお持ちの方",
     "screen1": { "title": "今夜何を見るか見つけよう", "subtitle": "終わらないスクロールはもう終わり。AIに気分を伝えて、完璧なおすすめを数秒で。" },
     "screen2": { "title": "AIがあなたの好みを学習", "subtitle": "使えば使うほど賢くなります。映画を評価してプロフィールを構築。" },
     "screen3": { "title": "あなたのプラットフォーム、あなたのコンテンツ", "subtitle": "Netflix、Disney+、Prime Videoなどでフィルタリング。" },
@@ -468,6 +473,16 @@
   },
   "ratings": {
     "sectionTitle": "視聴済み",
-    "emptyHome": "映画を視聴済みにして履歴を残しましょう"
+    "emptyHome": "映画を視聴済みにして履歴を残しましょう",
+    "removeTitle": "視聴済みから削除",
+    "removeMessage": "このアイテムを視聴済みリストから削除しますか？"
+  },
+  "actorDetail": {
+    "biography": "経歴",
+    "readMore": "もっと読む",
+    "readLess": "閉じる",
+    "birthInfo": "個人情報",
+    "filmography": "フィルモグラフィー",
+    "noFilmography": "フィルモグラフィーがありません"
   }
 }

@@ -96,6 +96,7 @@ export interface SearchResponse {
   conversationalResponse: string;
   totalResults: number;
   conversationHistory?: ConversationMessage[];
+  isFallback?: boolean;
 }
 
 interface HealthCheckResponse {
@@ -703,6 +704,32 @@ class BackendAPIService {
     return await this.makeRequest('/api/user/taste-profile/rate', {
       method: 'POST',
       body: JSON.stringify(params),
+    });
+  }
+
+  async deleteRating(tmdbId: number): Promise<APIResponse<{ profile: unknown }>> {
+    return await this.makeRequest('/api/user/taste-profile/rate', {
+      method: 'DELETE',
+      body: JSON.stringify({ tmdb_id: tmdbId }),
+    });
+  }
+
+  // ==========================================================================
+  // Person / Actor Methods
+  // ==========================================================================
+
+  /**
+   * Get full details for a person (actor/director) by TMDB person ID
+   */
+  async getPersonDetails(
+    personId: number,
+    language?: string
+  ): Promise<APIResponse<any>> {
+    const qs = new URLSearchParams();
+    if (language) qs.set('language', language);
+    const query = qs.toString() ? `?${qs.toString()}` : '';
+    return await this.makeRequest(`/api/person/${personId}${query}`, {
+      method: 'GET',
     });
   }
 }

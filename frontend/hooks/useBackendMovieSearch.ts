@@ -70,6 +70,7 @@ interface SearchResult {
   detailedInfo: { [key: number]: DetailedInfo };
   geminiResponse: string;
   conversationHistory?: ConversationMessage[];
+  isFallback?: boolean;
 }
 
 /**
@@ -180,6 +181,7 @@ const searchMoviesWithBackend = async (
       detailedInfo,
       geminiResponse: data.conversationalResponse,
       conversationHistory: data.conversationHistory,
+      isFallback: data.isFallback,
     };
   } catch (error) {
     // Re-throw known errors (like subscriptionRequired) without transforming them

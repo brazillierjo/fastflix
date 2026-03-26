@@ -69,7 +69,8 @@
   "errors": {
     "title": "Fehler",
     "enterRequest": "Bitte gib eine Anfrage ein",
-    "searchError": "Bei der Suche ist ein Fehler aufgetreten"
+    "searchError": "Bei der Suche ist ein Fehler aufgetreten",
+    "aiFallbackMessage": "Unsere KI ist vorübergehend nicht verfügbar. Hier sind einige beliebte Empfehlungen."
   },
   "modal": {
     "title": "Benutzerprofil"
@@ -324,13 +325,16 @@
     "watched": "Gesehen",
     "markWatched": "Als gesehen markieren",
     "markUnwatched": "Als nicht gesehen markieren",
-    "emptyHome": "Fügen Sie Filme von jeder Filmseite hinzu"
+    "emptyHome": "Fügen Sie Filme von jeder Filmseite hinzu",
+    "removeTitle": "Von der Liste entfernen",
+    "removeMessage": "Möchten Sie diesen Eintrag wirklich von Ihrer Liste entfernen?"
   },
   "common": {
     "cancel": "Abbrechen",
     "done": "Fertig",
     "close": "Schließen",
-    "retry": "Erneut versuchen"
+    "retry": "Erneut versuchen",
+    "remove": "Entfernen"
   },
   "tabs": {
     "home": "Start",
@@ -343,6 +347,7 @@
     "skip": "Überspringen",
     "next": "Weiter",
     "getStarted": "Los geht's",
+    "alreadyHaveAccount": "Ich habe bereits ein Konto",
     "screen1": { "title": "Finde heraus, was du heute Abend schauen sollst", "subtitle": "Schluss mit endlosem Scrollen. Sag unserer KI, worauf du Lust hast." },
     "screen2": { "title": "KI lernt deinen Geschmack", "subtitle": "Je mehr du FastFlix nutzt, desto besser werden die Empfehlungen." },
     "screen3": { "title": "Deine Plattformen, dein Content", "subtitle": "Filtere nach Netflix, Disney+, Prime Video und mehr." },
@@ -468,6 +473,16 @@
   },
   "ratings": {
     "sectionTitle": "Bereits gesehen",
-    "emptyHome": "Markieren Sie Filme als gesehen"
+    "emptyHome": "Markieren Sie Filme als gesehen",
+    "removeTitle": "Aus gesehenen entfernen",
+    "removeMessage": "Möchten Sie diesen Eintrag wirklich aus Ihrer Liste entfernen?"
+  },
+  "actorDetail": {
+    "biography": "Biografie",
+    "readMore": "Mehr lesen",
+    "readLess": "Weniger lesen",
+    "birthInfo": "Persönliche Infos",
+    "filmography": "Filmografie",
+    "noFilmography": "Keine Filmografie verfügbar"
   }
 }

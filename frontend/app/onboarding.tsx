@@ -83,6 +83,12 @@ export default function OnboardingScreen() {
     router.replace('/setup' as never);
   }, [router]);
 
+  const goToLogin = useCallback(async () => {
+    await AsyncStorage.setItem(ONBOARDING_KEY, 'true');
+    await AsyncStorage.setItem('@fastflix/setup_complete', 'true');
+    router.replace('/auth' as never);
+  }, [router]);
+
   const handleNext = useCallback(() => {
     if (activeIndex < SLIDES.length - 1) {
       flatListRef.current?.scrollToIndex({
@@ -299,6 +305,17 @@ export default function OnboardingScreen() {
             {activeIndex === SLIDES.length - 1
               ? t('onboarding.getStarted')
               : t('onboarding.next')}
+          </Text>
+        </TouchableOpacity>
+
+        {/* Already have an account */}
+        <TouchableOpacity
+          onPress={goToLogin}
+          className="mt-4 px-4 py-2"
+          activeOpacity={0.7}
+        >
+          <Text className="text-center text-sm font-medium text-light-text/50 dark:text-dark-text/50">
+            {t('onboarding.alreadyHaveAccount')}
           </Text>
         </TouchableOpacity>
       </View>

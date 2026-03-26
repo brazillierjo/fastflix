@@ -12,7 +12,7 @@ import { WatchlistProvider } from '@/types/api';
 import AnimatedCheckmark from '@/components/AnimatedCheckmark';
 import { hapticSuccess } from '@/utils/haptics';
 import { MotiView } from 'moti';
-import React, { useState } from 'react';
+import React, { useRef, useState } from 'react';
 import { ActivityIndicator, Text, TouchableOpacity, View } from 'react-native';
 import * as Haptics from 'expo-haptics';
 
@@ -43,8 +43,9 @@ export default function AddToWatchlistButton({
   const { isAuthenticated } = useAuth();
   const [showAuthGate, setShowAuthGate] = useState(false);
   const [showCheckmark, setShowCheckmark] = useState(false);
+  const checkmarkShownRef = useRef(false);
 
-  const { inWatchlist, isLoading, isToggling, toggleAsync } =
+  const { inWatchlist, isToggling, toggleAsync } =
     useWatchlistToggle(tmdbId, mediaType, {
       title,
       posterPath,
@@ -60,6 +61,7 @@ export default function AddToWatchlistButton({
     }
 
     const wasInWatchlist = inWatchlist;
+    checkmarkShownRef.current = false;
 
     // Haptic feedback
     await Haptics.impactAsync(
@@ -71,7 +73,8 @@ export default function AddToWatchlistButton({
     try {
       await toggleAsync();
       // Show animated checkmark + success haptic when adding to watchlist
-      if (!wasInWatchlist) {
+      if (!wasInWatchlist && !checkmarkShownRef.current) {
+        checkmarkShownRef.current = true;
         hapticSuccess();
         setShowCheckmark(true);
       }
@@ -88,14 +91,6 @@ export default function AddToWatchlistButton({
   };
 
   const { iconSize, padding } = sizeConfig[size];
-
-  if (isLoading) {
-    return (
-      <View style={{ padding }}>
-        <ActivityIndicator size='small' color='#E50914' />
-      </View>
-    );
-  }
 
   const authGateModal = (
     <AuthGate

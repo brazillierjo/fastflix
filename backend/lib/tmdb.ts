@@ -634,6 +634,122 @@ class TMDBService {
   }
 
   /**
+   * Get person details with movie and TV credits
+   */
+  async getPersonDetails(
+    personId: number,
+    language: string = 'fr-FR'
+  ): Promise<{
+    id: number;
+    name: string;
+    biography: string;
+    birthday: string | null;
+    deathday: string | null;
+    place_of_birth: string | null;
+    profile_path: string | null;
+    known_for_department: string;
+    movie_credits: Array<{
+      id: number;
+      title: string;
+      poster_path: string | null;
+      character: string;
+      vote_average: number;
+      release_date: string;
+      media_type: 'movie';
+    }>;
+    tv_credits: Array<{
+      id: number;
+      name: string;
+      poster_path: string | null;
+      character: string;
+      vote_average: number;
+      first_air_date: string;
+      media_type: 'tv';
+    }>;
+  } | null> {
+    try {
+      const data = await this.makeRequest<{
+        id: number;
+        name: string;
+        biography: string;
+        birthday: string | null;
+        deathday: string | null;
+        place_of_birth: string | null;
+        profile_path: string | null;
+        known_for_department: string;
+        movie_credits: {
+          cast: Array<{
+            id: number;
+            title: string;
+            poster_path: string | null;
+            character: string;
+            vote_average: number;
+            vote_count: number;
+            popularity: number;
+            release_date: string;
+          }>;
+        };
+        tv_credits: {
+          cast: Array<{
+            id: number;
+            name: string;
+            poster_path: string | null;
+            character: string;
+            vote_average: number;
+            vote_count: number;
+            popularity: number;
+            first_air_date: string;
+          }>;
+        };
+      }>(`/person/${personId}`, {
+        append_to_response: 'movie_credits,tv_credits',
+        language,
+      });
+
+      const movieCredits = (data.movie_credits?.cast || [])
+        .sort((a, b) => (b.popularity || 0) - (a.popularity || 0))
+        .slice(0, 20)
+        .map((credit) => ({
+          id: credit.id,
+          title: credit.title,
+          poster_path: credit.poster_path,
+          character: credit.character,
+          vote_average: credit.vote_average || 0,
+          release_date: credit.release_date || '',
+          media_type: 'movie' as const,
+        }));
+
+      const tvCredits = (data.tv_credits?.cast || [])
+        .sort((a, b) => (b.popularity || 0) - (a.popularity || 0))
+        .slice(0, 20)
+        .map((credit) => ({
+          id: credit.id,
+          name: credit.name,
+          poster_path: credit.poster_path,
+          character: credit.character,
+          vote_average: credit.vote_average || 0,
+          first_air_date: credit.first_air_date || '',
+          media_type: 'tv' as const,
+        }));
+
+      return {
+        id: data.id,
+        name: data.name,
+        biography: data.biography || '',
+        birthday: data.birthday,
+        deathday: data.deathday,
+        place_of_birth: data.place_of_birth,
+        profile_path: data.profile_path,
+        known_for_department: data.known_for_department || '',
+        movie_credits: movieCredits,
+        tv_credits: tvCredits,
+      };
+    } catch {
+      return null;
+    }
+  }
+
+  /**
    * Get full details for a movie or TV show (overview, backdrop, genres, etc.)
    */
   async getFullDetails(

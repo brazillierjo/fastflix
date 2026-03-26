@@ -69,7 +69,8 @@
   "errors": {
     "title": "Errore",
     "enterRequest": "Inserisci una richiesta",
-    "searchError": "Si è verificato un errore durante la ricerca"
+    "searchError": "Si è verificato un errore durante la ricerca",
+    "aiFallbackMessage": "La nostra IA è temporaneamente non disponibile. Ecco alcuni suggerimenti popolari."
   },
   "modal": {
     "title": "Profilo utente"
@@ -324,13 +325,16 @@
     "watched": "Visti",
     "markWatched": "Segna come visto",
     "markUnwatched": "Segna come non visto",
-    "emptyHome": "Aggiungi film da qualsiasi scheda"
+    "emptyHome": "Aggiungi film da qualsiasi scheda",
+    "removeTitle": "Rimuovi dalla lista",
+    "removeMessage": "Sei sicuro di voler rimuovere questo elemento dalla tua lista?"
   },
   "common": {
     "cancel": "Annulla",
     "done": "Fatto",
     "close": "Chiudi",
-    "retry": "Riprova"
+    "retry": "Riprova",
+    "remove": "Rimuovi"
   },
   "tabs": {
     "home": "Home",
@@ -343,6 +347,7 @@
     "skip": "Salta",
     "next": "Avanti",
     "getStarted": "Inizia",
+    "alreadyHaveAccount": "Ho già un account",
     "screen1": { "title": "Scopri cosa guardare stasera", "subtitle": "Basta con lo scrolling infinito. Chiedi alla nostra IA e ottieni raccomandazioni perfette." },
     "screen2": { "title": "L'IA impara i tuoi gusti", "subtitle": "Più usi FastFlix, piu diventa intelligente." },
     "screen3": { "title": "Le tue piattaforme, i tuoi contenuti", "subtitle": "Filtra per Netflix, Disney+, Prime Video e altro." },
@@ -468,6 +473,16 @@
   },
   "ratings": {
     "sectionTitle": "Già visti",
-    "emptyHome": "Segna i film come visti per tenerne traccia"
+    "emptyHome": "Segna i film come visti per tenerne traccia",
+    "removeTitle": "Rimuovi dai già visti",
+    "removeMessage": "Sei sicuro di voler rimuovere questo elemento dai già visti?"
+  },
+  "actorDetail": {
+    "biography": "Biografia",
+    "readMore": "Leggi di più",
+    "readLess": "Leggi meno",
+    "birthInfo": "Informazioni personali",
+    "filmography": "Filmografia",
+    "noFilmography": "Nessuna filmografia disponibile"
   }
 }

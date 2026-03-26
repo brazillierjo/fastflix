@@ -16,6 +16,7 @@ import { Skeleton } from '@/components/Skeleton';
 import { useRouter } from 'expo-router';
 import React from 'react';
 import {
+  Alert,
   Image,
   ScrollView,
   Text,
@@ -33,7 +34,7 @@ export default function WatchlistSection() {
   const colorScheme = useColorScheme();
   const isDark = colorScheme === 'dark';
 
-  const { items, isLoading } = useWatchlist();
+  const { items, isLoading, removeFromWatchlist } = useWatchlist();
 
   if (!isAuthenticated) return null;
 
@@ -102,6 +103,20 @@ export default function WatchlistSection() {
                     },
                   })
                 }
+                onLongPress={() => {
+                  Alert.alert(
+                    t('watchlist.removeTitle'),
+                    t('watchlist.removeMessage'),
+                    [
+                      { text: t('common.cancel'), style: 'cancel' },
+                      {
+                        text: t('common.remove'),
+                        style: 'destructive',
+                        onPress: () => removeFromWatchlist(item.id),
+                      },
+                    ]
+                  );
+                }}
                 activeOpacity={0.7}
                 style={{ width: 130 }}
               >

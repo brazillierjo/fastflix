@@ -2,10 +2,14 @@ import '@/global.css';
 
 import { isRunningInExpoGo } from 'expo';
 import { Stack, useNavigationContainerRef } from 'expo-router';
+import * as SplashScreen from 'expo-splash-screen';
 import { StatusBar } from 'expo-status-bar';
 import * as Updates from 'expo-updates';
 import React, { useEffect } from 'react';
 import 'react-native-reanimated';
+
+// Keep splash screen visible until we're ready
+SplashScreen.preventAutoHideAsync();
 
 import { ErrorBoundary } from '@/components/ErrorBoundary';
 import { AuthProvider } from '@/contexts/AuthContext';
@@ -98,6 +102,10 @@ export default Sentry.wrap(function RootLayout() {
                 />
                 <Stack.Screen
                   name='movie-detail'
+                  options={{ gestureEnabled: true, animation: 'slide_from_right' }}
+                />
+                <Stack.Screen
+                  name='actor-detail'
                   options={{ gestureEnabled: true, animation: 'slide_from_right' }}
                 />
                 <Stack.Screen name='+not-found' />

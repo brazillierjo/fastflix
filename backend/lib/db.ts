@@ -1060,6 +1060,18 @@ class DatabaseService {
     });
   }
 
+  /**
+   * Remove a movie from the user's rated movies list
+   */
+  async removeRating(userId: string, tmdbId: number): Promise<UserTasteProfile> {
+    this.initialize();
+
+    const profile = await this.getUserTasteProfile(userId);
+    const ratedMovies = profile.rated_movies.filter((m) => m.tmdb_id !== tmdbId);
+
+    return this.updateTasteProfile(userId, { rated_movies: ratedMovies });
+  }
+
   // ==========================================================================
   // Push Token Methods
   // ==========================================================================

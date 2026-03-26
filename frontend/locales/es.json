@@ -69,7 +69,8 @@
   "errors": {
     "title": "Error",
     "enterRequest": "Por favor, introduce una solicitud",
-    "searchError": "Ocurrió un error durante la búsqueda"
+    "searchError": "Ocurrió un error durante la búsqueda",
+    "aiFallbackMessage": "Nuestra IA no está disponible temporalmente. Aquí tienes algunas recomendaciones populares."
   },
   "modal": {
     "title": "Perfil de usuario"
@@ -324,13 +325,16 @@
     "watched": "Vistos",
     "markWatched": "Marcar como vista",
     "markUnwatched": "Marcar como no vista",
-    "emptyHome": "Añade películas desde cualquier ficha"
+    "emptyHome": "Añade películas desde cualquier ficha",
+    "removeTitle": "Eliminar de la lista",
+    "removeMessage": "¿Estás seguro de que quieres eliminar este elemento de tu lista?"
   },
   "common": {
     "cancel": "Cancelar",
     "done": "Listo",
     "close": "Cerrar",
-    "retry": "Reintentar"
+    "retry": "Reintentar",
+    "remove": "Eliminar"
   },
   "tabs": {
     "home": "Inicio",
@@ -343,6 +347,7 @@
     "skip": "Omitir",
     "next": "Siguiente",
     "getStarted": "Empezar",
+    "alreadyHaveAccount": "Ya tengo una cuenta",
     "screen1": { "title": "Descubre que ver esta noche", "subtitle": "Basta de scroll infinito. Dile a nuestra IA que te apetece y obtén recomendaciones perfectas." },
     "screen2": { "title": "La IA aprende tus gustos", "subtitle": "Cuanto más uses FastFlix, más inteligente se vuelve." },
     "screen3": { "title": "Tus plataformas, tu contenido", "subtitle": "Filtra por Netflix, Disney+, Prime Video y mas." },
@@ -468,6 +473,16 @@
   },
   "ratings": {
     "sectionTitle": "Ya vistos",
-    "emptyHome": "Marca películas como vistas para llevar un registro"
+    "emptyHome": "Marca películas como vistas para llevar un registro",
+    "removeTitle": "Eliminar de vistos",
+    "removeMessage": "¿Estás seguro de que quieres eliminar este elemento de tus vistos?"
+  },
+  "actorDetail": {
+    "biography": "Biografía",
+    "readMore": "Leer más",
+    "readLess": "Leer menos",
+    "birthInfo": "Información personal",
+    "filmography": "Filmografía",
+    "noFilmography": "No hay filmografía disponible"
   }
 }

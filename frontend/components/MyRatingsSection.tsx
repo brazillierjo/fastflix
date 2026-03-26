@@ -6,7 +6,7 @@
 import { Ionicons } from '@expo/vector-icons';
 import { useAuth } from '@/contexts/AuthContext';
 import { useLanguage } from '@/contexts/LanguageContext';
-import { useTasteProfile } from '@/hooks/useRating';
+import { useTasteProfile, useDeleteRating } from '@/hooks/useRating';
 import {
   getCardShadow,
   getSquircle,
@@ -16,6 +16,7 @@ import { Skeleton } from '@/components/Skeleton';
 import { useRouter } from 'expo-router';
 import React from 'react';
 import {
+  Alert,
   ScrollView,
   Text,
   TouchableOpacity,
@@ -47,6 +48,7 @@ export default function MyRatingsSection() {
   const isDark = colorScheme === 'dark';
 
   const { ratedMovies, isLoading } = useTasteProfile();
+  const { deleteRating } = useDeleteRating();
 
   if (!isAuthenticated) return null;
 
@@ -114,6 +116,20 @@ export default function MyRatingsSection() {
                     },
                   })
                 }
+                onLongPress={() => {
+                  Alert.alert(
+                    t('ratings.removeTitle'),
+                    t('ratings.removeMessage'),
+                    [
+                      { text: t('common.cancel'), style: 'cancel' },
+                      {
+                        text: t('common.remove'),
+                        style: 'destructive',
+                        onPress: () => deleteRating(item.tmdb_id),
+                      },
+                    ]
+                  );
+                }}
                 activeOpacity={0.7}
                 style={[getSquircle(12), getCardShadow(isDark), { width: 160 }]}
                 className='border border-light-border bg-light-surface p-3 dark:border-dark-border dark:bg-dark-surface'

@@ -315,6 +315,7 @@ export async function POST(request: NextRequest) {
         detailedInfo: fallbackDetailedInfo,
         conversationalResponse: aiResult.conversationalResponse,
         totalResults: fallbackResults.length,
+        isFallback: true,
       };
 
       return NextResponse.json(

@@ -69,7 +69,8 @@
   "errors": {
     "title": "Erreur",
     "enterRequest": "Veuillez entrer une demande",
-    "searchError": "Une erreur est survenue lors de la recherche"
+    "searchError": "Une erreur est survenue lors de la recherche",
+    "aiFallbackMessage": "Notre IA est temporairement indisponible. Voici des recommandations populaires en attendant."
   },
   "modal": {
     "title": "Profil utilisateur"
@@ -336,13 +337,16 @@
     "watched": "Vus",
     "markWatched": "Marquer comme vu",
     "markUnwatched": "Marquer comme non vu",
-    "emptyHome": "Ajoutez des films depuis n'importe quelle fiche"
+    "emptyHome": "Ajoutez des films depuis n'importe quelle fiche",
+    "removeTitle": "Retirer de la liste",
+    "removeMessage": "Voulez-vous vraiment retirer cet élément de votre liste ?"
   },
   "common": {
     "cancel": "Annuler",
     "done": "OK",
     "close": "Fermer",
-    "retry": "Réessayer"
+    "retry": "Réessayer",
+    "remove": "Supprimer"
   },
   "tabs": {
     "home": "Accueil",
@@ -355,6 +359,7 @@
     "skip": "Passer",
     "next": "Suivant",
     "getStarted": "Commencer",
+    "alreadyHaveAccount": "J'ai déjà un compte",
     "screen1": {
       "title": "Trouvez quoi regarder ce soir",
       "subtitle": "Fini le scroll sans fin. Dites à notre IA ce qui vous fait envie et obtenez des recommandations parfaites en quelques secondes."
@@ -492,6 +497,16 @@
   },
   "ratings": {
     "sectionTitle": "Déjà vus",
-    "emptyHome": "Marquez les films comme vus pour suivre votre historique"
+    "emptyHome": "Marquez les films comme vus pour suivre votre historique",
+    "removeTitle": "Retirer des déjà vus",
+    "removeMessage": "Voulez-vous vraiment retirer cet élément de vos déjà vus ?"
+  },
+  "actorDetail": {
+    "biography": "Biographie",
+    "readMore": "Lire plus",
+    "readLess": "Lire moins",
+    "birthInfo": "Informations personnelles",
+    "filmography": "Filmographie",
+    "noFilmography": "Aucune filmographie disponible"
   }
 }

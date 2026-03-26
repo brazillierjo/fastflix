@@ -67,6 +67,7 @@ export interface SearchResponse {
   conversationalResponse: string;
   totalResults: number;
   conversationHistory?: ConversationMessage[];
+  isFallback?: boolean;
 }
 
 export interface StreamingProvider {
