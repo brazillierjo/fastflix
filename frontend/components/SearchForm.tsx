@@ -348,7 +348,7 @@ export default function SearchForm({
           <View
             className='mb-8'
           >
-            <Text className='mb-3 text-4xl font-bold text-light-text dark:text-dark-text'>
+            <Text className='mb-3 text-3xl font-bold text-light-text dark:text-dark-text'>
               {t('welcome.title')}
             </Text>
             <Text className='mb-3 text-base text-light-textSecondary dark:text-dark-textSecondary'>
@@ -453,20 +453,39 @@ export default function SearchForm({
                     borderColor: 'transparent',
                   }}
                 >
-                  <TextInput
-                    ref={textInputRef}
-                    value={query}
-                    onChangeText={handleManualInput}
-                    onFocus={handleInputFocus}
-                    placeholder={animatedPlaceholder || ' '}
-                    placeholderTextColor={getPlaceholderColor(isDark)}
-                    className='pb-5 pl-5 pr-5 pt-5 text-base text-light-text dark:text-dark-text'
-                    multiline
-                    textAlignVertical='top'
-                    scrollEnabled={false}
-                    editable={!isTyping}
-                    style={{ minHeight: 90, maxHeight: 130 }}
-                  />
+                  <View style={{ minHeight: 90, maxHeight: 130 }}>
+                    {/* Custom placeholder overlay that supports multi-line + ellipsis */}
+                    {!query && animatedPlaceholder ? (
+                      <Text
+                        numberOfLines={2}
+                        ellipsizeMode='tail'
+                        pointerEvents='none'
+                        style={{
+                          position: 'absolute',
+                          top: 20,
+                          left: 20,
+                          right: 20,
+                          fontSize: 16,
+                          lineHeight: 22,
+                          color: getPlaceholderColor(isDark),
+                        }}
+                      >
+                        {animatedPlaceholder}
+                      </Text>
+                    ) : null}
+                    <TextInput
+                      ref={textInputRef}
+                      value={query}
+                      onChangeText={handleManualInput}
+                      onFocus={handleInputFocus}
+                      className='pb-5 pl-5 pr-5 pt-5 text-base text-light-text dark:text-dark-text'
+                      multiline
+                      textAlignVertical='top'
+                      scrollEnabled={false}
+                      editable={!isTyping}
+                      style={{ flex: 1 }}
+                    />
+                  </View>
                 </View>
               </Animated.View>
             </View>
