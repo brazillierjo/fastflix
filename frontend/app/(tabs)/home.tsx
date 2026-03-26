@@ -18,7 +18,7 @@ import {
 import { useRouter } from 'expo-router';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { MotiView } from 'moti';
-import React, { useCallback, useEffect, useMemo, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import {
   Image,
   RefreshControl,
@@ -53,6 +53,35 @@ export default function HomeScreen() {
     isRefetching,
     refetch,
   } = useHomeData();
+
+  // Typewriter effect for CTA
+  const ctaFullText = t('home.searchCTA');
+  const [ctaText, setCtaText] = useState('');
+  const ctaIndexRef = useRef(0);
+  const ctaTimerRef = useRef<ReturnType<typeof setInterval> | null>(null);
+
+  useEffect(() => {
+    // Reset on text change
+    ctaIndexRef.current = 0;
+    setCtaText('');
+
+    // Small delay before starting typewriter
+    const startDelay = setTimeout(() => {
+      ctaTimerRef.current = setInterval(() => {
+        if (ctaIndexRef.current < ctaFullText.length) {
+          setCtaText(ctaFullText.slice(0, ctaIndexRef.current + 1));
+          ctaIndexRef.current++;
+        } else {
+          if (ctaTimerRef.current) clearInterval(ctaTimerRef.current);
+        }
+      }, 40);
+    }, 600);
+
+    return () => {
+      clearTimeout(startDelay);
+      if (ctaTimerRef.current) clearInterval(ctaTimerRef.current);
+    };
+  }, [ctaFullText]);
 
   // Guest mode: read setup genres/platforms from AsyncStorage
   const [setupGenres, setSetupGenres] = useState<number[]>([]);
@@ -327,10 +356,10 @@ export default function HomeScreen() {
             style={[getSquircle(16), { overflow: 'hidden' }]}
             className='bg-netflix-500'
           >
-            {/* Subtle shimmer glow overlay */}
+            {/* Subtle shimmer glow */}
             <MotiView
               from={{ translateX: -200, opacity: 0 }}
-              animate={{ translateX: 400, opacity: 0.15 }}
+              animate={{ translateX: 400, opacity: 0.12 }}
               transition={{
                 type: 'timing',
                 duration: 3000,
@@ -341,16 +370,19 @@ export default function HomeScreen() {
                 position: 'absolute',
                 top: 0,
                 bottom: 0,
-                width: 120,
-                backgroundColor: 'rgba(255,255,255,0.3)',
-                borderRadius: 60,
+                width: 100,
+                backgroundColor: 'rgba(255,255,255,0.35)',
+                borderRadius: 50,
               }}
               pointerEvents='none'
             />
-            <View className='flex-row items-center justify-center gap-2.5 px-6 py-4'>
-              <Ionicons name='sparkles' size={18} color='#fff' />
-              <Text className='text-center text-base font-semibold leading-5 text-white' style={{ maxWidth: 220 }}>
-                {t('home.searchCTA')}
+            <View className='items-center px-6 py-5'>
+              <Ionicons name='sparkles' size={16} color='rgba(255,255,255,0.7)' style={{ marginBottom: 6 }} />
+              <Text className='text-center text-base font-semibold leading-6 text-white'>
+                {ctaText}
+                {ctaText.length < ctaFullText.length && (
+                  <Text style={{ opacity: 0.6 }}>|</Text>
+                )}
               </Text>
             </View>
           </TouchableOpacity>
