@@ -79,13 +79,34 @@ export const translations = {
     step3Desc:
       'Get AI-powered recommendations, a personalized For You feed, and daily picks \u2014 all filtered for your platforms.',
 
+    // Platform section — language support
+    languageSupport: '6 Languages',
+    languageList: 'EN, FR, DE, ES, IT, JA',
+
+    // Pricing section
+    pricingTitle: 'Simple, Transparent Pricing',
+    pricingDescription: 'Start with a 7-day free trial. Cancel anytime.',
+    pricingMonthly: 'Monthly',
+    pricingQuarterly: 'Quarterly',
+    pricingAnnual: 'Annual',
+    pricingPerMonth: 'month',
+    pricingPer3Months: '3 months',
+    pricingPerYear: 'year',
+    pricingSave: '€1.33/month — save 33%',
+    pricingBestValue: '€0.83/month — save 58%',
+    pricingPopular: 'Most Popular',
+    pricingFeature1: 'Unlimited AI searches',
+    pricingFeature2: 'Personalized For You feed',
+    pricingFeature3: 'All platforms & filters',
+    pricingTrial: 'All plans include a 7-day free trial. No charge until the trial ends.',
+
     // CTA section
     ctaTitle: 'Stop scrolling. Start watching.',
     ctaSubtitle: 'FastFlix finds it for you.',
     downloadForIOS: 'Get the App',
     learnMore: 'Learn More',
     ctaPrivacy:
-      '7-day free trial • From €1.99/month • Cancel anytime',
+      '7-day free trial \u2022 From \u20AC1.99/month \u2022 Cancel anytime',
 
     // Privacy Policy
     privacyTitle: 'Privacy Policy',
@@ -330,6 +351,27 @@ export const translations = {
     step3Title: 'D\u00e9couvrez & Profitez',
     step3Desc:
       'Recevez des recommandations IA, un fil Pour Vous personnalis\u00e9 et des s\u00e9lections quotidiennes \u2014 le tout filtr\u00e9 pour vos plateformes.',
+
+    // Platform section — language support
+    languageSupport: '6 langues',
+    languageList: 'FR, EN, DE, ES, IT, JA',
+
+    // Pricing section
+    pricingTitle: 'Tarifs simples et transparents',
+    pricingDescription: 'Essai gratuit de 7 jours. Annulez quand vous voulez.',
+    pricingMonthly: 'Mensuel',
+    pricingQuarterly: 'Trimestriel',
+    pricingAnnual: 'Annuel',
+    pricingPerMonth: 'mois',
+    pricingPer3Months: '3 mois',
+    pricingPerYear: 'an',
+    pricingSave: '1,33\u20ac/mois \u2014 \u00e9conomisez 33%',
+    pricingBestValue: '0,83\u20ac/mois \u2014 \u00e9conomisez 58%',
+    pricingPopular: 'Le plus populaire',
+    pricingFeature1: 'Recherches IA illimit\u00e9es',
+    pricingFeature2: 'Fil Pour Vous personnalis\u00e9',
+    pricingFeature3: 'Toutes les plateformes & filtres',
+    pricingTrial: 'Tous les abonnements incluent un essai gratuit de 7 jours. Aucun pr\u00e9l\u00e8vement avant la fin de l\u2019essai.',
 
     // CTA section
     ctaTitle: 'Arr\u00eatez de scroller. Commencez \u00e0 regarder.',
@@ -586,6 +628,27 @@ export const translations = {
     step3Desc:
       'Ricevi raccomandazioni IA, un feed Per Te personalizzato e selezioni giornaliere \u2014 tutto filtrato per le tue piattaforme.',
 
+    // Platform section — language support
+    languageSupport: '6 lingue',
+    languageList: 'IT, EN, FR, DE, ES, JA',
+
+    // Pricing section
+    pricingTitle: 'Prezzi semplici e trasparenti',
+    pricingDescription: 'Prova gratuita di 7 giorni. Annulla quando vuoi.',
+    pricingMonthly: 'Mensile',
+    pricingQuarterly: 'Trimestrale',
+    pricingAnnual: 'Annuale',
+    pricingPerMonth: 'mese',
+    pricingPer3Months: '3 mesi',
+    pricingPerYear: 'anno',
+    pricingSave: '1,33\u20AC/mese \u2014 risparmia 33%',
+    pricingBestValue: '0,83\u20AC/mese \u2014 risparmia 58%',
+    pricingPopular: 'Pi\u00f9 popolare',
+    pricingFeature1: 'Ricerche IA illimitate',
+    pricingFeature2: 'Feed Per Te personalizzato',
+    pricingFeature3: 'Tutte le piattaforme e filtri',
+    pricingTrial: 'Tutti i piani includono una prova gratuita di 7 giorni. Nessun addebito fino alla fine della prova.',
+
     // CTA section
     ctaTitle: 'Smetti di scorrere. Inizia a guardare.',
     ctaSubtitle: 'FastFlix trova per te.',
@@ -839,6 +902,27 @@ export const translations = {
     step3Desc:
       'AI\u30ec\u30b3\u30e1\u30f3\u30c7\u30fc\u30b7\u30e7\u30f3\u3001\u30d1\u30fc\u30bd\u30ca\u30e9\u30a4\u30ba\u3055\u308c\u305f\u300c\u3042\u306a\u305f\u3078\u300d\u30d5\u30a3\u30fc\u30c9\u3001\u6bce\u65e5\u306e\u30bb\u30ec\u30af\u30b7\u30e7\u30f3 \u2014 \u3059\u3079\u3066\u3042\u306a\u305f\u306e\u30d7\u30e9\u30c3\u30c8\u30d5\u30a9\u30fc\u30e0\u3067\u30d5\u30a3\u30eb\u30bf\u30ea\u30f3\u30b0\u6e08\u307f\u3002',
 
+    // Platform section \u2014 language support
+    languageSupport: '6\u8a00\u8a9e\u5bfe\u5fdc',
+    languageList: 'JA, EN, FR, DE, ES, IT',
+
+    // Pricing section
+    pricingTitle: '\u30b7\u30f3\u30d7\u30eb\u3067\u900f\u660e\u306a\u6599\u91d1\u30d7\u30e9\u30f3',
+    pricingDescription: '7\u65e5\u9593\u7121\u6599\u30c8\u30e9\u30a4\u30a2\u30eb\u3002\u3044\u3064\u3067\u3082\u30ad\u30e3\u30f3\u30bb\u30eb\u53ef\u80fd\u3002',
+    pricingMonthly: '\u6708\u984d',
+    pricingQuarterly: '3\u30f6\u6708',
+    pricingAnnual: '\u5e74\u984d',
+    pricingPerMonth: '\u6708',
+    pricingPer3Months: '3\u30f6\u6708',
+    pricingPerYear: '\u5e74',
+    pricingSave: '\u6708\u984d\u20ac1.33 \u2014 33%\u304a\u5f97',
+    pricingBestValue: '\u6708\u984d\u20ac0.83 \u2014 58%\u304a\u5f97',
+    pricingPopular: '\u4eba\u6c17No.1',
+    pricingFeature1: 'AI\u691c\u7d22\u7121\u5236\u9650',
+    pricingFeature2: '\u30d1\u30fc\u30bd\u30ca\u30e9\u30a4\u30ba\u304a\u3059\u3059\u3081',
+    pricingFeature3: '\u5168\u30d7\u30e9\u30c3\u30c8\u30d5\u30a9\u30fc\u30e0\u5bfe\u5fdc',
+    pricingTrial: '\u5168\u30d7\u30e9\u30f3\u306b7\u65e5\u9593\u306e\u7121\u6599\u30c8\u30e9\u30a4\u30a2\u30eb\u4ed8\u304d\u3002\u30c8\u30e9\u30a4\u30a2\u30eb\u7d42\u4e86\u307e\u3067\u8ab2\u91d1\u306a\u3057\u3002',
+
     // CTA section
     ctaTitle: '\u30b9\u30af\u30ed\u30fc\u30eb\u3092\u3084\u3081\u3066\u3002\u898b\u59cb\u3081\u307e\u3057\u3087\u3046\u3002',
     ctaSubtitle: 'FastFlix\u304c\u3042\u306a\u305f\u306e\u305f\u3081\u306b\u898b\u3064\u3051\u307e\u3059\u3002',
@@ -1090,6 +1174,27 @@ export const translations = {
     step3Title: 'Descubre & Disfruta',
     step3Desc:
       'Recibe recomendaciones IA, un feed Para Ti personalizado y selecciones diarias \u2014 todo filtrado para tus plataformas.',
+
+    // Platform section \u2014 language support
+    languageSupport: '6 idiomas',
+    languageList: 'ES, EN, FR, DE, IT, JA',
+
+    // Pricing section
+    pricingTitle: 'Precios simples y transparentes',
+    pricingDescription: 'Prueba gratis 7 d\u00edas. Cancela cuando quieras.',
+    pricingMonthly: 'Mensual',
+    pricingQuarterly: 'Trimestral',
+    pricingAnnual: 'Anual',
+    pricingPerMonth: 'mes',
+    pricingPer3Months: '3 meses',
+    pricingPerYear: 'a\u00f1o',
+    pricingSave: '1,33\u20AC/mes \u2014 ahorra 33%',
+    pricingBestValue: '0,83\u20AC/mes \u2014 ahorra 58%',
+    pricingPopular: 'M\u00e1s popular',
+    pricingFeature1: 'B\u00fasquedas IA ilimitadas',
+    pricingFeature2: 'Feed Para Ti personalizado',
+    pricingFeature3: 'Todas las plataformas y filtros',
+    pricingTrial: 'Todos los planes incluyen 7 d\u00edas de prueba gratis. Sin cobros hasta que termine la prueba.',
 
     // CTA section
     ctaTitle: 'Deja de hacer scroll. Empieza a ver.',
@@ -1344,6 +1449,27 @@ export const translations = {
     step3Title: 'Entdecken & Genie\u00dfen',
     step3Desc:
       'Erhalte KI-Empfehlungen, einen personalisierten F\u00fcr-dich-Feed und Tagesauswahlen \u2014 alles gefiltert f\u00fcr deine Plattformen.',
+
+    // Platform section \u2014 language support
+    languageSupport: '6 Sprachen',
+    languageList: 'DE, EN, FR, ES, IT, JA',
+
+    // Pricing section
+    pricingTitle: 'Einfache, transparente Preise',
+    pricingDescription: '7 Tage kostenlos testen. Jederzeit k\u00fcndbar.',
+    pricingMonthly: 'Monatlich',
+    pricingQuarterly: 'Viertelj\u00e4hrlich',
+    pricingAnnual: 'J\u00e4hrlich',
+    pricingPerMonth: 'Monat',
+    pricingPer3Months: '3 Monate',
+    pricingPerYear: 'Jahr',
+    pricingSave: '1,33\u20AC/Monat \u2014 33% sparen',
+    pricingBestValue: '0,83\u20AC/Monat \u2014 58% sparen',
+    pricingPopular: 'Am beliebtesten',
+    pricingFeature1: 'Unbegrenzte KI-Suchen',
+    pricingFeature2: 'Personalisierter F\u00fcr-Dich-Feed',
+    pricingFeature3: 'Alle Plattformen & Filter',
+    pricingTrial: 'Alle Abos beinhalten eine 7-t\u00e4gige kostenlose Testphase. Keine Geb\u00fchr bis zum Ende der Testphase.',
 
     // CTA section
     ctaTitle: 'H\u00f6r auf zu scrollen. Fang an zu schauen.',

@@ -16,6 +16,8 @@ import {
   Star,
   TrendingUp,
   Heart,
+  Check,
+  Globe,
 } from 'lucide-react';
 
 export default function Home() {
@@ -208,6 +210,15 @@ export default function Home() {
                   {t('ipadRequirement')}
                 </p>
               </div>
+              <div className='text-center'>
+                <Globe className='text-netflix mx-auto mb-2 h-12 w-12' />
+                <p className='text-sm font-medium text-gray-900 dark:text-white'>
+                  {t('languageSupport')}
+                </p>
+                <p className='text-xs text-gray-500 dark:text-gray-400'>
+                  {t('languageList')}
+                </p>
+              </div>
             </div>
             <div className='mx-auto mt-12 max-w-4xl'>
               <div className='grid grid-cols-1 gap-8 md:grid-cols-3'>
@@ -247,6 +258,69 @@ export default function Home() {
               </div>
             </div>
           </div>
+        </div>
+      </section>
+
+      {/* Pricing Section */}
+      <section className='bg-gray-50 py-20'>
+        <div className='mx-auto max-w-7xl px-4 sm:px-6 lg:px-8'>
+          <div className='text-center'>
+            <h2 className='text-3xl font-bold tracking-tight text-gray-900 sm:text-4xl'>
+              {t('pricingTitle')}
+            </h2>
+            <p className='mt-4 text-lg text-gray-600'>
+              {t('pricingDescription')}
+            </p>
+          </div>
+          <div className='mx-auto mt-12 grid max-w-4xl grid-cols-1 gap-6 md:grid-cols-3'>
+            {/* Monthly */}
+            <Card className='border-0 text-center shadow-lg'>
+              <CardContent className='p-6'>
+                <p className='text-sm font-medium text-gray-500 uppercase'>{t('pricingMonthly')}</p>
+                <p className='mt-2 text-4xl font-bold text-gray-900'>€1.99</p>
+                <p className='mt-1 text-sm text-gray-500'>/{t('pricingPerMonth')}</p>
+                <ul className='mt-6 space-y-3 text-left text-sm text-gray-600'>
+                  <li className='flex items-center gap-2'><Check className='text-netflix h-4 w-4 shrink-0' />{t('pricingFeature1')}</li>
+                  <li className='flex items-center gap-2'><Check className='text-netflix h-4 w-4 shrink-0' />{t('pricingFeature2')}</li>
+                  <li className='flex items-center gap-2'><Check className='text-netflix h-4 w-4 shrink-0' />{t('pricingFeature3')}</li>
+                </ul>
+              </CardContent>
+            </Card>
+            {/* Quarterly — highlighted */}
+            <Card className='from-netflix to-netflix-dark relative border-0 bg-gradient-to-br text-center shadow-xl ring-2 ring-red-500'>
+              <div className='absolute -top-3 left-1/2 -translate-x-1/2'>
+                <Badge className='bg-netflix border-netflix text-white'>{t('pricingPopular')}</Badge>
+              </div>
+              <CardContent className='p-6'>
+                <p className='text-sm font-medium uppercase text-white/80'>{t('pricingQuarterly')}</p>
+                <p className='mt-2 text-4xl font-bold text-white'>€3.99</p>
+                <p className='mt-1 text-sm text-white/70'>/{t('pricingPer3Months')}</p>
+                <p className='mt-1 text-xs text-white/60'>{t('pricingSave')}</p>
+                <ul className='mt-6 space-y-3 text-left text-sm text-white/90'>
+                  <li className='flex items-center gap-2'><Check className='h-4 w-4 shrink-0' />{t('pricingFeature1')}</li>
+                  <li className='flex items-center gap-2'><Check className='h-4 w-4 shrink-0' />{t('pricingFeature2')}</li>
+                  <li className='flex items-center gap-2'><Check className='h-4 w-4 shrink-0' />{t('pricingFeature3')}</li>
+                </ul>
+              </CardContent>
+            </Card>
+            {/* Annual */}
+            <Card className='border-0 text-center shadow-lg'>
+              <CardContent className='p-6'>
+                <p className='text-sm font-medium text-gray-500 uppercase'>{t('pricingAnnual')}</p>
+                <p className='mt-2 text-4xl font-bold text-gray-900'>€9.99</p>
+                <p className='mt-1 text-sm text-gray-500'>/{t('pricingPerYear')}</p>
+                <p className='text-netflix mt-1 text-xs font-medium'>{t('pricingBestValue')}</p>
+                <ul className='mt-6 space-y-3 text-left text-sm text-gray-600'>
+                  <li className='flex items-center gap-2'><Check className='text-netflix h-4 w-4 shrink-0' />{t('pricingFeature1')}</li>
+                  <li className='flex items-center gap-2'><Check className='text-netflix h-4 w-4 shrink-0' />{t('pricingFeature2')}</li>
+                  <li className='flex items-center gap-2'><Check className='text-netflix h-4 w-4 shrink-0' />{t('pricingFeature3')}</li>
+                </ul>
+              </CardContent>
+            </Card>
+          </div>
+          <p className='mt-8 text-center text-sm text-gray-500'>
+            {t('pricingTrial')}
+          </p>
         </div>
       </section>
 
