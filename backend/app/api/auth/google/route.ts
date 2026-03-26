@@ -52,17 +52,24 @@ export async function POST(request: NextRequest) {
       console.log(`[Auth] Existing user found: ${maskEmail(email)}`);
       dbUser = existingUser;
     } else {
-      // Step 4: Create new user
-      console.log(`[Auth] Creating new user: ${maskEmail(email)}`);
+      // Check if there's a soft-deleted account to reactivate
+      const deletedUser = await db.getDeletedUserByProvider('google', providerUserId);
+      if (deletedUser) {
+        console.log(`[Auth] Reactivating deleted user: ${maskEmail(email)}`);
+        dbUser = await db.reactivateUser(deletedUser.id);
+      } else {
+        // Step 4: Create new user
+        console.log(`[Auth] Creating new user: ${maskEmail(email)}`);
 
-      dbUser = await db.createUser({
-        id: randomUUID(),
-        email,
-        name: googlePayload.name || null,
-        avatar_url: googlePayload.picture || null,
-        auth_provider: 'google',
-        provider_user_id: providerUserId,
-      });
+        dbUser = await db.createUser({
+          id: randomUUID(),
+          email,
+          name: googlePayload.name || null,
+          avatar_url: googlePayload.picture || null,
+          auth_provider: 'google',
+          provider_user_id: providerUserId,
+        });
+      }
     }
 
     // Step 5: Generate JWT

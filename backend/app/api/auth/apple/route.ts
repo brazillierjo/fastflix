@@ -66,21 +66,28 @@ export async function POST(request: NextRequest) {
       console.log(`[Auth] Existing user found: ${maskEmail(email)}`);
       dbUser = existingUser;
     } else {
-      // Step 4: Create new user
-      console.log(`[Auth] Creating new user: ${maskEmail(email)}`);
+      // Check if there's a soft-deleted account to reactivate
+      const deletedUser = await db.getDeletedUserByProvider('apple', providerUserId);
+      if (deletedUser) {
+        console.log(`[Auth] Reactivating deleted user: ${maskEmail(email)}`);
+        dbUser = await db.reactivateUser(deletedUser.id);
+      } else {
+        // Step 4: Create new user
+        console.log(`[Auth] Creating new user: ${maskEmail(email)}`);
 
-      const userName = user?.name
-        ? `${user.name.firstName || ''} ${user.name.lastName || ''}`.trim()
-        : null;
+        const userName = user?.name
+          ? `${user.name.firstName || ''} ${user.name.lastName || ''}`.trim()
+          : null;
 
-      dbUser = await db.createUser({
-        id: randomUUID(),
-        email,
-        name: userName,
-        avatar_url: null,
-        auth_provider: 'apple',
-        provider_user_id: providerUserId,
-      });
+        dbUser = await db.createUser({
+          id: randomUUID(),
+          email,
+          name: userName,
+          avatar_url: null,
+          auth_provider: 'apple',
+          provider_user_id: providerUserId,
+        });
+      }
     }
 
     // Step 5: Generate JWT

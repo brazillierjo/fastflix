@@ -1,6 +1,5 @@
 import { BottomTabBarProps } from '@react-navigation/bottom-tabs';
 import { Ionicons } from '@expo/vector-icons';
-import { BlurView } from 'expo-blur';
 import * as Haptics from 'expo-haptics';
 import { Tabs } from 'expo-router';
 import React from 'react';
@@ -29,25 +28,18 @@ function CustomTabBar({ state, descriptors, navigation }: BottomTabBarProps) {
   return (
     <View style={styles.tabBarWrapper}>
       <View style={styles.tabBarContainer}>
-        <BlurView
-          intensity={Platform.OS === 'ios' ? 80 : 60}
-          tint={isDark ? 'systemChromeMaterialDark' : 'systemChromeMaterial'}
-          style={styles.blurView}
+        <View
+          style={[
+            styles.tabBarContent,
+            {
+              backgroundColor: isDark ? '#000000' : '#ffffff',
+              borderTopWidth: StyleSheet.hairlineWidth,
+              borderTopColor: isDark
+                ? 'rgba(255, 255, 255, 0.15)'
+                : 'rgba(0, 0, 0, 0.1)',
+            },
+          ]}
         >
-          <View
-            style={[
-              styles.tabBarContent,
-              {
-                backgroundColor: isDark
-                  ? 'rgba(30, 30, 30, 0.6)'
-                  : 'rgba(255, 255, 255, 0.7)',
-                borderWidth: 0.5,
-                borderColor: isDark
-                  ? 'rgba(255, 255, 255, 0.08)'
-                  : 'rgba(0, 0, 0, 0.06)',
-              },
-            ]}
-          >
             {state.routes
               .filter(route =>
                 ['home', 'search', 'profile'].includes(route.name)
@@ -104,7 +96,6 @@ function CustomTabBar({ state, descriptors, navigation }: BottomTabBarProps) {
                 );
               })}
           </View>
-        </BlurView>
       </View>
     </View>
   );
@@ -184,9 +175,6 @@ const styles = StyleSheet.create({
   },
   tabBarContainer: {
     width: '100%',
-  },
-  blurView: {
-    overflow: 'hidden',
   },
   tabBarContent: {
     flexDirection: 'row',

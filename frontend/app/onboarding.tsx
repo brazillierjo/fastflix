@@ -85,7 +85,8 @@ export default function OnboardingScreen() {
 
   const goToLogin = useCallback(async () => {
     await AsyncStorage.setItem(ONBOARDING_KEY, 'true');
-    await AsyncStorage.setItem('@fastflix/setup_complete', 'true');
+    // Don't mark setup as complete — returning users with preferences will auto-skip setup,
+    // new users will go through setup after auth
     router.replace('/auth' as never);
   }, [router]);
 

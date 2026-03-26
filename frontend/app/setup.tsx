@@ -24,6 +24,7 @@ import {
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
+import { useAuth } from '@/contexts/AuthContext';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { cn } from '@/utils/cn';
 import { getNetflixGlow, getSquircle } from '@/utils/designHelpers';
@@ -90,6 +91,7 @@ const ITEM_WIDTH =
 
 export default function SetupScreen() {
   const { t } = useLanguage();
+  const { isAuthenticated } = useAuth();
   const router = useRouter();
   const colorScheme = useColorScheme();
   const isDark = colorScheme === 'dark';
@@ -167,8 +169,9 @@ export default function SetupScreen() {
     await AsyncStorage.setItem(SETUP_COUNTRY_KEY, deviceCountry);
     await AsyncStorage.setItem(SETUP_COMPLETE_KEY, 'true');
 
-    router.replace('/auth');
-  }, [selectedPlatforms, selectedGenres, router]);
+    // If already authenticated (returning user via "Se connecter"), go straight to home
+    router.replace(isAuthenticated ? '/home' : '/auth');
+  }, [selectedPlatforms, selectedGenres, router, isAuthenticated]);
 
   const canProceedStep1 = selectedPlatforms.length >= 1;
   const canProceedStep2 = selectedGenres.length >= 3;

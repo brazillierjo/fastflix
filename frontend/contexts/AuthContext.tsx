@@ -15,6 +15,7 @@ import React, {
 import { Alert, AppState, AppStateStatus } from 'react-native';
 import { useLanguage } from './LanguageContext';
 import { useSubscription } from './RevenueCatContext';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import { authService, User } from '../services/auth.service';
 import { backendAPIService } from '../services/backend-api.service';
 
@@ -240,6 +241,14 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
         throw new Error('Failed to delete account');
       }
       await authService.signOut();
+      // Clear all onboarding/setup flags so user returns to welcome screen
+      await AsyncStorage.multiRemove([
+        '@fastflix/onboarding_complete',
+        '@fastflix/setup_complete',
+        '@fastflix/setup_platforms',
+        '@fastflix/setup_genres',
+        '@fastflix/setup_country',
+      ]);
       setUser(null);
     } catch (error) {
       console.error('Delete account error:', error);

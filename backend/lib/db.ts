@@ -226,6 +226,49 @@ class DatabaseService {
   }
 
   /**
+   * Find a soft-deleted user by provider (for reactivation on re-login)
+   */
+  async getDeletedUserByProvider(
+    auth_provider: 'apple' | 'google',
+    provider_user_id: string
+  ): Promise<User | null> {
+    this.initialize();
+
+    try {
+      const result = await this.client!.execute({
+        sql: 'SELECT * FROM users WHERE auth_provider = ? AND provider_user_id = ? AND deleted_at IS NOT NULL',
+        args: [auth_provider, provider_user_id],
+      });
+
+      if (result.rows.length === 0) {
+        return null;
+      }
+
+      return rowToObject<User>(result.rows[0]);
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  /**
+   * Reactivate a soft-deleted user account
+   */
+  async reactivateUser(userId: string): Promise<User> {
+    this.initialize();
+
+    await this.client!.execute({
+      sql: `UPDATE users SET deleted_at = NULL, updated_at = datetime('now') WHERE id = ?`,
+      args: [userId],
+    });
+
+    const user = await this.getUserById(userId);
+    if (!user) {
+      throw new Error('Failed to reactivate user');
+    }
+    return user;
+  }
+
+  /**
    * Soft delete a user account (sets deleted_at timestamp)
    * Data is preserved to prevent trial abuse
    */
