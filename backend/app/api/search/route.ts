@@ -161,11 +161,18 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Step 4: Fetch user context for personalization
-    const [tasteProfile, recentSearchHistory] = await Promise.all([
+    // Step 4: Fetch user context and trending titles for personalization
+    const [tasteProfile, recentSearchHistory, trendingItems] = await Promise.all([
       db.getUserTasteProfile(userId),
       db.getSearchHistory(userId, 5),
+      tmdb.getTrending(language).catch(() => []),
     ]);
+
+    // Build recent titles list from trending for Gemini awareness
+    const recentTitles = trendingItems.slice(0, 20).map((item) => ({
+      title: item.title,
+      mediaType: item.media_type,
+    }));
 
     // Build user context from taste profile and search history
     const userContext: UserContext = {};
@@ -229,7 +236,8 @@ export async function POST(request: NextRequest) {
         undefined, // filters (yearFrom/yearTo) - not used from search route currently
         maxRecommendations,
         hasUserContext ? userContext : undefined,
-        conversationHistory
+        conversationHistory,
+        recentTitles.length > 0 ? recentTitles : undefined
       );
 
       // Cache the result (only if not a fallback)

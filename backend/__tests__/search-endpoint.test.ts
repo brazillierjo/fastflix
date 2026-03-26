@@ -95,6 +95,8 @@ describe('Search Endpoint', () => {
     });
     (db.getSearchHistory as jest.Mock).mockResolvedValue([]);
 
+    (tmdb.getTrending as jest.Mock).mockResolvedValue([]);
+
     (gemini.generateRecommendationsWithResponse as jest.Mock).mockResolvedValue({
       recommendations: ['Movie 1', 'Movie 2', 'Movie 3'],
       conversationalResponse: 'Here are some great movies!',
@@ -245,7 +247,8 @@ describe('Search Endpoint', () => {
         undefined,
         25, // Default recommendations count (no platform filters)
         undefined, // No user context (empty profile)
-        undefined // No conversation history
+        undefined, // No conversation history
+        undefined // No recent titles (trending mock returns [])
       );
     });
 
@@ -265,7 +268,8 @@ describe('Search Endpoint', () => {
         undefined,
         25, // Default recommendations count (no platform filters)
         undefined, // No user context (empty profile)
-        undefined // No conversation history
+        undefined, // No conversation history
+        undefined // No recent titles
       );
     });
 
@@ -286,7 +290,8 @@ describe('Search Endpoint', () => {
         undefined,
         40, // Increased recommendations count when platform filters are active
         undefined, // No user context (empty profile)
-        undefined // No conversation history
+        undefined, // No conversation history
+        undefined // No recent titles
       );
     });
 

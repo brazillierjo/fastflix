@@ -65,7 +65,8 @@ class GeminiService {
     },
     maxRecommendations: number = 25,
     userContext?: UserContext,
-    conversationHistory?: ConversationMessage[]
+    conversationHistory?: ConversationMessage[],
+    recentTitles?: { title: string; mediaType: string }[]
   ): Promise<AIRecommendationResult> {
     const genAI = this.getClient();
     const modelName = process.env.GEMINI_MODEL || 'gemini-2.5-flash';
@@ -196,7 +197,23 @@ ${historyLines.join('\n')}
 The user's latest message is a REFINEMENT of the above conversation. Take into account what was previously discussed and recommended. If the user asks to exclude something, narrow down, or change direction, adapt your recommendations accordingly.`;
     }
 
-    const prompt = `You are an expert AI assistant specializing in cinema and television with encyclopedic knowledge of films and series from around the world. A user asks you: "${sanitizedQuery}".${userProfileSection}${conversationSection}${temporalVocabulary}${yearConstraint}
+    // Build recent titles awareness section
+    let recentTitlesSection = '';
+    if (recentTitles && recentTitles.length > 0) {
+      const movieTitles = recentTitles.filter(t => t.mediaType === 'movie').map(t => t.title);
+      const tvTitles = recentTitles.filter(t => t.mediaType === 'tv').map(t => t.title);
+      const lines: string[] = [];
+      if (movieTitles.length > 0) lines.push(`Recent/trending movies: ${movieTitles.join(', ')}`);
+      if (tvTitles.length > 0) lines.push(`Recent/trending TV shows: ${tvTitles.join(', ')}`);
+      recentTitlesSection = `
+
+RECENT RELEASES AWARENESS (these are currently popular/new titles — your training data may not include them):
+${lines.join('\n')}
+
+Use these ONLY when relevant to the user's query. Do NOT blindly recommend trending titles — only include them if they genuinely match what the user is asking for. Your own knowledge remains your primary source. These titles supplement your knowledge for recent content you might not know about.`;
+    }
+
+    const prompt = `You are an expert AI assistant specializing in cinema and television with encyclopedic knowledge of films and series from around the world. A user asks you: "${sanitizedQuery}".${userProfileSection}${conversationSection}${temporalVocabulary}${yearConstraint}${recentTitlesSection}
 
 ADVANCED SEARCH STRATEGY:
 
