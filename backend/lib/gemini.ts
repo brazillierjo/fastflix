@@ -280,7 +280,7 @@ MESSAGE: [your conversational message]`;
 
     try {
       const timeoutPromise = new Promise<never>((_, reject) =>
-        setTimeout(() => reject(new Error('Gemini API timeout after 15s')), 15000)
+        setTimeout(() => reject(new Error('Gemini API timeout after 30s')), 30000)
       );
       const result = await Promise.race([
         model.generateContent(prompt),
