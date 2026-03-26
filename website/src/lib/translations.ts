@@ -53,6 +53,12 @@ export const translations = {
     watchlistFeatureDesc:
       'Save movies to watch later, mark them as watched, rate them 1-5 stars. Your ratings fuel smarter recommendations.',
 
+    // App Preview section
+    previewTitle: 'See FastFlix in Action',
+    previewDescription: 'A clean, intuitive interface designed to help you find what to watch in seconds.',
+    previewHome: 'Personalized home screen',
+    previewSearch: 'AI-powered search',
+
     // Platform section
     platformTitle: 'Get Started with FastFlix',
     platformDescription:
@@ -298,6 +304,12 @@ export const translations = {
     watchlistFeature: 'Liste & Notes',
     watchlistFeatureDesc:
       'Sauvegardez des films, marquez-les comme vus, notez-les de 1 \u00e0 5 \u00e9toiles. Vos notes alimentent des recommandations plus intelligentes.',
+
+    // App Preview section
+    previewTitle: 'FastFlix en action',
+    previewDescription: 'Une interface claire et intuitive con\u00e7ue pour vous aider \u00e0 trouver quoi regarder en quelques secondes.',
+    previewHome: '\u00c9cran d\u2019accueil personnalis\u00e9',
+    previewSearch: 'Recherche propuls\u00e9e par l\u2019IA',
 
     // Platform section
     platformTitle: 'D\u00e9marrez avec FastFlix',
@@ -548,6 +560,12 @@ export const translations = {
     watchlistFeatureDesc:
       'Salva film da guardare pi\u00f9 tardi, segnali come visti, valutali da 1 a 5 stelle. Le tue valutazioni alimentano raccomandazioni pi\u00f9 intelligenti.',
 
+    // App Preview section
+    previewTitle: 'FastFlix in azione',
+    previewDescription: 'Un\'interfaccia pulita e intuitiva progettata per aiutarti a trovare cosa guardare in pochi secondi.',
+    previewHome: 'Schermata iniziale personalizzata',
+    previewSearch: 'Ricerca basata sull\'IA',
+
     // Platform section
     platformTitle: 'Inizia con FastFlix',
     platformDescription:
@@ -796,6 +814,12 @@ export const translations = {
     watchlistFeatureDesc:
       '\u6620\u753b\u3092\u5f8c\u3067\u898b\u308b\u305f\u3081\u306b\u4fdd\u5b58\u3001\u8996\u8074\u6e08\u307f\u3068\u3057\u3066\u30de\u30fc\u30af\u30011\uff5e5\u3064\u661f\u3067\u8a55\u4fa1\u3002\u3042\u306a\u305f\u306e\u8a55\u4fa1\u304c\u3088\u308a\u8ce2\u3044\u30ec\u30b3\u30e1\u30f3\u30c7\u30fc\u30b7\u30e7\u30f3\u3092\u751f\u307f\u51fa\u3057\u307e\u3059\u3002',
 
+    // App Preview section
+    previewTitle: 'FastFlix\u3092\u898b\u3066\u307f\u3088\u3046',
+    previewDescription: '\u6570\u79d2\u3067\u4f55\u3092\u898b\u308b\u304b\u898b\u3064\u3051\u308b\u3001\u30af\u30ea\u30fc\u30f3\u3067\u76f4\u611f\u7684\u306a\u30a4\u30f3\u30bf\u30fc\u30d5\u30a7\u30fc\u30b9\u3002',
+    previewHome: '\u30d1\u30fc\u30bd\u30ca\u30e9\u30a4\u30ba\u3055\u308c\u305f\u30db\u30fc\u30e0\u753b\u9762',
+    previewSearch: 'AI\u691c\u7d22',
+
     // Platform section
     platformTitle: 'FastFlix\u3092\u59cb\u3081\u3088\u3046',
     platformDescription:
@@ -1040,6 +1064,12 @@ export const translations = {
     watchlistFeature: 'Lista & Calificaciones',
     watchlistFeatureDesc:
       'Guarda pel\u00edculas para ver despu\u00e9s, m\u00e1rcalas como vistas, cal\u00edficalas de 1 a 5 estrellas. Tus calificaciones alimentan recomendaciones m\u00e1s inteligentes.',
+
+    // App Preview section
+    previewTitle: 'FastFlix en acci\u00f3n',
+    previewDescription: 'Una interfaz limpia e intuitiva dise\u00f1ada para ayudarte a encontrar qu\u00e9 ver en segundos.',
+    previewHome: 'Pantalla de inicio personalizada',
+    previewSearch: 'B\u00fasqueda con IA',
 
     // Platform section
     platformTitle: 'Empieza con FastFlix',
@@ -1288,6 +1318,12 @@ export const translations = {
     watchlistFeature: 'Merkliste & Bewertungen',
     watchlistFeatureDesc:
       'Speichere Filme f\u00fcr sp\u00e4ter, markiere sie als gesehen, bewerte sie mit 1-5 Sternen. Deine Bewertungen f\u00fchren zu intelligenteren Empfehlungen.',
+
+    // App Preview section
+    previewTitle: 'FastFlix in Aktion',
+    previewDescription: 'Eine klare, intuitive Oberfl\u00e4che, die dir hilft, in Sekunden etwas zum Schauen zu finden.',
+    previewHome: 'Personalisierter Startbildschirm',
+    previewSearch: 'KI-gest\u00fctzte Suche',
 
     // Platform section
     platformTitle: 'Starte mit FastFlix',

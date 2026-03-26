@@ -141,8 +141,56 @@ export default function Home() {
         </div>
       </section>
 
-      {/* How It Works */}
+      {/* App Preview */}
       <section className='bg-gray-50 py-20'>
+        <div className='mx-auto max-w-7xl px-4 sm:px-6 lg:px-8'>
+          <div className='text-center'>
+            <h2 className='text-3xl font-bold tracking-tight text-gray-900 sm:text-4xl'>
+              {t('previewTitle')}
+            </h2>
+            <p className='mt-4 text-lg text-gray-600'>
+              {t('previewDescription')}
+            </p>
+          </div>
+          <div className='mt-16 flex flex-col items-center justify-center gap-8 sm:flex-row sm:gap-12 lg:gap-16'>
+            {/* Home Screen */}
+            <div className='flex flex-col items-center'>
+              <div className='overflow-hidden rounded-[2.5rem] border-[8px] border-gray-900 bg-gray-900 shadow-2xl'>
+                <Image
+                  src='/screenshot-home.png'
+                  alt='FastFlix Home Screen'
+                  width={280}
+                  height={607}
+                  className='rounded-[2rem]'
+                  priority
+                />
+              </div>
+              <p className='mt-4 text-sm font-medium text-gray-600'>
+                {t('previewHome')}
+              </p>
+            </div>
+            {/* Search Screen */}
+            <div className='flex flex-col items-center'>
+              <div className='overflow-hidden rounded-[2.5rem] border-[8px] border-gray-900 bg-gray-900 shadow-2xl'>
+                <Image
+                  src='/screenshot-search.png'
+                  alt='FastFlix AI Search'
+                  width={280}
+                  height={607}
+                  className='rounded-[2rem]'
+                  priority
+                />
+              </div>
+              <p className='mt-4 text-sm font-medium text-gray-600'>
+                {t('previewSearch')}
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* How It Works */}
+      <section className='bg-white py-20'>
         <div className='mx-auto max-w-7xl px-4 sm:px-6 lg:px-8'>
           <div className='text-center'>
             <h2 className='text-3xl font-bold tracking-tight text-gray-900 sm:text-4xl'>
