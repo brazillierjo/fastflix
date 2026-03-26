@@ -384,20 +384,19 @@ export default function SearchForm({
                     onFocus={handleInputFocus}
                     placeholder={`e.g.: ${placeholder}`}
                     placeholderTextColor={getPlaceholderColor(isDark)}
-                    className='flex-1 p-6 text-lg text-light-text dark:text-dark-text'
+                    className='flex-1 pb-6 pl-6 pr-2 pt-6 text-lg text-light-text dark:text-dark-text'
                     multiline
                     textAlignVertical='top'
                     scrollEnabled={false}
                     editable={!isTyping}
                     style={{ minHeight: 100, maxHeight: 140 }}
                   />
-                  <View className='items-center justify-start pt-5 pr-2'>
-                    <View className='mb-2 h-6 w-px bg-light-border dark:bg-dark-border' />
+                  <View className='justify-end pb-4 pr-4'>
                     <TouchableOpacity
                       onPress={() => setShowFiltersModal(true)}
                       disabled={loading || isTyping}
-                      className='items-center justify-center px-3 py-1'
                       activeOpacity={0.7}
+                      hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
                     >
                       <Ionicons
                         name='options-outline'
