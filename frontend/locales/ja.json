@@ -268,7 +268,7 @@
     "noSubscription": "未登録",
     "subscriptionCancelled": "解約済み - 期限まで有効",
     "signInRequired": "管理するにはサインイン",
-    "defaultFilters": "デフォルトフィルター",
+    "defaultFilters": "マイフィルター",
     "defaultFiltersSubtitle": "国、プラットフォーム、コンテンツタイプ",
     "defaultFiltersSection": "検索フィルター"
   },

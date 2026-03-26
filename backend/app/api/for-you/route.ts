@@ -73,10 +73,11 @@ export async function GET(request: NextRequest) {
     const language = searchParams.get('language') || 'fr-FR';
     const country = searchParams.get('country') || 'FR';
 
-    // Fetch taste profile and watchlist in parallel
-    const [tasteProfile, watchlist] = await Promise.all([
+    // Fetch taste profile, watchlist, and user preferences in parallel
+    const [tasteProfile, watchlist, preferences] = await Promise.all([
       db.getUserTasteProfile(userId),
       db.getWatchlist(userId),
+      db.getUserPreferences(userId),
     ]);
 
     // Build set of watchlist TMDB IDs to exclude
@@ -167,12 +168,51 @@ export async function GET(request: NextRequest) {
       })
     );
 
+    // Filter by user's availability type preferences
+    const allowFlatrate = preferences.includeFlatrate;
+    const allowRent = preferences.includeRent;
+    const allowBuy = preferences.includeBuy;
+    const hasAvailabilityFilter = allowFlatrate || allowRent || allowBuy;
+
+    const filteredProvidersMap: { [key: number]: StreamingProvider[] } = {};
+    for (const [tmdbIdStr, itemProviders] of Object.entries(providersMap)) {
+      const tmdbId = Number(tmdbIdStr);
+      let filtered = itemProviders;
+
+      // Filter by availability type
+      if (hasAvailabilityFilter) {
+        filtered = filtered.filter((p) => {
+          if (p.availability_type === 'flatrate' && allowFlatrate) return true;
+          if (p.availability_type === 'rent' && allowRent) return true;
+          if (p.availability_type === 'buy' && allowBuy) return true;
+          if (p.availability_type === 'ads' && allowFlatrate) return true;
+          return false;
+        });
+      }
+
+      // Filter by platform preferences
+      if (preferences.platforms.length > 0) {
+        const platformSet = new Set(preferences.platforms);
+        filtered = filtered.filter((p) => platformSet.has(p.provider_id));
+      }
+
+      if (filtered.length > 0) {
+        filteredProvidersMap[tmdbId] = filtered;
+      }
+    }
+
+    // Only keep recommendations that have matching providers (if user has filters set)
+    const hasFilters = hasAvailabilityFilter || preferences.platforms.length > 0;
+    const filteredRecommendations = hasFilters
+      ? top20.filter((item) => filteredProvidersMap[item.tmdb_id]?.length > 0)
+      : top20;
+
     return NextResponse.json(
       {
         success: true,
         data: {
-          recommendations: top20,
-          streamingProviders: providersMap,
+          recommendations: filteredRecommendations,
+          streamingProviders: filteredProvidersMap,
         },
       },
       {

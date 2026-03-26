@@ -59,7 +59,7 @@ export function useHomeData() {
       // Fallback: fetch public trending
       try {
         const res = await fetch(
-          `${API_URL}/api/trending/public?language=${tmdbLanguage}`
+          `${API_URL}/api/trending/public?language=${tmdbLanguage}&country=${tmdbCountry}`
         );
         const json = await res.json();
         return {

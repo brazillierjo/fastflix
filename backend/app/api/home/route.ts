@@ -55,11 +55,12 @@ export async function GET(request: NextRequest) {
     const today = new Date().toISOString().split('T')[0];
 
     // Fetch everything in parallel (reuse isPremium from rate limit check)
-    const [trending, recentSearches, quota, isPremium] = await Promise.all([
+    const [trending, recentSearches, quota, isPremium, preferences] = await Promise.all([
       tmdb.getTrending(language),
       db.getSearchHistory(userId, 5),
       db.getUserQuota(userId, today),
       db.hasAccess(userId),
+      db.getUserPreferences(userId),
     ]);
 
     // Build daily pick from trending
@@ -86,8 +87,54 @@ export async function GET(request: NextRequest) {
       };
     }
 
-    // Top 10 trending
-    const trendingTop10: TrendingItem[] = trending.slice(0, 10);
+    // Top 10 trending with providers
+    const trendingTop10Raw = trending.slice(0, 10);
+    const trendingAsResults = trendingTop10Raw.map((item) => ({
+      tmdb_id: item.tmdb_id,
+      title: item.title,
+      media_type: item.media_type,
+      overview: '',
+      poster_path: item.poster_path,
+      backdrop_path: null,
+      vote_average: item.vote_average,
+      vote_count: 0,
+      genre_ids: [],
+      popularity: 0,
+    }));
+    const trendingProviders = await tmdb.getBatchWatchProviders(trendingAsResults, country);
+
+    // Filter providers by user's availability & platform preferences
+    const allowFlatrate = preferences.includeFlatrate;
+    const allowRent = preferences.includeRent;
+    const allowBuy = preferences.includeBuy;
+    const hasAvailabilityFilter = allowFlatrate || allowRent || allowBuy;
+    const platformSet = preferences.platforms.length > 0 ? new Set(preferences.platforms) : null;
+
+    const trendingTop10: TrendingItem[] = trendingTop10Raw.map((item) => {
+      let itemProviders = trendingProviders[item.tmdb_id] || [];
+
+      if (hasAvailabilityFilter) {
+        itemProviders = itemProviders.filter((p) => {
+          if (p.availability_type === 'flatrate' && allowFlatrate) return true;
+          if (p.availability_type === 'rent' && allowRent) return true;
+          if (p.availability_type === 'buy' && allowBuy) return true;
+          if (p.availability_type === 'ads' && allowFlatrate) return true;
+          return false;
+        });
+      }
+
+      if (platformSet) {
+        itemProviders = itemProviders.filter((p) => platformSet.has(p.provider_id));
+      }
+
+      return {
+        ...item,
+        providers: itemProviders.map((p) => ({
+          provider_name: p.provider_name,
+          logo_path: p.logo_path,
+        })),
+      };
+    });
 
     const response: HomeResponse = {
       dailyPick,

@@ -1,5 +1,5 @@
 import { Ionicons } from '@expo/vector-icons';
-import CollectionsSection from '@/components/CollectionsSection';
+import FiltersBottomSheet from '@/components/FiltersBottomSheet';
 import ForYouSection from '@/components/ForYouSection';
 import NewReleasesSection from '@/components/NewReleasesSection';
 import SubscriptionModal from '@/components/SubscriptionModal';
@@ -52,6 +52,8 @@ export default function HomeScreen() {
     isRefetching,
     refetch,
   } = useHomeData();
+
+  const [showFiltersModal, setShowFiltersModal] = useState(false);
 
   // Guest mode: read setup genres/platforms from AsyncStorage
   const [setupGenres, setSetupGenres] = useState<number[]>([]);
@@ -313,33 +315,48 @@ export default function HomeScreen() {
           </MotiView>
         )}
 
-        {/* Quick Search Bar */}
+        {/* Quick Search Bar + Filters */}
         <MotiView
           from={{ opacity: 0, translateY: 10 }}
           animate={{ opacity: 1, translateY: 0 }}
           transition={{ delay: 100, type: 'timing', duration: 500 }}
           className='mt-6 px-6'
         >
-          <TouchableOpacity
-            onPress={() => router.push('/search' as never)}
-            activeOpacity={0.7}
+          <View
             style={[getSquircle(16), getCardShadow(isDark)]}
-            className='flex-row items-center gap-3 border border-light-border bg-light-surface px-4 py-4 dark:border-dark-border dark:bg-dark-surface'
+            className='flex-row items-center border border-light-border bg-light-surface dark:border-dark-border dark:bg-dark-surface'
           >
-            <Ionicons
-              name='search'
-              size={20}
-              color={isDark ? '#a3a3a3' : '#737373'}
-            />
-            <Text className='flex-1 text-base text-light-muted dark:text-dark-muted'>
-              {t('home.searchPlaceholder')}
-            </Text>
-            <Ionicons
-              name='chevron-forward'
-              size={18}
-              color={isDark ? '#525252' : '#a3a3a3'}
-            />
-          </TouchableOpacity>
+            <TouchableOpacity
+              onPress={() => router.push('/search' as never)}
+              activeOpacity={0.7}
+              className='flex-1 flex-row items-center gap-3 px-4 py-4'
+            >
+              <Ionicons
+                name='search'
+                size={20}
+                color={isDark ? '#a3a3a3' : '#737373'}
+              />
+              <Text className='flex-1 text-base text-light-muted dark:text-dark-muted'>
+                {t('home.searchPlaceholder')}
+              </Text>
+            </TouchableOpacity>
+            {isAuthenticated && (
+              <>
+                <View className='h-6 w-px bg-light-border dark:bg-dark-border' />
+                <TouchableOpacity
+                  onPress={() => setShowFiltersModal(true)}
+                  activeOpacity={0.7}
+                  className='items-center justify-center px-4 py-4'
+                >
+                  <Ionicons
+                    name='options-outline'
+                    size={20}
+                    color={isDark ? '#a3a3a3' : '#737373'}
+                  />
+                </TouchableOpacity>
+              </>
+            )}
+          </View>
         </MotiView>
 
         {/* Daily Pick Card */}
@@ -445,28 +462,66 @@ export default function HomeScreen() {
                       duration: 400,
                     }}
                   >
-                    <View
-                      style={[getSquircle(12), getCardShadow(isDark)]}
-                      className='h-44 w-32 overflow-hidden border border-light-border bg-light-surface dark:border-dark-border dark:bg-dark-surface'
+                    <TouchableOpacity
+                      onPress={() =>
+                        router.push({
+                          pathname: '/movie-detail' as never,
+                          params: {
+                            tmdbId: String(item.tmdb_id || item.id),
+                            mediaType: item.media_type || 'movie',
+                            title: item.title || '',
+                            posterPath: item.poster_path || '',
+                            voteAverage: String(item.vote_average || 0),
+                            overview: item.overview || '',
+                            providersJson: JSON.stringify(item.providers || []),
+                            creditsJson: JSON.stringify([]),
+                            detailedInfoJson: JSON.stringify({}),
+                          },
+                        })
+                      }
+                      activeOpacity={0.7}
+                      style={{ width: 130 }}
                     >
-                      {item.poster_path ? (
-                        <Image
-                          source={{
-                            uri: `${TMDB_IMAGE_BASE}/w342${item.poster_path}`,
-                          }}
-                          className='h-full w-full'
-                          resizeMode='cover'
-                        />
-                      ) : (
-                        <View className='flex-1 items-center justify-center'>
-                          <Ionicons
-                            name='image-outline'
-                            size={28}
-                            color={isDark ? '#404040' : '#d4d4d4'}
+                      <View
+                        style={[getSquircle(12), getCardShadow(isDark)]}
+                        className='h-[195px] overflow-hidden border border-light-border bg-light-surface dark:border-dark-border dark:bg-dark-surface'
+                      >
+                        {item.poster_path ? (
+                          <Image
+                            source={{
+                              uri: `${TMDB_IMAGE_BASE}/w342${item.poster_path}`,
+                            }}
+                            className='h-full w-full'
+                            resizeMode='cover'
                           />
+                        ) : (
+                          <View className='flex-1 items-center justify-center'>
+                            <Ionicons
+                              name='image-outline'
+                              size={28}
+                              color={isDark ? '#404040' : '#d4d4d4'}
+                            />
+                          </View>
+                        )}
+                      </View>
+                      <Text
+                        className='mt-1.5 text-xs font-medium text-light-text dark:text-dark-text'
+                        numberOfLines={1}
+                      >
+                        {item.title}
+                      </Text>
+                      {item.providers?.length > 0 && (
+                        <View className='mt-1 flex-row gap-1'>
+                          {item.providers.slice(0, 3).map((p: any, pi: number) => (
+                            <Image
+                              key={pi}
+                              source={{ uri: `${TMDB_IMAGE_BASE}/w45${p.logo_path}` }}
+                              style={{ width: 16, height: 16, borderRadius: 4 }}
+                            />
+                          ))}
                         </View>
                       )}
-                    </View>
+                    </TouchableOpacity>
                   </MotiView>
                 ))
               : isHomeLoading
@@ -492,18 +547,15 @@ export default function HomeScreen() {
         {/* New Releases This Week */}
         <NewReleasesSection delay={325} />
 
-        {/* Collections */}
-        <CollectionsSection delay={350} />
-
         {/* For You - Personalized Recommendations */}
-        <ForYouSection delay={375} />
+        <ForYouSection delay={350} />
 
         {/* Recent Searches - only for authenticated users */}
         {isAuthenticated && recentSearches.length > 0 && (
           <MotiView
             from={{ opacity: 0, translateY: 15 }}
             animate={{ opacity: 1, translateY: 0 }}
-            transition={{ delay: 400, type: 'timing', duration: 600 }}
+            transition={{ delay: 375, type: 'timing', duration: 600 }}
             className='mt-8 px-6'
           >
             <Text
@@ -567,6 +619,13 @@ export default function HomeScreen() {
       <SubscriptionModal
         visible={showSubscriptionModal}
         onClose={() => setShowSubscriptionModal(false)}
+      />
+
+      {/* Filters Bottom Sheet */}
+      <FiltersBottomSheet
+        visible={showFiltersModal}
+        onClose={() => setShowFiltersModal(false)}
+        saveAsDefault
       />
     </SafeAreaView>
   );

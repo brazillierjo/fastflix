@@ -280,7 +280,7 @@
     "noSubscription": "Not subscribed",
     "subscriptionCancelled": "Cancelled - Active until expiry",
     "signInRequired": "Sign in to manage",
-    "defaultFilters": "Default Filters",
+    "defaultFilters": "My Filters",
     "defaultFiltersSubtitle": "Country, platforms, content type",
     "defaultFiltersSection": "Search Filters"
   },

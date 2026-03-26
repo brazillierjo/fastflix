@@ -336,6 +336,7 @@ export interface TrendingItem {
   poster_path: string | null;
   vote_average: number;
   media_type: 'movie' | 'tv';
+  providers?: { provider_name: string; logo_path: string }[];
 }
 
 export interface DailyPick {
