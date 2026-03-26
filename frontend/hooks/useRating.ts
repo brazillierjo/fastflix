@@ -5,6 +5,7 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { backendAPIService } from '@/services/backend-api.service';
 import { useAuth } from '@/contexts/AuthContext';
+import { useEffect, useRef } from 'react';
 
 interface RatedMovie {
   tmdb_id: number;
@@ -25,9 +26,12 @@ export const TASTE_PROFILE_KEY = ['tasteProfile'];
 
 /**
  * Hook for fetching the user's taste profile (including all rated/watched movies)
+ * Automatically backfills missing poster_path from TMDB (once per session)
  */
 export function useTasteProfile() {
   const { isAuthenticated } = useAuth();
+  const queryClient = useQueryClient();
+  const hasBackfilled = useRef(false);
 
   const { data, isLoading, error, refetch } = useQuery({
     queryKey: TASTE_PROFILE_KEY,
@@ -42,6 +46,20 @@ export function useTasteProfile() {
     staleTime: 1000 * 60 * 5,
     gcTime: 1000 * 60 * 30,
   });
+
+  // Auto-backfill missing posters (once per session)
+  useEffect(() => {
+    if (!data || hasBackfilled.current) return;
+    const missingPosters = data.rated_movies.some(m => !m.poster_path);
+    if (missingPosters) {
+      hasBackfilled.current = true;
+      backendAPIService.backfillPosters().then((res) => {
+        if (res.success && res.data && res.data.updated > 0) {
+          queryClient.invalidateQueries({ queryKey: TASTE_PROFILE_KEY });
+        }
+      });
+    }
+  }, [data, queryClient]);
 
   return {
     profile: data,

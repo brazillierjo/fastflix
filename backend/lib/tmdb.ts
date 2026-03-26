@@ -426,6 +426,7 @@ class TMDBService {
         tagline: string;
         budget: number;
         revenue: number;
+        poster_path: string | null;
         production_companies: Array<{ id: number; name: string; logo_path: string | null }>;
         production_countries: Array<{ iso_3166_1: string; name: string }>;
         original_language: string;
@@ -442,6 +443,7 @@ class TMDBService {
         runtime: data.runtime || undefined,
         release_year: releaseYear,
         tagline: data.tagline || undefined,
+        poster_path: data.poster_path || undefined,
         budget: data.budget || undefined,
         revenue: data.revenue || undefined,
         production_companies: data.production_companies?.map(c => ({ id: c.id, name: c.name, logo_path: c.logo_path })) || undefined,
@@ -472,6 +474,7 @@ class TMDBService {
         status: string;
         first_air_date: string;
         tagline: string;
+        poster_path: string | null;
         created_by: Array<{ id: number; name: string; profile_path: string | null }>;
         networks: Array<{ id: number; name: string; logo_path: string | null }>;
         original_language: string;
@@ -499,6 +502,7 @@ class TMDBService {
         status: data.status,
         first_air_year: firstAirYear,
         tagline: data.tagline || undefined,
+        poster_path: data.poster_path || undefined,
         created_by: data.created_by?.map(c => ({ id: c.id, name: c.name, profile_path: c.profile_path })) || undefined,
         networks: data.networks?.map(n => ({ id: n.id, name: n.name, logo_path: n.logo_path })) || undefined,
         original_language: data.original_language || undefined,

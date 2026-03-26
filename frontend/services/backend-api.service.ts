@@ -735,6 +735,12 @@ class BackendAPIService {
     });
   }
 
+  async backfillPosters(): Promise<APIResponse<{ updated: number; total: number }>> {
+    return await this.makeRequest('/api/user/taste-profile/backfill-posters', {
+      method: 'POST',
+    });
+  }
+
   // ==========================================================================
   // Account Management
   // ==========================================================================

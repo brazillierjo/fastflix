@@ -64,6 +64,7 @@ export interface DetailedInfo {
   status?: string; // For TV shows (Returning Series, Ended, etc.)
   first_air_year?: number; // For TV shows
   tagline?: string;
+  poster_path?: string;
   // Movie-specific enriched fields
   budget?: number;
   revenue?: number;
