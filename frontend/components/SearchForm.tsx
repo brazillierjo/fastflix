@@ -391,7 +391,7 @@ export default function SearchForm({
                     editable={!isTyping}
                     style={{ minHeight: 100, maxHeight: 140 }}
                   />
-                  <View className='justify-end pb-4 pr-4'>
+                  <View className='justify-center pr-4'>
                     <TouchableOpacity
                       onPress={() => setShowFiltersModal(true)}
                       disabled={loading || isTyping}
