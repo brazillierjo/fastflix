@@ -488,6 +488,10 @@
     "readLess": "閉じる",
     "birthInfo": "個人情報",
     "filmography": "フィルモグラフィー",
-    "noFilmography": "フィルモグラフィーがありません"
+    "noFilmography": "フィルモグラフィーがありません",
+    "diedAt": "歳で死去",
+    "yearsOld": "歳",
+    "movies": "映画",
+    "tvShows": "ドラマ"
   }
 }

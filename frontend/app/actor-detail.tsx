@@ -188,6 +188,36 @@ export default function ActorDetailScreen() {
   const isBioLong = biography.length > BIO_TRUNCATE_LENGTH;
   const displayBio = bioExpanded ? biography : biography.slice(0, BIO_TRUNCATE_LENGTH);
 
+  // Format dates according to locale
+  const formatDate = (dateStr: string | null | undefined): string | null => {
+    if (!dateStr) return null;
+    try {
+      const date = new Date(dateStr);
+      return date.toLocaleDateString(langCode || 'en', {
+        day: 'numeric',
+        month: 'long',
+        year: 'numeric',
+      });
+    } catch {
+      return dateStr;
+    }
+  };
+
+  // Calculate age
+  const getAge = (): number | null => {
+    if (!person?.birthday) return null;
+    const birth = new Date(person.birthday);
+    const end = person.deathday ? new Date(person.deathday) : new Date();
+    let age = end.getFullYear() - birth.getFullYear();
+    const m = end.getMonth() - birth.getMonth();
+    if (m < 0 || (m === 0 && end.getDate() < birth.getDate())) age--;
+    return age;
+  };
+
+  const age = getAge();
+  const formattedBirthday = formatDate(person?.birthday);
+  const formattedDeathday = formatDate(person?.deathday);
+
   const handleFilmographyPress = (item: FilmographyItem) => {
     router.push({
       pathname: '/movie-detail' as never,
@@ -397,7 +427,7 @@ export default function ActorDetailScreen() {
             </MotiView>
           ) : null}
 
-          {/* Birth Info Section */}
+          {/* Personal Info Section */}
           {loading && !person ? (
             <MotiView
               from={{ opacity: 0, translateY: 15 }}
@@ -410,7 +440,7 @@ export default function ActorDetailScreen() {
                 <Skeleton width='80%' height={14} borderRadius={4} style={{ marginTop: 6 }} />
               </View>
             </MotiView>
-          ) : (person?.birthday || person?.place_of_birth) ? (
+          ) : (person?.birthday || person?.place_of_birth || filmography.length > 0) ? (
             <MotiView
               from={{ opacity: 0, translateY: 15 }}
               animate={{ opacity: 1, translateY: 0 }}
@@ -424,21 +454,34 @@ export default function ActorDetailScreen() {
                   style={[getSquircle(14), getCardShadow(isDark)]}
                   className='bg-light-card p-4 dark:bg-dark-card'
                 >
-                  {person?.birthday && (
-                    <View className='mb-2 flex-row items-center gap-2'>
+                  {formattedBirthday && (
+                    <View className='mb-2.5 flex-row items-center gap-3'>
                       <Ionicons
                         name='calendar'
                         size={16}
                         color={isDark ? '#a3a3a3' : '#737373'}
                       />
-                      <Text className='text-sm text-light-textSecondary dark:text-dark-textSecondary'>
-                        {person.birthday}
-                        {person.deathday ? ` — ${person.deathday}` : ''}
-                      </Text>
+                      <View className='flex-1'>
+                        <Text className='text-sm text-light-textSecondary dark:text-dark-textSecondary'>
+                          {formattedBirthday}
+                          {age !== null && (
+                            <Text className='text-light-textMuted dark:text-dark-textMuted'>
+                              {person?.deathday
+                                ? ` (${t('actorDetail.diedAt') || 'died at'} ${age})`
+                                : ` (${age} ${t('actorDetail.yearsOld') || 'years old'})`}
+                            </Text>
+                          )}
+                        </Text>
+                        {formattedDeathday && (
+                          <Text className='mt-0.5 text-sm text-light-textMuted dark:text-dark-textMuted'>
+                            † {formattedDeathday}
+                          </Text>
+                        )}
+                      </View>
                     </View>
                   )}
                   {person?.place_of_birth && (
-                    <View className='flex-row items-center gap-2'>
+                    <View className='mb-2.5 flex-row items-center gap-3'>
                       <Ionicons
                         name='location'
                         size={16}
@@ -446,6 +489,20 @@ export default function ActorDetailScreen() {
                       />
                       <Text className='flex-1 text-sm text-light-textSecondary dark:text-dark-textSecondary'>
                         {person.place_of_birth}
+                      </Text>
+                    </View>
+                  )}
+                  {filmography.length > 0 && (
+                    <View className='flex-row items-center gap-3'>
+                      <Ionicons
+                        name='film'
+                        size={16}
+                        color={isDark ? '#a3a3a3' : '#737373'}
+                      />
+                      <Text className='text-sm text-light-textSecondary dark:text-dark-textSecondary'>
+                        {filmography.filter(f => f.media_type === 'movie').length} {t('actorDetail.movies') || 'movies'}
+                        {' · '}
+                        {filmography.filter(f => f.media_type === 'tv').length} {t('actorDetail.tvShows') || 'TV shows'}
                       </Text>
                     </View>
                   )}

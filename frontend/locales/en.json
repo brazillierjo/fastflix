@@ -512,6 +512,10 @@
     "readLess": "Read less",
     "birthInfo": "Personal Info",
     "filmography": "Filmography",
-    "noFilmography": "No filmography available"
+    "noFilmography": "No filmography available",
+    "diedAt": "died at",
+    "yearsOld": "years old",
+    "movies": "movies",
+    "tvShows": "TV shows"
   }
 }
