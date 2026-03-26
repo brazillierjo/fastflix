@@ -38,7 +38,6 @@ export default function QuickSearch() {
   const [query, setQuery] = useState('');
   const [results, setResults] = useState<TMDBQuickSearchResult[]>([]);
   const [isSearching, setIsSearching] = useState(false);
-  const [isFocused, setIsFocused] = useState(false);
   const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const inputRef = useRef<TextInput>(null);
 
@@ -137,7 +136,7 @@ export default function QuickSearch() {
     return null;
   };
 
-  const showDropdown = isFocused && (results.length > 0 || isSearching) && query.trim().length >= MIN_CHARS;
+  const showDropdown = (results.length > 0 || isSearching) && query.trim().length >= MIN_CHARS;
 
   return (
     <View className='mt-8 px-6'>
@@ -162,8 +161,6 @@ export default function QuickSearch() {
           ref={inputRef}
           value={query}
           onChangeText={setQuery}
-          onFocus={() => setIsFocused(true)}
-          onBlur={() => setTimeout(() => setIsFocused(false), 200)}
           placeholder={t('home.quickSearchPlaceholder') || 'Movie, series, actor...'}
           placeholderTextColor={isDark ? '#525252' : '#a3a3a3'}
           className='ml-2 flex-1 text-base text-light-text dark:text-dark-text'
