@@ -933,12 +933,74 @@ export default function MovieDetailScreen() {
             </MotiView>
           )}
 
-          {/* Director / Key Crew Section */}
-          {keyCrew.length > 0 && (
+          {/* ═══════════ CAST ═══════════ */}
+          {cast.length > 0 && (
             <MotiView
               from={{ opacity: 0, translateY: 15 }}
               animate={{ opacity: 1, translateY: 0 }}
               transition={{ type: 'timing', duration: 400, delay: 270 }}
+            >
+              <View className='mb-6'>
+                <Text className='mb-3 text-lg font-semibold text-light-text dark:text-dark-text'>
+                  {t('movieDetail.cast')}
+                </Text>
+                <ScrollView
+                  horizontal
+                  showsHorizontalScrollIndicator={false}
+                  contentContainerStyle={{ gap: 12 }}
+                >
+                  {cast.slice(0, 10).map((actor, idx) => (
+                    <TouchableOpacity
+                      key={`cast-${actor.id}-${idx}`}
+                      activeOpacity={0.7}
+                      onPress={() =>
+                        router.push({
+                          pathname: '/actor-detail' as never,
+                          params: {
+                            personId: String(actor.id),
+                            name: actor.name,
+                            profilePath: actor.profile_path || '',
+                          },
+                        })
+                      }
+                    >
+                      <View className='items-center' style={{ width: 80 }}>
+                        <View
+                          style={{ width: 64, height: 64, borderRadius: 32, overflow: 'hidden' }}
+                          className='mb-1.5 bg-light-surface dark:bg-dark-surface'
+                        >
+                          {actor.profile_path ? (
+                            <Image
+                              source={{ uri: `https://image.tmdb.org/t/p/w185${actor.profile_path}` }}
+                              style={{ width: 64, height: 64 }}
+                              resizeMode='cover'
+                            />
+                          ) : (
+                            <View className='flex-1 items-center justify-center'>
+                              <Ionicons name='person' size={28} color={isDark ? '#555' : '#bbb'} />
+                            </View>
+                          )}
+                        </View>
+                        <Text className='text-center text-xs font-medium text-light-text dark:text-dark-text' numberOfLines={2}>
+                          {actor.name}
+                        </Text>
+                        <Text className='text-center text-xs text-light-textMuted dark:text-dark-textMuted' numberOfLines={1}>
+                          {actor.character}
+                        </Text>
+                      </View>
+                    </TouchableOpacity>
+                  ))}
+                </ScrollView>
+              </View>
+            </MotiView>
+          )}
+
+          {/* ═══════════ CREW ═══════════ */}
+          {keyCrew.length > 0 && (
+            <MotiView
+              from={{ opacity: 0, translateY: 15 }}
+              animate={{ opacity: 1, translateY: 0 }}
+              transition={{ type: 'timing', duration: 400, delay: 280 }}
             >
               <View className='mb-6'>
                 <Text className='mb-3 text-lg font-semibold text-light-text dark:text-dark-text'>
@@ -1000,52 +1062,30 @@ export default function MovieDetailScreen() {
             <MotiView
               from={{ opacity: 0, translateY: 15 }}
               animate={{ opacity: 1, translateY: 0 }}
-              transition={{ type: 'timing', duration: 400, delay: 275 }}
+              transition={{ type: 'timing', duration: 400, delay: 285 }}
             >
               <View className='mb-6'>
                 <Text className='mb-2 text-lg font-semibold text-light-text dark:text-dark-text'>
                   {t('movieDetail.createdBy') || 'Created by'}
                 </Text>
-                <ScrollView
-                  horizontal
-                  showsHorizontalScrollIndicator={false}
-                  contentContainerStyle={{ gap: 12 }}
-                >
+                <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={{ gap: 12 }}>
                   {detailedInfo.created_by.map((creator, idx) => (
                     <TouchableOpacity
                       key={`creator-${creator.id}-${idx}`}
                       activeOpacity={0.7}
-                      onPress={() =>
-                        router.push({
-                          pathname: '/actor-detail' as never,
-                          params: {
-                            personId: String(creator.id),
-                            name: creator.name,
-                            profilePath: creator.profile_path || '',
-                          },
-                        })
-                      }
+                      onPress={() => router.push({ pathname: '/actor-detail' as never, params: { personId: String(creator.id), name: creator.name, profilePath: creator.profile_path || '' } })}
                     >
                       <View className='items-center' style={{ width: 80 }}>
-                        <View
-                          style={{ width: 64, height: 64, borderRadius: 32, overflow: 'hidden' }}
-                          className='mb-1.5 bg-light-surface dark:bg-dark-surface'
-                        >
+                        <View style={{ width: 64, height: 64, borderRadius: 32, overflow: 'hidden' }} className='mb-1.5 bg-light-surface dark:bg-dark-surface'>
                           {creator.profile_path ? (
-                            <Image
-                              source={{ uri: `https://image.tmdb.org/t/p/w185${creator.profile_path}` }}
-                              style={{ width: 64, height: 64 }}
-                              resizeMode='cover'
-                            />
+                            <Image source={{ uri: `https://image.tmdb.org/t/p/w185${creator.profile_path}` }} style={{ width: 64, height: 64 }} resizeMode='cover' />
                           ) : (
                             <View className='flex-1 items-center justify-center'>
                               <Ionicons name='person' size={28} color={isDark ? '#555' : '#bbb'} />
                             </View>
                           )}
                         </View>
-                        <Text className='text-center text-xs font-medium text-light-text dark:text-dark-text' numberOfLines={2}>
-                          {creator.name}
-                        </Text>
+                        <Text className='text-center text-xs font-medium text-light-text dark:text-dark-text' numberOfLines={2}>{creator.name}</Text>
                       </View>
                     </TouchableOpacity>
                   ))}
@@ -1054,56 +1094,18 @@ export default function MovieDetailScreen() {
             </MotiView>
           )}
 
-          {/* TV: Networks */}
-          {mediaType === 'tv' && detailedInfo.networks && detailedInfo.networks.length > 0 && (
-            <MotiView
-              from={{ opacity: 0, translateY: 15 }}
-              animate={{ opacity: 1, translateY: 0 }}
-              transition={{ type: 'timing', duration: 400, delay: 280 }}
-            >
-              <View className='mb-6'>
-                <Text className='mb-2 text-lg font-semibold text-light-text dark:text-dark-text'>
-                  {t('movieDetail.networks') || 'Networks'}
-                </Text>
-                <View className='flex-row flex-wrap gap-3'>
-                  {detailedInfo.networks.map((network) => (
-                    <View
-                      key={`network-${network.id}`}
-                      style={[getSquircle(10)]}
-                      className='flex-row items-center gap-2 bg-light-surface px-3 py-2 dark:bg-dark-surface'
-                    >
-                      {network.logo_path ? (
-                        <Image
-                          source={{ uri: `https://image.tmdb.org/t/p/w92${network.logo_path}` }}
-                          style={{ width: 24, height: 24 }}
-                          resizeMode='contain'
-                        />
-                      ) : null}
-                      <Text className='text-sm font-medium text-light-text dark:text-dark-text'>
-                        {network.name}
-                      </Text>
-                    </View>
-                  ))}
-                </View>
-              </View>
-            </MotiView>
-          )}
-
-          {/* TV: Next / Last Episode */}
+          {/* ═══════════ TV: EPISODES ═══════════ */}
           {mediaType === 'tv' && (detailedInfo.next_episode_to_air || detailedInfo.last_episode_to_air) && (
             <MotiView
               from={{ opacity: 0, translateY: 15 }}
               animate={{ opacity: 1, translateY: 0 }}
-              transition={{ type: 'timing', duration: 400, delay: 285 }}
+              transition={{ type: 'timing', duration: 400, delay: 290 }}
             >
               <View className='mb-6'>
                 <Text className='mb-2 text-lg font-semibold text-light-text dark:text-dark-text'>
                   {t('movieDetail.episodes') || 'Episodes'}
                 </Text>
-                <View
-                  style={[getSquircle(14), getCardShadow(isDark)]}
-                  className='bg-light-card p-3 dark:bg-dark-card'
-                >
+                <View style={[getSquircle(14), getCardShadow(isDark)]} className='bg-light-card p-3 dark:bg-dark-card'>
                   {detailedInfo.next_episode_to_air && (
                     <View className='mb-2 flex-row items-center gap-2'>
                       <View className='rounded-full bg-green-500/15 p-1'>
@@ -1139,256 +1141,7 @@ export default function MovieDetailScreen() {
             </MotiView>
           )}
 
-          {/* Budget / Revenue */}
-          {mediaType === 'movie' && detailedInfo.budget && detailedInfo.budget > 0 && (
-            <MotiView
-              from={{ opacity: 0, translateY: 15 }}
-              animate={{ opacity: 1, translateY: 0 }}
-              transition={{ type: 'timing', duration: 400, delay: 280 }}
-            >
-              <View className='mb-4 flex-row items-center gap-2'>
-                <Ionicons name='cash-outline' size={16} color={isDark ? '#a3a3a3' : '#737373'} />
-                <Text className='text-sm text-light-textSecondary dark:text-dark-textSecondary'>
-                  {formatCurrency(detailedInfo.budget)} {t('movieDetail.budget') || 'budget'}
-                  {detailedInfo.revenue && detailedInfo.revenue > 0
-                    ? ` · ${formatCurrency(detailedInfo.revenue)} ${t('movieDetail.boxOffice') || 'box office'}`
-                    : ''}
-                </Text>
-              </View>
-            </MotiView>
-          )}
-
-          {/* Collection / Franchise */}
-          {detailedInfo.belongs_to_collection && (
-            <MotiView
-              from={{ opacity: 0, translateY: 15 }}
-              animate={{ opacity: 1, translateY: 0 }}
-              transition={{ type: 'timing', duration: 400, delay: 285 }}
-            >
-              <View className='mb-4 flex-row items-center gap-2'>
-                <Ionicons name='albums-outline' size={16} color={isDark ? '#a3a3a3' : '#737373'} />
-                <Text className='text-sm text-light-textSecondary dark:text-dark-textSecondary'>
-                  {t('movieDetail.partOf') || 'Part of'} {detailedInfo.belongs_to_collection.name}
-                </Text>
-              </View>
-            </MotiView>
-          )}
-
-          {/* Original Language */}
-          {detailedInfo.original_language && detailedInfo.original_language !== langCode?.slice(0, 2) && (
-            <MotiView
-              from={{ opacity: 0, translateY: 15 }}
-              animate={{ opacity: 1, translateY: 0 }}
-              transition={{ type: 'timing', duration: 400, delay: 288 }}
-            >
-              <View className='mb-4 flex-row items-center gap-2'>
-                <Ionicons name='language-outline' size={16} color={isDark ? '#a3a3a3' : '#737373'} />
-                <Text className='text-sm text-light-textSecondary dark:text-dark-textSecondary'>
-                  {t('movieDetail.originalLanguage') || 'Original'}: {getLanguageName(detailedInfo.original_language)}
-                </Text>
-              </View>
-            </MotiView>
-          )}
-
-          {/* Production Companies */}
-          {detailedInfo.production_companies && detailedInfo.production_companies.length > 0 && (
-            <MotiView
-              from={{ opacity: 0, translateY: 15 }}
-              animate={{ opacity: 1, translateY: 0 }}
-              transition={{ type: 'timing', duration: 400, delay: 290 }}
-            >
-              <View className='mb-6'>
-                <Text className='mb-2 text-lg font-semibold text-light-text dark:text-dark-text'>
-                  {t('movieDetail.production') || 'Production'}
-                </Text>
-                <View className='flex-row flex-wrap gap-3'>
-                  {detailedInfo.production_companies.slice(0, 5).map((company) => (
-                    <View
-                      key={`company-${company.id}`}
-                      style={[getSquircle(10)]}
-                      className='flex-row items-center gap-2 bg-light-surface px-3 py-2 dark:bg-dark-surface'
-                    >
-                      {company.logo_path ? (
-                        <Image
-                          source={{ uri: `https://image.tmdb.org/t/p/w92${company.logo_path}` }}
-                          style={{ width: 24, height: 24 }}
-                          resizeMode='contain'
-                        />
-                      ) : null}
-                      <Text className='text-sm font-medium text-light-text dark:text-dark-text'>
-                        {company.name}
-                      </Text>
-                    </View>
-                  ))}
-                </View>
-              </View>
-            </MotiView>
-          )}
-
-          {/* Original Title */}
-          {detailedInfo.original_title && detailedInfo.original_title !== title && (
-            <MotiView
-              from={{ opacity: 0, translateY: 15 }}
-              animate={{ opacity: 1, translateY: 0 }}
-              transition={{ type: 'timing', duration: 400, delay: 292 }}
-            >
-              <View className='mb-4 flex-row items-center gap-2'>
-                <Ionicons name='text-outline' size={16} color={isDark ? '#a3a3a3' : '#737373'} />
-                <Text className='text-sm text-light-textSecondary dark:text-dark-textSecondary'>
-                  {t('movieDetail.originalTitle') || 'Original title'}: {detailedInfo.original_title}
-                </Text>
-              </View>
-            </MotiView>
-          )}
-
-          {/* Production Countries */}
-          {detailedInfo.production_countries && detailedInfo.production_countries.length > 0 && (
-            <MotiView
-              from={{ opacity: 0, translateY: 15 }}
-              animate={{ opacity: 1, translateY: 0 }}
-              transition={{ type: 'timing', duration: 400, delay: 294 }}
-            >
-              <View className='mb-4 flex-row items-center gap-2'>
-                <Ionicons name='globe-outline' size={16} color={isDark ? '#a3a3a3' : '#737373'} />
-                <Text className='text-sm text-light-textSecondary dark:text-dark-textSecondary'>
-                  {detailedInfo.production_countries.map(c => c.name).join(', ')}
-                </Text>
-              </View>
-            </MotiView>
-          )}
-
-          {/* Spoken Languages */}
-          {detailedInfo.spoken_languages && detailedInfo.spoken_languages.length > 0 && (
-            <MotiView
-              from={{ opacity: 0, translateY: 15 }}
-              animate={{ opacity: 1, translateY: 0 }}
-              transition={{ type: 'timing', duration: 400, delay: 296 }}
-            >
-              <View className='mb-4 flex-row items-center gap-2'>
-                <Ionicons name='chatbubble-ellipses-outline' size={16} color={isDark ? '#a3a3a3' : '#737373'} />
-                <Text className='text-sm text-light-textSecondary dark:text-dark-textSecondary'>
-                  {t('movieDetail.spokenLanguages') || 'Languages'}: {detailedInfo.spoken_languages.map(l => l.name || l.english_name).join(', ')}
-                </Text>
-              </View>
-            </MotiView>
-          )}
-
-          {/* In Production badge (TV) */}
-          {mediaType === 'tv' && detailedInfo.in_production && (
-            <MotiView
-              from={{ opacity: 0, translateY: 15 }}
-              animate={{ opacity: 1, translateY: 0 }}
-              transition={{ type: 'timing', duration: 400, delay: 298 }}
-            >
-              <View className='mb-4 flex-row items-center gap-2'>
-                <View className='h-2 w-2 rounded-full bg-green-500' />
-                <Text className='text-sm font-medium text-green-500'>
-                  {t('movieDetail.inProduction') || 'Currently in production'}
-                </Text>
-              </View>
-            </MotiView>
-          )}
-
-          {/* IMDb Link */}
-          {detailedInfo.imdb_id && (
-            <MotiView
-              from={{ opacity: 0, translateY: 15 }}
-              animate={{ opacity: 1, translateY: 0 }}
-              transition={{ type: 'timing', duration: 400, delay: 299 }}
-            >
-              <TouchableOpacity
-                onPress={() => Linking.openURL(`https://www.imdb.com/title/${detailedInfo.imdb_id}`)}
-                className='mb-6 flex-row items-center gap-2'
-                activeOpacity={0.7}
-              >
-                <Ionicons name='open-outline' size={16} color='#f5c518' />
-                <Text className='text-sm font-medium' style={{ color: '#f5c518' }}>
-                  {t('movieDetail.viewOnIMDb') || 'View on IMDb'}
-                </Text>
-              </TouchableOpacity>
-            </MotiView>
-          )}
-
-          {/* Cast Section */}
-          {cast.length > 0 && (
-            <MotiView
-              from={{ opacity: 0, translateY: 15 }}
-              animate={{ opacity: 1, translateY: 0 }}
-              transition={{ type: 'timing', duration: 400, delay: 300 }}
-            >
-              <View className='mb-6'>
-                <Text className='mb-3 text-lg font-semibold text-light-text dark:text-dark-text'>
-                  {t('movieDetail.cast')}
-                </Text>
-                <ScrollView
-                  horizontal
-                  showsHorizontalScrollIndicator={false}
-                  contentContainerStyle={{ gap: 12 }}
-                >
-                  {cast.slice(0, 10).map((actor, idx) => (
-                    <TouchableOpacity
-                      key={`cast-${actor.id}-${idx}`}
-                      activeOpacity={0.7}
-                      onPress={() =>
-                        router.push({
-                          pathname: '/actor-detail' as never,
-                          params: {
-                            personId: String(actor.id),
-                            name: actor.name,
-                            profilePath: actor.profile_path || '',
-                          },
-                        })
-                      }
-                    >
-                      <View
-                        className='items-center'
-                        style={{ width: 80 }}
-                      >
-                        <View
-                          style={[
-                            { width: 64, height: 64, borderRadius: 32, overflow: 'hidden' },
-                          ]}
-                          className='mb-1.5 bg-light-surface dark:bg-dark-surface'
-                        >
-                          {actor.profile_path ? (
-                            <Image
-                              source={{
-                                uri: `https://image.tmdb.org/t/p/w185${actor.profile_path}`,
-                              }}
-                              style={{ width: 64, height: 64 }}
-                              resizeMode='cover'
-                            />
-                          ) : (
-                            <View className='flex-1 items-center justify-center'>
-                              <Ionicons
-                                name='person'
-                                size={28}
-                                color={isDark ? '#555' : '#bbb'}
-                              />
-                            </View>
-                          )}
-                        </View>
-                        <Text
-                          className='text-center text-xs font-medium text-light-text dark:text-dark-text'
-                          numberOfLines={2}
-                        >
-                          {actor.name}
-                        </Text>
-                        <Text
-                          className='text-center text-xs text-light-textMuted dark:text-dark-textMuted'
-                          numberOfLines={1}
-                        >
-                          {actor.character}
-                        </Text>
-                      </View>
-                    </TouchableOpacity>
-                  ))}
-                </ScrollView>
-              </View>
-            </MotiView>
-          )}
-
-          {/* Similar Movies Section */}
+          {/* ═══════════ SIMILAR ═══════════ */}
           <MotiView
             from={{ opacity: 0, translateY: 15 }}
             animate={{ opacity: 1, translateY: 0 }}
@@ -1462,22 +1215,164 @@ export default function MovieDetailScreen() {
             </View>
           </MotiView>
 
-          {/* TMDB Link Button */}
+          {/* ═══════════ DETAILS / METADATA ═══════════ */}
           <MotiView
             from={{ opacity: 0, translateY: 15 }}
             animate={{ opacity: 1, translateY: 0 }}
-            transition={{ type: 'timing', duration: 400, delay: 400 }}
+            transition={{ type: 'timing', duration: 400, delay: 370 }}
           >
-            <TouchableOpacity
-              onPress={handleOpenTMDB}
-              style={getSquircle(14)}
-              className='mb-8 flex-row items-center justify-center gap-2 border-2 border-[#01d277] bg-[#01d277]/10 py-3.5'
+            <View
+              style={[getSquircle(14)]}
+              className='mb-6 border border-light-border bg-light-surface/50 p-4 dark:border-dark-border dark:bg-dark-surface/50'
             >
-              <Ionicons name='open-outline' size={20} color='#01d277' />
-              <Text className='text-base font-semibold text-[#01d277]'>
-                {t('movieDetail.openTMDB')}
-              </Text>
-            </TouchableOpacity>
+              {/* Original Title */}
+              {detailedInfo.original_title && detailedInfo.original_title !== title && (
+                <View className='mb-3 flex-row items-center gap-2'>
+                  <Ionicons name='text-outline' size={15} color={isDark ? '#a3a3a3' : '#737373'} />
+                  <Text className='flex-1 text-sm text-light-textSecondary dark:text-dark-textSecondary'>
+                    {t('movieDetail.originalTitle') || 'Original title'}: {detailedInfo.original_title}
+                  </Text>
+                </View>
+              )}
+
+              {/* Original Language */}
+              {detailedInfo.original_language && detailedInfo.original_language !== langCode?.slice(0, 2) && (
+                <View className='mb-3 flex-row items-center gap-2'>
+                  <Ionicons name='language-outline' size={15} color={isDark ? '#a3a3a3' : '#737373'} />
+                  <Text className='flex-1 text-sm text-light-textSecondary dark:text-dark-textSecondary'>
+                    {t('movieDetail.originalLanguage') || 'Original'}: {getLanguageName(detailedInfo.original_language)}
+                  </Text>
+                </View>
+              )}
+
+              {/* Spoken Languages */}
+              {detailedInfo.spoken_languages && detailedInfo.spoken_languages.length > 0 && (
+                <View className='mb-3 flex-row items-center gap-2'>
+                  <Ionicons name='chatbubble-ellipses-outline' size={15} color={isDark ? '#a3a3a3' : '#737373'} />
+                  <Text className='flex-1 text-sm text-light-textSecondary dark:text-dark-textSecondary'>
+                    {t('movieDetail.spokenLanguages') || 'Languages'}: {detailedInfo.spoken_languages.map(l => l.name || l.english_name).join(', ')}
+                  </Text>
+                </View>
+              )}
+
+              {/* Production Countries */}
+              {detailedInfo.production_countries && detailedInfo.production_countries.length > 0 && (
+                <View className='mb-3 flex-row items-center gap-2'>
+                  <Ionicons name='globe-outline' size={15} color={isDark ? '#a3a3a3' : '#737373'} />
+                  <Text className='flex-1 text-sm text-light-textSecondary dark:text-dark-textSecondary'>
+                    {detailedInfo.production_countries.map(c => c.name).join(', ')}
+                  </Text>
+                </View>
+              )}
+
+              {/* Budget / Revenue */}
+              {mediaType === 'movie' && detailedInfo.budget && detailedInfo.budget > 0 && (
+                <View className='mb-3 flex-row items-center gap-2'>
+                  <Ionicons name='cash-outline' size={15} color={isDark ? '#a3a3a3' : '#737373'} />
+                  <Text className='flex-1 text-sm text-light-textSecondary dark:text-dark-textSecondary'>
+                    {formatCurrency(detailedInfo.budget)} {t('movieDetail.budget') || 'budget'}
+                    {detailedInfo.revenue && detailedInfo.revenue > 0
+                      ? ` · ${formatCurrency(detailedInfo.revenue)} ${t('movieDetail.boxOffice') || 'box office'}`
+                      : ''}
+                  </Text>
+                </View>
+              )}
+
+              {/* Collection / Franchise */}
+              {detailedInfo.belongs_to_collection && (
+                <View className='mb-3 flex-row items-center gap-2'>
+                  <Ionicons name='albums-outline' size={15} color={isDark ? '#a3a3a3' : '#737373'} />
+                  <Text className='flex-1 text-sm text-light-textSecondary dark:text-dark-textSecondary'>
+                    {t('movieDetail.partOf') || 'Part of'} {detailedInfo.belongs_to_collection.name}
+                  </Text>
+                </View>
+              )}
+
+              {/* TV: Networks */}
+              {mediaType === 'tv' && detailedInfo.networks && detailedInfo.networks.length > 0 && (
+                <View className='mb-3 flex-row items-center gap-2'>
+                  <Ionicons name='tv-outline' size={15} color={isDark ? '#a3a3a3' : '#737373'} />
+                  <Text className='flex-1 text-sm text-light-textSecondary dark:text-dark-textSecondary'>
+                    {t('movieDetail.networks') || 'Networks'}: {detailedInfo.networks.map(n => n.name).join(', ')}
+                  </Text>
+                </View>
+              )}
+
+              {/* In Production badge (TV) */}
+              {mediaType === 'tv' && detailedInfo.in_production && (
+                <View className='flex-row items-center gap-2'>
+                  <View className='h-2 w-2 rounded-full bg-green-500' />
+                  <Text className='text-sm font-medium text-green-500'>
+                    {t('movieDetail.inProduction') || 'Currently in production'}
+                  </Text>
+                </View>
+              )}
+            </View>
+          </MotiView>
+
+          {/* ═══════════ PRODUCTION COMPANIES (carousel) ═══════════ */}
+          {detailedInfo.production_companies && detailedInfo.production_companies.length > 0 && (
+            <MotiView
+              from={{ opacity: 0, translateY: 15 }}
+              animate={{ opacity: 1, translateY: 0 }}
+              transition={{ type: 'timing', duration: 400, delay: 380 }}
+            >
+              <View className='mb-6'>
+                <Text className='mb-2 text-lg font-semibold text-light-text dark:text-dark-text'>
+                  {t('movieDetail.production') || 'Production'}
+                </Text>
+                <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={{ gap: 10 }}>
+                  {detailedInfo.production_companies.map((company) => (
+                    <View
+                      key={`company-${company.id}`}
+                      style={[getSquircle(10)]}
+                      className='flex-row items-center gap-2 bg-light-surface px-3 py-2 dark:bg-dark-surface'
+                    >
+                      {company.logo_path ? (
+                        <Image
+                          source={{ uri: `https://image.tmdb.org/t/p/w92${company.logo_path}` }}
+                          style={{ width: 24, height: 24 }}
+                          resizeMode='contain'
+                        />
+                      ) : null}
+                      <Text className='text-sm font-medium text-light-text dark:text-dark-text'>
+                        {company.name}
+                      </Text>
+                    </View>
+                  ))}
+                </ScrollView>
+              </View>
+            </MotiView>
+          )}
+
+          {/* ═══════════ EXTERNAL LINKS ═══════════ */}
+          <MotiView
+            from={{ opacity: 0, translateY: 15 }}
+            animate={{ opacity: 1, translateY: 0 }}
+            transition={{ type: 'timing', duration: 400, delay: 390 }}
+          >
+            <View className='mb-8 flex-row gap-3'>
+              {detailedInfo.imdb_id && (
+                <TouchableOpacity
+                  onPress={() => Linking.openURL(`https://www.imdb.com/title/${detailedInfo.imdb_id}`)}
+                  activeOpacity={0.7}
+                  style={getSquircle(12)}
+                  className='flex-1 flex-row items-center justify-center gap-2 border border-[#f5c518]/30 bg-[#f5c518]/10 py-3'
+                >
+                  <Ionicons name='open-outline' size={16} color='#f5c518' />
+                  <Text className='text-sm font-semibold' style={{ color: '#f5c518' }}>IMDb</Text>
+                </TouchableOpacity>
+              )}
+              <TouchableOpacity
+                onPress={handleOpenTMDB}
+                activeOpacity={0.7}
+                style={getSquircle(12)}
+                className='flex-1 flex-row items-center justify-center gap-2 border border-[#01d277]/30 bg-[#01d277]/10 py-3'
+              >
+                <Ionicons name='open-outline' size={16} color='#01d277' />
+                <Text className='text-sm font-semibold' style={{ color: '#01d277' }}>TMDB</Text>
+              </TouchableOpacity>
+            </View>
           </MotiView>
         </View>
       </Animated.ScrollView>
