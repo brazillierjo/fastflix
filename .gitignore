@@ -31,6 +31,9 @@ dist/
 build/
 .next/
 out/
+*.aab
+*.apk
+*.ipa
 
 # Coverage
 coverage/
@@ -38,6 +41,10 @@ coverage/
 # Temporary files
 *.tmp
 .cache/
+
+# Auto-generated
+next-env.d.ts
+*.tsbuildinfo
 
 # iOS
 ios/Pods/
