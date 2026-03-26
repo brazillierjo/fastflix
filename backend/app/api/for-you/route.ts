@@ -81,6 +81,22 @@ export async function GET(request: NextRequest) {
       db.getUserPreferences(userId),
     ]);
 
+    // Check if user has a meaningful taste profile (at least one rating or genre preference)
+    const hasProfile =
+      tasteProfile.rated_movies.length > 0 || tasteProfile.favorite_genres.length > 0;
+
+    if (!hasProfile) {
+      // No taste data → return empty with flag so frontend shows empty state consistently
+      return NextResponse.json({
+        success: true,
+        data: {
+          recommendations: [],
+          streamingProviders: {},
+          hasProfile: false,
+        },
+      });
+    }
+
     // Build set of IDs to exclude: watchlist + already watched/rated
     const watchlistTmdbIds = new Set(watchlist.map((item) => item.tmdb_id));
     const watchedTmdbIds = getWatchedTmdbIds(tasteProfile);
@@ -229,6 +245,7 @@ export async function GET(request: NextRequest) {
         data: {
           recommendations: filteredRecommendations,
           streamingProviders: filteredProvidersMap,
+          hasProfile: true,
         },
       },
       {

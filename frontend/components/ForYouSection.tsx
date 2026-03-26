@@ -31,6 +31,7 @@ const FOR_YOU_QUERY_KEY = ['forYou'];
 interface ForYouData {
   recommendations: MovieResult[];
   streamingProviders: { [key: number]: StreamingProvider[] };
+  hasProfile?: boolean;
 }
 
 /**
@@ -83,7 +84,7 @@ export default function ForYouSection() {
       if (response.success && response.data) {
         return response.data;
       }
-      return { recommendations: [], streamingProviders: {} };
+      return { recommendations: [], streamingProviders: {}, hasProfile: false };
     },
     enabled: isAuthenticated,
     staleTime: 1000 * 60 * 30,
@@ -92,7 +93,10 @@ export default function ForYouSection() {
 
   const allRecommendations = data?.recommendations ?? [];
   const streamingProviders = data?.streamingProviders ?? {};
-  const recommendations = allRecommendations.filter(r => r.media_type === activeTab);
+  const hasProfile = data?.hasProfile ?? false;
+  const recommendations = hasProfile
+    ? allRecommendations.filter(r => r.media_type === activeTab)
+    : [];
 
   const navigateToDetail = (item: MovieResult) => {
     const itemProviders = streamingProviders[item.tmdb_id] || [];
@@ -265,7 +269,7 @@ export default function ForYouSection() {
                       style={getSquircle(4)}
                       className='bg-light-border px-1.5 py-0.5 dark:bg-dark-border'
                     >
-                      <Text className='text-[10px] font-medium uppercase text-light-muted dark:text-dark-muted'>
+                      <Text className='text-[11px] font-medium uppercase text-light-muted dark:text-dark-muted'>
                         {item.media_type === 'tv' ? 'TV' : 'Film'}
                       </Text>
                     </View>
