@@ -715,6 +715,19 @@ class BackendAPIService {
   }
 
   // ==========================================================================
+  // Account Management
+  // ==========================================================================
+
+  /**
+   * Soft-delete the user's account
+   */
+  async deleteAccount(): Promise<APIResponse<{ message: string }>> {
+    return await this.makeRequest('/api/user/delete', {
+      method: 'POST',
+    });
+  }
+
+  // ==========================================================================
   // Person / Actor Methods
   // ==========================================================================
 

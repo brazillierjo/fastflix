@@ -271,7 +271,12 @@
     "signInRequired": "管理するにはサインイン",
     "defaultFilters": "マイフィルター",
     "defaultFiltersSubtitle": "国、プラットフォーム、コンテンツタイプ",
-    "defaultFiltersSection": "検索フィルター"
+    "defaultFiltersSection": "検索フィルター",
+    "deleteAccount": "アカウントを削除",
+    "deleteAccountTitle": "アカウント削除",
+    "deleteAccountMessage": "アカウントを削除してもよろしいですか？この操作は取り消せません。",
+    "deleteAccountConfirm": "削除",
+    "deleteAccountError": "アカウントの削除に失敗しました。もう一度お試しください。"
   },
   "auth": {
     "welcome": {

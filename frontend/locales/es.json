@@ -271,7 +271,12 @@
     "signInRequired": "Inicia sesión para gestionar",
     "defaultFilters": "Mis filtros",
     "defaultFiltersSubtitle": "País, plataformas, tipo de contenido",
-    "defaultFiltersSection": "Filtros de búsqueda"
+    "defaultFiltersSection": "Filtros de búsqueda",
+    "deleteAccount": "Eliminar mi cuenta",
+    "deleteAccountTitle": "Eliminar cuenta",
+    "deleteAccountMessage": "¿Estás seguro de que quieres eliminar tu cuenta? Esta acción no se puede deshacer.",
+    "deleteAccountConfirm": "Eliminar",
+    "deleteAccountError": "No se pudo eliminar la cuenta. Inténtalo de nuevo."
   },
   "auth": {
     "welcome": {

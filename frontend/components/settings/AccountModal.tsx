@@ -3,6 +3,7 @@ import { useAuth } from '@/contexts/AuthContext';
 import { useLanguage } from '@/contexts/LanguageContext';
 import React from 'react';
 import {
+  Alert,
   Modal,
   Text,
   TouchableOpacity,
@@ -18,7 +19,7 @@ interface AccountModalProps {
 }
 
 export default function AccountModal({ visible, onClose }: AccountModalProps) {
-  const { user, signOut } = useAuth();
+  const { user, signOut, deleteAccount } = useAuth();
   const { t } = useLanguage();
   const colorScheme = useColorScheme();
   const isDark = colorScheme === 'dark';
@@ -26,6 +27,24 @@ export default function AccountModal({ visible, onClose }: AccountModalProps) {
   const handleSignOut = async () => {
     await signOut();
     onClose();
+  };
+
+  const handleDeleteAccount = () => {
+    Alert.alert(
+      t('profile.deleteAccountTitle') || 'Delete Account',
+      t('profile.deleteAccountMessage') || 'Are you sure you want to delete your account? This action cannot be undone.',
+      [
+        { text: t('common.cancel'), style: 'cancel' },
+        {
+          text: t('profile.deleteAccountConfirm') || 'Delete',
+          style: 'destructive',
+          onPress: async () => {
+            await deleteAccount();
+            onClose();
+          },
+        },
+      ]
+    );
   };
 
   if (!user) return null;
@@ -131,6 +150,16 @@ export default function AccountModal({ visible, onClose }: AccountModalProps) {
           >
             <Text className='text-center text-base font-medium text-red-500'>
               {t('profile.signOut') || 'Sign Out'}
+            </Text>
+          </TouchableOpacity>
+
+          {/* Delete Account Button */}
+          <TouchableOpacity
+            onPress={handleDeleteAccount}
+            className='mt-4 rounded-xl px-4 py-3'
+          >
+            <Text className='text-center text-sm font-medium text-light-muted dark:text-dark-muted'>
+              {t('profile.deleteAccount') || 'Delete my account'}
             </Text>
           </TouchableOpacity>
         </View>

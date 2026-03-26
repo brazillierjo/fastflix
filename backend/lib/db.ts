@@ -110,7 +110,7 @@ class DatabaseService {
 
     try {
       const result = await this.client!.execute({
-        sql: 'SELECT * FROM users WHERE id = ?',
+        sql: 'SELECT * FROM users WHERE id = ? AND deleted_at IS NULL',
         args: [id],
       });
 
@@ -132,7 +132,7 @@ class DatabaseService {
 
     try {
       const result = await this.client!.execute({
-        sql: 'SELECT * FROM users WHERE email = ?',
+        sql: 'SELECT * FROM users WHERE email = ? AND deleted_at IS NULL',
         args: [email],
       });
 
@@ -157,7 +157,7 @@ class DatabaseService {
 
     try {
       const result = await this.client!.execute({
-        sql: 'SELECT * FROM users WHERE auth_provider = ? AND provider_user_id = ?',
+        sql: 'SELECT * FROM users WHERE auth_provider = ? AND provider_user_id = ? AND deleted_at IS NULL',
         args: [auth_provider, provider_user_id],
       });
 
@@ -223,6 +223,25 @@ class DatabaseService {
     } catch (error) {
       throw error;
     }
+  }
+
+  /**
+   * Soft delete a user account (sets deleted_at timestamp)
+   * Data is preserved to prevent trial abuse
+   */
+  async softDeleteUser(userId: string): Promise<void> {
+    this.initialize();
+
+    await this.client!.execute({
+      sql: `UPDATE users SET deleted_at = datetime('now'), updated_at = datetime('now') WHERE id = ?`,
+      args: [userId],
+    });
+
+    // Clean up push tokens so they don't receive notifications
+    await this.client!.execute({
+      sql: 'DELETE FROM push_tokens WHERE user_id = ?',
+      args: [userId],
+    });
   }
 
   /**

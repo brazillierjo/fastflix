@@ -283,7 +283,12 @@
     "signInRequired": "Sign in to manage",
     "defaultFilters": "My Filters",
     "defaultFiltersSubtitle": "Country, platforms, content type",
-    "defaultFiltersSection": "Search Filters"
+    "defaultFiltersSection": "Search Filters",
+    "deleteAccount": "Delete my account",
+    "deleteAccountTitle": "Delete Account",
+    "deleteAccountMessage": "Are you sure you want to delete your account? This action cannot be undone.",
+    "deleteAccountConfirm": "Delete",
+    "deleteAccountError": "Failed to delete account. Please try again."
   },
   "auth": {
     "welcome": {

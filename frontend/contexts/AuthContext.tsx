@@ -16,6 +16,7 @@ import { Alert, AppState, AppStateStatus } from 'react-native';
 import { useLanguage } from './LanguageContext';
 import { useSubscription } from './RevenueCatContext';
 import { authService, User } from '../services/auth.service';
+import { backendAPIService } from '../services/backend-api.service';
 
 export interface AuthContextType {
   // Authentication state
@@ -27,6 +28,7 @@ export interface AuthContextType {
   signInWithApple: () => Promise<void>;
   signInWithGoogle: (idToken: string) => Promise<void>;
   signOut: () => Promise<void>;
+  deleteAccount: () => Promise<void>;
   refreshUser: () => Promise<void>;
 }
 
@@ -228,6 +230,29 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   };
 
   /**
+   * Delete account (soft delete on backend, then sign out locally)
+   */
+  const deleteAccount = async () => {
+    try {
+      setIsLoading(true);
+      const response = await backendAPIService.deleteAccount();
+      if (!response.success) {
+        throw new Error('Failed to delete account');
+      }
+      await authService.signOut();
+      setUser(null);
+    } catch (error) {
+      console.error('Delete account error:', error);
+      Alert.alert(
+        t('errors.title') || 'Error',
+        t('profile.deleteAccountError') || 'Failed to delete account. Please try again.'
+      );
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  /**
    * Refresh user data from backend
    */
   const refreshUser = async () => {
@@ -248,6 +273,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     signInWithApple,
     signInWithGoogle,
     signOut,
+    deleteAccount,
     refreshUser,
   };
 

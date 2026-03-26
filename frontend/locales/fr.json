@@ -283,7 +283,12 @@
     "signInRequired": "Connectez-vous pour gérer",
     "defaultFilters": "Mes filtres",
     "defaultFiltersSubtitle": "Pays, plateformes, type de contenu",
-    "defaultFiltersSection": "Filtres de recherche"
+    "defaultFiltersSection": "Filtres de recherche",
+    "deleteAccount": "Supprimer mon compte",
+    "deleteAccountTitle": "Supprimer le compte",
+    "deleteAccountMessage": "Êtes-vous sûr de vouloir supprimer votre compte ? Cette action est irréversible.",
+    "deleteAccountConfirm": "Supprimer",
+    "deleteAccountError": "Impossible de supprimer le compte. Veuillez réessayer."
   },
   "auth": {
     "welcome": {
