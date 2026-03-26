@@ -451,12 +451,12 @@ export default function MovieDetailScreen() {
                   </View>
                 )}
                 {releaseYear && (
-                  <Text className='text-sm text-white/80' style={{ textShadowColor: 'rgba(0,0,0,0.6)', textShadowOffset: { width: 0, height: 1 }, textShadowRadius: 3 }}>
+                  <Text className='text-sm font-medium text-white' style={{ textShadowColor: 'rgba(0,0,0,0.8)', textShadowOffset: { width: 0, height: 1 }, textShadowRadius: 4 }}>
                     {releaseYear}
                   </Text>
                 )}
-                <View className='rounded-full bg-white/20 px-2 py-0.5'>
-                  <Text className='text-xs font-medium text-white'>
+                <View className='rounded-full bg-black/40 px-2.5 py-0.5 backdrop-blur-sm'>
+                  <Text className='text-xs font-semibold text-white'>
                     {mediaType === 'tv' ? t('movies.tvShow') : t('movies.movie')}
                   </Text>
                 </View>
@@ -585,16 +585,15 @@ export default function MovieDetailScreen() {
               className='mb-6'
             >
               {!isWatched ? (
-                /* Step 1: "J'ai vu" button */
+                /* Step 1: "J'ai vu" button — same design as watchlist button */
                 <TouchableOpacity
                   onPress={handleMarkWatched}
                   disabled={isRating}
                   activeOpacity={0.7}
-                  style={[getSquircle(14), getCardShadow(isDark)]}
-                  className='flex-row items-center justify-center gap-2.5 border border-light-border bg-light-card py-4 dark:border-dark-border dark:bg-dark-card'
+                  className='flex-row items-center justify-center gap-2 rounded-xl border-2 border-light-border bg-light-surface px-4 py-3 dark:border-dark-border dark:bg-dark-surface'
                 >
                   <Ionicons name='eye-outline' size={20} color={isDark ? '#a3a3a3' : '#737373'} />
-                  <Text className='text-base font-medium text-light-text dark:text-dark-text'>
+                  <Text className='text-base font-medium text-light-textSecondary dark:text-dark-textSecondary'>
                     {t('movieDetail.markWatched')}
                   </Text>
                 </TouchableOpacity>

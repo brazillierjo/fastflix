@@ -119,6 +119,13 @@ export const getPlaceholderColor = (isDark: boolean): string => {
   return isDark ? '#a3a3a3' : '#737373';
 };
 
+/**
+ * Get muted icon color based on theme — consistent across the app
+ */
+export const getMutedIconColor = (isDark: boolean): string => {
+  return isDark ? '#a3a3a3' : '#737373';
+};
+
 // ============================================================================
 // CONDITIONAL STYLE HELPERS
 // ============================================================================
