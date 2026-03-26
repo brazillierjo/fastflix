@@ -405,10 +405,10 @@ export default function SubscriptionModal({
                   className='mb-3'
                 >
                   <View
-                    className='rounded-full px-5 py-2'
+                    className='self-center rounded-full px-5 py-1.5'
                     style={{ backgroundColor: greenPrimary }}
                   >
-                    <Text className='text-base font-bold text-white'>
+                    <Text className='text-sm font-bold text-white'>
                       {t('subscription.trialBadge') || '7 DAYS FREE'}
                     </Text>
                   </View>

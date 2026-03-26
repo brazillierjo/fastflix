@@ -138,6 +138,7 @@
       "history": { "title": "検索履歴＆好みプロフィール", "description": "AIがあなたの好みを学習" }
     },
     "socialProof": "世界中の映画ファンに信頼されています",
+    "socialProofSub": "コミュニティで4.9つ星の評価",
     "bestValue": "最もお得",
     "perWeek": "/週",
     "noCharge": "トライアル終了まで課金なし",
