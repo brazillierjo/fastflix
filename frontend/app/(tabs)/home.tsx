@@ -376,7 +376,7 @@ export default function HomeScreen() {
               }}
               pointerEvents='none'
             />
-            <View className='px-6 py-4'>
+            <View className='px-10 py-4'>
               <Text className='text-center text-base font-semibold leading-6 text-white'>
                 {ctaText}
                 {ctaText.length < ctaFullText.length
