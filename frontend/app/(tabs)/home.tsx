@@ -47,6 +47,10 @@ export default function HomeScreen() {
   const colorScheme = useColorScheme();
   const isDark = colorScheme === 'dark';
 
+  // Track first mount so MotiView animations don't replay on theme change
+  const hasAnimated = useRef(false);
+  useEffect(() => { hasAnimated.current = true; }, []);
+
   const queryClient = useQueryClient();
 
   const {
@@ -395,7 +399,7 @@ export default function HomeScreen() {
 
         {/* Daily Pick Card */}
         <MotiView
-          from={{ opacity: 0, translateY: 12 }}
+          from={hasAnimated.current ? undefined : { opacity: 0, translateY: 12 }}
           animate={{ opacity: 1, translateY: 0 }}
           transition={{ type: 'timing', duration: 400, delay: 50 }}
           className='mt-6 px-6'
@@ -582,7 +586,7 @@ export default function HomeScreen() {
 
         {/* Quick Search */}
         <MotiView
-          from={{ opacity: 0, translateY: 12 }}
+          from={hasAnimated.current ? undefined : { opacity: 0, translateY: 12 }}
           animate={{ opacity: 1, translateY: 0 }}
           transition={{ type: 'timing', duration: 400, delay: 100 }}
         >
@@ -595,7 +599,7 @@ export default function HomeScreen() {
 
         {/* New Releases This Week */}
         <MotiView
-          from={{ opacity: 0, translateY: 12 }}
+          from={hasAnimated.current ? undefined : { opacity: 0, translateY: 12 }}
           animate={{ opacity: 1, translateY: 0 }}
           transition={{ type: 'timing', duration: 400, delay: 200 }}
         >
@@ -604,7 +608,7 @@ export default function HomeScreen() {
 
         {/* For You - Personalized Recommendations */}
         <MotiView
-          from={{ opacity: 0, translateY: 12 }}
+          from={hasAnimated.current ? undefined : { opacity: 0, translateY: 12 }}
           animate={{ opacity: 1, translateY: 0 }}
           transition={{ type: 'timing', duration: 400, delay: 300 }}
         >
@@ -613,7 +617,7 @@ export default function HomeScreen() {
 
         {/* My Watchlist */}
         <MotiView
-          from={{ opacity: 0, translateY: 12 }}
+          from={hasAnimated.current ? undefined : { opacity: 0, translateY: 12 }}
           animate={{ opacity: 1, translateY: 0 }}
           transition={{ type: 'timing', duration: 400, delay: 400 }}
         >
@@ -622,7 +626,7 @@ export default function HomeScreen() {
 
         {/* My Ratings */}
         <MotiView
-          from={{ opacity: 0, translateY: 12 }}
+          from={hasAnimated.current ? undefined : { opacity: 0, translateY: 12 }}
           animate={{ opacity: 1, translateY: 0 }}
           transition={{ type: 'timing', duration: 400, delay: 500 }}
         >
