@@ -324,22 +324,35 @@ export default function HomeScreen() {
           <TouchableOpacity
             onPress={() => router.push('/search' as never)}
             activeOpacity={0.8}
-            style={[
-              getSquircle(16),
-              {
-                shadowColor: '#E50914',
-                shadowOffset: { width: 0, height: 4 },
-                shadowOpacity: isDark ? 0.4 : 0.2,
-                shadowRadius: 12,
-                elevation: 6,
-              },
-            ]}
-            className='flex-row items-center justify-center gap-2.5 bg-netflix-500 px-6 py-4'
+            style={[getSquircle(16), { overflow: 'hidden' }]}
+            className='bg-netflix-500'
           >
-            <Ionicons name='sparkles' size={18} color='#fff' />
-            <Text className='text-center text-base font-semibold text-white'>
-              {t('home.searchCTA')}
-            </Text>
+            {/* Subtle shimmer glow overlay */}
+            <MotiView
+              from={{ translateX: -200, opacity: 0 }}
+              animate={{ translateX: 400, opacity: 0.15 }}
+              transition={{
+                type: 'timing',
+                duration: 3000,
+                loop: true,
+                repeatReverse: false,
+              }}
+              style={{
+                position: 'absolute',
+                top: 0,
+                bottom: 0,
+                width: 120,
+                backgroundColor: 'rgba(255,255,255,0.3)',
+                borderRadius: 60,
+              }}
+              pointerEvents='none'
+            />
+            <View className='flex-row items-center justify-center gap-2.5 px-6 py-4'>
+              <Ionicons name='sparkles' size={18} color='#fff' />
+              <Text className='text-center text-base font-semibold leading-5 text-white' style={{ maxWidth: 220 }}>
+                {t('home.searchCTA')}
+              </Text>
+            </View>
           </TouchableOpacity>
         </MotiView>
 
