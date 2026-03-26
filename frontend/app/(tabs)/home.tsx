@@ -252,12 +252,8 @@ export default function HomeScreen() {
         }
       >
         {/* Header */}
-        <MotiView
-          from={{ opacity: 0, translateY: -20 }}
-          animate={{ opacity: 1, translateY: 0 }}
-          transition={{ type: 'timing', duration: 600 }}
-          className='flex-row items-start justify-between px-6 pt-8'
-        >
+        <View className='flex-row items-start justify-between px-6 pt-8'>
+
           {/* Left: Greeting + Date */}
           <View className='flex-1'>
             <Text
@@ -312,19 +308,14 @@ export default function HomeScreen() {
               {hasUnlimitedAccess ? 'PRO' : 'FREE'}
             </Text>
           </TouchableOpacity>
-        </MotiView>
+        </View>
 
         {/* Trial Banner */}
         <TrialBanner onSubscribe={() => setShowSubscriptionModal(true)} />
 
         {/* Upgrade Prompt */}
         {showUpgradePrompt && (
-          <MotiView
-            from={{ opacity: 0, translateY: 10 }}
-            animate={{ opacity: 1, translateY: 0 }}
-            transition={{ delay: 50, type: 'timing', duration: 500 }}
-            className='mt-4 px-6'
-          >
+          <View className='mt-4 px-6'>
             <TouchableOpacity
               onPress={() => router.push('/subscription' as never)}
               style={[getSquircle(12), getCardShadow(isDark)]}
@@ -340,16 +331,11 @@ export default function HomeScreen() {
                 color={isDark ? '#a3a3a3' : '#737373'}
               />
             </TouchableOpacity>
-          </MotiView>
+          </View>
         )}
 
         {/* AI Search CTA */}
-        <MotiView
-          from={{ opacity: 0, translateY: 10 }}
-          animate={{ opacity: 1, translateY: 0 }}
-          transition={{ delay: 100, type: 'timing', duration: 500 }}
-          className='mt-6 px-6'
-        >
+        <View className='mt-6 px-6'>
           <TouchableOpacity
             onPress={() => router.push('/search' as never)}
             activeOpacity={0.8}
@@ -385,15 +371,10 @@ export default function HomeScreen() {
               </Text>
             </View>
           </TouchableOpacity>
-        </MotiView>
+        </View>
 
         {/* Daily Pick Card */}
-        <MotiView
-          from={{ opacity: 0, translateY: 15 }}
-          animate={{ opacity: 1, translateY: 0 }}
-          transition={{ delay: 200, type: 'timing', duration: 600 }}
-          className='mt-6 px-6'
-        >
+        <View className='mt-6 px-6'>
           <Text
             style={typography.title3}
             className='mb-3 text-light-text dark:text-dark-text'
@@ -458,15 +439,10 @@ export default function HomeScreen() {
               </Text>
             </View>
           )}
-        </MotiView>
+        </View>
 
         {/* Trending Section */}
-        <MotiView
-          from={{ opacity: 0, translateY: 15 }}
-          animate={{ opacity: 1, translateY: 0 }}
-          transition={{ delay: 300, type: 'timing', duration: 600 }}
-          className='mt-8'
-        >
+        <View className='mt-8'>
           <Text
             style={typography.title3}
             className='mb-3 px-6 text-light-text dark:text-dark-text'
@@ -480,17 +456,8 @@ export default function HomeScreen() {
           >
             {trending.length > 0
               ? trending.map((item, i) => (
-                  <MotiView
-                    key={item.tmdb_id || item.id || i}
-                    from={{ opacity: 0, scale: 0.9 }}
-                    animate={{ opacity: 1, scale: 1 }}
-                    transition={{
-                      delay: 300 + i * 80,
-                      type: 'timing',
-                      duration: 400,
-                    }}
-                  >
                     <TouchableOpacity
+                      key={item.tmdb_id || item.id || i}
                       onPress={() =>
                         router.push({
                           pathname: '/movie-detail' as never,
@@ -550,7 +517,6 @@ export default function HomeScreen() {
                         </View>
                       )}
                     </TouchableOpacity>
-                  </MotiView>
                 ))
               : isHomeLoading
                 ? [1, 2, 3, 4].map(i => (
@@ -570,28 +536,23 @@ export default function HomeScreen() {
                     </View>
                   ))}
           </ScrollView>
-        </MotiView>
+        </View>
 
         {/* New Releases This Week */}
-        <NewReleasesSection delay={325} />
+        <NewReleasesSection />
 
         {/* For You - Personalized Recommendations */}
-        <ForYouSection delay={350} />
+        <ForYouSection />
 
         {/* My Watchlist */}
-        <WatchlistSection delay={375} />
+        <WatchlistSection />
 
         {/* My Ratings */}
-        <MyRatingsSection delay={400} />
+        <MyRatingsSection />
 
         {/* Recent Searches - only for authenticated users */}
         {isAuthenticated && recentSearches.length > 0 && (
-          <MotiView
-            from={{ opacity: 0, translateY: 15 }}
-            animate={{ opacity: 1, translateY: 0 }}
-            transition={{ delay: 375, type: 'timing', duration: 600 }}
-            className='mt-8 px-6'
-          >
+          <View className='mt-8 px-6'>
             <Text
               style={typography.title3}
               className='mb-3 text-light-text dark:text-dark-text'
@@ -603,40 +564,30 @@ export default function HomeScreen() {
                 const label =
                   typeof item === 'string' ? item : item.query || item.label || '';
                 return (
-                  <MotiView
+                  <TouchableOpacity
                     key={i}
-                    from={{ opacity: 0, scale: 0.9 }}
-                    animate={{ opacity: 1, scale: 1 }}
-                    transition={{
-                      delay: 400 + i * 60,
-                      type: 'timing',
-                      duration: 300,
-                    }}
+                    onPress={() =>
+                      router.push({
+                        pathname: '/search' as never,
+                        params: { query: label },
+                      })
+                    }
+                    style={getSquircle(20)}
+                    className='flex-row items-center gap-1.5 border border-light-border bg-light-surface px-3.5 py-2 dark:border-dark-border dark:bg-dark-surface'
                   >
-                    <TouchableOpacity
-                      onPress={() =>
-                        router.push({
-                          pathname: '/search' as never,
-                          params: { query: label },
-                        })
-                      }
-                      style={getSquircle(20)}
-                      className='flex-row items-center gap-1.5 border border-light-border bg-light-surface px-3.5 py-2 dark:border-dark-border dark:bg-dark-surface'
-                    >
-                      <Ionicons
-                        name='time-outline'
-                        size={14}
-                        color={isDark ? '#a3a3a3' : '#737373'}
-                      />
-                      <Text className='text-sm text-light-text dark:text-dark-text'>
-                        {label}
-                      </Text>
-                    </TouchableOpacity>
-                  </MotiView>
+                    <Ionicons
+                      name='time-outline'
+                      size={14}
+                      color={isDark ? '#a3a3a3' : '#737373'}
+                    />
+                    <Text className='text-sm text-light-text dark:text-dark-text'>
+                      {label}
+                    </Text>
+                  </TouchableOpacity>
                 );
               })}
             </View>
-          </MotiView>
+          </View>
         )}
 
       </ScrollView>

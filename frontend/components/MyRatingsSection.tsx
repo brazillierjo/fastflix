@@ -14,7 +14,6 @@ import {
 } from '@/utils/designHelpers';
 import { Skeleton } from '@/components/Skeleton';
 import { useRouter } from 'expo-router';
-import { MotiView } from 'moti';
 import React from 'react';
 import {
   ScrollView,
@@ -40,7 +39,7 @@ function StarDisplay({ rating, size = 10 }: { rating: number; size?: number }) {
   );
 }
 
-export default function MyRatingsSection({ delay = 375 }: { delay?: number }) {
+export default function MyRatingsSection() {
   const { t } = useLanguage();
   const { isAuthenticated } = useAuth();
   const router = useRouter();
@@ -55,10 +54,7 @@ export default function MyRatingsSection({ delay = 375 }: { delay?: number }) {
   const sortedItems = [...ratedMovies].reverse();
 
   return (
-    <MotiView
-      from={{ opacity: 0, translateY: 15 }}
-      animate={{ opacity: 1, translateY: 0 }}
-      transition={{ delay, type: 'timing', duration: 600 }}
+    <View
       className='mt-8 px-6'
     >
       <Text
@@ -98,15 +94,8 @@ export default function MyRatingsSection({ delay = 375 }: { delay?: number }) {
           contentContainerStyle={{ gap: 10 }}
         >
           {sortedItems.map((item, i) => (
-            <MotiView
+            <View
               key={`${item.tmdb_id}-${i}`}
-              from={{ opacity: 0, scale: 0.9 }}
-              animate={{ opacity: 1, scale: 1 }}
-              transition={{
-                delay: delay + i * 50,
-                type: 'timing',
-                duration: 400,
-              }}
             >
               <TouchableOpacity
                 onPress={() =>
@@ -148,10 +137,10 @@ export default function MyRatingsSection({ delay = 375 }: { delay?: number }) {
                   )}
                 </View>
               </TouchableOpacity>
-            </MotiView>
+            </View>
           ))}
         </ScrollView>
       )}
-    </MotiView>
+    </View>
   );
 }

@@ -15,7 +15,6 @@ import { Skeleton } from '@/components/Skeleton';
 import { useQuery } from '@tanstack/react-query';
 import { backendAPIService, MovieResult, StreamingProvider } from '@/services/backend-api.service';
 import { useRouter } from 'expo-router';
-import { MotiView } from 'moti';
 import React, { useState } from 'react';
 import {
   Image,
@@ -58,7 +57,7 @@ function ForYouSkeletonRow({ isDark }: { isDark: boolean }) {
  * ForYouSection component
  * Renders personalized recommendations or sign-in prompt for guests
  */
-export default function ForYouSection({ delay = 400 }: { delay?: number }) {
+export default function ForYouSection() {
   const { t } = useLanguage();
   const { isAuthenticated } = useAuth();
   const { language, country } = useLanguage();
@@ -115,10 +114,7 @@ export default function ForYouSection({ delay = 400 }: { delay?: number }) {
   };
 
   return (
-    <MotiView
-      from={{ opacity: 0, translateY: 15 }}
-      animate={{ opacity: 1, translateY: 0 }}
-      transition={{ delay, type: 'timing', duration: 600 }}
+    <View
       className='mt-8 px-6'
     >
       <Text
@@ -213,15 +209,8 @@ export default function ForYouSection({ delay = 400 }: { delay?: number }) {
       {isAuthenticated && !isLoading && recommendations.length > 0 && (
         <View className='gap-3'>
           {recommendations.slice(0, expanded ? 15 : 3).map((item, i) => (
-            <MotiView
+            <View
               key={item.tmdb_id}
-              from={{ opacity: 0, translateX: -10 }}
-              animate={{ opacity: 1, translateX: 0 }}
-              transition={{
-                delay: i < 3 ? delay + i * 60 : i * 40,
-                type: 'timing',
-                duration: 400,
-              }}
             >
               <TouchableOpacity
                 onPress={() => navigateToDetail(item)}
@@ -302,16 +291,12 @@ export default function ForYouSection({ delay = 400 }: { delay?: number }) {
                   />
                 </View>
               </TouchableOpacity>
-            </MotiView>
+            </View>
           ))}
 
           {/* Show more / Show less button */}
           {recommendations.length > 3 && (
-            <MotiView
-              from={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ delay: 200, type: 'timing', duration: 300 }}
-            >
+            <View>
               <TouchableOpacity
                 onPress={() => setExpanded(!expanded)}
                 activeOpacity={0.7}
@@ -328,10 +313,10 @@ export default function ForYouSection({ delay = 400 }: { delay?: number }) {
                   color='#E50914'
                 />
               </TouchableOpacity>
-            </MotiView>
+            </View>
           )}
         </View>
       )}
-    </MotiView>
+    </View>
   );
 }

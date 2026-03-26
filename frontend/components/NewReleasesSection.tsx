@@ -8,7 +8,6 @@ import { useLanguage } from '@/contexts/LanguageContext';
 import { getCardShadow, getSquircle, typography } from '@/utils/designHelpers';
 import { useQuery } from '@tanstack/react-query';
 import { backendAPIService } from '@/services/backend-api.service';
-import { MotiView } from 'moti';
 import React, { useState } from 'react';
 import {
   Image,
@@ -40,11 +39,7 @@ interface NewReleasesData {
   dateRange: { from: string; to: string };
 }
 
-export default function NewReleasesSection({
-  delay = 400,
-}: {
-  delay?: number;
-}) {
+export default function NewReleasesSection() {
   const { t, language, country } = useLanguage();
   const { isAuthenticated } = useAuth();
   const router = useRouter();
@@ -79,10 +74,7 @@ export default function NewReleasesSection({
   if (!isAuthenticated || (items.length === 0 && !isLoading)) return null;
 
   return (
-    <MotiView
-      from={{ opacity: 0, translateY: 15 }}
-      animate={{ opacity: 1, translateY: 0 }}
-      transition={{ delay, type: 'timing', duration: 600 }}
+    <View
       className='mt-8'
     >
       {/* Header */}
@@ -142,11 +134,8 @@ export default function NewReleasesSection({
           {items.map((item, i) => {
             const itemProviders = providers[item.tmdb_id] || [];
             return (
-              <MotiView
+              <View
                 key={item.tmdb_id}
-                from={{ opacity: 0, scale: 0.9 }}
-                animate={{ opacity: 1, scale: 1 }}
-                transition={{ delay: i * 60, type: 'timing', duration: 350 }}
               >
                 <TouchableOpacity
                   onPress={() =>
@@ -207,11 +196,11 @@ export default function NewReleasesSection({
                     </View>
                   )}
                 </TouchableOpacity>
-              </MotiView>
+              </View>
             );
           })}
         </ScrollView>
       )}
-    </MotiView>
+    </View>
   );
 }

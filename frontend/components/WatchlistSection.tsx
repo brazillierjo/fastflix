@@ -14,7 +14,6 @@ import {
 } from '@/utils/designHelpers';
 import { Skeleton } from '@/components/Skeleton';
 import { useRouter } from 'expo-router';
-import { MotiView } from 'moti';
 import React from 'react';
 import {
   Image,
@@ -27,7 +26,7 @@ import {
 
 const TMDB_IMAGE_BASE = 'https://image.tmdb.org/t/p';
 
-export default function WatchlistSection({ delay = 350 }: { delay?: number }) {
+export default function WatchlistSection() {
   const { t } = useLanguage();
   const { isAuthenticated } = useAuth();
   const router = useRouter();
@@ -39,10 +38,7 @@ export default function WatchlistSection({ delay = 350 }: { delay?: number }) {
   if (!isAuthenticated) return null;
 
   return (
-    <MotiView
-      from={{ opacity: 0, translateY: 15 }}
-      animate={{ opacity: 1, translateY: 0 }}
-      transition={{ delay, type: 'timing', duration: 600 }}
+    <View
       className='mt-8'
     >
       <View className='mb-3 px-6'>
@@ -86,15 +82,8 @@ export default function WatchlistSection({ delay = 350 }: { delay?: number }) {
           contentContainerStyle={{ paddingHorizontal: 24, gap: 12 }}
         >
           {items.map((item, i) => (
-            <MotiView
+            <View
               key={item.id}
-              from={{ opacity: 0, scale: 0.9 }}
-              animate={{ opacity: 1, scale: 1 }}
-              transition={{
-                delay: delay + i * 60,
-                type: 'timing',
-                duration: 400,
-              }}
             >
               <TouchableOpacity
                 onPress={() =>
@@ -162,10 +151,10 @@ export default function WatchlistSection({ delay = 350 }: { delay?: number }) {
                   </View>
                 )}
               </TouchableOpacity>
-            </MotiView>
+            </View>
           ))}
         </ScrollView>
       )}
-    </MotiView>
+    </View>
   );
 }

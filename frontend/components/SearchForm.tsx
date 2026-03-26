@@ -345,13 +345,7 @@ export default function SearchForm({
       >
         <View className='flex-1 justify-center px-6'>
           {/* Welcome Section */}
-          <MotiView
-            from={{ opacity: 0, translateY: -30 }}
-            animate={{ opacity: 1, translateY: 0 }}
-            transition={{
-              type: 'timing',
-              duration: 600,
-            }}
+          <View
             className='mb-8'
           >
             <Text className='mb-3 text-4xl font-bold text-light-text dark:text-dark-text'>
@@ -363,17 +357,10 @@ export default function SearchForm({
             <Text className='text-sm leading-relaxed text-light-textMuted dark:text-dark-textMuted'>
               {t('welcome.description')}
             </Text>
-          </MotiView>
+          </View>
 
           {/* Search Input */}
-          <MotiView
-            from={{ opacity: 0, scale: 0.9 }}
-            animate={{ opacity: 1, scale: 1 }}
-            transition={{
-              delay: 200,
-              type: 'timing',
-              duration: 600,
-            }}
+          <View
             className='mb-5'
           >
             {/* Action Buttons Row */}
@@ -487,8 +474,6 @@ export default function SearchForm({
             {/* Typing indicator */}
             {isTyping && (
               <MotiView
-                from={{ opacity: 0, translateY: -5 }}
-                animate={{ opacity: 1, translateY: 0 }}
                 exit={{ opacity: 0 }}
                 className='mt-2 flex-row items-center justify-center gap-2'
               >
@@ -499,18 +484,10 @@ export default function SearchForm({
                 </Text>
               </MotiView>
             )}
-          </MotiView>
+          </View>
 
           {/* Generate Button */}
-          <MotiView
-            from={{ opacity: 0, scale: 0.95 }}
-            animate={{ opacity: 1, scale: 1 }}
-            transition={{
-              delay: 300,
-              type: 'timing',
-              duration: 600,
-            }}
-          >
+          <View>
             <TouchableOpacity
               onPress={
                 !hasUnlimitedAccess && query.trim() && onSubscriptionPress
@@ -541,7 +518,7 @@ export default function SearchForm({
                       : t('welcome.searchButton')}
               </Text>
             </TouchableOpacity>
-          </MotiView>
+          </View>
         </View>
       </ScrollView>
 
