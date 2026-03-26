@@ -25,7 +25,7 @@ export const translations = {
     heroDescription:
       "FastFlix learns your taste and recommends movies and TV shows you'll actually love. Rate what you watch, and our AI gets smarter with every interaction.",
     heroSubDescription:
-      'Try free for 7 days. Plans from \u20AC0.99/month.',
+      'Try free for 7 days. Plans from €1.99/month.',
     downloadIOS: 'Download for iOS',
     privacyStatement:
       'Available on iOS \u2022 7-day free trial \u2022 No commitment',
@@ -79,7 +79,7 @@ export const translations = {
     downloadForIOS: 'Get the App',
     learnMore: 'Learn More',
     ctaPrivacy:
-      '7-day free trial \u2022 From \u20AC0.99/month \u2022 Cancel anytime',
+      '7-day free trial • From €1.99/month • Cancel anytime',
 
     // Privacy Policy
     privacyTitle: 'Privacy Policy',
@@ -154,7 +154,7 @@ export const translations = {
     subscriptionTermsDesc:
       'FastFlix offers a premium subscription within the mobile app with the following terms:',
     subscriptionTermsItems: [
-      'Plans: \u20AC0.99/month, \u20AC1.99/quarter, \u20AC9.99/year \u2014 all include a 7-day free trial',
+      'Plans: €1.99/month, €3.99/quarter, €9.99/year — all include a 7-day free trial',
       'Payment is charged to your Apple ID account at confirmation of purchase',
       'Subscriptions automatically renew unless auto-renew is turned off at least 24 hours before the end of the current period',
       'You can manage and cancel subscriptions in your Apple ID Account Settings',
@@ -220,7 +220,7 @@ export const translations = {
       {
         question: 'How much does FastFlix cost?',
         answer:
-          'FastFlix offers a 7-day free trial. After that, choose from: \u20AC0.99/month, \u20AC1.99/3 months, or \u20AC9.99/year. All plans include unlimited AI searches, personalized For You feed, daily picks, and full access to all features.',
+          'FastFlix offers a 7-day free trial. After that, choose from: €1.99/month, €3.99/3 months, or €9.99/year. All plans include unlimited AI searches, personalized For You feed, daily picks, and full access to all features.',
       },
       {
         question: 'Which devices are supported?',
@@ -271,7 +271,7 @@ export const translations = {
     heroDescription:
       "FastFlix apprend vos go\u00fbts et vous recommande des films et s\u00e9ries que vous allez vraiment aimer. Notez ce que vous regardez, et notre IA s'am\u00e9liore \u00e0 chaque interaction.",
     heroSubDescription:
-      'Essai gratuit de 7 jours. \u00c0 partir de 0,99\u20ac/mois.',
+      'Essai gratuit de 7 jours. \u00c0 partir de 1,99\u20ac/mois.',
     downloadIOS: 'T\u00e9l\u00e9charger pour iOS',
     privacyStatement:
       'Disponible sur iOS \u2022 Essai gratuit 7 jours \u2022 Sans engagement',
@@ -325,7 +325,7 @@ export const translations = {
     downloadForIOS: "Obtenir l'application",
     learnMore: 'En savoir plus',
     ctaPrivacy:
-      'Essai gratuit 7 jours \u2022 \u00c0 partir de 0,99\u20ac/mois \u2022 Sans engagement',
+      'Essai gratuit 7 jours \u2022 \u00c0 partir de 1,99\u20ac/mois \u2022 Sans engagement',
 
     // Privacy Policy
     privacyTitle: 'Politique de confidentialit\u00e9',
@@ -401,7 +401,7 @@ export const translations = {
     subscriptionTermsDesc:
       "FastFlix propose un abonnement premium dans l'application mobile avec les conditions suivantes :",
     subscriptionTermsItems: [
-      'Formules : 0,99\u20ac/mois, 1,99\u20ac/trimestre, 9,99\u20ac/an \u2014 toutes incluent un essai gratuit de 7 jours',
+      'Formules : 1,99\u20ac/mois, 3,99\u20ac/trimestre, 9,99\u20ac/an \u2014 toutes incluent un essai gratuit de 7 jours',
       "Le paiement sera d\u00e9bit\u00e9 de votre compte Apple ID lors de la confirmation d'achat",
       'Les abonnements se renouvellent automatiquement sauf si le renouvellement automatique est d\u00e9sactiv\u00e9 au moins 24 heures avant la fin de la p\u00e9riode en cours',
       'Vous pouvez g\u00e9rer et annuler les abonnements dans les param\u00e8tres de votre compte Apple ID',
@@ -469,7 +469,7 @@ export const translations = {
       {
         question: 'Combien co\u00fbte FastFlix ?',
         answer:
-          "FastFlix offre un essai gratuit de 7 jours. Ensuite, choisissez parmi : 0,99\u20ac/mois, 1,99\u20ac/3 mois, ou 9,99\u20ac/an. Toutes les formules incluent des recherches IA illimit\u00e9es, un fil Pour Vous personnalis\u00e9, des s\u00e9lections quotidiennes et un acc\u00e8s complet \u00e0 toutes les fonctionnalit\u00e9s.",
+          "FastFlix offre un essai gratuit de 7 jours. Ensuite, choisissez parmi : 1,99\u20ac/mois, 3,99\u20ac/3 mois, ou 9,99\u20ac/an. Toutes les formules incluent des recherches IA illimit\u00e9es, un fil Pour Vous personnalis\u00e9, des s\u00e9lections quotidiennes et un acc\u00e8s complet \u00e0 toutes les fonctionnalit\u00e9s.",
       },
       {
         question: 'Quels appareils sont support\u00e9s ?',
@@ -520,7 +520,7 @@ export const translations = {
     heroDescription:
       "FastFlix \u00e8 un'applicazione mobile iOS che utilizza l'IA per trovare il film o la serie TV perfetta per te. Descrivi semplicemente cosa hai voglia di guardare in linguaggio naturale e il nostro sistema intelligente fornir\u00e0 raccomandazioni personalizzate.",
     heroSubDescription:
-      'Prova gratuita di 7 giorni. Piani a partire da \u20ac0,99/mese.',
+      'Prova gratuita di 7 giorni. Piani a partire da \u20ac1,99/mese.',
     downloadIOS: 'Scarica per iOS',
     privacyStatement:
       'Disponibile su iOS \u2022 Prova gratuita 7 giorni \u2022 Senza impegno',
@@ -574,7 +574,7 @@ export const translations = {
     downloadForIOS: "Ottieni l'app",
     learnMore: 'Scopri di pi\u00f9',
     ctaPrivacy:
-      'Prova gratuita 7 giorni \u2022 Da \u20ac0,99/mese \u2022 Senza impegno',
+      'Prova gratuita 7 giorni \u2022 Da \u20ac1,99/mese \u2022 Senza impegno',
 
     // Privacy Policy
     privacyTitle: 'Informativa sulla privacy',
@@ -649,7 +649,7 @@ export const translations = {
     subscriptionTermsDesc:
       "FastFlix offre un abbonamento premium nell'app mobile con i seguenti termini:",
     subscriptionTermsItems: [
-      'Piani: \u20ac0,99/mese, \u20ac1,99/trimestre, \u20ac9,99/anno \u2014 tutti includono una prova gratuita di 7 giorni',
+      'Piani: \u20ac1,99/mese, \u20ac3,99/trimestre, \u20ac9,99/anno \u2014 tutti includono una prova gratuita di 7 giorni',
       "Il pagamento verr\u00e0 addebitato sul tuo account Apple ID alla conferma dell'acquisto",
       'Gli abbonamenti si rinnovano automaticamente a meno che il rinnovo automatico non venga disattivato almeno 24 ore prima della fine del periodo corrente',
       'Puoi gestire e annullare gli abbonamenti nelle Impostazioni del tuo account Apple ID',
@@ -717,7 +717,7 @@ export const translations = {
       {
         question: 'Quanto costa FastFlix?',
         answer:
-          'FastFlix offre una prova gratuita di 7 giorni. Dopo, scegli tra: \u20ac0,99/mese, \u20ac1,99/3 mesi o \u20ac9,99/anno. Tutti i piani includono ricerche IA illimitate, feed Per Te personalizzato, selezioni giornaliere e accesso completo a tutte le funzionalit\u00e0.',
+          'FastFlix offre una prova gratuita di 7 giorni. Dopo, scegli tra: \u20ac1,99/mese, \u20ac3,99/3 mesi o \u20ac9,99/anno. Tutti i piani includono ricerche IA illimitate, feed Per Te personalizzato, selezioni giornaliere e accesso completo a tutte le funzionalit\u00e0.',
       },
       {
         question: 'Quali dispositivi sono supportati?',
@@ -768,7 +768,7 @@ export const translations = {
     heroDescription:
       'FastFlix\u306f\u3001AI\u3092\u4f7f\u7528\u3057\u3066\u3042\u306a\u305f\u306b\u3074\u3063\u305f\u308a\u306e\u6620\u753b\u3084TV\u756a\u7d44\u3092\u898b\u3064\u3051\u308biOS\u30e2\u30d0\u30a4\u30eb\u30a2\u30d7\u30ea\u30b1\u30fc\u30b7\u30e7\u30f3\u3067\u3059\u3002\u898b\u305f\u3044\u3082\u306e\u3092\u81ea\u7136\u8a00\u8a9e\u3067\u7c21\u5358\u306b\u8aac\u660e\u3059\u308b\u3060\u3051\u3067\u3001\u30a4\u30f3\u30c6\u30ea\u30b8\u30a7\u30f3\u30c8\u306a\u30b7\u30b9\u30c6\u30e0\u304c\u30d1\u30fc\u30bd\u30ca\u30e9\u30a4\u30ba\u3055\u308c\u305f\u30ec\u30b3\u30e1\u30f3\u30c7\u30fc\u30b7\u30e7\u30f3\u3092\u63d0\u4f9b\u3057\u307e\u3059\u3002',
     heroSubDescription:
-      '7\u65e5\u9593\u306e\u7121\u6599\u30c8\u30e9\u30a4\u30a2\u30eb\u3002\u6708\u984d\u20ac0.99\u304b\u3089\u3002',
+      '7\u65e5\u9593\u306e\u7121\u6599\u30c8\u30e9\u30a4\u30a2\u30eb\u3002\u6708\u984d\u20ac1.99\u304b\u3089\u3002',
     downloadIOS: 'iOS\u7248\u3092\u30c0\u30a6\u30f3\u30ed\u30fc\u30c9',
     privacyStatement:
       'iOS\u5bfe\u5fdc \u2022 7\u65e5\u9593\u7121\u6599\u30c8\u30e9\u30a4\u30a2\u30eb \u2022 \u7e1b\u308a\u306a\u3057',
@@ -821,7 +821,7 @@ export const translations = {
     downloadForIOS: '\u30a2\u30d7\u30ea\u3092\u5165\u624b',
     learnMore: '\u8a73\u7d30\u3092\u898b\u308b',
     ctaPrivacy:
-      '7\u65e5\u9593\u7121\u6599\u30c8\u30e9\u30a4\u30a2\u30eb \u2022 \u6708\u984d\u20ac0.99\u304b\u3089 \u2022 \u3044\u3064\u3067\u3082\u30ad\u30e3\u30f3\u30bb\u30eb\u53ef\u80fd',
+      '7\u65e5\u9593\u7121\u6599\u30c8\u30e9\u30a4\u30a2\u30eb \u2022 \u6708\u984d\u20ac1.99\u304b\u3089 \u2022 \u3044\u3064\u3067\u3082\u30ad\u30e3\u30f3\u30bb\u30eb\u53ef\u80fd',
 
     // Privacy Policy
     privacyTitle: '\u30d7\u30e9\u30a4\u30d0\u30b7\u30fc\u30dd\u30ea\u30b7\u30fc',
@@ -896,7 +896,7 @@ export const translations = {
     subscriptionTermsDesc:
       'FastFlix\u306f\u30e2\u30d0\u30a4\u30eb\u30a2\u30d7\u30ea\u5185\u3067\u30d7\u30ec\u30df\u30a2\u30e0\u30b5\u30d6\u30b9\u30af\u30ea\u30d7\u30b7\u30e7\u30f3\u3092\u4ee5\u4e0b\u306e\u6761\u4ef6\u3067\u63d0\u4f9b\u3057\u3066\u3044\u307e\u3059:',
     subscriptionTermsItems: [
-      '\u30d7\u30e9\u30f3: \u6708\u984d\u20ac0.99\u3001\u56db\u534a\u671f\u20ac1.99\u3001\u5e74\u984d\u20ac9.99 \u2014 \u3059\u3079\u3066\u306b7\u65e5\u9593\u306e\u7121\u6599\u30c8\u30e9\u30a4\u30a2\u30eb\u4ed8\u304d',
+      '\u30d7\u30e9\u30f3: \u6708\u984d\u20ac1.99\u3001\u56db\u534a\u671f\u20ac3.99\u3001\u5e74\u984d\u20ac9.99 \u2014 \u3059\u3079\u3066\u306b7\u65e5\u9593\u306e\u7121\u6599\u30c8\u30e9\u30a4\u30a2\u30eb\u4ed8\u304d',
       '\u8cfc\u5165\u78ba\u8a8d\u6642\u306bApple ID\u30a2\u30ab\u30a6\u30f3\u30c8\u306b\u8acb\u6c42\u3055\u308c\u307e\u3059',
       '\u73fe\u5728\u306e\u671f\u9593\u7d42\u4e86\u306e\u5c11\u306a\u304f\u3068\u308224\u6642\u9593\u524d\u306b\u81ea\u52d5\u66f4\u65b0\u3092\u30aa\u30d5\u306b\u3057\u306a\u3044\u9650\u308a\u3001\u30b5\u30d6\u30b9\u30af\u30ea\u30d7\u30b7\u30e7\u30f3\u306f\u81ea\u52d5\u7684\u306b\u66f4\u65b0\u3055\u308c\u307e\u3059',
       'Apple ID\u30a2\u30ab\u30a6\u30f3\u30c8\u8a2d\u5b9a\u3067\u30b5\u30d6\u30b9\u30af\u30ea\u30d7\u30b7\u30e7\u30f3\u3092\u7ba1\u7406\u304a\u3088\u3073\u30ad\u30e3\u30f3\u30bb\u30eb\u3067\u304d\u307e\u3059',
@@ -962,7 +962,7 @@ export const translations = {
       {
         question: 'FastFlix\u306e\u6599\u91d1\u306f\uff1f',
         answer:
-          'FastFlix\u306f7\u65e5\u9593\u306e\u7121\u6599\u30c8\u30e9\u30a4\u30a2\u30eb\u3092\u63d0\u4f9b\u3057\u3066\u3044\u307e\u3059\u3002\u305d\u306e\u5f8c\u3001\u6708\u984d\u20ac0.99\u3001\u56db\u534a\u671f\u20ac1.99\u3001\u5e74\u984d\u20ac9.99\u304b\u3089\u9078\u3079\u307e\u3059\u3002\u3059\u3079\u3066\u306e\u30d7\u30e9\u30f3\u306b\u7121\u5236\u9650\u306eAI\u691c\u7d22\u3001\u30d1\u30fc\u30bd\u30ca\u30e9\u30a4\u30ba\u3055\u308c\u305f\u300c\u3042\u306a\u305f\u3078\u300d\u30d5\u30a3\u30fc\u30c9\u3001\u6bce\u65e5\u306e\u30bb\u30ec\u30af\u30b7\u30e7\u30f3\u3001\u5168\u6a5f\u80fd\u3078\u306e\u30a2\u30af\u30bb\u30b9\u304c\u542b\u307e\u308c\u307e\u3059\u3002',
+          'FastFlix\u306f7\u65e5\u9593\u306e\u7121\u6599\u30c8\u30e9\u30a4\u30a2\u30eb\u3092\u63d0\u4f9b\u3057\u3066\u3044\u307e\u3059\u3002\u305d\u306e\u5f8c\u3001\u6708\u984d\u20ac1.99\u3001\u56db\u534a\u671f\u20ac3.99\u3001\u5e74\u984d\u20ac9.99\u304b\u3089\u9078\u3079\u307e\u3059\u3002\u3059\u3079\u3066\u306e\u30d7\u30e9\u30f3\u306b\u7121\u5236\u9650\u306eAI\u691c\u7d22\u3001\u30d1\u30fc\u30bd\u30ca\u30e9\u30a4\u30ba\u3055\u308c\u305f\u300c\u3042\u306a\u305f\u3078\u300d\u30d5\u30a3\u30fc\u30c9\u3001\u6bce\u65e5\u306e\u30bb\u30ec\u30af\u30b7\u30e7\u30f3\u3001\u5168\u6a5f\u80fd\u3078\u306e\u30a2\u30af\u30bb\u30b9\u304c\u542b\u307e\u308c\u307e\u3059\u3002',
       },
       {
         question: '\u3069\u306e\u30c7\u30d0\u30a4\u30b9\u304c\u30b5\u30dd\u30fc\u30c8\u3055\u308c\u3066\u3044\u307e\u3059\u304b\uff1f',
@@ -1013,7 +1013,7 @@ export const translations = {
     heroDescription:
       'FastFlix es una aplicaci\u00f3n m\u00f3vil iOS que utiliza IA para encontrar la pel\u00edcula o serie perfecta para ti. Simplemente describe lo que te apetece ver en lenguaje natural y nuestro sistema inteligente proporcionar\u00e1 recomendaciones personalizadas.',
     heroSubDescription:
-      'Prueba gratuita de 7 d\u00edas. Planes desde \u20ac0,99/mes.',
+      'Prueba gratuita de 7 d\u00edas. Planes desde \u20ac1,99/mes.',
     downloadIOS: 'Descargar para iOS',
     privacyStatement:
       'Disponible en iOS \u2022 Prueba gratuita 7 d\u00edas \u2022 Sin compromiso',
@@ -1067,7 +1067,7 @@ export const translations = {
     downloadForIOS: 'Obtener la app',
     learnMore: 'M\u00e1s informaci\u00f3n',
     ctaPrivacy:
-      'Prueba gratuita 7 d\u00edas \u2022 Desde \u20ac0,99/mes \u2022 Sin compromiso',
+      'Prueba gratuita 7 d\u00edas \u2022 Desde \u20ac1,99/mes \u2022 Sin compromiso',
 
     // Privacy Policy
     privacyTitle: 'Pol\u00edtica de privacidad',
@@ -1142,7 +1142,7 @@ export const translations = {
     subscriptionTermsDesc:
       'FastFlix ofrece una suscripci\u00f3n premium dentro de la app m\u00f3vil con los siguientes t\u00e9rminos:',
     subscriptionTermsItems: [
-      'Planes: \u20ac0,99/mes, \u20ac1,99/trimestre, \u20ac9,99/a\u00f1o \u2014 todos incluyen una prueba gratuita de 7 d\u00edas',
+      'Planes: \u20ac1,99/mes, \u20ac3,99/trimestre, \u20ac9,99/a\u00f1o \u2014 todos incluyen una prueba gratuita de 7 d\u00edas',
       'El pago se cargar\u00e1 a tu cuenta de Apple ID al confirmar la compra',
       'Las suscripciones se renuevan autom\u00e1ticamente a menos que la renovaci\u00f3n autom\u00e1tica se desactive al menos 24 horas antes del final del per\u00edodo actual',
       'Puedes gestionar y cancelar suscripciones en la configuraci\u00f3n de tu cuenta de Apple ID',
@@ -1210,7 +1210,7 @@ export const translations = {
       {
         question: '\u00bfCu\u00e1nto cuesta FastFlix?',
         answer:
-          'FastFlix ofrece una prueba gratuita de 7 d\u00edas. Despu\u00e9s, elige entre: \u20ac0,99/mes, \u20ac1,99/3 meses o \u20ac9,99/a\u00f1o. Todos los planes incluyen b\u00fasquedas IA ilimitadas, feed Para Ti personalizado, selecciones diarias y acceso completo a todas las funciones.',
+          'FastFlix ofrece una prueba gratuita de 7 d\u00edas. Despu\u00e9s, elige entre: \u20ac1,99/mes, \u20ac3,99/3 meses o \u20ac9,99/a\u00f1o. Todos los planes incluyen b\u00fasquedas IA ilimitadas, feed Para Ti personalizado, selecciones diarias y acceso completo a todas las funciones.',
       },
       {
         question: '\u00bfQu\u00e9 dispositivos son compatibles?',
@@ -1261,7 +1261,7 @@ export const translations = {
     heroDescription:
       'FastFlix ist eine iOS-Mobilanwendung, die KI nutzt, um den perfekten Film oder die perfekte Serie f\u00fcr dich zu finden. Beschreibe einfach in nat\u00fcrlicher Sprache, worauf du Lust hast, und unser intelligentes System liefert personalisierte Empfehlungen.',
     heroSubDescription:
-      '7 Tage kostenlos testen. Pl\u00e4ne ab \u20ac0,99/Monat.',
+      '7 Tage kostenlos testen. Pl\u00e4ne ab \u20ac1,99/Monat.',
     downloadIOS: 'F\u00fcr iOS herunterladen',
     privacyStatement:
       'Verf\u00fcgbar auf iOS \u2022 7 Tage kostenlose Testversion \u2022 Keine Bindung',
@@ -1315,7 +1315,7 @@ export const translations = {
     downloadForIOS: 'App holen',
     learnMore: 'Mehr erfahren',
     ctaPrivacy:
-      '7 Tage kostenlose Testversion \u2022 Ab \u20ac0,99/Monat \u2022 Jederzeit k\u00fcndbar',
+      '7 Tage kostenlose Testversion \u2022 Ab \u20ac1,99/Monat \u2022 Jederzeit k\u00fcndbar',
 
     // Privacy Policy
     privacyTitle: 'Datenschutzerkl\u00e4rung',
@@ -1390,7 +1390,7 @@ export const translations = {
     subscriptionTermsDesc:
       'FastFlix bietet ein Premium-Abonnement innerhalb der Mobile-App mit folgenden Bedingungen:',
     subscriptionTermsItems: [
-      'Pl\u00e4ne: \u20ac0,99/Monat, \u20ac1,99/Quartal, \u20ac9,99/Jahr \u2014 alle mit 7-t\u00e4giger kostenloser Testversion',
+      'Pl\u00e4ne: \u20ac1,99/Monat, \u20ac3,99/Quartal, \u20ac9,99/Jahr \u2014 alle mit 7-t\u00e4giger kostenloser Testversion',
       'Die Zahlung wird bei Kaufbest\u00e4tigung von deinem Apple-ID-Konto abgebucht',
       'Abonnements verl\u00e4ngern sich automatisch, sofern die automatische Verl\u00e4ngerung nicht mindestens 24 Stunden vor Ende des aktuellen Zeitraums deaktiviert wird',
       'Du kannst Abonnements in deinen Apple-ID-Kontoeinstellungen verwalten und k\u00fcndigen',
@@ -1458,7 +1458,7 @@ export const translations = {
       {
         question: 'Was kostet FastFlix?',
         answer:
-          'FastFlix bietet eine 7-t\u00e4gige kostenlose Testversion. Danach w\u00e4hle aus: \u20ac0,99/Monat, \u20ac1,99/3 Monate oder \u20ac9,99/Jahr. Alle Pl\u00e4ne umfassen unbegrenzte KI-Suchen, personalisierten F\u00fcr-dich-Feed, Tagesauswahlen und vollen Zugang zu allen Funktionen.',
+          'FastFlix bietet eine 7-t\u00e4gige kostenlose Testversion. Danach w\u00e4hle aus: \u20ac1,99/Monat, \u20ac3,99/3 Monate oder \u20ac9,99/Jahr. Alle Pl\u00e4ne umfassen unbegrenzte KI-Suchen, personalisierten F\u00fcr-dich-Feed, Tagesauswahlen und vollen Zugang zu allen Funktionen.',
       },
       {
         question: 'Welche Ger\u00e4te werden unterst\u00fctzt?',

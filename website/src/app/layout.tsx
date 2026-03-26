@@ -77,7 +77,7 @@ export default function RootLayout({
                 'AI-powered movie and TV show recommendations personalized to your taste.',
               offers: {
                 '@type': 'Offer',
-                price: '0.99',
+                price: '1.99',
                 priceCurrency: 'EUR',
               },
             }),
