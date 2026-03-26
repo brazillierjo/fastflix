@@ -61,6 +61,7 @@ function CustomTabBar({ state, descriptors, navigation }: BottomTabBarProps) {
                     Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
                     navigation.navigate(route.name);
                   }
+                  // Always emit tabPress so screens can listen (e.g. scroll to top)
                 };
 
                 return (

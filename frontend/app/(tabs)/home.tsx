@@ -13,7 +13,7 @@ import { useLanguage } from '@/contexts/LanguageContext';
 import { useSubscription } from '@/contexts/RevenueCatContext';
 import { useHomeData } from '@/hooks/useHomeData';
 import { useQueryClient } from '@tanstack/react-query';
-import { useFocusEffect } from 'expo-router';
+import { useFocusEffect, useNavigation } from 'expo-router';
 import {
   getCardShadow,
   getSquircle,
@@ -79,6 +79,15 @@ export default function HomeScreen() {
   const ctaTimerRef = useRef<ReturnType<typeof setInterval> | null>(null);
   const scrollViewRef = useRef<ScrollView>(null);
   const quickSearchY = useRef(0);
+  const navigation = useNavigation();
+
+  // Scroll to top when home tab is tapped while already focused
+  useEffect(() => {
+    const unsubscribe = navigation.addListener('tabPress' as any, () => {
+      scrollViewRef.current?.scrollTo({ y: 0, animated: true });
+    });
+    return unsubscribe;
+  }, [navigation]);
 
   useEffect(() => {
     // Reset on text change
