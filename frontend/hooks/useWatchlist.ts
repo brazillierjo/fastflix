@@ -182,7 +182,7 @@ export function useWatchlistToggle(
     isLoading: isChecking,
   } = useIsInWatchlist(tmdbId, mediaType);
 
-  // Add to watchlist mutation
+  // Add to watchlist mutation with optimistic update
   const addMutation = useMutation({
     mutationFn: async () => {
       const response = await backendAPIService.addToWatchlist({
@@ -197,13 +197,27 @@ export function useWatchlistToggle(
       }
       return response.data?.item;
     },
-    onSuccess: () => {
+    onMutate: async () => {
+      await queryClient.cancelQueries({ queryKey: [...WATCHLIST_CHECK_QUERY_KEY, tmdbId, mediaType] });
+      const previousCheck = queryClient.getQueryData([...WATCHLIST_CHECK_QUERY_KEY, tmdbId, mediaType]);
+      queryClient.setQueryData([...WATCHLIST_CHECK_QUERY_KEY, tmdbId, mediaType], {
+        inWatchlist: true,
+        itemId: 'optimistic-temp',
+      });
+      return { previousCheck };
+    },
+    onError: (_err, _vars, context) => {
+      if (context?.previousCheck) {
+        queryClient.setQueryData([...WATCHLIST_CHECK_QUERY_KEY, tmdbId, mediaType], context.previousCheck);
+      }
+    },
+    onSettled: () => {
       queryClient.invalidateQueries({ queryKey: WATCHLIST_QUERY_KEY });
       queryClient.invalidateQueries({ queryKey: WATCHLIST_CHECK_QUERY_KEY });
     },
   });
 
-  // Remove from watchlist mutation
+  // Remove from watchlist mutation with optimistic update
   const removeMutation = useMutation({
     mutationFn: async () => {
       if (!itemId) throw new Error('No item ID found');
@@ -215,7 +229,21 @@ export function useWatchlistToggle(
       }
       return response.data?.deleted;
     },
-    onSuccess: () => {
+    onMutate: async () => {
+      await queryClient.cancelQueries({ queryKey: [...WATCHLIST_CHECK_QUERY_KEY, tmdbId, mediaType] });
+      const previousCheck = queryClient.getQueryData([...WATCHLIST_CHECK_QUERY_KEY, tmdbId, mediaType]);
+      queryClient.setQueryData([...WATCHLIST_CHECK_QUERY_KEY, tmdbId, mediaType], {
+        inWatchlist: false,
+        itemId: null,
+      });
+      return { previousCheck };
+    },
+    onError: (_err, _vars, context) => {
+      if (context?.previousCheck) {
+        queryClient.setQueryData([...WATCHLIST_CHECK_QUERY_KEY, tmdbId, mediaType], context.previousCheck);
+      }
+    },
+    onSettled: () => {
       queryClient.invalidateQueries({ queryKey: WATCHLIST_QUERY_KEY });
       queryClient.invalidateQueries({ queryKey: WATCHLIST_CHECK_QUERY_KEY });
     },

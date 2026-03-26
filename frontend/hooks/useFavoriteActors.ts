@@ -39,7 +39,24 @@ export function useFavoriteActorToggle() {
       if (!response.success) throw new Error('Failed to favorite actor');
       return response.data;
     },
-    onSuccess: () => {
+    onMutate: async (newActor) => {
+      await queryClient.cancelQueries({ queryKey: TASTE_PROFILE_KEY });
+      const previous = queryClient.getQueryData(TASTE_PROFILE_KEY);
+      queryClient.setQueryData(TASTE_PROFILE_KEY, (old: any) => {
+        if (!old) return old;
+        return {
+          ...old,
+          favorite_actors: [...(old.favorite_actors || []), newActor],
+        };
+      });
+      return { previous };
+    },
+    onError: (_err, _vars, context) => {
+      if (context?.previous) {
+        queryClient.setQueryData(TASTE_PROFILE_KEY, context.previous);
+      }
+    },
+    onSettled: () => {
       queryClient.invalidateQueries({ queryKey: TASTE_PROFILE_KEY });
     },
   });
@@ -50,7 +67,26 @@ export function useFavoriteActorToggle() {
       if (!response.success) throw new Error('Failed to unfavorite actor');
       return response.data;
     },
-    onSuccess: () => {
+    onMutate: async (tmdbId) => {
+      await queryClient.cancelQueries({ queryKey: TASTE_PROFILE_KEY });
+      const previous = queryClient.getQueryData(TASTE_PROFILE_KEY);
+      queryClient.setQueryData(TASTE_PROFILE_KEY, (old: any) => {
+        if (!old) return old;
+        return {
+          ...old,
+          favorite_actors: (old.favorite_actors || []).filter(
+            (a: FavoriteActor) => a.tmdb_id !== tmdbId
+          ),
+        };
+      });
+      return { previous };
+    },
+    onError: (_err, _vars, context) => {
+      if (context?.previous) {
+        queryClient.setQueryData(TASTE_PROFILE_KEY, context.previous);
+      }
+    },
+    onSettled: () => {
       queryClient.invalidateQueries({ queryKey: TASTE_PROFILE_KEY });
     },
   });

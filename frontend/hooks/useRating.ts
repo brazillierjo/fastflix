@@ -103,7 +103,26 @@ export function useRateMovie() {
       }
       return response.data;
     },
-    onSuccess: () => {
+    onMutate: async (newRating) => {
+      await queryClient.cancelQueries({ queryKey: TASTE_PROFILE_KEY });
+      const previous = queryClient.getQueryData(TASTE_PROFILE_KEY);
+      queryClient.setQueryData(TASTE_PROFILE_KEY, (old: any) => {
+        if (!old) return old;
+        const existing = old.rated_movies?.findIndex((m: RatedMovie) => m.tmdb_id === newRating.tmdb_id);
+        const updatedMovies = [...(old.rated_movies || [])];
+        if (existing >= 0) {
+          updatedMovies[existing] = { ...updatedMovies[existing], ...newRating };
+        } else {
+          updatedMovies.push(newRating);
+        }
+        return { ...old, rated_movies: updatedMovies };
+      });
+      return { previous };
+    },
+    onError: (_err, _vars, context) => {
+      if (context?.previous) queryClient.setQueryData(TASTE_PROFILE_KEY, context.previous);
+    },
+    onSettled: () => {
       queryClient.invalidateQueries({ queryKey: TASTE_PROFILE_KEY });
       queryClient.invalidateQueries({ queryKey: ['forYou'] });
     },
@@ -131,7 +150,22 @@ export function useDeleteRating() {
       }
       return response.data;
     },
-    onSuccess: () => {
+    onMutate: async (tmdbId) => {
+      await queryClient.cancelQueries({ queryKey: TASTE_PROFILE_KEY });
+      const previous = queryClient.getQueryData(TASTE_PROFILE_KEY);
+      queryClient.setQueryData(TASTE_PROFILE_KEY, (old: any) => {
+        if (!old) return old;
+        return {
+          ...old,
+          rated_movies: (old.rated_movies || []).filter((m: RatedMovie) => m.tmdb_id !== tmdbId),
+        };
+      });
+      return { previous };
+    },
+    onError: (_err, _vars, context) => {
+      if (context?.previous) queryClient.setQueryData(TASTE_PROFILE_KEY, context.previous);
+    },
+    onSettled: () => {
       queryClient.invalidateQueries({ queryKey: TASTE_PROFILE_KEY });
       queryClient.invalidateQueries({ queryKey: ['forYou'] });
     },
