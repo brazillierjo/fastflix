@@ -1,5 +1,4 @@
 import { Ionicons } from '@expo/vector-icons';
-import FiltersBottomSheet from '@/components/FiltersBottomSheet';
 import ForYouSection from '@/components/ForYouSection';
 import MyRatingsSection from '@/components/MyRatingsSection';
 import NewReleasesSection from '@/components/NewReleasesSection';
@@ -54,8 +53,6 @@ export default function HomeScreen() {
     isRefetching,
     refetch,
   } = useHomeData();
-
-  const [showFiltersModal, setShowFiltersModal] = useState(false);
 
   // Guest mode: read setup genres/platforms from AsyncStorage
   const [setupGenres, setSetupGenres] = useState<number[]>([]);
@@ -324,42 +321,26 @@ export default function HomeScreen() {
           transition={{ delay: 100, type: 'timing', duration: 500 }}
           className='mt-6 px-6'
         >
-          <View className='flex-row items-center gap-2'>
-            <TouchableOpacity
-              onPress={() => router.push('/search' as never)}
-              activeOpacity={0.8}
-              style={[
-                getSquircle(16),
-                {
-                  shadowColor: '#E50914',
-                  shadowOffset: { width: 0, height: 4 },
-                  shadowOpacity: isDark ? 0.4 : 0.2,
-                  shadowRadius: 12,
-                  elevation: 6,
-                },
-              ]}
-              className='flex-1 flex-row items-center justify-center gap-2.5 bg-netflix-500 px-5 py-4'
-            >
-              <Ionicons name='sparkles' size={18} color='#fff' />
-              <Text className='text-base font-semibold text-white'>
-                {t('home.searchCTA')}
-              </Text>
-            </TouchableOpacity>
-            {isAuthenticated && (
-              <TouchableOpacity
-                onPress={() => setShowFiltersModal(true)}
-                activeOpacity={0.7}
-                style={getSquircle(16)}
-                className='items-center justify-center border border-light-border bg-light-surface p-4 dark:border-dark-border dark:bg-dark-surface'
-              >
-                <Ionicons
-                  name='options-outline'
-                  size={20}
-                  color={isDark ? '#a3a3a3' : '#737373'}
-                />
-              </TouchableOpacity>
-            )}
-          </View>
+          <TouchableOpacity
+            onPress={() => router.push('/search' as never)}
+            activeOpacity={0.8}
+            style={[
+              getSquircle(16),
+              {
+                shadowColor: '#E50914',
+                shadowOffset: { width: 0, height: 4 },
+                shadowOpacity: isDark ? 0.4 : 0.2,
+                shadowRadius: 12,
+                elevation: 6,
+              },
+            ]}
+            className='flex-row items-center justify-center gap-2.5 bg-netflix-500 px-6 py-4'
+          >
+            <Ionicons name='sparkles' size={18} color='#fff' />
+            <Text className='text-center text-base font-semibold text-white'>
+              {t('home.searchCTA')}
+            </Text>
+          </TouchableOpacity>
         </MotiView>
 
         {/* Daily Pick Card */}
@@ -630,12 +611,6 @@ export default function HomeScreen() {
         onClose={() => setShowSubscriptionModal(false)}
       />
 
-      {/* Filters Bottom Sheet */}
-      <FiltersBottomSheet
-        visible={showFiltersModal}
-        onClose={() => setShowFiltersModal(false)}
-        saveAsDefault
-      />
     </SafeAreaView>
   );
 }
