@@ -1,6 +1,7 @@
 import { Ionicons } from '@expo/vector-icons';
 import { useAuth } from '@/contexts/AuthContext';
 import { useLanguage } from '@/contexts/LanguageContext';
+import { useRouter } from 'expo-router';
 import React from 'react';
 import {
   Alert,
@@ -21,12 +22,14 @@ interface AccountModalProps {
 export default function AccountModal({ visible, onClose }: AccountModalProps) {
   const { user, signOut, deleteAccount } = useAuth();
   const { t } = useLanguage();
+  const router = useRouter();
   const colorScheme = useColorScheme();
   const isDark = colorScheme === 'dark';
 
   const handleSignOut = async () => {
     await signOut();
     onClose();
+    router.replace('/(tabs)' as never);
   };
 
   const handleDeleteAccount = () => {
