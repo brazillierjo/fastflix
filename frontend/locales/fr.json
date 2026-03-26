@@ -290,7 +290,7 @@
       "description": "Connectez-vous pour obtenir des recommandations personnalisées et accéder à toutes les fonctionnalités."
     },
     "loading": "Connexion en cours...",
-    "platformNotSupported": "L'authentification n'est actuellement disponible que sur iOS.",
+    "platformNotSupported": "La connexion n'est pas disponible pour le moment. Veuillez réessayer plus tard.",
     "footer": "En vous connectant, vous acceptez nos Conditions d'utilisation et notre Politique de confidentialité.",
     "signIn": "Se connecter",
     "signInWithGoogle": "Se connecter avec Google",

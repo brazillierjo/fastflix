@@ -24,6 +24,7 @@ import {
   useColorScheme,
   View,
 } from 'react-native';
+import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { PurchasesPackage } from 'react-native-purchases';
 
 interface SubscriptionModalProps {
@@ -270,17 +271,19 @@ export default function SubscriptionModal({
   if (isLoading || isLoadingOfferings) {
     return (
       <Modal visible={visible} transparent animationType='fade'>
-        <View className='flex-1 items-center justify-center bg-black/50'>
-          <View
-            style={getSquircle(18)}
-            className='bg-light-background p-8 dark:bg-dark-surface'
-          >
-            <ActivityIndicator size='large' color={greenPrimary} />
-            <Text className='mt-4 text-center text-sm text-light-muted dark:text-dark-muted'>
-              {t('subscription.loading') || 'Loading subscription options...'}
-            </Text>
+        <GestureHandlerRootView style={{ flex: 1 }}>
+          <View className='flex-1 items-center justify-center bg-black/50'>
+            <View
+              style={getSquircle(18)}
+              className='bg-light-background p-8 dark:bg-dark-surface'
+            >
+              <ActivityIndicator size='large' color={greenPrimary} />
+              <Text className='mt-4 text-center text-sm text-light-muted dark:text-dark-muted'>
+                {t('subscription.loading') || 'Loading subscription options...'}
+              </Text>
+            </View>
           </View>
-        </View>
+        </GestureHandlerRootView>
       </Modal>
     );
   }
@@ -289,12 +292,13 @@ export default function SubscriptionModal({
   if (!hasOfferings) {
     return (
       <Modal visible={visible} transparent animationType='fade'>
-        <View className='flex-1 items-center justify-center bg-black/50'>
-          <View
-            style={getSquircle(18)}
-            className='bg-light-background p-8 dark:bg-dark-surface'
-          >
-            <Ionicons
+        <GestureHandlerRootView style={{ flex: 1 }}>
+          <View className='flex-1 items-center justify-center bg-black/50'>
+            <View
+              style={getSquircle(18)}
+              className='bg-light-background p-8 dark:bg-dark-surface'
+            >
+              <Ionicons
               name='cloud-offline-outline'
               size={48}
               color={greenPrimary}
@@ -332,6 +336,7 @@ export default function SubscriptionModal({
             </TouchableOpacity>
           </View>
         </View>
+        </GestureHandlerRootView>
       </Modal>
     );
   }
@@ -342,6 +347,7 @@ export default function SubscriptionModal({
       animationType='slide'
       presentationStyle='pageSheet'
     >
+      <GestureHandlerRootView style={{ flex: 1 }}>
       <View className='flex-1 bg-light-background dark:bg-dark-background'>
         {/* Close button - floating over hero */}
         <View className='absolute right-4 top-4 z-10'>
@@ -797,6 +803,7 @@ export default function SubscriptionModal({
           </View>
         </View>
       </View>
+      </GestureHandlerRootView>
     </Modal>
   );
 }

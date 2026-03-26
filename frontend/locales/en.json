@@ -290,7 +290,7 @@
       "description": "Sign in to get personalized recommendations and access all features."
     },
     "loading": "Signing in...",
-    "platformNotSupported": "Authentication is currently only available on iOS.",
+    "platformNotSupported": "Sign in is not available at the moment. Please try again later.",
     "footer": "By signing in, you agree to our Terms of Service and Privacy Policy.",
     "signIn": "Sign In",
     "signInWithGoogle": "Sign in with Google",

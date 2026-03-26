@@ -209,7 +209,7 @@ export default function AuthScreen() {
                 </TouchableOpacity>
               )}
 
-              {/* Platform not supported message - only if no auth methods available */}
+              {/* No auth methods available message */}
               {Platform.OS !== 'ios' &&
                 !googleIosClientId &&
                 !googleAndroidClientId && (
@@ -219,7 +219,7 @@ export default function AuthScreen() {
                   >
                     <Text className='text-center text-sm text-light-text dark:text-dark-text'>
                       {t('auth.platformNotSupported') ||
-                        'Authentication is currently only available on iOS.'}
+                        'Sign in is not available at the moment. Please try again later.'}
                     </Text>
                   </View>
                 )}

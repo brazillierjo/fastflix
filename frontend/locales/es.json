@@ -278,7 +278,7 @@
       "description": "Inicia sesión para obtener recomendaciones personalizadas y acceder a todas las funciones."
     },
     "loading": "Iniciando sesión...",
-    "platformNotSupported": "La autenticación solo está disponible actualmente en iOS.",
+    "platformNotSupported": "El inicio de sesión no está disponible en este momento. Por favor, inténtelo de nuevo más tarde.",
     "footer": "Al iniciar sesión, aceptas nuestros Términos de servicio y Política de privacidad.",
     "signIn": "Iniciar sesión",
     "signInWithGoogle": "Iniciar sesión con Google",

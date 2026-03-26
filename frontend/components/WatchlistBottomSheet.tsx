@@ -19,6 +19,7 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
+import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import WatchlistItem from './WatchlistItem';
 
@@ -73,6 +74,7 @@ export default function WatchlistBottomSheet({
       presentationStyle='pageSheet'
       onRequestClose={onClose}
     >
+      <GestureHandlerRootView style={{ flex: 1 }}>
       <SafeAreaView className='flex-1 bg-light-background dark:bg-dark-background'>
         {/* Header */}
         <View className='flex-row items-center justify-between border-b border-light-border px-4 py-3 dark:border-dark-border'>
@@ -180,6 +182,7 @@ export default function WatchlistBottomSheet({
           </ScrollView>
         )}
       </SafeAreaView>
+      </GestureHandlerRootView>
     </Modal>
   );
 }

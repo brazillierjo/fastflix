@@ -278,7 +278,7 @@
       "description": "Accedi per ottenere raccomandazioni personalizzate e accedere a tutte le funzionalità."
     },
     "loading": "Accesso in corso...",
-    "platformNotSupported": "L'autenticazione è attualmente disponibile solo su iOS.",
+    "platformNotSupported": "L'accesso non è disponibile al momento. Riprova più tardi.",
     "footer": "Effettuando l'accesso, accetti i nostri Termini di servizio e l'Informativa sulla privacy.",
     "signIn": "Accedi",
     "signInWithGoogle": "Accedi con Google",

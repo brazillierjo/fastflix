@@ -23,6 +23,7 @@ import {
 } from '@/services/notifications';
 import { backendAPIService } from '@/services/backend-api.service';
 import { getSquircle } from '@/utils/designHelpers';
+import { GestureHandlerRootView } from 'react-native-gesture-handler';
 
 const SEARCH_COUNT_KEY = '@fastflix/search_count_local';
 const SEARCH_THRESHOLD = 3;
@@ -103,6 +104,7 @@ export default function NotificationPrompt({ searchCount }: NotificationPromptPr
 
   return (
     <Modal visible={visible} transparent animationType="fade" statusBarTranslucent>
+      <GestureHandlerRootView style={{ flex: 1 }}>
       <View className="flex-1 items-center justify-center" style={{ backgroundColor: 'rgba(0,0,0,0.6)' }}>
         <MotiView
           from={{ opacity: 0, scale: 0.9 }}
@@ -205,6 +207,7 @@ export default function NotificationPrompt({ searchCount }: NotificationPromptPr
           </BlurView>
         </MotiView>
       </View>
+      </GestureHandlerRootView>
     </Modal>
   );
 }

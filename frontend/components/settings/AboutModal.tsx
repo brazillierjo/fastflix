@@ -10,6 +10,7 @@ import {
   useColorScheme,
   View,
 } from 'react-native';
+import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 interface AboutModalProps {
@@ -52,6 +53,7 @@ export default function AboutModal({ visible, onClose }: AboutModalProps) {
       presentationStyle='pageSheet'
       onRequestClose={onClose}
     >
+      <GestureHandlerRootView style={{ flex: 1 }}>
       <SafeAreaView className='flex-1 bg-light-background dark:bg-dark-background'>
         {/* Header */}
         <View className='flex-row items-center justify-between border-b border-light-border px-4 py-3 dark:border-dark-border'>
@@ -122,6 +124,7 @@ export default function AboutModal({ visible, onClose }: AboutModalProps) {
           </Text>
         </View>
       </SafeAreaView>
+      </GestureHandlerRootView>
     </Modal>
   );
 }

@@ -24,6 +24,7 @@ import {
   View,
 } from 'react-native';
 import Constants from 'expo-constants';
+import { GestureHandlerRootView } from 'react-native-gesture-handler';
 
 // Complete auth session for web browser redirect
 WebBrowser.maybeCompleteAuthSession();
@@ -98,6 +99,7 @@ export default function AuthGate({ visible, onClose, onSuccess }: AuthGateProps)
       transparent
       onRequestClose={onClose}
     >
+      <GestureHandlerRootView style={{ flex: 1 }}>
       <View className='flex-1 justify-end bg-black/50'>
         <MotiView
           from={{ translateY: 400 }}
@@ -201,6 +203,7 @@ export default function AuthGate({ visible, onClose, onSuccess }: AuthGateProps)
           )}
         </MotiView>
       </View>
+      </GestureHandlerRootView>
     </Modal>
   );
 }

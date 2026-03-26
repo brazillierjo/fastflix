@@ -278,7 +278,7 @@
       "description": "Melde dich an, um personalisierte Empfehlungen zu erhalten und auf alle Funktionen zuzugreifen."
     },
     "loading": "Anmeldung läuft...",
-    "platformNotSupported": "Die Authentifizierung ist derzeit nur auf iOS verfügbar.",
+    "platformNotSupported": "Die Anmeldung ist derzeit nicht verfügbar. Bitte versuchen Sie es später erneut.",
     "footer": "Mit der Anmeldung akzeptierst du unsere Nutzungsbedingungen und Datenschutzerklärung.",
     "signIn": "Anmelden",
     "signInWithGoogle": "Mit Google anmelden",

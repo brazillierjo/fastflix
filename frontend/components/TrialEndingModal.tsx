@@ -4,6 +4,7 @@ import { getSquircle, getButtonBorderRadius } from '@/utils/designHelpers';
 import { MotiView } from 'moti';
 import React from 'react';
 import { Modal, Text, TouchableOpacity, useColorScheme, View } from 'react-native';
+import { GestureHandlerRootView } from 'react-native-gesture-handler';
 
 interface TrialEndingModalProps {
   visible: boolean;
@@ -65,6 +66,7 @@ export default function TrialEndingModal({
 
   return (
     <Modal visible={visible} transparent animationType='fade'>
+      <GestureHandlerRootView style={{ flex: 1 }}>
       <View className='flex-1 items-center justify-center bg-black/50 px-6'>
         <MotiView
           from={{ opacity: 0, scale: 0.9 }}
@@ -143,6 +145,7 @@ export default function TrialEndingModal({
           </TouchableOpacity>
         </MotiView>
       </View>
+      </GestureHandlerRootView>
     </Modal>
   );
 }
