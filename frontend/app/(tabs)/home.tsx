@@ -376,13 +376,12 @@ export default function HomeScreen() {
               }}
               pointerEvents='none'
             />
-            <View className='items-center px-6 py-5'>
-              <Ionicons name='sparkles' size={16} color='rgba(255,255,255,0.7)' style={{ marginBottom: 6 }} />
+            <View className='px-6 py-4'>
               <Text className='text-center text-base font-semibold leading-6 text-white'>
                 {ctaText}
-                {ctaText.length < ctaFullText.length && (
-                  <Text style={{ opacity: 0.6 }}>|</Text>
-                )}
+                {ctaText.length < ctaFullText.length
+                  ? <Text style={{ opacity: 0.6 }}>|</Text>
+                  : ' 🍿'}
               </Text>
             </View>
           </TouchableOpacity>
