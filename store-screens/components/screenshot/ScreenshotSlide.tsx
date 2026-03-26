@@ -46,12 +46,17 @@ export const ScreenshotSlide = forwardRef<HTMLDivElement, ScreenshotSlideProps>(
 
         {/* Text */}
         <div
-          className="absolute right-0 left-0 z-10 flex flex-col items-center"
+          className="absolute right-0 left-0 z-10 flex flex-col items-center justify-center"
           style={{
             paddingLeft: Math.round(60 * textScale),
             paddingRight: Math.round(60 * textScale),
             ...(isTextTop
-              ? { top: Math.round(50 * textScale) }
+              ? {
+                  top: 0,
+                  height: isTabletRatio
+                    ? Math.round(height * 0.14)
+                    : Math.round(height * 0.30),
+                }
               : { bottom: Math.round(120 * textScale) }),
           }}
         >
