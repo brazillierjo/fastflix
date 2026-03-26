@@ -24,9 +24,19 @@ export async function POST(request: NextRequest) {
 
       try {
         const mediaType = movie.media_type || 'movie';
-        const details = mediaType === 'tv'
+        let details = mediaType === 'tv'
           ? await tmdb.getTVDetails(movie.tmdb_id)
           : await tmdb.getMovieDetails(movie.tmdb_id);
+        // If primary type fails, try the other
+        if (!details?.poster_path) {
+          details = mediaType === 'tv'
+            ? await tmdb.getMovieDetails(movie.tmdb_id)
+            : await tmdb.getTVDetails(movie.tmdb_id);
+          // Fix the media_type while we're at it
+          if (details?.poster_path && !movie.media_type) {
+            movie.media_type = mediaType === 'tv' ? 'movie' : 'tv';
+          }
+        }
         if (details?.poster_path) {
           movie.poster_path = details.poster_path;
           updated++;
