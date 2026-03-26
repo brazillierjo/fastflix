@@ -63,28 +63,29 @@ export async function GET(request: NextRequest) {
       db.getUserPreferences(userId),
     ]);
 
-    // Build daily pick from trending
-    let dailyPick: DailyPick | null = null;
-    if (trending.length > 0) {
-      const index = getDailyIndex(userId, today, trending.length);
-      const picked = trending[index];
+    // User filter helpers
+    const allowFlatrate = preferences.includeFlatrate;
+    const allowRent = preferences.includeRent;
+    const allowBuy = preferences.includeBuy;
+    const hasAvailabilityFilter = allowFlatrate || allowRent || allowBuy;
+    const platformSet = preferences.platforms.length > 0 ? new Set(preferences.platforms) : null;
+    const hasFilters = hasAvailabilityFilter || platformSet !== null;
 
-      const [details, providers] = await Promise.all([
-        tmdb.getFullDetails(picked.tmdb_id, picked.media_type, language),
-        tmdb.getWatchProviders(picked.tmdb_id, picked.media_type, country),
-      ]);
-
-      dailyPick = {
-        tmdb_id: picked.tmdb_id,
-        title: details?.title || picked.title,
-        overview: details?.overview || '',
-        poster_path: details?.poster_path || picked.poster_path,
-        backdrop_path: details?.backdrop_path || null,
-        vote_average: details?.vote_average || picked.vote_average,
-        media_type: picked.media_type,
-        genres: details?.genres || [],
-        providers: providers,
-      };
+    function filterProviders(providers: import('@/lib/types').StreamingProvider[]) {
+      let filtered = providers;
+      if (hasAvailabilityFilter) {
+        filtered = filtered.filter((p) => {
+          if (p.availability_type === 'flatrate' && allowFlatrate) return true;
+          if (p.availability_type === 'rent' && allowRent) return true;
+          if (p.availability_type === 'buy' && allowBuy) return true;
+          if (p.availability_type === 'ads' && allowFlatrate) return true;
+          return false;
+        });
+      }
+      if (platformSet) {
+        filtered = filtered.filter((p) => platformSet.has(p.provider_id));
+      }
+      return filtered;
     }
 
     // Fetch providers for all trending items so we can filter properly
@@ -102,33 +103,47 @@ export async function GET(request: NextRequest) {
     }));
     const trendingProviders = await tmdb.getBatchWatchProviders(allTrendingAsResults, country);
 
-    // Filter providers by user's availability & platform preferences
-    const allowFlatrate = preferences.includeFlatrate;
-    const allowRent = preferences.includeRent;
-    const allowBuy = preferences.includeBuy;
-    const hasAvailabilityFilter = allowFlatrate || allowRent || allowBuy;
-    const platformSet = preferences.platforms.length > 0 ? new Set(preferences.platforms) : null;
-    const hasFilters = hasAvailabilityFilter || platformSet !== null;
+    // Build daily pick from trending items that match user's filters
+    let dailyPick: DailyPick | null = null;
+    if (trending.length > 0) {
+      // Find eligible items for daily pick (matching user filters)
+      const eligibleForPick = hasFilters
+        ? trending.filter((item) => {
+            const itemProviders = trendingProviders[item.tmdb_id] || [];
+            return filterProviders(itemProviders).length > 0;
+          })
+        : trending;
 
+      const pickSource = eligibleForPick.length > 0 ? eligibleForPick : trending;
+      const index = getDailyIndex(userId, today, pickSource.length);
+      const picked = pickSource[index];
+
+      const [details, rawProviders] = await Promise.all([
+        tmdb.getFullDetails(picked.tmdb_id, picked.media_type, language),
+        tmdb.getWatchProviders(picked.tmdb_id, picked.media_type, country),
+      ]);
+
+      const filteredPickProviders = hasFilters ? filterProviders(rawProviders) : rawProviders;
+
+      dailyPick = {
+        tmdb_id: picked.tmdb_id,
+        title: details?.title || picked.title,
+        overview: details?.overview || '',
+        poster_path: details?.poster_path || picked.poster_path,
+        backdrop_path: details?.backdrop_path || null,
+        vote_average: details?.vote_average || picked.vote_average,
+        media_type: picked.media_type,
+        genres: details?.genres || [],
+        providers: filteredPickProviders,
+      };
+    }
+
+    // Build filtered trending list
     const trendingFiltered: TrendingItem[] = [];
     for (const item of trending) {
       if (trendingFiltered.length >= 10) break;
 
-      let itemProviders = trendingProviders[item.tmdb_id] || [];
-
-      if (hasAvailabilityFilter) {
-        itemProviders = itemProviders.filter((p) => {
-          if (p.availability_type === 'flatrate' && allowFlatrate) return true;
-          if (p.availability_type === 'rent' && allowRent) return true;
-          if (p.availability_type === 'buy' && allowBuy) return true;
-          if (p.availability_type === 'ads' && allowFlatrate) return true;
-          return false;
-        });
-      }
-
-      if (platformSet) {
-        itemProviders = itemProviders.filter((p) => platformSet.has(p.provider_id));
-      }
+      const itemProviders = filterProviders(trendingProviders[item.tmdb_id] || []);
 
       // Skip items with no matching providers when user has filters
       if (hasFilters && itemProviders.length === 0) continue;

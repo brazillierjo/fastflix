@@ -20,11 +20,17 @@ export async function GET(request: NextRequest) {
     const language = searchParams.get('language') || 'fr-FR';
     const country = searchParams.get('country') || 'FR';
 
-    // Get user's preferred platforms
+    // Get user's preferences (platforms + availability types)
     const preferences = await db.getUserPreferences(userId);
     const userPlatformIds = preferences.platforms.length > 0
       ? preferences.platforms
       : []; // empty = show all
+    const allowFlatrate = preferences.includeFlatrate;
+    const allowRent = preferences.includeRent;
+    const allowBuy = preferences.includeBuy;
+    const hasAvailabilityFilter = allowFlatrate || allowRent || allowBuy;
+    const platformSet = userPlatformIds.length > 0 ? new Set(userPlatformIds) : null;
+    const hasFilters = hasAvailabilityFilter || platformSet !== null;
 
     // Calculate date range for "this week"
     const now = new Date();
@@ -79,7 +85,7 @@ export async function GET(request: NextRequest) {
       first_air_date?: string;
     }
 
-    const movies = ((moviesData as { results?: TMDBResult[] }).results || []).slice(0, 10).map((item: TMDBResult) => ({
+    const allMovies = ((moviesData as { results?: TMDBResult[] }).results || []).map((item: TMDBResult) => ({
       tmdb_id: item.id,
       title: item.title || item.name || '',
       poster_path: item.poster_path,
@@ -89,7 +95,7 @@ export async function GET(request: NextRequest) {
       release_date: item.release_date,
     }));
 
-    const tvShows = ((tvData as { results?: TMDBResult[] }).results || []).slice(0, 10).map((item: TMDBResult) => ({
+    const allTvShows = ((tvData as { results?: TMDBResult[] }).results || []).map((item: TMDBResult) => ({
       tmdb_id: item.id,
       title: item.name || item.title || '',
       poster_path: item.poster_path,
@@ -100,8 +106,8 @@ export async function GET(request: NextRequest) {
     }));
 
     // Fetch providers for all items
-    const allItems = [...movies, ...tvShows];
-    const providersMap: Record<number, { provider_name: string; logo_path: string }[]> = {};
+    const allItems = [...allMovies, ...allTvShows];
+    const rawProvidersMap: Record<number, import('@/lib/types').StreamingProvider[]> = {};
 
     // Batch fetch providers (5 at a time)
     for (let i = 0; i < allItems.length; i += 5) {
@@ -110,14 +116,63 @@ export async function GET(request: NextRequest) {
         batch.map(item =>
           tmdb.getWatchProviders(item.tmdb_id, item.media_type, country)
             .then(providers => ({ id: item.tmdb_id, providers }))
-            .catch(() => ({ id: item.tmdb_id, providers: [] }))
+            .catch(() => ({ id: item.tmdb_id, providers: [] as import('@/lib/types').StreamingProvider[] }))
         )
       );
       for (const { id, providers } of results) {
-        providersMap[id] = providers.map(p => ({
+        rawProvidersMap[id] = providers;
+      }
+    }
+
+    // Filter providers by user's availability & platform preferences
+    const providersMap: Record<number, { provider_name: string; logo_path: string }[]> = {};
+    const matchingIds = new Set<number>();
+
+    for (const [idStr, itemProviders] of Object.entries(rawProvidersMap)) {
+      const id = Number(idStr);
+      let filtered = itemProviders;
+
+      if (hasAvailabilityFilter) {
+        filtered = filtered.filter((p) => {
+          if (p.availability_type === 'flatrate' && allowFlatrate) return true;
+          if (p.availability_type === 'rent' && allowRent) return true;
+          if (p.availability_type === 'buy' && allowBuy) return true;
+          if (p.availability_type === 'ads' && allowFlatrate) return true;
+          return false;
+        });
+      }
+
+      if (platformSet) {
+        filtered = filtered.filter((p) => platformSet.has(p.provider_id));
+      }
+
+      if (filtered.length > 0) {
+        matchingIds.add(id);
+        providersMap[id] = filtered.map(p => ({
           provider_name: p.provider_name,
           logo_path: p.logo_path,
         }));
+      }
+    }
+
+    // Only keep items that have matching providers (when filters are active)
+    const movies = hasFilters
+      ? allMovies.filter(m => matchingIds.has(m.tmdb_id))
+      : allMovies;
+    const tvShows = hasFilters
+      ? allTvShows.filter(m => matchingIds.has(m.tmdb_id))
+      : allTvShows;
+
+    // For items without filters, populate providersMap with unfiltered data
+    if (!hasFilters) {
+      for (const [idStr, itemProviders] of Object.entries(rawProvidersMap)) {
+        const id = Number(idStr);
+        if (!providersMap[id]) {
+          providersMap[id] = itemProviders.map(p => ({
+            provider_name: p.provider_name,
+            logo_path: p.logo_path,
+          }));
+        }
       }
     }
 
