@@ -10,6 +10,7 @@ import { db } from '@/lib/db';
 import { applyTierRateLimit } from '@/lib/api-helpers';
 import { FREE_TIER_LIMITS } from '@/lib/types';
 import type { DailyPick, TrendingItem, HomeResponse } from '@/lib/types';
+import { computeAffinityScore, getWatchedTmdbIds } from '@/lib/affinity';
 
 /**
  * Generate a deterministic index from userId and date
@@ -55,13 +56,17 @@ export async function GET(request: NextRequest) {
     const today = new Date().toISOString().split('T')[0];
 
     // Fetch everything in parallel (reuse isPremium from rate limit check)
-    const [trending, recentSearches, quota, isPremium, preferences] = await Promise.all([
+    const [trending, recentSearches, quota, isPremium, preferences, tasteProfile] = await Promise.all([
       tmdb.getTrending(language),
       db.getSearchHistory(userId, 5),
       db.getUserQuota(userId, today),
       db.hasAccess(userId),
       db.getUserPreferences(userId),
+      db.getUserTasteProfile(userId),
     ]);
+
+    // Build set of already-watched TMDB IDs to exclude
+    const watchedIds = getWatchedTmdbIds(tasteProfile);
 
     // User filter helpers
     const allowFlatrate = preferences.includeFlatrate;
@@ -98,25 +103,41 @@ export async function GET(request: NextRequest) {
       backdrop_path: null,
       vote_average: item.vote_average,
       vote_count: 0,
-      genre_ids: [],
+      genre_ids: item.genre_ids || [],
       popularity: 0,
     }));
     const trendingProviders = await tmdb.getBatchWatchProviders(allTrendingAsResults, country);
 
-    // Build daily pick from trending items that match user's filters
+    // Build daily pick from trending items that match user's filters + taste
     let dailyPick: DailyPick | null = null;
     if (trending.length > 0) {
-      // Find eligible items for daily pick (matching user filters)
-      const eligibleForPick = hasFilters
-        ? trending.filter((item) => {
-            const itemProviders = trendingProviders[item.tmdb_id] || [];
-            return filterProviders(itemProviders).length > 0;
-          })
-        : trending;
+      // Find eligible items: matching providers, not already watched, not disliked genres
+      const eligibleForPick = trending.filter((item) => {
+        // Exclude already-watched
+        if (watchedIds.has(item.tmdb_id)) return false;
+        // Check provider filters
+        if (hasFilters) {
+          const itemProviders = trendingProviders[item.tmdb_id] || [];
+          if (filterProviders(itemProviders).length === 0) return false;
+        }
+        // Penalize disliked genres (score < 0 means mostly disliked)
+        const score = computeAffinityScore(item.genre_ids || [], tasteProfile);
+        if (score < 0) return false;
+        return true;
+      });
 
+      // Sort eligible items by affinity (best match first)
+      eligibleForPick.sort((a, b) => {
+        const scoreA = computeAffinityScore(a.genre_ids || [], tasteProfile);
+        const scoreB = computeAffinityScore(b.genre_ids || [], tasteProfile);
+        return scoreB - scoreA;
+      });
+
+      // Pick deterministically from top affinity candidates
       const pickSource = eligibleForPick.length > 0 ? eligibleForPick : trending;
-      const index = getDailyIndex(userId, today, pickSource.length);
-      const picked = pickSource[index];
+      const topCandidates = pickSource.slice(0, Math.min(5, pickSource.length));
+      const index = getDailyIndex(userId, today, topCandidates.length);
+      const picked = topCandidates[index];
 
       const [details, rawProviders] = await Promise.all([
         tmdb.getFullDetails(picked.tmdb_id, picked.media_type, language),
@@ -138,18 +159,22 @@ export async function GET(request: NextRequest) {
       };
     }
 
-    // Build filtered trending list
-    const trendingFiltered: TrendingItem[] = [];
+    // Build filtered trending list: exclude watched, filter by providers, sort by affinity
+    const trendingEligible: (TrendingItem & { _affinityScore: number })[] = [];
     for (const item of trending) {
-      if (trendingFiltered.length >= 10) break;
+      // Exclude already-watched
+      if (watchedIds.has(item.tmdb_id)) continue;
+      // Exclude daily pick to avoid duplicate
+      if (dailyPick && item.tmdb_id === dailyPick.tmdb_id) continue;
 
       const itemProviders = filterProviders(trendingProviders[item.tmdb_id] || []);
 
       // Skip items with no matching providers when user has filters
       if (hasFilters && itemProviders.length === 0) continue;
 
-      trendingFiltered.push({
+      trendingEligible.push({
         ...item,
+        _affinityScore: computeAffinityScore(item.genre_ids || [], tasteProfile),
         providers: itemProviders.map((p) => ({
           provider_name: p.provider_name,
           logo_path: p.logo_path,
@@ -157,7 +182,11 @@ export async function GET(request: NextRequest) {
       });
     }
 
-    const trendingTop10 = trendingFiltered;
+    // Sort by affinity score (best match first), keep original order as tiebreaker
+    trendingEligible.sort((a, b) => b._affinityScore - a._affinityScore);
+
+    // Take top 10 and strip internal score field
+    const trendingTop10: TrendingItem[] = trendingEligible.slice(0, 10).map(({ _affinityScore, ...item }) => item);
 
     const response: HomeResponse = {
       dailyPick,

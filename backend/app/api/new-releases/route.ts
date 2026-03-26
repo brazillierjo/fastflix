@@ -7,6 +7,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { requireAuth } from '@/lib/middleware';
 import { tmdb } from '@/lib/tmdb';
 import { db } from '@/lib/db';
+import { computeAffinityScore, getWatchedTmdbIds } from '@/lib/affinity';
 
 export async function GET(request: NextRequest) {
   try {
@@ -20,8 +21,12 @@ export async function GET(request: NextRequest) {
     const language = searchParams.get('language') || 'fr-FR';
     const country = searchParams.get('country') || 'FR';
 
-    // Get user's preferences (platforms + availability types)
-    const preferences = await db.getUserPreferences(userId);
+    // Get user's preferences and taste profile in parallel
+    const [preferences, tasteProfile] = await Promise.all([
+      db.getUserPreferences(userId),
+      db.getUserTasteProfile(userId),
+    ]);
+    const watchedIds = getWatchedTmdbIds(tasteProfile);
     const userPlatformIds = preferences.platforms.length > 0
       ? preferences.platforms
       : []; // empty = show all
@@ -83,27 +88,34 @@ export async function GET(request: NextRequest) {
       overview: string;
       release_date?: string;
       first_air_date?: string;
+      genre_ids?: number[];
     }
 
-    const allMovies = ((moviesData as { results?: TMDBResult[] }).results || []).map((item: TMDBResult) => ({
-      tmdb_id: item.id,
-      title: item.title || item.name || '',
-      poster_path: item.poster_path,
-      vote_average: item.vote_average,
-      overview: item.overview,
-      media_type: 'movie' as const,
-      release_date: item.release_date,
-    }));
+    const allMovies = ((moviesData as { results?: TMDBResult[] }).results || [])
+      .filter((item: TMDBResult) => !watchedIds.has(item.id))
+      .map((item: TMDBResult) => ({
+        tmdb_id: item.id,
+        title: item.title || item.name || '',
+        poster_path: item.poster_path,
+        vote_average: item.vote_average,
+        overview: item.overview,
+        media_type: 'movie' as const,
+        release_date: item.release_date,
+        genre_ids: item.genre_ids || [],
+      }));
 
-    const allTvShows = ((tvData as { results?: TMDBResult[] }).results || []).map((item: TMDBResult) => ({
-      tmdb_id: item.id,
-      title: item.name || item.title || '',
-      poster_path: item.poster_path,
-      vote_average: item.vote_average,
-      overview: item.overview,
-      media_type: 'tv' as const,
-      release_date: item.first_air_date,
-    }));
+    const allTvShows = ((tvData as { results?: TMDBResult[] }).results || [])
+      .filter((item: TMDBResult) => !watchedIds.has(item.id))
+      .map((item: TMDBResult) => ({
+        tmdb_id: item.id,
+        title: item.name || item.title || '',
+        poster_path: item.poster_path,
+        vote_average: item.vote_average,
+        overview: item.overview,
+        media_type: 'tv' as const,
+        release_date: item.first_air_date,
+        genre_ids: item.genre_ids || [],
+      }));
 
     // Fetch providers for all items
     const allItems = [...allMovies, ...allTvShows];
@@ -156,12 +168,25 @@ export async function GET(request: NextRequest) {
     }
 
     // Only keep items that have matching providers (when filters are active)
-    const movies = hasFilters
+    // Then sort by affinity (user's favorite genres first)
+    const movies = (hasFilters
       ? allMovies.filter(m => matchingIds.has(m.tmdb_id))
-      : allMovies;
-    const tvShows = hasFilters
+      : allMovies
+    ).sort((a, b) => {
+      const scoreA = computeAffinityScore(a.genre_ids, tasteProfile);
+      const scoreB = computeAffinityScore(b.genre_ids, tasteProfile);
+      if (scoreB !== scoreA) return scoreB - scoreA;
+      return b.vote_average - a.vote_average;
+    });
+    const tvShows = (hasFilters
       ? allTvShows.filter(m => matchingIds.has(m.tmdb_id))
-      : allTvShows;
+      : allTvShows
+    ).sort((a, b) => {
+      const scoreA = computeAffinityScore(a.genre_ids, tasteProfile);
+      const scoreB = computeAffinityScore(b.genre_ids, tasteProfile);
+      if (scoreB !== scoreA) return scoreB - scoreA;
+      return b.vote_average - a.vote_average;
+    });
 
     // For items without filters, populate providersMap with unfiltered data
     if (!hasFilters) {

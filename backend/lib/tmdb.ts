@@ -543,6 +543,7 @@ class TMDBService {
             poster_path: item.poster_path,
             vote_average: item.vote_average || 0,
             media_type: (isMovie ? 'movie' : 'tv') as 'movie' | 'tv',
+            genre_ids: item.genre_ids || [],
           };
         });
     } catch {

@@ -147,16 +147,30 @@ If the user says "comédie romantique moderne" or "modern romantic comedy", you 
       }
 
       const highlyRated = userContext.ratedMovies?.filter((m) => m.rating >= 4);
-      const dislikedMovies = userContext.ratedMovies?.filter((m) => m.rating <= 2);
+      const neutralRated = userContext.ratedMovies?.filter((m) => m.rating === 3);
+      const dislikedMovies = userContext.ratedMovies?.filter((m) => m.rating >= 1 && m.rating <= 2);
+      const watchedNoRating = userContext.ratedMovies?.filter((m) => m.rating === 0);
 
       if (highlyRated && highlyRated.length > 0) {
         profileLines.push(
-          `- Recently enjoyed (rated 4-5 stars): [${highlyRated.map((m) => m.title).join(', ')}]`
+          `- LOVED (rated 4-5 stars): [${highlyRated.map((m) => m.title).join(', ')}]`
+        );
+      }
+      if (neutralRated && neutralRated.length > 0) {
+        profileLines.push(
+          `- Found OK but not great (rated 3 stars): [${neutralRated.map((m) => m.title).join(', ')}]`
         );
       }
       if (dislikedMovies && dislikedMovies.length > 0) {
         profileLines.push(
-          `- Recently disliked (rated 1-2 stars): [${dislikedMovies.map((m) => m.title).join(', ')}]`
+          `- DISLIKED (rated 1-2 stars): [${dislikedMovies.map((m) => m.title).join(', ')}]`
+        );
+      }
+      // All watched titles (any rating) to avoid re-recommending
+      const allWatched = userContext.ratedMovies?.filter((m) => m.title);
+      if (allWatched && allWatched.length > 0) {
+        profileLines.push(
+          `- Already watched (DO NOT recommend these): [${allWatched.map((m) => m.title).join(', ')}]`
         );
       }
       if (userContext.recentSearches && userContext.recentSearches.length > 0) {
@@ -173,9 +187,12 @@ ${profileLines.join('\n')}
 
 Use this profile to:
 1. PRIORITIZE recommendations matching favorite genres and decades
-2. AVOID genres the user dislikes (unless specifically requested)
-3. Find movies SIMILAR to ones they rated highly
-4. DIVERSIFY beyond recent searches to help discovery
+2. STRICTLY AVOID genres the user dislikes (unless specifically requested)
+3. Find movies SIMILAR to ones they LOVED (4-5 stars) — same directors, themes, style
+4. NEVER recommend movies similar to ones they DISLIKED (1-2 stars) — avoid similar genres/directors/themes
+5. Movies rated 3 stars indicate lukewarm interest — don't prioritize that style
+6. NEVER recommend any title from the "Already watched" list
+7. DIVERSIFY beyond recent searches to help discovery
 `;
       }
     }

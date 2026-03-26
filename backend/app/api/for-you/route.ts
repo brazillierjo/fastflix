@@ -9,6 +9,7 @@ import { tmdb } from '@/lib/tmdb';
 import { db } from '@/lib/db';
 import { applyTierRateLimit } from '@/lib/api-helpers';
 import type { MovieResult, StreamingProvider } from '@/lib/types';
+import { computeAffinityScore, getWatchedTmdbIds } from '@/lib/affinity';
 
 /**
  * TMDB genre ID mapping - Movies
@@ -80,11 +81,16 @@ export async function GET(request: NextRequest) {
       db.getUserPreferences(userId),
     ]);
 
-    // Build set of watchlist TMDB IDs to exclude
+    // Build set of IDs to exclude: watchlist + already watched/rated
     const watchlistTmdbIds = new Set(watchlist.map((item) => item.tmdb_id));
+    const watchedTmdbIds = getWatchedTmdbIds(tasteProfile);
+    const excludeIds = new Set([...watchlistTmdbIds, ...watchedTmdbIds]);
 
-    // Get top 3 favorite genres from taste profile
-    const favoriteGenres = tasteProfile.favorite_genres.slice(0, 3);
+    // Get top 5 favorite genres (was 3, more variety)
+    const favoriteGenres = tasteProfile.favorite_genres.slice(0, 5);
+
+    // Build disliked genre IDs to filter out
+    const dislikedGenreNames = new Set(tasteProfile.disliked_genres.map(g => g.toLowerCase()));
 
     // Map genre names to TMDB genre IDs (different for movies vs TV!)
     const movieGenreIds = favoriteGenres
@@ -119,10 +125,15 @@ export async function GET(request: NextRequest) {
       for (const item of items) {
         const id = item.id;
 
-        // Skip if already in watchlist or already seen
-        if (watchlistTmdbIds.has(id) || seenIds.has(id)) {
+        // Skip if already watched, in watchlist, or already processed
+        if (excludeIds.has(id) || seenIds.has(id)) {
           continue;
         }
+
+        // Skip items that are primarily in disliked genres
+        const itemGenreIds = item.genre_ids || [];
+        const affinityScore = computeAffinityScore(itemGenreIds, tasteProfile);
+        if (affinityScore < -2) continue; // strongly disliked
 
         seenIds.add(id);
 
@@ -151,8 +162,13 @@ export async function GET(request: NextRequest) {
     processResults(movies, 'movie');
     processResults(tvShows, 'tv');
 
-    // Sort by vote_average descending
-    allResults.sort((a, b) => b.vote_average - a.vote_average);
+    // Sort by affinity score first, then vote_average as tiebreaker
+    allResults.sort((a, b) => {
+      const scoreA = computeAffinityScore(a.genre_ids || [], tasteProfile);
+      const scoreB = computeAffinityScore(b.genre_ids || [], tasteProfile);
+      if (scoreB !== scoreA) return scoreB - scoreA;
+      return b.vote_average - a.vote_average;
+    });
 
     // Take top 20
     const top20 = allResults.slice(0, 20);
