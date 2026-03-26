@@ -334,16 +334,21 @@
     "signInHint": "Save movies and TV shows to watch later. Your watchlist syncs across all your devices.",
     "share": "Share Watchlist",
     "shareTitle": "My FastFlix Watchlist",
-    "shareFooter": "Discover what to watch with FastFlix!"
+    "shareFooter": "Discover what to watch with FastFlix!",
+    "sectionTitle": "To Watch",
+    "emptyHome": "Add films to your list from any movie page"
   },
   "movieDetail": {
+    "watchedButton": "Mark as Watched",
+    "shareButton": "Share",
     "synopsis": "Synopsis",
     "cast": "Cast",
     "similar": "You might also like",
     "openTMDB": "View on TMDB",
-    "share": "Share",
-    "watchedButton": "Mark as Watched",
-    "info": "Info"
+    "rateThis": "What's your rating?",
+    "ratingSaved": "Rating saved!",
+    "markWatched": "I've watched this",
+    "watchedConfirm": "Watched"
   },
   "common": {
     "cancel": "Cancel",
@@ -425,7 +430,8 @@
     "quotaRemaining": "{{count}} searches remaining this week",
     "quotaUnlimited": "Unlimited searches",
     "upgradeForMore": "Upgrade for unlimited searches",
-    "recommendedForYou": "Recommended for you"
+    "recommendedForYou": "Recommended for you",
+    "searchCTA": "Describe what you want to watch"
   },
   "authGate": {
     "title": "Sign in to continue",
@@ -439,14 +445,6 @@
     "it": "Italiano",
     "es": "Español",
     "de": "Deutsch"
-  },
-  "movieDetail": {
-    "watchedButton": "Mark as Watched",
-    "shareButton": "Share",
-    "synopsis": "Synopsis",
-    "cast": "Cast",
-    "similar": "You might also like",
-    "openTMDB": "View on TMDB"
   },
   "setup": {
     "platformsTitle": "What do you watch on?",
@@ -491,5 +489,9 @@
     "feedbackBody": "Share your feedback or suggestions:",
     "errorTitle": "Cannot Open Mail",
     "errorMessage": "Please send an email to j.brazillier@gmail.com"
+  },
+  "ratings": {
+    "sectionTitle": "Already Watched",
+    "emptyHome": "Mark films as watched to track what you've seen"
   }
 }

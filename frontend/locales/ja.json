@@ -319,10 +319,12 @@
     "share": "リストを共有",
     "shareTitle": "私のFastFlixウォッチリスト",
     "shareFooter": "FastFlixで何を見るか見つけよう！",
+    "sectionTitle": "観たいリスト",
     "toWatch": "未視聴",
     "watched": "視聴済み",
     "markWatched": "視聴済みにする",
-    "markUnwatched": "未視聴にする"
+    "markUnwatched": "未視聴にする",
+    "emptyHome": "映画ページからリストに追加できます"
   },
   "common": {
     "cancel": "キャンセル",
@@ -392,7 +394,8 @@
     "quotaRemaining": "今週の残り検索回数: {{count}}",
     "quotaUnlimited": "無制限検索",
     "upgradeForMore": "無制限検索にアップグレード",
-    "recommendedForYou": "あなたへのおすすめ"
+    "recommendedForYou": "あなたへのおすすめ",
+    "searchCTA": "観たいものを説明してください"
   },
   "authGate": {
     "title": "続けるにはサインイン",
@@ -433,7 +436,11 @@
     "similar": "こちらもおすすめ",
     "openTMDB": "TMDBで見る",
     "shareButton": "共有",
-    "watchedButton": "視聴済みにする"
+    "watchedButton": "視聴済みにする",
+    "rateThis": "あなたの評価は？",
+    "ratingSaved": "評価を保存しました！",
+    "markWatched": "視聴済み",
+    "watchedConfirm": "視聴済み"
   },
   "loading": {
     "analyzing": "リクエストを分析中...",
@@ -458,5 +465,9 @@
     "feedbackBody": "ご意見やご提案をお聞かせください：",
     "errorTitle": "メールを開けません",
     "errorMessage": "j.brazillier@gmail.com にメールを送信してください"
+  },
+  "ratings": {
+    "sectionTitle": "視聴済み",
+    "emptyHome": "映画を視聴済みにして履歴を残しましょう"
   }
 }

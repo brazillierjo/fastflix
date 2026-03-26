@@ -331,10 +331,12 @@
     "share": "Partager ma liste",
     "shareTitle": "Ma liste FastFlix",
     "shareFooter": "Trouvez quoi regarder avec FastFlix !",
+    "sectionTitle": "À voir",
     "toWatch": "À voir",
     "watched": "Vus",
     "markWatched": "Marquer comme vu",
-    "markUnwatched": "Marquer comme non vu"
+    "markUnwatched": "Marquer comme non vu",
+    "emptyHome": "Ajoutez des films depuis n'importe quelle fiche"
   },
   "common": {
     "cancel": "Annuler",
@@ -416,7 +418,8 @@
     "quotaRemaining": "{{count}} recherches restantes cette semaine",
     "quotaUnlimited": "Recherches illimitées",
     "upgradeForMore": "Passez en Pro pour des recherches illimitées",
-    "recommendedForYou": "Recommandé pour vous"
+    "recommendedForYou": "Recommandé pour vous",
+    "searchCTA": "Décrivez ce que vous voulez voir"
   },
   "authGate": {
     "title": "Connectez-vous pour continuer",
@@ -481,6 +484,14 @@
     "synopsis": "Synopsis",
     "cast": "Casting",
     "similar": "Vous aimerez aussi",
-    "openTMDB": "Voir sur TMDB"
+    "openTMDB": "Voir sur TMDB",
+    "rateThis": "Votre note ?",
+    "ratingSaved": "Note enregistrée !",
+    "markWatched": "J'ai vu",
+    "watchedConfirm": "Vu"
+  },
+  "ratings": {
+    "sectionTitle": "Déjà vus",
+    "emptyHome": "Marquez les films comme vus pour suivre votre historique"
   }
 }

@@ -319,10 +319,12 @@
     "share": "Merkliste teilen",
     "shareTitle": "Meine FastFlix Merkliste",
     "shareFooter": "Finde heraus, was du schauen sollst mit FastFlix!",
+    "sectionTitle": "Noch ansehen",
     "toWatch": "Noch ansehen",
     "watched": "Gesehen",
     "markWatched": "Als gesehen markieren",
-    "markUnwatched": "Als nicht gesehen markieren"
+    "markUnwatched": "Als nicht gesehen markieren",
+    "emptyHome": "Fügen Sie Filme von jeder Filmseite hinzu"
   },
   "common": {
     "cancel": "Abbrechen",
@@ -392,7 +394,8 @@
     "quotaRemaining": "{{count}} Suchen diese Woche verbleibend",
     "quotaUnlimited": "Unbegrenzte Suchen",
     "upgradeForMore": "Upgrade fürunbegrenzte Suchen",
-    "recommendedForYou": "Empfohlen fürdich"
+    "recommendedForYou": "Empfohlen fürdich",
+    "searchCTA": "Beschreiben Sie, was Sie sehen möchten"
   },
   "authGate": {
     "title": "Melde dich an, um fortzufahren",
@@ -433,7 +436,11 @@
     "similar": "Das konnte dir auch gefallen",
     "openTMDB": "Auf TMDB ansehen",
     "shareButton": "Teilen",
-    "watchedButton": "Als gesehen markieren"
+    "watchedButton": "Als gesehen markieren",
+    "rateThis": "Ihre Bewertung?",
+    "ratingSaved": "Bewertung gespeichert!",
+    "markWatched": "Gesehen",
+    "watchedConfirm": "Gesehen"
   },
   "loading": {
     "analyzing": "Analysiere deine Anfrage...",
@@ -458,5 +465,9 @@
     "feedbackBody": "Teilen Sie Ihr Feedback oder Ihre Vorschläge:",
     "errorTitle": "Mail kann nicht geöffnet werden",
     "errorMessage": "Bitte senden Sie eine E-Mail an j.brazillier@gmail.com"
+  },
+  "ratings": {
+    "sectionTitle": "Bereits gesehen",
+    "emptyHome": "Markieren Sie Filme als gesehen"
   }
 }

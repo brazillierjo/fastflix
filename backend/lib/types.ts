@@ -316,6 +316,7 @@ export interface RatedMovie {
   tmdb_id: number;
   rating: number;
   title: string;
+  media_type?: 'movie' | 'tv';
 }
 
 export interface UserTasteProfile {

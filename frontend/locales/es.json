@@ -319,10 +319,12 @@
     "share": "Compartir mi lista",
     "shareTitle": "Mi lista FastFlix",
     "shareFooter": "Descubre que ver con FastFlix!",
+    "sectionTitle": "Por ver",
     "toWatch": "Por ver",
     "watched": "Vistos",
     "markWatched": "Marcar como vista",
-    "markUnwatched": "Marcar como no vista"
+    "markUnwatched": "Marcar como no vista",
+    "emptyHome": "Añade películas desde cualquier ficha"
   },
   "common": {
     "cancel": "Cancelar",
@@ -392,7 +394,8 @@
     "quotaRemaining": "{{count}} busquedas restantes esta semana",
     "quotaUnlimited": "Busquedas ilimitadas",
     "upgradeForMore": "Mejora para busquedas ilimitadas",
-    "recommendedForYou": "Recomendado para ti"
+    "recommendedForYou": "Recomendado para ti",
+    "searchCTA": "Describe lo que quieres ver"
   },
   "authGate": {
     "title": "Inicia sesion para continuar",
@@ -433,7 +436,11 @@
     "similar": "También te puede gustar",
     "openTMDB": "Ver en TMDB",
     "shareButton": "Compartir",
-    "watchedButton": "Marcar como vista"
+    "watchedButton": "Marcar como vista",
+    "rateThis": "¿Tu puntuación?",
+    "ratingSaved": "¡Puntuación guardada!",
+    "markWatched": "Ya lo vi",
+    "watchedConfirm": "Visto"
   },
   "loading": {
     "analyzing": "Analizando tu solicitud...",
@@ -458,5 +465,9 @@
     "feedbackBody": "Comparte tus comentarios o sugerencias:",
     "errorTitle": "No se puede abrir Mail",
     "errorMessage": "Por favor envía un email a j.brazillier@gmail.com"
+  },
+  "ratings": {
+    "sectionTitle": "Ya vistos",
+    "emptyHome": "Marca películas como vistas para llevar un registro"
   }
 }

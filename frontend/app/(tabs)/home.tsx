@@ -1,7 +1,9 @@
 import { Ionicons } from '@expo/vector-icons';
 import FiltersBottomSheet from '@/components/FiltersBottomSheet';
 import ForYouSection from '@/components/ForYouSection';
+import MyRatingsSection from '@/components/MyRatingsSection';
 import NewReleasesSection from '@/components/NewReleasesSection';
+import WatchlistSection from '@/components/WatchlistSection';
 import SubscriptionModal from '@/components/SubscriptionModal';
 import TrialBanner from '@/components/TrialBanner';
 import TrialEndingModal from '@/components/TrialEndingModal';
@@ -315,46 +317,47 @@ export default function HomeScreen() {
           </MotiView>
         )}
 
-        {/* Quick Search Bar + Filters */}
+        {/* AI Search CTA */}
         <MotiView
           from={{ opacity: 0, translateY: 10 }}
           animate={{ opacity: 1, translateY: 0 }}
           transition={{ delay: 100, type: 'timing', duration: 500 }}
           className='mt-6 px-6'
         >
-          <View
-            style={[getSquircle(16), getCardShadow(isDark)]}
-            className='flex-row items-center border border-light-border bg-light-surface dark:border-dark-border dark:bg-dark-surface'
-          >
+          <View className='flex-row items-center gap-2'>
             <TouchableOpacity
               onPress={() => router.push('/search' as never)}
-              activeOpacity={0.7}
-              className='flex-1 flex-row items-center gap-3 px-4 py-4'
+              activeOpacity={0.8}
+              style={[
+                getSquircle(16),
+                {
+                  shadowColor: '#E50914',
+                  shadowOffset: { width: 0, height: 4 },
+                  shadowOpacity: isDark ? 0.4 : 0.2,
+                  shadowRadius: 12,
+                  elevation: 6,
+                },
+              ]}
+              className='flex-1 flex-row items-center justify-center gap-2.5 bg-netflix-500 px-5 py-4'
             >
-              <Ionicons
-                name='search'
-                size={20}
-                color={isDark ? '#a3a3a3' : '#737373'}
-              />
-              <Text className='flex-1 text-base text-light-muted dark:text-dark-muted'>
-                {t('home.searchPlaceholder')}
+              <Ionicons name='sparkles' size={18} color='#fff' />
+              <Text className='text-base font-semibold text-white'>
+                {t('home.searchCTA')}
               </Text>
             </TouchableOpacity>
             {isAuthenticated && (
-              <>
-                <View className='h-6 w-px bg-light-border dark:bg-dark-border' />
-                <TouchableOpacity
-                  onPress={() => setShowFiltersModal(true)}
-                  activeOpacity={0.7}
-                  className='items-center justify-center px-4 py-4'
-                >
-                  <Ionicons
-                    name='options-outline'
-                    size={20}
-                    color={isDark ? '#a3a3a3' : '#737373'}
-                  />
-                </TouchableOpacity>
-              </>
+              <TouchableOpacity
+                onPress={() => setShowFiltersModal(true)}
+                activeOpacity={0.7}
+                style={getSquircle(16)}
+                className='items-center justify-center border border-light-border bg-light-surface p-4 dark:border-dark-border dark:bg-dark-surface'
+              >
+                <Ionicons
+                  name='options-outline'
+                  size={20}
+                  color={isDark ? '#a3a3a3' : '#737373'}
+                />
+              </TouchableOpacity>
             )}
           </View>
         </MotiView>
@@ -549,6 +552,12 @@ export default function HomeScreen() {
 
         {/* For You - Personalized Recommendations */}
         <ForYouSection delay={350} />
+
+        {/* My Watchlist */}
+        <WatchlistSection delay={375} />
+
+        {/* My Ratings */}
+        <MyRatingsSection delay={400} />
 
         {/* Recent Searches - only for authenticated users */}
         {isAuthenticated && recentSearches.length > 0 && (

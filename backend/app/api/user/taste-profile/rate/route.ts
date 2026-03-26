@@ -11,8 +11,9 @@ import { z } from 'zod';
 // Validation schema for rating a movie
 const rateMovieSchema = z.object({
   tmdb_id: z.number().int().positive(),
-  rating: z.number().int().min(1).max(5),
+  rating: z.number().int().min(0).max(5), // 0 = watched but not rated
   title: z.string().min(1).max(500),
+  media_type: z.enum(['movie', 'tv']).optional(),
 });
 
 /**
@@ -37,7 +38,8 @@ export async function POST(request: NextRequest) {
       authResult.userId,
       validatedData.tmdb_id,
       validatedData.rating,
-      validatedData.title
+      validatedData.title,
+      validatedData.media_type
     );
 
     return NextResponse.json({

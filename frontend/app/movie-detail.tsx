@@ -25,7 +25,9 @@ import Animated, {
 } from 'react-native-reanimated';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useLanguage } from '@/contexts/LanguageContext';
+import { useAuth } from '@/contexts/AuthContext';
 import { backendAPIService } from '@/services/backend-api.service';
+import { useMovieRating, useRateMovie } from '@/hooks/useRating';
 import { Skeleton } from '@/components/Skeleton';
 import { cn } from '@/utils/cn';
 import {
@@ -34,6 +36,7 @@ import {
   getSmallBorderRadius,
 } from '@/utils/designHelpers';
 import AddToWatchlistButton from '@/components/AddToWatchlistButton';
+import * as Haptics from 'expo-haptics';
 
 const HERO_HEIGHT = 300;
 const { width: SCREEN_WIDTH } = Dimensions.get('window');
@@ -116,6 +119,58 @@ export default function MovieDetailScreen() {
     try { return params.detailedInfoJson ? JSON.parse(params.detailedInfoJson) : {}; }
     catch { return {}; }
   });
+
+  const { isAuthenticated } = useAuth();
+
+  // Watched + Rating system (2-step: mark watched → optional stars)
+  const { rating: savedRating, isWatched: savedIsWatched } = useMovieRating(tmdbId);
+  const { rateMovie, isRating } = useRateMovie();
+  const [localRating, setLocalRating] = useState(0);
+  const [isWatched, setIsWatched] = useState(false);
+  const [ratingConfirmed, setRatingConfirmed] = useState(false);
+
+  // Sync saved state
+  useEffect(() => {
+    if (savedIsWatched) {
+      setIsWatched(true);
+      if (savedRating > 0) setLocalRating(savedRating);
+    }
+  }, [savedIsWatched, savedRating]);
+
+  const handleMarkWatched = () => {
+    if (isRating || !isAuthenticated) return;
+    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
+    setIsWatched(true);
+    // Save as watched (rating 0 = no rating yet)
+    rateMovie(
+      { tmdb_id: tmdbId, rating: 0, title, media_type: mediaType },
+      {
+        onSuccess: () => {
+          Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
+        },
+      }
+    );
+  };
+
+  const handleRate = (stars: number) => {
+    if (isRating || !isAuthenticated) return;
+    const newRating = stars === localRating ? 0 : stars;
+    setLocalRating(newRating);
+    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
+
+    rateMovie(
+      { tmdb_id: tmdbId, rating: newRating, title, media_type: mediaType },
+      {
+        onSuccess: () => {
+          if (newRating > 0) {
+            setRatingConfirmed(true);
+            Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
+            setTimeout(() => setRatingConfirmed(false), 2000);
+          }
+        },
+      }
+    );
+  };
 
   const bgColor = isDark ? '#000000' : '#F2F2F7';
 
@@ -507,17 +562,6 @@ export default function MovieDetailScreen() {
                 />
               </View>
 
-              {/* Mark as Watched button */}
-              <TouchableOpacity
-                className='flex-row items-center justify-center rounded-xl border-2 border-light-border bg-light-surface px-4 py-3 dark:border-dark-border dark:bg-dark-surface'
-              >
-                <Ionicons
-                  name='checkmark-circle-outline'
-                  size={20}
-                  color={isDark ? '#a3a3a3' : '#737373'}
-                />
-              </TouchableOpacity>
-
               {/* Share button */}
               <TouchableOpacity
                 onPress={handleShare}
@@ -531,6 +575,87 @@ export default function MovieDetailScreen() {
               </TouchableOpacity>
             </View>
           </MotiView>
+
+          {/* Watched + Rating Section (2-step flow) */}
+          {isAuthenticated && (
+            <MotiView
+              from={{ opacity: 0, translateY: 15 }}
+              animate={{ opacity: 1, translateY: 0 }}
+              transition={{ type: 'timing', duration: 400, delay: 120 }}
+              className='mb-6'
+            >
+              {!isWatched ? (
+                /* Step 1: "J'ai vu" button */
+                <TouchableOpacity
+                  onPress={handleMarkWatched}
+                  disabled={isRating}
+                  activeOpacity={0.7}
+                  style={[getSquircle(14), getCardShadow(isDark)]}
+                  className='flex-row items-center justify-center gap-2.5 border border-light-border bg-light-card py-4 dark:border-dark-border dark:bg-dark-card'
+                >
+                  <Ionicons name='eye-outline' size={20} color={isDark ? '#a3a3a3' : '#737373'} />
+                  <Text className='text-base font-medium text-light-text dark:text-dark-text'>
+                    {t('movieDetail.markWatched')}
+                  </Text>
+                </TouchableOpacity>
+              ) : (
+                /* Step 2: Watched confirmed + optional star rating */
+                <MotiView
+                  from={{ opacity: 0, scale: 0.95 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  transition={{ type: 'timing', duration: 300 }}
+                >
+                  <View
+                    style={[getSquircle(14), getCardShadow(isDark)]}
+                    className='border border-light-border bg-light-card px-4 py-4 dark:border-dark-border dark:bg-dark-card'
+                  >
+                    {/* Watched badge */}
+                    <View className='mb-3 flex-row items-center justify-center gap-2'>
+                      <View className='rounded-full bg-green-500/15 p-1'>
+                        <Ionicons name='checkmark-circle' size={16} color='#22c55e' />
+                      </View>
+                      <Text className='text-sm font-medium text-green-500'>
+                        {t('movieDetail.watchedConfirm')}
+                      </Text>
+                    </View>
+
+                    {/* Star rating */}
+                    <Text className='mb-2 text-center text-sm text-light-textSecondary dark:text-dark-textSecondary'>
+                      {t('movieDetail.rateThis')}
+                    </Text>
+                    <View className='flex-row items-center justify-center gap-3'>
+                      {[1, 2, 3, 4, 5].map((star) => (
+                        <TouchableOpacity
+                          key={star}
+                          onPress={() => handleRate(star)}
+                          disabled={isRating}
+                          hitSlop={{ top: 10, bottom: 10, left: 6, right: 6 }}
+                          activeOpacity={0.7}
+                        >
+                          <Ionicons
+                            name={star <= localRating ? 'star' : 'star-outline'}
+                            size={32}
+                            color={star <= localRating ? '#E50914' : isDark ? '#404040' : '#d4d4d4'}
+                          />
+                        </TouchableOpacity>
+                      ))}
+                    </View>
+                    {ratingConfirmed && (
+                      <MotiView
+                        from={{ opacity: 0, translateY: 5 }}
+                        animate={{ opacity: 1, translateY: 0 }}
+                        transition={{ type: 'timing', duration: 200 }}
+                      >
+                        <Text className='mt-2 text-center text-xs font-medium text-green-500'>
+                          {t('movieDetail.ratingSaved')}
+                        </Text>
+                      </MotiView>
+                    )}
+                  </View>
+                </MotiView>
+              )}
+            </MotiView>
+          )}
 
           {/* Synopsis Section */}
           {loadingDetails && !overview ? (

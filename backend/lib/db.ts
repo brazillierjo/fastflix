@@ -1007,7 +1007,8 @@ class DatabaseService {
     userId: string,
     tmdbId: number,
     rating: number,
-    title: string
+    title: string,
+    mediaType?: 'movie' | 'tv'
   ): Promise<UserTasteProfile> {
     this.initialize();
 
@@ -1018,12 +1019,14 @@ class DatabaseService {
       // Find existing rating for this movie
       const existingIndex = ratedMovies.findIndex((m) => m.tmdb_id === tmdbId);
 
+      const entry = { tmdb_id: tmdbId, rating, title, ...(mediaType ? { media_type: mediaType } : {}) };
+
       if (existingIndex >= 0) {
         // Update existing rating
-        ratedMovies[existingIndex] = { tmdb_id: tmdbId, rating, title };
+        ratedMovies[existingIndex] = entry;
       } else {
         // Add new rating
-        ratedMovies.push({ tmdb_id: tmdbId, rating, title });
+        ratedMovies.push(entry);
       }
 
       return this.updateTasteProfile(userId, { rated_movies: ratedMovies });

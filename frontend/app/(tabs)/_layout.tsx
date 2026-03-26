@@ -49,7 +49,7 @@ function CustomTabBar({ state, descriptors, navigation }: BottomTabBarProps) {
           >
             {state.routes
               .filter(route =>
-                ['home', 'search', 'watchlist', 'profile'].includes(route.name)
+                ['home', 'search', 'profile'].includes(route.name)
               )
               .map(route => {
                 const { options } = descriptors[route.key];
@@ -149,16 +149,7 @@ export default function TabsLayout() {
       />
       <Tabs.Screen
         name='watchlist'
-        options={{
-          title: t('tabs.watchlist'),
-          tabBarIcon: ({ color, focused }) => (
-            <Ionicons
-              name={focused ? 'bookmark' : 'bookmark-outline'}
-              size={24}
-              color={color}
-            />
-          ),
-        }}
+        options={{ href: null }}
       />
       <Tabs.Screen
         name='profile'

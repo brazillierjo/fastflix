@@ -668,6 +668,43 @@ class BackendAPIService {
       body: JSON.stringify(data),
     });
   }
+
+  // ==========================================================================
+  // Taste Profile / Rating Methods
+  // ==========================================================================
+
+  /**
+   * Get user's taste profile (favorite genres, disliked genres, rated movies)
+   */
+  async getTasteProfile(): Promise<
+    APIResponse<{
+      profile: {
+        favorite_genres: string[];
+        disliked_genres: string[];
+        favorite_decades: string[];
+        rated_movies: Array<{ tmdb_id: number; rating: number; title: string }>;
+      };
+    }>
+  > {
+    return await this.makeRequest('/api/user/taste-profile', {
+      method: 'GET',
+    });
+  }
+
+  /**
+   * Rate a movie (0-5, where 0 = watched but not rated) and add to taste profile
+   */
+  async rateMovie(params: {
+    tmdb_id: number;
+    rating: number;
+    title: string;
+    media_type?: 'movie' | 'tv';
+  }): Promise<APIResponse<{ profile: unknown }>> {
+    return await this.makeRequest('/api/user/taste-profile/rate', {
+      method: 'POST',
+      body: JSON.stringify(params),
+    });
+  }
 }
 
 // Export singleton instance
