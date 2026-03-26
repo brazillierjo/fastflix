@@ -361,21 +361,20 @@ class DatabaseService {
    * Uses RevenueCat API as source of truth, falls back to DB
    */
   async hasAccess(userId: string): Promise<boolean> {
-    // Primary: Check RevenueCat API (source of truth)
+    // RevenueCat is the single source of truth for subscription status
     try {
       const { checkPremiumAccess } = await import('./revenuecat');
       const { isPremium } = await checkPremiumAccess(userId);
-      if (isPremium) return true;
+      return isPremium;
     } catch (error) {
-      console.warn('⚠️ RevenueCat API check failed, falling back to DB:', error);
+      console.error('❌ RevenueCat API check failed:', error);
+      return false;
     }
-
-    // Fallback: Check local database
-    return this.hasActiveSubscriptionByUserId(userId);
   }
 
   /**
    * Get subscription details for a user
+   * Uses RevenueCat as source of truth, DB as supplementary info
    */
   async getSubscriptionDetails(userId: string): Promise<{
     isActive: boolean;
@@ -387,6 +386,19 @@ class DatabaseService {
   }> {
     this.initialize();
 
+    // RevenueCat is the source of truth for active status
+    let rcActive = false;
+    let rcExpiresAt: string | null = null;
+    try {
+      const { checkPremiumAccess } = await import('./revenuecat');
+      const rc = await checkPremiumAccess(userId);
+      rcActive = rc.isPremium;
+      rcExpiresAt = rc.expiresAt;
+    } catch {
+      // RevenueCat unavailable
+    }
+
+    // Get supplementary details from DB (product, dates, etc.)
     try {
       const result = await this.client!.execute({
         sql: `SELECT status, product_id, expires_at, created_at
@@ -399,46 +411,30 @@ class DatabaseService {
 
       if (result.rows.length === 0) {
         return {
-          isActive: false,
-          status: null,
+          isActive: rcActive,
+          status: rcActive ? 'active' : null,
           productId: null,
-          expiresAt: null,
+          expiresAt: rcExpiresAt,
           createdAt: null,
-          willRenew: false,
+          willRenew: rcActive,
         };
       }
 
       const row = result.rows[0];
-      const status = row.status as string;
-      const expiresAt = row.expires_at as string | null;
-
-      // Check if subscription is active (not expired)
-      let isActive = false;
-      if (status === 'active' || status === 'cancelled') {
-        if (expiresAt) {
-          const expiresAtDate = new Date(expiresAt);
-          isActive = expiresAtDate > new Date();
-        } else {
-          // No expiration date means lifetime or error
-          isActive = status === 'active';
-        }
-      }
-
-      // Will renew if status is 'active' (cancelled means won't renew)
-      const willRenew = status === 'active';
+      const dbStatus = row.status as string;
 
       return {
-        isActive,
-        status,
+        isActive: rcActive,
+        status: rcActive ? 'active' : dbStatus,
         productId: row.product_id as string | null,
-        expiresAt,
+        expiresAt: rcExpiresAt || (row.expires_at as string | null),
         createdAt: row.created_at as string | null,
-        willRenew,
+        willRenew: rcActive && dbStatus === 'active',
       };
     } catch {
       return {
-        isActive: false,
-        status: null,
+        isActive: rcActive,
+        status: rcActive ? 'active' : null,
         productId: null,
         expiresAt: null,
         createdAt: null,

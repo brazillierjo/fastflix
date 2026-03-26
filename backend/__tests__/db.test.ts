@@ -13,6 +13,13 @@ jest.mock('@libsql/client', () => ({
   createClient: jest.fn(() => mockClient),
 }));
 
+// Mock RevenueCat module for hasAccess tests
+const mockCheckPremiumAccess = jest.fn();
+jest.mock('../lib/revenuecat', () => ({
+  checkPremiumAccess: (...args: unknown[]) => mockCheckPremiumAccess(...args),
+  invalidateSubscriptionCache: jest.fn(),
+}));
+
 import { createClient } from '@libsql/client';
 import { db } from '../lib/db';
 
@@ -146,7 +153,7 @@ describe('Database Service', () => {
 
         expect(user?.email).toBe('test@example.com');
         expect(mockExecute).toHaveBeenCalledWith({
-          sql: 'SELECT * FROM users WHERE email = ?',
+          sql: 'SELECT * FROM users WHERE email = ? AND deleted_at IS NULL',
           args: ['test@example.com'],
         });
       });
@@ -268,20 +275,25 @@ describe('Database Service', () => {
   });
 
   describe('hasAccess', () => {
-    it('should return true when user has subscription', async () => {
-      mockExecute.mockResolvedValueOnce({
-        rows: [{ count: 1 }],
-      });
+    it('should return true when RevenueCat says premium', async () => {
+      mockCheckPremiumAccess.mockResolvedValueOnce({ isPremium: true, expiresAt: null });
 
       const hasAccess = await db.hasAccess('user-123');
 
       expect(hasAccess).toBe(true);
+      expect(mockCheckPremiumAccess).toHaveBeenCalledWith('user-123');
     });
 
-    it('should return false when no active subscription', async () => {
-      mockExecute.mockResolvedValueOnce({
-        rows: [{ count: 0 }],
-      });
+    it('should return false when RevenueCat says not premium', async () => {
+      mockCheckPremiumAccess.mockResolvedValueOnce({ isPremium: false, expiresAt: null });
+
+      const hasAccess = await db.hasAccess('user-123');
+
+      expect(hasAccess).toBe(false);
+    });
+
+    it('should return false when RevenueCat fails', async () => {
+      mockCheckPremiumAccess.mockRejectedValueOnce(new Error('API error'));
 
       const hasAccess = await db.hasAccess('user-123');
 
