@@ -148,9 +148,8 @@ export const SubscriptionProvider: React.FC<SubscriptionProviderProps> = ({
           Purchases.INTRO_ELIGIBILITY_STATUS.INTRO_ELIGIBILITY_STATUS_ELIGIBLE
       );
       setIsTrialEligible(isEligible);
-      console.log('🎁 Trial eligibility:', isEligible);
-    } catch (error) {
-      console.warn('⚠️ Failed to check trial eligibility:', error);
+    } catch {
+      // Trial eligibility check is non-critical, silently ignore
     }
   };
 
@@ -160,34 +159,14 @@ export const SubscriptionProvider: React.FC<SubscriptionProviderProps> = ({
     const TIMEOUT_MS = 30000; // 30 seconds timeout (Apple servers can be slow)
 
     try {
-      console.log('📦 Fetching offerings...');
       const offerings = await withTimeout(
         Purchases.getOfferings(),
         TIMEOUT_MS,
         'Offerings fetch timeout'
       );
 
-      // Log full offerings response for debugging
-      console.log(
-        '📦 Offerings response:',
-        JSON.stringify({
-          current: offerings.current?.identifier ?? null,
-          allKeys: Object.keys(offerings.all),
-          allCount: Object.keys(offerings.all).length,
-        })
-      );
-
       if (offerings.current) {
         setOfferings([offerings.current]);
-        console.log('✅ Offerings loaded:', offerings.current.identifier);
-        console.log(
-          '📦 Packages:',
-          offerings.current.availablePackages.map(p => ({
-            id: p.identifier,
-            productId: p.product.identifier,
-            price: p.product.priceString,
-          }))
-        );
         // Check trial eligibility in background
         const productIds = offerings.current.availablePackages.map(
           p => p.product.identifier
@@ -197,10 +176,6 @@ export const SubscriptionProvider: React.FC<SubscriptionProviderProps> = ({
       } else {
         // Log to Sentry when offerings.current is null (common issue on sandbox)
         const allOfferingKeys = Object.keys(offerings.all);
-        console.warn(
-          '⚠️ No current offering available. All offerings:',
-          allOfferingKeys
-        );
 
         Sentry.captureMessage('RevenueCat: No current offering available', {
           level: 'warning',
@@ -215,7 +190,6 @@ export const SubscriptionProvider: React.FC<SubscriptionProviderProps> = ({
         if (allOfferingKeys.length > 0) {
           const firstOffering = offerings.all[allOfferingKeys[0]];
           if (firstOffering) {
-            console.log('📦 Using fallback offering:', allOfferingKeys[0]);
             setOfferings([firstOffering]);
             const productIds = firstOffering.availablePackages.map(
               p => p.product.identifier
@@ -237,7 +211,6 @@ export const SubscriptionProvider: React.FC<SubscriptionProviderProps> = ({
       // Retry with exponential backoff
       if (retryCount < MAX_RETRIES) {
         const delay = Math.pow(2, retryCount) * 1000; // 1s, 2s, 4s
-        console.log(`🔄 Retrying offerings fetch in ${delay}ms...`);
         await new Promise(resolve => setTimeout(resolve, delay));
         return fetchOfferings(retryCount + 1);
       }
@@ -249,8 +222,6 @@ export const SubscriptionProvider: React.FC<SubscriptionProviderProps> = ({
   useEffect(() => {
     const initializeRevenueCat = async () => {
       try {
-        console.log('Initializing RevenueCat...');
-
         // Configure RevenueCat with minimal logging (only warnings and errors)
         Purchases.setLogLevel(LOG_LEVEL.WARN);
 
@@ -267,8 +238,6 @@ export const SubscriptionProvider: React.FC<SubscriptionProviderProps> = ({
         // Configure RevenueCat
         await Purchases.configure({ apiKey });
 
-        console.log('✅ RevenueCat configured successfully');
-
         // Get customer info with timeout (critical for subscription status)
         try {
           const info = await withTimeout(
@@ -280,10 +249,7 @@ export const SubscriptionProvider: React.FC<SubscriptionProviderProps> = ({
 
           const status = determineSubscriptionStatus(info);
           setSubscriptionStatus(status);
-
-          console.log('✅ RevenueCat initialized - Status:', status);
-        } catch (infoError) {
-          console.warn('⚠️ Failed to get customer info:', infoError);
+        } catch {
           // Continue without customer info - will be fetched later
           setSubscriptionStatus(SubscriptionStatus.FREE);
         }
@@ -307,16 +273,12 @@ export const SubscriptionProvider: React.FC<SubscriptionProviderProps> = ({
   // Purchase a package
   const purchasePackage = async (packageToPurchase: PurchasesPackage) => {
     try {
-      console.log('Purchasing package:', packageToPurchase.identifier);
-
       const { customerInfo } =
         await Purchases.purchasePackage(packageToPurchase);
       setCustomerInfo(customerInfo);
 
       const status = determineSubscriptionStatus(customerInfo);
       setSubscriptionStatus(status);
-
-      console.log('✅ Purchase successful - Status:', status);
 
       Alert.alert(
         t('subscription.success.title') || 'Welcome to Pro!',
@@ -331,7 +293,6 @@ export const SubscriptionProvider: React.FC<SubscriptionProviderProps> = ({
         message?: string;
       };
       if (purchaseError.userCancelled) {
-        console.log('User cancelled purchase');
         return;
       }
 
@@ -347,15 +308,11 @@ export const SubscriptionProvider: React.FC<SubscriptionProviderProps> = ({
   // Restore purchases
   const restorePurchases = async (): Promise<boolean> => {
     try {
-      console.log('Restoring purchases...');
-
       const info = await Purchases.restorePurchases();
       setCustomerInfo(info);
 
       const status = determineSubscriptionStatus(info);
       setSubscriptionStatus(status);
-
-      console.log('✅ Purchases restored - Status:', status);
 
       const hasActiveSubscription =
         status === SubscriptionStatus.ACTIVE ||
@@ -403,12 +360,6 @@ export const SubscriptionProvider: React.FC<SubscriptionProviderProps> = ({
 
           // Check subscription status
           if (response.data.subscription.isActive) {
-            console.log(
-              '✅ Backend subscription is active, status:',
-              response.data.subscription.status,
-              'willRenew:',
-              response.data.subscription.willRenew
-            );
             setHasBackendSubscription(true);
             return true;
           }
@@ -417,8 +368,8 @@ export const SubscriptionProvider: React.FC<SubscriptionProviderProps> = ({
 
       setHasBackendSubscription(false);
       return false;
-    } catch (error) {
-      console.warn('⚠️ Failed to check backend subscription:', error);
+    } catch {
+      // Backend check is non-critical, fall through to RevenueCat status
       return false;
     }
   };
@@ -426,8 +377,6 @@ export const SubscriptionProvider: React.FC<SubscriptionProviderProps> = ({
   // Link user to RevenueCat (call after authentication)
   const linkUserToRevenueCat = async (userId: string): Promise<void> => {
     try {
-      console.log('🔗 Linking user to RevenueCat:', userId);
-
       // Check backend subscription first (for admin/manual subscriptions)
       await checkBackendSubscription();
 
@@ -439,8 +388,6 @@ export const SubscriptionProvider: React.FC<SubscriptionProviderProps> = ({
 
       const status = determineSubscriptionStatus(customerInfo);
       setSubscriptionStatus(status);
-
-      console.log('✅ User linked to RevenueCat - Status:', status);
     } catch (error: unknown) {
       console.error('❌ Error linking user to RevenueCat:', error);
       // Don't throw - this is not critical, just log the error

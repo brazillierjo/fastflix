@@ -2,7 +2,7 @@ import { Ionicons } from '@expo/vector-icons';
 import { LinearGradient } from 'expo-linear-gradient';
 import { MotiView } from 'moti';
 import { useRouter } from 'expo-router';
-import React, { useRef, useState } from 'react';
+import React, { useCallback, useRef, useState } from 'react';
 import {
   ActivityIndicator,
   Image,
@@ -90,26 +90,29 @@ export default function MovieResults({
   const scrollViewRef = useRef<ScrollView>(null);
   const [refineQuery, setRefineQuery] = useState('');
 
-  const navigateToDetail = (movie: Movie) => {
-    const movieProviders = streamingProviders[movie.id] || [];
-    const movieCredits = credits[movie.id] || [];
-    const movieDetailedInfo = detailedInfo[movie.id] || {};
+  const navigateToDetail = useCallback(
+    (movie: Movie) => {
+      const movieProviders = streamingProviders[movie.id] || [];
+      const movieCredits = credits[movie.id] || [];
+      const movieDetailedInfo = detailedInfo[movie.id] || {};
 
-    router.push({
-      pathname: '/movie-detail' as never,
-      params: {
-        tmdbId: String(movie.id),
-        mediaType: movie.media_type === 'tv' ? 'tv' : 'movie',
-        title: movie.title || movie.name || '',
-        posterPath: movie.poster_path || '',
-        voteAverage: String(movie.vote_average || 0),
-        overview: movie.overview || '',
-        providersJson: JSON.stringify(movieProviders),
-        creditsJson: JSON.stringify(movieCredits),
-        detailedInfoJson: JSON.stringify(movieDetailedInfo),
-      },
-    });
-  };
+      router.push({
+        pathname: '/movie-detail' as never,
+        params: {
+          tmdbId: String(movie.id),
+          mediaType: movie.media_type === 'tv' ? 'tv' : 'movie',
+          title: movie.title || movie.name || '',
+          posterPath: movie.poster_path || '',
+          voteAverage: String(movie.vote_average || 0),
+          overview: movie.overview || '',
+          providersJson: JSON.stringify(movieProviders),
+          creditsJson: JSON.stringify(movieCredits),
+          detailedInfoJson: JSON.stringify(movieDetailedInfo),
+        },
+      });
+    },
+    [streamingProviders, credits, detailedInfo, router]
+  );
 
   const handleRefine = () => {
     if (!refineQuery.trim() || !onRefine) return;

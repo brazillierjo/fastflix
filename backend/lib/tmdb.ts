@@ -28,6 +28,8 @@ class TMDBService {
   private apiKey: string;
   private cache: Map<string, CachedData<unknown>> = new Map();
   private cacheTTL = 1000 * 60 * 60; // 1 hour cache
+  private requestCount = 0;
+  private cleanupInterval = 100; // Clean expired entries every N requests
 
   constructor() {
     this.baseUrl = process.env.TMDB_BASE_URL || 'https://api.themoviedb.org/3';
@@ -39,8 +41,19 @@ class TMDBService {
   }
 
   /**
-   * Make a request to TMDB API with caching
+   * Remove expired entries from the cache to prevent memory leaks
    */
+  private cleanExpiredCache(): void {
+    const now = Date.now();
+    const keysToDelete: string[] = [];
+    this.cache.forEach((cached, key) => {
+      if (now - cached.timestamp >= this.cacheTTL) {
+        keysToDelete.push(key);
+      }
+    });
+    keysToDelete.forEach((key) => this.cache.delete(key));
+  }
+
   /**
    * Make a request to TMDB API (also used by route handlers for discover queries)
    */
@@ -49,6 +62,12 @@ class TMDBService {
   }
 
   private async makeRequest<T>(endpoint: string, params: Record<string, string> = {}): Promise<T> {
+    // Periodically clean expired cache entries
+    this.requestCount++;
+    if (this.requestCount % this.cleanupInterval === 0) {
+      this.cleanExpiredCache();
+    }
+
     const cacheKey = `${endpoint}?${new URLSearchParams(params).toString()}`;
 
     // Check cache

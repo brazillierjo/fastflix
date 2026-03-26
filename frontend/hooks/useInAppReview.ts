@@ -54,8 +54,8 @@ async function tryRequestReview(): Promise<void> {
       await markAsPrompted();
       await StoreReview.requestReview();
     }
-  } catch (error) {
-    console.warn('Failed to request review:', error);
+  } catch {
+    // Review request is non-critical, silently ignore
   }
 }
 
@@ -103,8 +103,8 @@ export function useInAppReview() {
       if (days >= THRESHOLDS.CONSECUTIVE_DAYS) {
         await tryRequestReview();
       }
-    } catch (error) {
-      console.warn('Failed to track search for review:', error);
+    } catch {
+      // Tracking is non-critical, silently ignore
     }
   }, []);
 
@@ -125,8 +125,8 @@ export function useInAppReview() {
       if (newCount >= THRESHOLDS.WATCHLIST_ADDS) {
         await tryRequestReview();
       }
-    } catch (error) {
-      console.warn('Failed to track watchlist add for review:', error);
+    } catch {
+      // Tracking is non-critical, silently ignore
     }
   }, []);
 
@@ -141,8 +141,8 @@ export function useInAppReview() {
       if (days >= THRESHOLDS.CONSECUTIVE_DAYS) {
         await tryRequestReview();
       }
-    } catch (error) {
-      console.warn('Failed to check review on launch:', error);
+    } catch {
+      // Review check is non-critical, silently ignore
     }
   }, []);
 
