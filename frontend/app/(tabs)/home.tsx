@@ -10,6 +10,8 @@ import { useAuth } from '@/contexts/AuthContext';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { useSubscription } from '@/contexts/RevenueCatContext';
 import { useHomeData } from '@/hooks/useHomeData';
+import { useQueryClient } from '@tanstack/react-query';
+import { useFocusEffect } from 'expo-router';
 import {
   getCardShadow,
   getSquircle,
@@ -44,6 +46,8 @@ export default function HomeScreen() {
   const colorScheme = useColorScheme();
   const isDark = colorScheme === 'dark';
 
+  const queryClient = useQueryClient();
+
   const {
     dailyPick,
     trending,
@@ -53,6 +57,14 @@ export default function HomeScreen() {
     isRefetching,
     refetch,
   } = useHomeData();
+
+  // Refresh all data when home screen gains focus (back from movie-detail, etc.)
+  useFocusEffect(
+    useCallback(() => {
+      queryClient.invalidateQueries({ queryKey: ['tasteProfile'] });
+      queryClient.invalidateQueries({ queryKey: ['watchlist'] });
+    }, [queryClient])
+  );
 
   // Typewriter effect for CTA
   const ctaFullText = t('home.searchCTA');
@@ -188,8 +200,12 @@ export default function HomeScreen() {
   );
 
   const onRefresh = useCallback(() => {
+    // Refresh ALL sections: home data, taste profile, watchlist, for you
     refetch().catch(() => {});
-  }, [refetch]);
+    queryClient.invalidateQueries({ queryKey: ['tasteProfile'] });
+    queryClient.invalidateQueries({ queryKey: ['watchlist'] });
+    queryClient.invalidateQueries({ queryKey: ['forYou'] });
+  }, [refetch, queryClient]);
 
   // Show loading while checking authentication
   if (isLoading) {
