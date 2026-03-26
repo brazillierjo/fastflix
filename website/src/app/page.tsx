@@ -1,5 +1,6 @@
 'use client';
 
+import Image from 'next/image';
 import Link from 'next/link';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { Button } from '@/components/ui/button';
@@ -60,6 +61,14 @@ export default function Home() {
       <section className='relative overflow-hidden py-20 sm:py-32'>
         <div className='mx-auto max-w-7xl px-4 sm:px-6 lg:px-8'>
           <div className='text-center'>
+            <Image
+              src='/logo.png'
+              alt='FastFlix'
+              width={80}
+              height={80}
+              className='mx-auto mb-6 rounded-[18px] shadow-lg'
+            />
+
             <Badge variant='secondary' className='mb-4 px-3 py-1'>
               <Sparkles className='mr-1 h-3 w-3' />
               {t('heroBadge')}
@@ -207,6 +216,13 @@ export default function Home() {
       <section className='from-netflix to-netflix-dark bg-gradient-to-r py-20'>
         <div className='mx-auto max-w-7xl px-4 sm:px-6 lg:px-8'>
           <div className='text-center'>
+            <Image
+              src='/logo.png'
+              alt='FastFlix'
+              width={64}
+              height={64}
+              className='mx-auto mb-6 rounded-[14px] shadow-2xl'
+            />
             <h2 className='text-3xl font-bold tracking-tight text-white sm:text-4xl'>
               {t('ctaTitle')}
             </h2>
@@ -242,10 +258,14 @@ export default function Home() {
       <footer className='bg-gray-900 py-12'>
         <div className='mx-auto max-w-7xl px-4 sm:px-6 lg:px-8'>
           <div className='text-center'>
-            <div className='mb-4 flex items-center justify-center space-x-2'>
-              <div className='rounded-squircle from-netflix to-netflix-dark flex h-8 w-8 items-center justify-center bg-gradient-to-br'>
-                <span className='text-sm font-bold text-white'>FF</span>
-              </div>
+            <div className='mb-4 flex items-center justify-center space-x-3'>
+              <Image
+                src='/logo.png'
+                alt='FastFlix'
+                width={36}
+                height={36}
+                className='rounded-[8px]'
+              />
               <span className='text-xl font-bold text-white'>FastFlix</span>
             </div>
             <div className='mb-8 flex justify-center space-x-8'>

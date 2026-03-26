@@ -1,5 +1,6 @@
 'use client';
 
+import Image from 'next/image';
 import Link from 'next/link';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { Button } from '@/components/ui/button';
@@ -20,9 +21,13 @@ export function Navigation() {
         <div className='flex h-16 items-center justify-between'>
           {/* Logo */}
           <Link href='/' className='flex items-center space-x-2'>
-            <div className='flex h-8 w-8 items-center justify-center rounded-lg bg-gradient-to-br from-blue-600 to-purple-600'>
-              <span className='text-sm font-bold text-white'>FF</span>
-            </div>
+            <Image
+              src='/logo.png'
+              alt='FastFlix'
+              width={36}
+              height={36}
+              className='rounded-[8px]'
+            />
             <span className='text-xl font-bold text-gray-900'>FastFlix</span>
           </Link>
 
