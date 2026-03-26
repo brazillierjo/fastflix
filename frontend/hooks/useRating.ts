@@ -59,15 +59,22 @@ export function useTasteProfile() {
     gcTime: 1000 * 60 * 30,
   });
 
-  // Auto-backfill missing posters (once per session)
+  // Auto-backfill missing posters (once per session, retries if some still missing)
   useEffect(() => {
     if (!data || hasBackfilled.current) return;
     const missingPosters = data.rated_movies.some(m => !m.poster_path);
     if (missingPosters) {
       hasBackfilled.current = true;
       backendAPIService.backfillPosters().then((res) => {
-        if (res.success && res.data && res.data.updated > 0) {
-          queryClient.invalidateQueries({ queryKey: TASTE_PROFILE_KEY });
+        if (res.success && res.data) {
+          if (res.data.updated > 0) {
+            queryClient.invalidateQueries({ queryKey: TASTE_PROFILE_KEY });
+          }
+          // If some posters are still missing, allow retry next time data changes
+          const stillMissing = data.rated_movies.length - (res.data.total - res.data.updated);
+          if (res.data.updated < data.rated_movies.filter(m => !m.poster_path).length) {
+            hasBackfilled.current = false;
+          }
         }
       });
     }
