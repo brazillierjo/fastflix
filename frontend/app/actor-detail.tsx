@@ -65,9 +65,8 @@ interface PersonDetails {
   place_of_birth: string | null;
   profile_path: string | null;
   known_for_department: string | null;
-  combined_credits?: {
-    cast?: FilmographyItem[];
-  };
+  movie_credits?: FilmographyItem[];
+  tv_credits?: FilmographyItem[];
 }
 
 export default function ActorDetailScreen() {
@@ -150,9 +149,20 @@ export default function ActorDetailScreen() {
 
   // Build filmography sorted by date (most recent first), deduplicated
   const filmography: FilmographyItem[] = React.useMemo(() => {
-    if (!person?.combined_credits?.cast) return [];
+    if (!person) return [];
+    // Merge movie and TV credits into a single list
+    const movies: FilmographyItem[] = (person.movie_credits || []).map((m) => ({
+      ...m,
+      media_type: 'movie' as const,
+    }));
+    const tvShows: FilmographyItem[] = (person.tv_credits || []).map((t) => ({
+      ...t,
+      title: t.name || t.title,
+      media_type: 'tv' as const,
+    }));
+    const all = [...movies, ...tvShows];
     const seen = new Set<number>();
-    return person.combined_credits.cast
+    return all
       .filter((item) => {
         if (!item.id || seen.has(item.id)) return false;
         seen.add(item.id);
