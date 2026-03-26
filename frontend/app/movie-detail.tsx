@@ -435,6 +435,20 @@ export default function MovieDetailScreen() {
     return `$${amount}`;
   };
 
+  // Format date according to app locale
+  const formatDate = (dateStr: string): string => {
+    try {
+      const date = new Date(dateStr + 'T00:00:00');
+      return date.toLocaleDateString(langCode || 'en', {
+        year: 'numeric',
+        month: 'long',
+        day: 'numeric',
+      });
+    } catch {
+      return dateStr;
+    }
+  };
+
   // Language code to display name
   const getLanguageName = (code: string): string => {
     const map: { [k: string]: string } = {
@@ -1121,7 +1135,7 @@ export default function MovieDetailScreen() {
                           {t('movieDetail.nextEpisode') || 'Next'}: S{detailedInfo.next_episode_to_air.season_number}E{detailedInfo.next_episode_to_air.episode_number}
                         </Text>
                         <Text className='text-xs text-light-textMuted dark:text-dark-textMuted'>
-                          {detailedInfo.next_episode_to_air.name} - {detailedInfo.next_episode_to_air.air_date}
+                          {detailedInfo.next_episode_to_air.name} - {formatDate(detailedInfo.next_episode_to_air.air_date)}
                         </Text>
                       </View>
                     </View>
@@ -1136,7 +1150,7 @@ export default function MovieDetailScreen() {
                           {t('movieDetail.lastEpisode') || 'Latest'}: S{detailedInfo.last_episode_to_air.season_number}E{detailedInfo.last_episode_to_air.episode_number}
                         </Text>
                         <Text className='text-xs text-light-textMuted dark:text-dark-textMuted'>
-                          {detailedInfo.last_episode_to_air.name} - {detailedInfo.last_episode_to_air.air_date}
+                          {detailedInfo.last_episode_to_air.name} - {formatDate(detailedInfo.last_episode_to_air.air_date)}
                         </Text>
                       </View>
                     </View>
