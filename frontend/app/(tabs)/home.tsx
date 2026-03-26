@@ -267,6 +267,7 @@ export default function HomeScreen() {
         className='flex-1'
         contentContainerStyle={{ paddingBottom: 120 }}
         showsVerticalScrollIndicator={false}
+        keyboardShouldPersistTaps='handled'
         refreshControl={
           <RefreshControl
             refreshing={isRefetching}
@@ -592,7 +593,10 @@ export default function HomeScreen() {
         >
           <View onLayout={(e) => { quickSearchY.current = e.nativeEvent.layout.y; }}>
             <QuickSearch onFocusInput={() => {
-              scrollViewRef.current?.scrollTo({ y: quickSearchY.current - 20, animated: true });
+              // Small delay to let keyboard animation start, then scroll input to top
+              setTimeout(() => {
+                scrollViewRef.current?.scrollTo({ y: quickSearchY.current - 10, animated: true });
+              }, 100);
             }} />
           </View>
         </MotiView>
