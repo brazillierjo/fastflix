@@ -227,6 +227,8 @@ export const SubscriptionProvider: React.FC<SubscriptionProviderProps> = ({
 
         const apiKey = Platform.select({
           ios: Constants.expoConfig?.extra?.EXPO_PUBLIC_REVENUECAT_IOS_API_KEY,
+          android:
+            Constants.expoConfig?.extra?.EXPO_PUBLIC_REVENUECAT_ANDROID_API_KEY,
         });
 
         if (!apiKey) {
