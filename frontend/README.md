@@ -154,7 +154,7 @@ cd ios && pod install && cd ..
 
 ## Environment Variables
 
-Create `.env.local`:
+Create `.env`:
 
 ```env
 # Backend API
@@ -344,7 +344,7 @@ Singleton service for all backend API communication:
 
 1. Enable Apple Sign In in Xcode capabilities
 2. Configure Service ID in Apple Developer Portal
-3. Set `APPLE_CLIENT_ID` in backend `.env.local`
+3. Set `APPLE_CLIENT_ID` in backend `.env`
 
 **Flow:**
 
@@ -458,7 +458,7 @@ In RevenueCat dashboard, create entitlement `pro` with products:
 
 ### 2. Configure App
 
-Set the API key in `.env.local`:
+Set the API key in `.env`:
 
 ```env
 EXPO_PUBLIC_REVENUECAT_IOS_API_KEY=appl_YOUR_KEY_HERE
@@ -568,7 +568,7 @@ eas submit --platform android
 cd ../backend && npm run dev
 ```
 
-2. **Update `.env.local`:**
+2. **Update `.env`:**
 
 ```env
 EXPO_PUBLIC_API_URL=http://localhost:3000
@@ -664,7 +664,7 @@ Should show `status = 'active'`.
 
 **"Network request failed":**
 
-- Check `EXPO_PUBLIC_API_URL` in `.env.local`
+- Check `EXPO_PUBLIC_API_URL` in `.env`
 - Verify backend is running
 - Check device has internet connection
 - Try health check: `GET /api/health`

@@ -286,7 +286,7 @@ Backend grants unlimited access ✅
 npm install
 ```
 
-2. **Create `.env.local`:**
+2. **Create `.env`:**
 
 ```env
 # Database (Turso)

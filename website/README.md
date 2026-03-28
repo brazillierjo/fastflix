@@ -140,7 +140,7 @@ src/
 
 ### Environment Variables
 
-Create a `.env.local` file for environment-specific configurations:
+Create a `.env` file for environment-specific configurations:
 
 ```env
 # Add any environment variables here

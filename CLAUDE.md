@@ -149,7 +149,7 @@ Key tables:
 
 ## Environment Variables
 
-Each package requires its own `.env.local`:
+Each package requires its own `.env`:
 - **Backend**: `TURSO_DATABASE_URL`, `TURSO_AUTH_TOKEN`, `JWT_SECRET`, `TMDB_API_KEY`, `GOOGLE_API_KEY`, `APPLE_CLIENT_ID`, `GOOGLE_CLIENT_ID`
 - **Frontend**: `EXPO_PUBLIC_API_URL`, `EXPO_PUBLIC_REVENUECAT_IOS_API_KEY`, `EXPO_PUBLIC_GOOGLE_IOS_CLIENT_ID`
 

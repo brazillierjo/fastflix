@@ -91,7 +91,7 @@ Backend allows unlimited access
 
 ## Environment Variables
 
-Each project requires its own `.env.local` file. See individual README files for details.
+Each project requires its own `.env` file. See individual README files for details.
 
 ## Deployment
 
