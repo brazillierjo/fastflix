@@ -204,7 +204,10 @@ export default function SubscriptionModal({
 
       onClose();
     } catch (error) {
-      Sentry.captureException(error, { tags: { context: 'purchase' } });
+      const purchaseError = error as { userCancelled?: boolean };
+      if (!purchaseError.userCancelled) {
+        Sentry.captureException(error, { tags: { context: 'purchase' } });
+      }
     } finally {
       setPurchasing(false);
     }

@@ -295,7 +295,7 @@ export const SubscriptionProvider: React.FC<SubscriptionProviderProps> = ({
         message?: string;
       };
       if (purchaseError.userCancelled) {
-        return;
+        throw error;
       }
 
       Alert.alert(
