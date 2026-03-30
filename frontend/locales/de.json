@@ -353,7 +353,8 @@
     "close": "Schließen",
     "retry": "Erneut versuchen",
     "remove": "Entfernen",
-    "seeMore": "Mehr anzeigen"
+    "seeMore": "Mehr anzeigen",
+    "seeAll": "Alle anzeigen"
   },
   "tabs": {
     "home": "Start",
@@ -414,7 +415,8 @@
     "subtitle": "Basierend auf deinem Geschmack",
     "signInPrompt": "Melde dich an für personalisierte Empfehlungen",
     "empty": "Bewerte Filme, um personalisierte Empfehlungen zu erhalten",
-    "loading": "Finde Filme, die dir gefallen werden..."
+    "loading": "Finde Filme, die dir gefallen werden...",
+    "discover": "Filme entdecken"
   },
   "home": {
     "greeting": "Hallo!",

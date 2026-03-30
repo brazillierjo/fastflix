@@ -381,7 +381,8 @@
     "close": "Close",
     "retry": "Retry",
     "remove": "Remove",
-    "seeMore": "See more"
+    "seeMore": "See more",
+    "seeAll": "See all"
   },
   "tabs": {
     "home": "Home",
@@ -442,7 +443,8 @@
     "subtitle": "Based on your taste",
     "signInPrompt": "Sign in for personalized picks",
     "empty": "Rate some movies to get personalized recommendations",
-    "loading": "Finding movies you'll love..."
+    "loading": "Finding movies you'll love...",
+    "discover": "Discover movies"
   },
   "home": {
     "greeting": "Hello!",
