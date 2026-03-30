@@ -345,14 +345,12 @@ export default function SearchForm({
       <ScrollView
         ref={scrollViewRef}
         className='flex-1 bg-light-background dark:bg-dark-background'
-        contentContainerStyle={{ flexGrow: 1 }}
+        contentContainerStyle={{ paddingBottom: 100 }}
         keyboardShouldPersistTaps='handled'
         showsVerticalScrollIndicator={false}
         {...panResponder.panHandlers}
       >
-        {/* Spacer to push content to center */}
-        <View className='flex-1' />
-        <View className='px-6'>
+        <View style={{ paddingTop: '15%' }} className='px-6'>
           {/* Welcome Section */}
           <View
             className='mb-8'
@@ -605,8 +603,6 @@ export default function SearchForm({
           );
         })()}
 
-        {/* Bottom spacer to balance centering */}
-        <View className='flex-1' />
       </ScrollView>
 
       {/* Filters Bottom Sheet */}
