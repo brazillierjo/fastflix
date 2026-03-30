@@ -155,7 +155,7 @@ export default function WatchlistScreen() {
         <MotiView
           from={{ opacity: 0, scale: 0.95 }}
           animate={{ opacity: 1, scale: 1 }}
-          transition={{ type: 'timing', duration: 500 }}
+          transition={{ type: 'spring', damping: 20, stiffness: 150 }}
           className='flex-1 items-center justify-center px-8'
         >
           <Ionicons
@@ -196,7 +196,7 @@ export default function WatchlistScreen() {
       <MotiView
         from={{ opacity: 0, translateY: -20 }}
         animate={{ opacity: 1, translateY: 0 }}
-        transition={{ type: 'timing', duration: 400 }}
+        transition={{ type: 'spring', damping: 18, stiffness: 180 }}
         className='flex-row items-center justify-between border-b border-light-border px-4 py-3 dark:border-dark-border'
       >
         <View className='flex-row items-center gap-2'>
@@ -239,7 +239,7 @@ export default function WatchlistScreen() {
       <MotiView
         from={{ opacity: 0, translateY: 10 }}
         animate={{ opacity: 1, translateY: 0 }}
-        transition={{ delay: 50, type: 'timing', duration: 400 }}
+        transition={{ type: 'spring', damping: 18, stiffness: 180, delay: 40 }}
         className='flex-row gap-2 px-4 pt-3'
       >
         {[
@@ -296,7 +296,7 @@ export default function WatchlistScreen() {
       <MotiView
         from={{ opacity: 0, translateY: 10 }}
         animate={{ opacity: 1, translateY: 0 }}
-        transition={{ delay: 100, type: 'timing', duration: 400 }}
+        transition={{ type: 'spring', damping: 18, stiffness: 180, delay: 60 }}
         className='flex-row gap-2 px-4 py-3'
       >
         {[
@@ -341,7 +341,7 @@ export default function WatchlistScreen() {
         <MotiView
           from={{ opacity: 0, scale: 0.95 }}
           animate={{ opacity: 1, scale: 1 }}
-          transition={{ delay: 200, type: 'timing', duration: 400 }}
+          transition={{ type: 'spring', damping: 18, stiffness: 180, delay: 80 }}
           className='flex-1 items-center justify-center px-8'
         >
           <Ionicons
@@ -380,7 +380,7 @@ export default function WatchlistScreen() {
                   key={`change-${change.watchlistId}`}
                   from={{ opacity: 0, translateX: -50 }}
                   animate={{ opacity: 1, translateX: 0 }}
-                  transition={{ type: 'timing', duration: 400 }}
+                  transition={{ type: 'spring', damping: 18, stiffness: 180 }}
                   className='mb-3 flex-row items-center rounded-xl bg-green-500/10 border border-green-500/30 px-3 py-2.5'
                 >
                   <Text className='mr-2 text-base'>🎉</Text>

@@ -167,7 +167,7 @@ export default function ProfileScreen() {
         <MotiView
           from={{ opacity: 0, translateY: -20 }}
           animate={{ opacity: 1, translateY: 0 }}
-          transition={{ type: 'timing', duration: 600 }}
+          transition={{ type: 'spring', damping: 20, stiffness: 150 }}
           className='mb-6 px-6 pt-8'
         >
           <Text
@@ -185,7 +185,7 @@ export default function ProfileScreen() {
         <MotiView
           from={{ opacity: 0, translateY: 20 }}
           animate={{ opacity: 1, translateY: 0 }}
-          transition={{ delay: 100, type: 'timing', duration: 600 }}
+          transition={{ type: 'spring', damping: 20, stiffness: 150, delay: 60 }}
           className='mb-6 px-4'
         >
           <View className='overflow-hidden rounded-xl'>
@@ -220,7 +220,7 @@ export default function ProfileScreen() {
           <MotiView
             from={{ opacity: 0, translateY: 20 }}
             animate={{ opacity: 1, translateY: 0 }}
-            transition={{ delay: 150, type: 'timing', duration: 600 }}
+            transition={{ type: 'spring', damping: 20, stiffness: 150, delay: 90 }}
             className='mb-6 px-4'
           >
             <View className='overflow-hidden rounded-xl'>
@@ -266,7 +266,7 @@ export default function ProfileScreen() {
           <MotiView
             from={{ opacity: 0, translateY: 20 }}
             animate={{ opacity: 1, translateY: 0 }}
-            transition={{ delay: 150, type: 'timing', duration: 600 }}
+            transition={{ type: 'spring', damping: 20, stiffness: 150, delay: 90 }}
             className='mb-6 px-4'
           >
             <View className='overflow-hidden rounded-xl'>
@@ -286,7 +286,7 @@ export default function ProfileScreen() {
         <MotiView
           from={{ opacity: 0, translateY: 20 }}
           animate={{ opacity: 1, translateY: 0 }}
-          transition={{ delay: 175, type: 'timing', duration: 600 }}
+          transition={{ type: 'spring', damping: 20, stiffness: 150, delay: 110 }}
           className='mb-6 px-4'
         >
           <Text
@@ -326,7 +326,7 @@ export default function ProfileScreen() {
         <MotiView
           from={{ opacity: 0, translateY: 20 }}
           animate={{ opacity: 1, translateY: 0 }}
-          transition={{ delay: 200, type: 'timing', duration: 600 }}
+          transition={{ type: 'spring', damping: 20, stiffness: 150, delay: 130 }}
           className='mb-6 px-4'
         >
           <Text
@@ -355,7 +355,7 @@ export default function ProfileScreen() {
         <MotiView
           from={{ opacity: 0, translateY: 20 }}
           animate={{ opacity: 1, translateY: 0 }}
-          transition={{ delay: 225, type: 'timing', duration: 600 }}
+          transition={{ type: 'spring', damping: 20, stiffness: 150, delay: 150 }}
           className='mb-6 px-4'
         >
           <Text
@@ -390,7 +390,7 @@ export default function ProfileScreen() {
         <MotiView
           from={{ opacity: 0, translateY: 20 }}
           animate={{ opacity: 1, translateY: 0 }}
-          transition={{ delay: 275, type: 'timing', duration: 600 }}
+          transition={{ type: 'spring', damping: 20, stiffness: 150, delay: 170 }}
           className='mb-6 px-4'
         >
           <View className='overflow-hidden rounded-xl'>

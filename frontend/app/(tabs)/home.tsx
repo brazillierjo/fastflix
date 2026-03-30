@@ -422,7 +422,7 @@ export default function HomeScreen() {
         <MotiView
           from={hasAnimated.current ? undefined : { opacity: 0, translateY: 12 }}
           animate={{ opacity: 1, translateY: 0 }}
-          transition={{ type: 'timing', duration: 400, delay: 50 }}
+          transition={{ type: 'spring', damping: 18, stiffness: 180, delay: 50 }}
           className='mt-8 px-6'
         >
           <Text
@@ -644,7 +644,7 @@ export default function HomeScreen() {
           <MotiView
             from={hasAnimated.current ? undefined : { opacity: 0, translateY: 12 }}
             animate={{ opacity: 1, translateY: 0 }}
-            transition={{ type: 'timing', duration: 400, delay: 100 }}
+            transition={{ type: 'spring', damping: 18, stiffness: 180, delay: 80 }}
           >
             <QuickSearch onFocusInput={() => {
               setTimeout(() => {
@@ -658,7 +658,7 @@ export default function HomeScreen() {
         <MotiView
           from={hasAnimated.current ? undefined : { opacity: 0, translateY: 12 }}
           animate={{ opacity: 1, translateY: 0 }}
-          transition={{ type: 'timing', duration: 400, delay: 200 }}
+          transition={{ type: 'spring', damping: 18, stiffness: 180, delay: 120 }}
         >
           <NewReleasesSection />
         </MotiView>
@@ -667,7 +667,7 @@ export default function HomeScreen() {
         <MotiView
           from={hasAnimated.current ? undefined : { opacity: 0, translateY: 12 }}
           animate={{ opacity: 1, translateY: 0 }}
-          transition={{ type: 'timing', duration: 400, delay: 300 }}
+          transition={{ type: 'spring', damping: 18, stiffness: 180, delay: 160 }}
         >
           <ForYouSection />
         </MotiView>
@@ -676,7 +676,7 @@ export default function HomeScreen() {
         <MotiView
           from={hasAnimated.current ? undefined : { opacity: 0, translateY: 12 }}
           animate={{ opacity: 1, translateY: 0 }}
-          transition={{ type: 'timing', duration: 400, delay: 400 }}
+          transition={{ type: 'spring', damping: 18, stiffness: 180, delay: 200 }}
         >
           <WatchlistSection />
         </MotiView>
@@ -685,7 +685,7 @@ export default function HomeScreen() {
         <MotiView
           from={hasAnimated.current ? undefined : { opacity: 0, translateY: 12 }}
           animate={{ opacity: 1, translateY: 0 }}
-          transition={{ type: 'timing', duration: 400, delay: 450 }}
+          transition={{ type: 'spring', damping: 18, stiffness: 180, delay: 240 }}
         >
           <FavoriteActorsSection />
         </MotiView>
@@ -694,7 +694,7 @@ export default function HomeScreen() {
         <MotiView
           from={hasAnimated.current ? undefined : { opacity: 0, translateY: 12 }}
           animate={{ opacity: 1, translateY: 0 }}
-          transition={{ type: 'timing', duration: 400, delay: 550 }}
+          transition={{ type: 'spring', damping: 18, stiffness: 180, delay: 280 }}
         >
           <MyRatingsSection />
         </MotiView>
