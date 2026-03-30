@@ -550,10 +550,14 @@ export default function SearchForm({
       </ScrollView>
 
       {/* Recent Searches — fixed at bottom */}
-      {recentSearches.length > 0 && (
-        <View
-          className='border-t border-light-border/50 bg-light-background px-6 pb-2 pt-3 dark:border-dark-border/50 dark:bg-dark-background'
-        >
+      {recentSearches.filter((item) => {
+        const l = typeof item === 'string' ? item : item.query || item.label || '';
+        return l.length > 0;
+      }).length > 0 && (
+        <View className='bg-light-background px-6 pb-4 pt-2 dark:bg-dark-background'>
+          <Text className='mb-2 text-xs font-medium uppercase tracking-wide text-light-textMuted dark:text-dark-textMuted'>
+            {t('home.recentSearches') || 'Recent'}
+          </Text>
           <ScrollView
             horizontal
             showsHorizontalScrollIndicator={false}
@@ -563,6 +567,7 @@ export default function SearchForm({
             {recentSearches.slice(0, 8).map((item, i) => {
               const label =
                 typeof item === 'string' ? item : item.query || item.label || '';
+              if (!label) return null;
               return (
                 <TouchableOpacity
                   key={i}
