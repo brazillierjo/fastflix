@@ -550,56 +550,60 @@ export default function SearchForm({
 
         </View>
 
-        {/* Recent Searches — below CTA, inside ScrollView */}
-        {recentSearches.filter((item) => {
-          const l = typeof item === 'string' ? item : item.query || item.label || '';
-          return l.length > 0;
-        }).length > 0 && (
-          <View className='mt-8 px-6 pb-6'>
-            <Text className='mb-2.5 text-xs font-medium uppercase tracking-wide text-light-textMuted dark:text-dark-textMuted'>
-              {t('home.recentSearches') || 'Recent'}
-            </Text>
-            <ScrollView
-              horizontal
-              showsHorizontalScrollIndicator={false}
-              contentContainerStyle={{ gap: 8 }}
-              keyboardShouldPersistTaps='handled'
-            >
-              {recentSearches.slice(0, 8).map((item, i) => {
-                const label =
-                  typeof item === 'string' ? item : item.query || item.label || '';
-                if (!label) return null;
-                return (
+        {/* Recent Searches — iOS grouped list style */}
+        {(() => {
+          const validSearches = recentSearches
+            .slice(0, 5)
+            .map((item) => (typeof item === 'string' ? item : item.query || item.label || ''))
+            .filter((l) => l.length > 0);
+          if (validSearches.length === 0) return null;
+          return (
+            <View className='mt-6 px-6 pb-6'>
+              <Text className='mb-2 text-xs font-medium uppercase tracking-wide text-light-textMuted dark:text-dark-textMuted'>
+                {t('home.recentSearches') || 'Recent'}
+              </Text>
+              <View
+                style={getSquircle(12)}
+                className='overflow-hidden bg-light-card dark:bg-dark-card'
+              >
+                {validSearches.map((label, i) => (
                   <TouchableOpacity
                     key={i}
                     onPress={() => {
                       Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
                       setQuery(label);
                     }}
-                    activeOpacity={0.6}
-                    style={getSquircle(20)}
-                    className='flex-row items-center gap-1.5 border border-light-border bg-light-surface px-3 py-2 dark:border-dark-border dark:bg-dark-surface'
+                    activeOpacity={0.5}
+                    className={cn(
+                      'flex-row items-center px-4 py-3',
+                      i < validSearches.length - 1 && 'border-b border-light-borderSubtle dark:border-dark-borderSubtle'
+                    )}
                     accessibilityLabel={label}
                     accessibilityRole='button'
                   >
                     <Ionicons
                       name='time-outline'
-                      size={13}
-                      color={isDark ? '#525252' : '#8E8E93'}
+                      size={16}
+                      color={isDark ? '#8E8E93' : '#8E8E93'}
+                      style={{ marginRight: 12 }}
                     />
                     <Text
-                      className='text-xs text-light-textSecondary dark:text-dark-textSecondary'
+                      className='flex-1 text-sm text-light-text dark:text-dark-text'
                       numberOfLines={1}
-                      style={{ maxWidth: 200 }}
                     >
                       {label}
                     </Text>
+                    <Ionicons
+                      name='chevron-forward'
+                      size={14}
+                      color={isDark ? '#48484A' : '#C7C7CC'}
+                    />
                   </TouchableOpacity>
-                );
-              })}
-            </ScrollView>
-          </View>
-        )}
+                ))}
+              </View>
+            </View>
+          );
+        })()}
 
         {/* Bottom spacer to balance centering */}
         <View className='flex-1' />
