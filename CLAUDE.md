@@ -63,7 +63,7 @@ npm run format:check     # Prettier check
 - **Server**: `@hono/node-server` on port 3002
 - **Database**: Turso (libSQL) — remote SQLite
 - **Deployment**: Docker (multi-stage node:20-alpine) → Docker Hub → VPS
-- **Reverse Proxy**: Caddy (TLS auto) at `api.fastflix.fr`
+- **Reverse Proxy**: Caddy (TLS auto) at `fastflix.miotutor.app`
 - **VPS**: Hostinger `217.65.144.15`, shared with Mio API (port 3001)
 
 ### Backend Structure
@@ -133,7 +133,7 @@ VPS 217.65.144.15 (/opt/mio/)
 │   └── fastflix-api (port 3002) — FastFlix API
 ├── Caddyfile
 │   ├── api.miotutor.app → :3001
-│   └── api.fastflix.fr → :3002
+│   └── fastflix.miotutor.app → :3002
 ├── api.env (Mio secrets)
 └── fastflix-api.env (FastFlix secrets)
 ```
