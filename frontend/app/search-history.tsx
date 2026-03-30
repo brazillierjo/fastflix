@@ -4,6 +4,7 @@
  */
 
 import { Ionicons } from '@expo/vector-icons';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { useHomeData } from '@/hooks/useHomeData';
 import { useRouter } from 'expo-router';
@@ -31,12 +32,10 @@ export default function SearchHistoryScreen() {
     )
     .filter((l: string) => l.length > 0);
 
-  const handleSelect = (query: string) => {
+  const handleSelect = async (query: string) => {
     Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
-    router.navigate({
-      pathname: '/(tabs)/search' as never,
-      params: { query, ts: String(Date.now()) },
-    } as never);
+    await AsyncStorage.setItem('@fastflix/prefill_query', query);
+    router.back();
   };
 
   return (

@@ -12,8 +12,9 @@ import { useBackendMovieSearch } from '@/hooks/useBackendMovieSearch';
 import { ConversationMessage } from '@/services/backend-api.service';
 import { cn } from '@/utils/cn';
 import { useQueryClient } from '@tanstack/react-query';
-import { useLocalSearchParams, useRouter } from 'expo-router';
-import React, { useEffect, useRef, useState } from 'react';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { useLocalSearchParams, useRouter, useFocusEffect } from 'expo-router';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import {
   Alert,
   KeyboardAvoidingView,
@@ -76,15 +77,27 @@ export default function SearchScreen() {
   }, []);
 
   // Pre-fill query from route params (e.g. from collections)
-  // Uses `ts` param to detect new navigations even with same query
   const lastTs = useRef<string | undefined>(undefined);
   useEffect(() => {
     if (params.query && params.ts && params.ts !== lastTs.current) {
       lastTs.current = params.ts;
       setQuery(params.query);
-      goBackToHome(); // Reset results so user sees the new query in the input
+      goBackToHome();
     }
   }, [params.query, params.ts, setQuery, goBackToHome]);
+
+  // Pre-fill query from search history screen (via AsyncStorage)
+  useFocusEffect(
+    useCallback(() => {
+      AsyncStorage.getItem('@fastflix/prefill_query').then((val) => {
+        if (val) {
+          setQuery(val);
+          goBackToHome();
+          AsyncStorage.removeItem('@fastflix/prefill_query');
+        }
+      });
+    }, [setQuery, goBackToHome])
+  );
 
   const handleSearch = async () => {
     handleSearchStart();
