@@ -70,6 +70,9 @@ function CustomTabBar({ state, descriptors, navigation }: BottomTabBarProps) {
                     onPress={onPress}
                     style={styles.tabButton}
                     activeOpacity={0.6}
+                    accessibilityLabel={typeof label === 'string' ? label : undefined}
+                    accessibilityRole='tab'
+                    accessibilityState={{ selected: isFocused }}
                   >
                     <View style={styles.tabContent}>
                       <View style={styles.tabIcon}>

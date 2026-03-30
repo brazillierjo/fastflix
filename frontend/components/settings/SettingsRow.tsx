@@ -32,6 +32,8 @@ export default function SettingsRow({
     <TouchableOpacity
       onPress={onPress}
       activeOpacity={0.6}
+      accessibilityLabel={subtitle ? `${title}, ${subtitle}` : title}
+      accessibilityRole='button'
       className={`bg-light-card dark:bg-dark-card ${isFirst ? 'rounded-t-xl' : ''} ${isLast ? 'rounded-b-xl' : ''} `}
     >
       <View className='flex-row items-center px-4 py-3'>

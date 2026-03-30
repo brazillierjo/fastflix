@@ -208,6 +208,8 @@ export default function WatchlistScreen() {
           <TouchableOpacity
             onPress={handleShare}
             hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
+            accessibilityLabel='Share watchlist'
+            accessibilityRole='button'
           >
             <Ionicons name='share-outline' size={22} color='#E50914' />
           </TouchableOpacity>
@@ -215,6 +217,8 @@ export default function WatchlistScreen() {
             onPress={handleRefresh}
             disabled={isRefreshingProviders}
             hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
+            accessibilityLabel='Refresh providers'
+            accessibilityRole='button'
           >
             {isRefreshingProviders ? (
               <ActivityIndicator size='small' color='#E50914' />
@@ -253,6 +257,9 @@ export default function WatchlistScreen() {
             key={option.key}
             onPress={() => setViewMode(option.key as ViewMode)}
             style={getButtonBorderRadius()}
+            accessibilityLabel={option.label}
+            accessibilityRole='tab'
+            accessibilityState={{ selected: viewMode === option.key }}
             className={cn(
               'flex-1 flex-row items-center justify-center gap-1 border-2 py-2',
               viewMode === option.key
@@ -295,6 +302,9 @@ export default function WatchlistScreen() {
             key={option.key}
             onPress={() => setFilterType(option.key as FilterType)}
             style={getButtonBorderRadius()}
+            accessibilityLabel={`Filter: ${option.label}`}
+            accessibilityRole='tab'
+            accessibilityState={{ selected: filterType === option.key }}
             className={cn(
               'flex-1 items-center border-2 py-2',
               filterType === option.key

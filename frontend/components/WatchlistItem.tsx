@@ -106,6 +106,9 @@ function WatchlistItemComponent({
     <TouchableOpacity
       onPress={() => setIsExpanded(!isExpanded)}
       activeOpacity={0.8}
+      accessibilityLabel={`${item.title}, ${item.media_type === 'tv' ? 'TV Show' : 'Movie'}`}
+      accessibilityRole='button'
+      accessibilityHint={isExpanded ? 'Collapse details' : 'Expand for more details'}
     >
       <MotiView
         animate={{

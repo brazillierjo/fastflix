@@ -188,7 +188,7 @@ export default function SearchScreen() {
     <SafeAreaView
       className={cn('flex-1 bg-light-background dark:bg-dark-background')}
     >
-      <StatusBar barStyle='dark-content' backgroundColor='#ffffff' />
+      <StatusBar barStyle={isDark ? 'light-content' : 'dark-content'} backgroundColor={isDark ? '#000000' : '#ffffff'} />
 
       <KeyboardAvoidingView
         behavior={Platform.OS === 'ios' ? 'padding' : 'height'}

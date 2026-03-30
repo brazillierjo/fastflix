@@ -108,6 +108,8 @@ export default function AddToWatchlistButton({
             disabled={isToggling}
             hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
             style={{ padding }}
+            accessibilityLabel={inWatchlist ? `Remove ${title} from watchlist` : `Add ${title} to watchlist`}
+            accessibilityRole='button'
           >
             <MotiView
               animate={{
@@ -146,6 +148,8 @@ export default function AddToWatchlistButton({
         <TouchableOpacity
           onPress={handlePress}
           disabled={isToggling}
+          accessibilityLabel={inWatchlist ? `Remove ${title} from watchlist` : `Add ${title} to watchlist`}
+          accessibilityRole='button'
           className={`flex-row items-center justify-center gap-2 rounded-xl border-2 px-4 py-3 ${
             inWatchlist
               ? 'border-netflix-500 bg-netflix-500/10'

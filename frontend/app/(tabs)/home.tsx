@@ -313,6 +313,8 @@ export default function HomeScreen() {
               }
             }}
             activeOpacity={hasUnlimitedAccess ? 1 : 0.7}
+            accessibilityLabel={hasUnlimitedAccess ? 'FastFlix Pro' : 'Upgrade to Pro'}
+            accessibilityRole='button'
           >
             <View
               style={{
@@ -376,6 +378,8 @@ export default function HomeScreen() {
             activeOpacity={0.8}
             style={[getSquircle(16), { overflow: 'hidden' }]}
             className='bg-netflix-500'
+            accessibilityLabel={t('home.searchCTA')}
+            accessibilityRole='button'
           >
             {/* Subtle shimmer glow */}
             <MotiView
@@ -424,6 +428,8 @@ export default function HomeScreen() {
           {dailyPick ? (
             <TouchableOpacity
               activeOpacity={0.8}
+              accessibilityLabel={`${t('home.dailyPick')}: ${dailyPick.title || dailyPick.name}`}
+              accessibilityRole='button'
               onPress={() =>
                 router.push({
                   pathname: '/movie-detail' as never,
@@ -515,6 +521,8 @@ export default function HomeScreen() {
               ? trending.map((item, i) => (
                     <TouchableOpacity
                       key={item.tmdb_id || item.id || i}
+                      accessibilityLabel={item.title}
+                      accessibilityRole='button'
                       onPress={() =>
                         router.push({
                           pathname: '/movie-detail' as never,
