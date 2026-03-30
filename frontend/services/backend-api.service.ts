@@ -137,8 +137,8 @@ class BackendAPIService {
     if (!apiUrl) {
       console.warn('API_URL not configured, using default');
       this.baseUrl = __DEV__
-        ? 'http://localhost:3000'
-        : 'https://fastflix-api.vercel.app';
+        ? 'http://localhost:3002'
+        : 'https://fastflix.miotutor.app';
     } else {
       this.baseUrl = apiUrl;
     }
