@@ -18,6 +18,7 @@
 9. [UI/UX Optimisations](#9-uiux-optimisations)
 10. [Mode humeur](#10-mode-humeur)
 11. [Notifications de sorties](#11-notifications-de-sorties)
+12. [Swipe Discovery (mode TikTok)](#12-swipe-discovery-mode-tiktok)
 
 ---
 
@@ -734,6 +735,260 @@ Limites actuelles Free :
 
 ---
 
+## 12. Swipe Discovery (mode TikTok)
+
+> **Objectif** : expérience de découverte immersive, plein écran, swipe vertical — comme TikTok/Reels mais pour les films
+
+**Statut** : N'EXISTE PAS
+**Catégorie** : Free (limité à 5 swipes) / Premium (illimité)
+**Priorité** : Haute (différenciateur UX majeur)
+
+### 12.0 — Installation de la dépendance
+
+- [ ] **Installer `react-native-pager-view`**
+  ```bash
+  cd frontend && npx expo install react-native-pager-view
+  ```
+  - Librairie native : `PagerView` (iOS: `UIPageViewController`, Android: `ViewPager2`)
+  - Supporte `orientation="vertical"` nativement (performant, pas de JS scroll)
+  - Compatible Expo SDK 54, supporte `react-native-reanimated` pour les animations scroll-driven
+  - **IMPORTANT** : la prop `orientation` ne peut PAS être changée dynamiquement après le mount
+
+### 12.1 — Architecture des fichiers
+
+```
+frontend/
+├── app/
+│   └── swipe-discovery.tsx              ← Écran plein écran (modal ou push)
+├── components/
+│   └── swipe-discovery/
+│       ├── SwipeDiscoveryView.tsx        ← PagerView vertical + logique de pagination
+│       ├── SwipeCard.tsx                 ← 1 page = 1 film (poster full + overlay)
+│       ├── SwipeActions.tsx              ← Boutons latéraux (👍👎 watchlist share)
+│       └── SwipeHeader.tsx              ← Barre du haut (back, compteur, fermer)
+```
+
+### 12.2 — Composant principal `SwipeDiscoveryView.tsx`
+
+- [ ] **Créer le composant PagerView vertical**
+  ```tsx
+  import PagerView from 'react-native-pager-view';
+
+  <PagerView
+    style={{ flex: 1 }}
+    initialPage={0}
+    orientation="vertical"
+    onPageSelected={(e) => {
+      const page = e.nativeEvent.position;
+      // Track analytics
+      // Prefetch next batch si page >= items.length - 2
+    }}
+  >
+    {items.map((item, index) => (
+      <SwipeCard key={item.tmdb_id} item={item} index={index} />
+    ))}
+  </PagerView>
+  ```
+  - Props d'entrée : `items: MovieResult[]`, `providers: Record<number, StreamingProvider[]>`, `source: 'search' | 'forYou' | 'surprise'`
+  - Gérer le prefetch : quand `currentPage >= items.length - 2`, charger le batch suivant
+  - Free : limiter à 5 swipes puis afficher un CTA "Passer à Premium pour continuer"
+
+### 12.3 — Composant `SwipeCard.tsx` (1 page = 1 film)
+
+- [ ] **Layout plein écran immersif**
+  - **Background** : poster en plein écran avec `Image` + `blurRadius={20}` (fond flou)
+  - **Poster net** : centré, ratio 2:3, `width: 65%`, coins arrondis, shadow
+  - **Gradient overlay bas** : `LinearGradient` du transparent au noir (60% bas)
+  - **Zone d'info** (overlay bas) :
+    - Titre (text-2xl bold white, shadow)
+    - Année + note ★ + type badge (Movie/TV)
+    - Genres en pills
+    - Logos providers (row, max 4, 20x20px)
+    - "Pourquoi ce film ?" en italique (si disponible)
+    - Synopsis (2 lignes max, expandable au tap)
+
+  ```tsx
+  <View style={{ flex: 1 }}>
+    {/* Background blur */}
+    <Image source={{ uri: posterUri }} style={StyleSheet.absoluteFill} blurRadius={25} />
+    <View style={[StyleSheet.absoluteFill, { backgroundColor: 'rgba(0,0,0,0.4)' }]} />
+
+    {/* Poster net centré */}
+    <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+      <Image source={{ uri: posterUri }} style={{ width: '65%', aspectRatio: 2/3, borderRadius: 16 }} />
+    </View>
+
+    {/* Gradient + infos en bas */}
+    <LinearGradient colors={['transparent', 'rgba(0,0,0,0.9)']} style={styles.bottomGradient}>
+      <Text style={styles.title}>{item.title}</Text>
+      <View style={styles.metaRow}>
+        <Text style={styles.year}>{releaseYear}</Text>
+        <View style={styles.ratingBadge}>
+          <Ionicons name="star" size={12} color="#fbbf24" />
+          <Text>{item.vote_average.toFixed(1)}</Text>
+        </View>
+      </View>
+      {/* Providers logos */}
+      <View style={styles.providersRow}>
+        {providers.slice(0, 4).map(p => (
+          <Image key={p.provider_id} source={{ uri: logoUri }} style={styles.providerLogo} />
+        ))}
+      </View>
+    </LinearGradient>
+  </View>
+  ```
+
+### 12.4 — Composant `SwipeActions.tsx` (boutons latéraux style TikTok)
+
+- [ ] **Colonne de boutons sur le côté droit**
+  - Position : `absolute right-4 bottom-[30%]`
+  - Boutons (de haut en bas) :
+    | Icône | Action | Détail |
+    |-------|--------|--------|
+    | `heart-outline` / `heart` | Like (👍) | Appel `POST /user/taste-profile/feedback` positive |
+    | `close-circle-outline` | Dislike (👎) | Appel feedback negative + auto-swipe au suivant |
+    | `bookmark-outline` / `bookmark` | Watchlist | Toggle add/remove watchlist |
+    | `eye-outline` / `eye` | Déjà vu | Mark as watched |
+    | `share-outline` | Share | Partage lien TMDB |
+    | `information-circle-outline` | Détails | Navigation vers `movie-detail` |
+  - Chaque bouton : `48x48`, fond `rgba(0,0,0,0.3)`, `borderRadius: 24`, `backdropFilter blur`
+  - Animations : scale bounce au tap + haptic
+  - Compteur sous le like (nombre de likes simulé ou réel)
+
+### 12.5 — Points d'entrée (où déclencher le mode swipe)
+
+- [ ] **Entrée 1 : Résultats de recherche — bouton toggle "Vue swipe"**
+  - Fichier : `frontend/components/MovieResults.tsx`
+  - Ajouter un bouton icône dans le header des résultats : `grid-outline` (liste) / `phone-portrait-outline` (swipe)
+  - Au tap : naviguer vers `swipe-discovery` avec les résultats en params (ou via un store/context)
+  - Passer les `movies`, `streamingProviders`, `credits` déjà chargés
+
+- [ ] **Entrée 2 : Bouton "Explorer" sur la Home**
+  - Fichier : `frontend/app/(tabs)/home.tsx`
+  - Nouveau bouton sous le CTA de recherche : "Explorer en swipant" avec icône `swap-vertical`
+  - Au tap : appeler `GET /api/for-you` ou `GET /api/surprise` → naviguer vers `swipe-discovery`
+
+- [ ] **Entrée 3 : Onglet dédié (optionnel, Phase 2)**
+  - Fichier : `frontend/app/(tabs)/_layout.tsx`
+  - Ajouter un 5ème onglet "Explore" entre Home et Search
+  - Icône : `compass-outline`
+  - Feed infini de recos personnalisées
+
+### 12.6 — Backend — Feed infini paginé
+
+- [ ] **Nouveau endpoint `GET /api/feed?page=1&size=5`**
+  - Fichier : créer `backend/src/routes/feed.ts`
+  - Logique :
+    1. Récupérer le taste profile + watchlist + historique
+    2. Page 1 : appeler Gemini avec le profil (cache 1h)
+    3. Pages suivantes : appeler Gemini avec contexte "donne-moi 5 recos DIFFÉRENTES des précédentes" + passer les IDs déjà vus
+    4. Enrichir avec TMDB (poster, providers, credits)
+    5. Exclure les films déjà vus / déjà dans la watchlist / déjà swipés
+  - Réponse : `{ items: MovieResult[], providers: Record<number, StreamingProvider[]>, hasMore: boolean, page: number }`
+  - Auth required, rate limit AI
+
+- [ ] **Monter la route**
+  - Fichier : `backend/src/index.ts`
+  - `app.route("/api/feed", feedRoutes)`
+
+### 12.7 — Écran `swipe-discovery.tsx`
+
+- [ ] **Créer l'écran comme modal plein écran**
+  - Fichier : `frontend/app/swipe-discovery.tsx`
+  - Récupérer les données via params (résultats de recherche) ou via API (feed)
+  - Gérer 2 modes :
+    - **Mode fini** (résultats de recherche) : X items, message "Fin des résultats" à la dernière page
+    - **Mode infini** (feed/explore) : prefetch page N+1 quand on atteint item N-2
+  - StatusBar masquée pour l'immersion totale
+  - Geste swipe-down depuis la première page = fermer (retour)
+
+  ```tsx
+  // frontend/app/swipe-discovery.tsx
+  export default function SwipeDiscoveryScreen() {
+    const params = useLocalSearchParams<{ source: string; itemsJson?: string }>();
+    const [items, setItems] = useState<MovieResult[]>([]);
+    const [page, setPage] = useState(1);
+    const [hasMore, setHasMore] = useState(true);
+
+    // Mode fini : items passés en params
+    // Mode infini : fetch depuis /api/feed
+    useEffect(() => {
+      if (params.itemsJson) {
+        setItems(JSON.parse(params.itemsJson));
+      } else {
+        fetchFeed(1);
+      }
+    }, []);
+
+    const fetchFeed = async (p: number) => {
+      const res = await backendAPIService.getFeed(p);
+      if (res.success && res.data) {
+        setItems(prev => [...prev, ...res.data.items]);
+        setHasMore(res.data.hasMore);
+        setPage(p);
+      }
+    };
+
+    const handlePageSelected = (position: number) => {
+      // Prefetch
+      if (hasMore && position >= items.length - 2) {
+        fetchFeed(page + 1);
+      }
+      // Analytics
+      trackSwipe(items[position]?.tmdb_id, position);
+    };
+
+    return (
+      <View style={{ flex: 1, backgroundColor: '#000' }}>
+        <StatusBar hidden />
+        <SwipeDiscoveryView
+          items={items}
+          onPageSelected={handlePageSelected}
+          hasMore={hasMore}
+        />
+      </View>
+    );
+  }
+  ```
+
+### 12.8 — Analytics & Tracking
+
+- [ ] **Nouveaux events analytics**
+  - Fichier : `frontend/services/analytics.ts`
+  - `trackSwipeView(tmdbId, position, source)` — chaque film vu
+  - `trackSwipeLike(tmdbId)` — like dans le mode swipe
+  - `trackSwipeDislike(tmdbId)` — dislike
+  - `trackSwipeWatchlist(tmdbId)` — ajout watchlist depuis swipe
+  - `trackSwipeShare(tmdbId)` — partage depuis swipe
+  - `trackSwipeToDetail(tmdbId)` — navigation vers movie-detail
+  - `trackSwipeSessionDuration(seconds, itemsViewed)` — durée de session swipe
+
+### 12.9 — Animations & Polish
+
+- [ ] **Transition entre pages**
+  - `PagerView` gère nativement les transitions (pas besoin de custom)
+  - Ajouter une animation d'entrée pour les infos (MotiView fade-in bottom quand la page devient active)
+
+- [ ] **Parallax sur le poster**
+  - Utiliser `onPageScroll` de PagerView + `Animated.event` pour créer un léger parallax vertical sur le poster pendant le swipe
+
+- [ ] **Auto-play trailer (optionnel, Phase 3)**
+  - Si TMDB fournit un trailer YouTube, l'afficher en background après 3 secondes sur la page
+  - Utiliser `expo-video` ou un WebView YouTube embed
+  - Mute par défaut, tap pour unmute
+
+### 12.10 — Gestion Free vs Premium
+
+- [ ] **Free : 5 swipes par session**
+  - Compteur local (pas besoin de backend)
+  - Au 6ème swipe : afficher une page spéciale "Passer à Premium" à la place du film
+  - Design : fond gradient rouge/noir, icône `sparkles`, CTA "Débloquer l'exploration illimitée"
+
+- [ ] **Premium : illimité**
+  - Feed infini via `/api/feed` paginé
+
+---
+
 ## Résumé des priorités
 
 ### Phase 1 — Quick Wins (1-2 semaines)
@@ -745,6 +1000,7 @@ Limites actuelles Free :
 - [ ] 9.2 — Micro-animations loading IA améliorées
 
 ### Phase 2 — Valeur Premium (2-4 semaines)
+- [ ] 12 — **Swipe Discovery (mode TikTok)** — SwipeCard + PagerView vertical + toggle dans résultats
 - [ ] 2.1 — "Pourquoi ce film ?" (raison personnalisée)
 - [ ] 2.3 — Tags dynamiques
 - [ ] 4.1 — Thumbs up/down
@@ -760,8 +1016,11 @@ Limites actuelles Free :
 - [ ] 6.1 — "Parce que tu as regardé X"
 - [ ] 2.2 — Score de pertinence %
 - [ ] 7.2 — Widget "Temps gagné"
+- [ ] 12.6 — Feed infini paginé (`/api/feed`) pour le mode swipe
 
 ### Phase 4 — Différenciation (6+ semaines)
+- [ ] 12.5 (entrée 3) — Onglet "Explore" dédié avec feed infini TikTok
+- [ ] 12.9 — Auto-play trailer en background
 - [ ] 8.3 — Match entre amis
 - [ ] 8.4 — Mode soirée (écran dédié)
 - [ ] 4.3 — Toast "Goûts mis à jour"
