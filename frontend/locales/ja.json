@@ -553,5 +553,8 @@
     "emptyHome": "俳優をお気に入りに追加しましょう",
     "removeTitle": "お気に入りから削除",
     "removeMessage": "この俳優をお気に入りから削除しますか？"
+  },
+  "search": {
+    "noHistory": "最近の検索はありません"
   }
 }

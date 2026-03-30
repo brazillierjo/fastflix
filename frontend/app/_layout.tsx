@@ -122,6 +122,10 @@ export default Sentry.wrap(function RootLayout() {
                   name='watchlist-full'
                   options={{ headerShown: false }}
                 />
+                <Stack.Screen
+                  name='search-history'
+                  options={{ headerShown: false, animation: 'slide_from_right' }}
+                />
                 <Stack.Screen name='+not-found' />
               </Stack>
               <StatusBar style='auto' />

@@ -33,18 +33,12 @@ import Animated, {
   cancelAnimation,
 } from 'react-native-reanimated';
 
-interface RecentSearch {
-  query?: string;
-  label?: string;
-}
-
 interface SearchFormProps {
   query: string;
   setQuery: (query: string) => void;
   onSearch: () => void;
   loading: boolean;
   onSubscriptionPress?: () => void;
-  recentSearches?: (string | RecentSearch)[];
 }
 
 // Typewriter speed in ms per character
@@ -58,7 +52,6 @@ export default function SearchForm({
   onSearch,
   loading,
   onSubscriptionPress,
-  recentSearches = [],
 }: SearchFormProps) {
   const { t, getRandomPlaceholder } = useLanguage();
   const { hasUnlimitedAccess, isTrialEligible } = useSubscription();
@@ -548,60 +541,7 @@ export default function SearchForm({
 
         </View>
 
-        {/* Recent Searches — iOS grouped list style */}
-        {(() => {
-          const validSearches = recentSearches
-            .slice(0, 5)
-            .map((item) => (typeof item === 'string' ? item : item.query || item.label || ''))
-            .filter((l) => l.length > 0);
-          if (validSearches.length === 0) return null;
-          return (
-            <View className='mt-6 px-6 pb-6'>
-              <Text className='mb-2 text-xs font-medium uppercase tracking-wide text-light-textMuted dark:text-dark-textMuted'>
-                {t('home.recentSearches') || 'Recent'}
-              </Text>
-              <View
-                style={getSquircle(12)}
-                className='overflow-hidden bg-light-card dark:bg-dark-card'
-              >
-                {validSearches.map((label, i) => (
-                  <TouchableOpacity
-                    key={i}
-                    onPress={() => {
-                      Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
-                      setQuery(label);
-                    }}
-                    activeOpacity={0.5}
-                    className={cn(
-                      'flex-row items-center px-4 py-3',
-                      i < validSearches.length - 1 && 'border-b border-light-borderSubtle dark:border-dark-borderSubtle'
-                    )}
-                    accessibilityLabel={label}
-                    accessibilityRole='button'
-                  >
-                    <Ionicons
-                      name='time-outline'
-                      size={16}
-                      color={isDark ? '#8E8E93' : '#8E8E93'}
-                      style={{ marginRight: 12 }}
-                    />
-                    <Text
-                      className='flex-1 text-sm text-light-text dark:text-dark-text'
-                      numberOfLines={1}
-                    >
-                      {label}
-                    </Text>
-                    <Ionicons
-                      name='chevron-forward'
-                      size={14}
-                      color={isDark ? '#48484A' : '#C7C7CC'}
-                    />
-                  </TouchableOpacity>
-                ))}
-              </View>
-            </View>
-          );
-        })()}
+        {/* Recent searches moved to dedicated screen */}
 
       </ScrollView>
 

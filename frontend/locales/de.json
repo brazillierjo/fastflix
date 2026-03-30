@@ -553,5 +553,8 @@
     "emptyHome": "Markiere Schauspieler als Favoriten",
     "removeTitle": "Aus Favoriten entfernen",
     "removeMessage": "Möchten Sie diesen Schauspieler aus Ihren Favoriten entfernen?"
+  },
+  "search": {
+    "noHistory": "Noch keine Suchanfragen"
   }
 }

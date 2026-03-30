@@ -9,11 +9,10 @@ import { useLanguage } from '@/contexts/LanguageContext';
 import { useSubscription } from '@/contexts/RevenueCatContext';
 import { useAppState } from '@/hooks/useAppState';
 import { useBackendMovieSearch } from '@/hooks/useBackendMovieSearch';
-import { useHomeData } from '@/hooks/useHomeData';
 import { ConversationMessage } from '@/services/backend-api.service';
 import { cn } from '@/utils/cn';
 import { useQueryClient } from '@tanstack/react-query';
-import { useLocalSearchParams } from 'expo-router';
+import { useLocalSearchParams, useRouter } from 'expo-router';
 import React, { useEffect, useRef, useState } from 'react';
 import {
   Alert,
@@ -59,11 +58,11 @@ export default function SearchScreen() {
   const queryClient = useQueryClient();
   const movieSearchMutation = useBackendMovieSearch();
   const { t } = useLanguage();
+  const router = useRouter();
   const colorScheme = useColorScheme();
   const isDark = colorScheme === 'dark';
   const { isAuthenticated, isLoading } = useAuth();
   useSubscription();
-  const { recentSearches } = useHomeData();
 
   // Track screen view
   useEffect(() => { trackScreenView('search'); }, []);
@@ -198,6 +197,21 @@ export default function SearchScreen() {
     >
       <StatusBar barStyle={isDark ? 'light-content' : 'dark-content'} backgroundColor={isDark ? '#000000' : '#ffffff'} />
 
+      {/* History button — top right */}
+      {!showResults && !movieSearchMutation.isPending && isAuthenticated && (
+        <View className='absolute right-4 top-2 z-10'>
+          <TouchableOpacity
+            onPress={() => router.push('/search-history' as never)}
+            hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
+            accessibilityLabel='Search history'
+            accessibilityRole='button'
+            className='h-10 w-10 items-center justify-center rounded-full bg-light-card dark:bg-dark-card'
+          >
+            <Ionicons name='time-outline' size={22} color={isDark ? '#8E8E93' : '#8E8E93'} />
+          </TouchableOpacity>
+        </View>
+      )}
+
       <KeyboardAvoidingView
         behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
         className={cn('flex-1')}
@@ -241,7 +255,6 @@ export default function SearchScreen() {
               onSearch={handleSearch}
               loading={movieSearchMutation.isPending}
               onSubscriptionPress={() => setShowSubscriptionModal(true)}
-              recentSearches={recentSearches}
             />
           )}
         </View>

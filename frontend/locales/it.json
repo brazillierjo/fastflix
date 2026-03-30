@@ -553,5 +553,8 @@
     "emptyHome": "Metti mi piace agli attori per aggiungerli ai preferiti",
     "removeTitle": "Rimuovi dai preferiti",
     "removeMessage": "Vuoi rimuovere questo attore dai tuoi preferiti?"
+  },
+  "search": {
+    "noHistory": "Nessuna ricerca recente"
   }
 }

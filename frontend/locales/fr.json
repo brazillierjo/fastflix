@@ -553,5 +553,8 @@
     "emptyHome": "Aimez des acteurs pour les ajouter à vos favoris",
     "removeTitle": "Retirer des favoris",
     "removeMessage": "Voulez-vous retirer cet acteur de vos favoris ?"
+  },
+  "search": {
+    "noHistory": "Aucune recherche récente"
   }
 }

@@ -553,5 +553,8 @@
     "emptyHome": "Like actors to add them to your favorites",
     "removeTitle": "Remove from favorites",
     "removeMessage": "Do you want to remove this actor from your favorites?"
+  },
+  "search": {
+    "noHistory": "No recent searches yet"
   }
 }

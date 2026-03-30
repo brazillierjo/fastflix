@@ -553,5 +553,8 @@
     "emptyHome": "Dale me gusta a actores para agregarlos a tus favoritos",
     "removeTitle": "Eliminar de favoritos",
     "removeMessage": "¿Quieres eliminar este actor de tus favoritos?"
+  },
+  "search": {
+    "noHistory": "Sin búsquedas recientes"
   }
 }
