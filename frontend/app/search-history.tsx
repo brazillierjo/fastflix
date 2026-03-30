@@ -33,8 +33,8 @@ export default function SearchHistoryScreen() {
 
   const handleSelect = (query: string) => {
     Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
-    router.replace({
-      pathname: '/search' as never,
+    router.navigate({
+      pathname: '/(tabs)/search' as never,
       params: { query, ts: String(Date.now()) },
     } as never);
   };
