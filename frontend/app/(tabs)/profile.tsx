@@ -237,10 +237,10 @@ export default function ProfileScreen() {
                   }
                 }}
                 isFirst
-                isLast={!isInTrial}
+                isLast={!isInTrial || hasPaidSubscription}
               />
-              {isInTrial && (
-                <View className='border-t border-light-border bg-light-surface px-4 pb-4 pt-3 dark:border-dark-border dark:bg-dark-surface'>
+              {isInTrial && !hasPaidSubscription && (
+                <View className='bg-light-card px-4 pb-4 pt-3 dark:bg-dark-card'>
                   <Text className='mb-2 text-sm font-medium text-light-text dark:text-dark-text'>
                     {t('profile.activeTrial') || 'Free Trial Active'} —{' '}
                     {trialDaysRemaining}{' '}
