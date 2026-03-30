@@ -672,14 +672,18 @@ export default function HomeScreen() {
 
         {/* Recent Searches - only for authenticated users */}
         {isAuthenticated && recentSearches.length > 0 && (
-          <View className='mt-8 px-6'>
+          <View className='mt-8'>
             <Text
               style={typography.title3}
-              className='mb-3 text-light-text dark:text-dark-text'
+              className='mb-3 px-6 text-light-text dark:text-dark-text'
             >
               {t('home.recentSearches')}
             </Text>
-            <View className='flex-row flex-wrap gap-2'>
+            <ScrollView
+              horizontal
+              showsHorizontalScrollIndicator={false}
+              contentContainerStyle={{ paddingHorizontal: 24, gap: 8 }}
+            >
               {recentSearches.map((item, i) => {
                 const label =
                   typeof item === 'string' ? item : item.query || item.label || '';
@@ -689,24 +693,30 @@ export default function HomeScreen() {
                     onPress={() =>
                       router.push({
                         pathname: '/search' as never,
-                        params: { query: label },
+                        params: { query: label, ts: String(Date.now()) },
                       })
                     }
-                    style={getSquircle(20)}
-                    className='flex-row items-center gap-1.5 border border-light-border bg-light-surface px-3.5 py-2 dark:border-dark-border dark:bg-dark-surface'
+                    activeOpacity={0.7}
+                    style={[getSquircle(12), { maxWidth: 220 }]}
+                    className='flex-row items-center gap-2 border border-light-border bg-light-surface px-3 py-2.5 dark:border-dark-border dark:bg-dark-surface'
+                    accessibilityLabel={label}
+                    accessibilityRole='button'
                   >
                     <Ionicons
                       name='time-outline'
                       size={14}
                       color={isDark ? '#a3a3a3' : '#737373'}
                     />
-                    <Text className='text-sm text-light-text dark:text-dark-text'>
+                    <Text
+                      className='text-sm text-light-text dark:text-dark-text'
+                      numberOfLines={1}
+                    >
                       {label}
                     </Text>
                   </TouchableOpacity>
                 );
               })}
-            </View>
+            </ScrollView>
           </View>
         )}
 
