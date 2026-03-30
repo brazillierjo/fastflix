@@ -498,7 +498,7 @@
     "feedbackSubject": "[FastFlix Feedback]",
     "feedbackBody": "Partagez vos retours ou suggestions :",
     "errorTitle": "Impossible d'ouvrir Mail",
-    "errorMessage": "Veuillez envoyer un email à j.brazillier@gmail.com"
+    "errorMessage": "Veuillez envoyer un email à fastflix.movieapp@gmail.com"
   },
   "movieDetail": {
     "watchedButton": "Marquer comme vu",

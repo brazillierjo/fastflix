@@ -43,7 +43,7 @@ export class ErrorBoundary extends Component<Props, State> {
             Oops, une erreur est survenue
           </Text>
           <Text className='mb-6 text-center text-sm text-light-muted dark:text-dark-muted'>
-            L'application a rencontré un problème inattendu.
+            L&apos;application a rencontré un problème inattendu.
           </Text>
           <TouchableOpacity
             className='rounded-xl bg-netflix-500 px-6 py-3'

@@ -96,7 +96,7 @@ export default function WatchlistSection() {
           showsHorizontalScrollIndicator={false}
           contentContainerStyle={{ paddingHorizontal: 24, gap: 12 }}
         >
-          {displayItems.map((item, i) => (
+          {displayItems.map((item, _i) => (
             <View
               key={item.id}
             >

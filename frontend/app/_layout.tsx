@@ -7,10 +7,6 @@ import { StatusBar } from 'expo-status-bar';
 import * as Updates from 'expo-updates';
 import React, { useEffect } from 'react';
 import 'react-native-reanimated';
-
-// Keep splash screen visible until we're ready
-SplashScreen.preventAutoHideAsync();
-
 import { ErrorBoundary } from '@/components/ErrorBoundary';
 import { AuthProvider } from '@/contexts/AuthContext';
 import { LanguageProvider } from '@/contexts/LanguageContext';
@@ -18,6 +14,9 @@ import { SubscriptionProvider } from '@/contexts/RevenueCatContext';
 import { QueryProvider } from '@/providers/QueryProvider';
 import { AptabaseProvider } from '@aptabase/react-native';
 import * as Sentry from '@sentry/react-native';
+
+// Keep splash screen visible until we're ready
+SplashScreen.preventAutoHideAsync();
 
 // Navigation integration for performance tracking
 const navigationIntegration = Sentry.reactNavigationIntegration({

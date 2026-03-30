@@ -26,7 +26,7 @@ export default function EpisodesSection({ nextEpisode, lastEpisode }: EpisodesSe
 
   const formatDate = (dateStr: string): string => {
     try {
-      const date = new Date(dateStr + 'T00:00:00');
+      const date = new Date(`${dateStr}T00:00:00`);
       return date.toLocaleDateString(langCode || 'en', {
         year: 'numeric', month: 'long', day: 'numeric',
       });

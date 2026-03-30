@@ -526,7 +526,7 @@
     "feedbackSubject": "[FastFlix フィードバック]",
     "feedbackBody": "ご意見やご提案をお聞かせください：",
     "errorTitle": "メールを開けません",
-    "errorMessage": "j.brazillier@gmail.com にメールを送信してください"
+    "errorMessage": "fastflix.movieapp@gmail.com にメールを送信してください"
   },
   "ratings": {
     "sectionTitle": "視聴済み",

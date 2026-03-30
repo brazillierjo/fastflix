@@ -34,7 +34,7 @@ interface QuickSearchProps {
 }
 
 export default function QuickSearch({ onFocusInput }: QuickSearchProps) {
-  const { t, language, country } = useLanguage();
+  const { t, language, country: _country } = useLanguage();
   const router = useRouter();
   const colorScheme = useColorScheme();
   const isDark = colorScheme === 'dark';

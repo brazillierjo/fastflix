@@ -131,7 +131,7 @@ export default function NewReleasesSection() {
           showsHorizontalScrollIndicator={false}
           contentContainerStyle={{ paddingHorizontal: 24, gap: 12, paddingTop: 12 }}
         >
-          {items.map((item, i) => {
+          {items.map((item, _i) => {
             const itemProviders = providers[item.tmdb_id] || [];
             return (
               <View
@@ -188,7 +188,7 @@ export default function NewReleasesSection() {
                     <Text className='mt-0.5 text-xs text-light-muted dark:text-dark-muted'>
                       {(() => {
                         try {
-                          return new Date(item.release_date + 'T00:00:00').toLocaleDateString(
+                          return new Date(`${item.release_date}T00:00:00`).toLocaleDateString(
                             language || 'fr',
                             { day: 'numeric', month: 'short' }
                           );

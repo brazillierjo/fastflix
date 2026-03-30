@@ -223,7 +223,7 @@ export default function ForYouSection() {
       {/* Recommendations list */}
       {isAuthenticated && !isLoading && recommendations.length > 0 && (
         <View className='gap-3'>
-          {recommendations.slice(0, expanded ? 15 : 3).map((item, i) => (
+          {recommendations.slice(0, expanded ? 15 : 3).map((item, _i) => (
             <View
               key={item.tmdb_id}
             >

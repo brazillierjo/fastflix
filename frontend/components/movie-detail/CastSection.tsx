@@ -54,7 +54,7 @@ function PersonAvatar({ profilePath, name, subtitle, isDark, onPress }: PersonAv
 interface CastSectionProps {
   cast: CastMember[];
   crew: CrewMemberData[];
-  createdBy?: Array<{ id: number; name: string; profile_path: string | null }>;
+  createdBy?: { id: number; name: string; profile_path: string | null }[];
   mediaType: 'movie' | 'tv';
 }
 

@@ -112,7 +112,6 @@ export default function SearchForm({
             placeholderPhaseRef.current = 'erasing';
             placeholderIntervalRef.current = setInterval(tick, 20);
           }, 2000);
-          return;
         }
       } else if (phase === 'erasing') {
         if (placeholderIdxRef.current > 0) {
@@ -129,7 +128,6 @@ export default function SearchForm({
             placeholderPhaseRef.current = 'typing';
             placeholderIntervalRef.current = setInterval(tick, 35);
           }, 400);
-          return;
         }
       }
     };

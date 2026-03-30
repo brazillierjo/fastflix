@@ -23,7 +23,7 @@ import {
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { typography } from '@/utils/designHelpers';
-import { trackScreenView, trackLanguageChange, trackSubscriptionModalOpen } from '@/services/analytics';
+import { trackScreenView, trackLanguageChange } from '@/services/analytics';
 
 export default function ProfileScreen() {
   const { language, setLanguage, t } = useLanguage();
@@ -101,7 +101,7 @@ export default function ProfileScreen() {
 
   // Report handlers
   const openMailto = async (subject: string, body: string) => {
-    const url = `mailto:j.brazillier@gmail.com?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+    const url = `mailto:fastflix.movieapp@gmail.com?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
     const canOpen = await Linking.canOpenURL(url);
     if (canOpen) {
       Linking.openURL(url);
@@ -109,7 +109,7 @@ export default function ProfileScreen() {
       Alert.alert(
         t('report.errorTitle') || 'Cannot Open Mail',
         t('report.errorMessage') ||
-          'Please send an email to j.brazillier@gmail.com'
+          'Please send an email to fastflix.movieapp@gmail.com'
       );
     }
   };

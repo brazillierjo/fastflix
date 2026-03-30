@@ -4,7 +4,7 @@ import { MotiView } from 'moti';
 import React, { useEffect, useState } from 'react';
 import { Text, useColorScheme, View } from 'react-native';
 
-import { Skeleton, SkeletonCard, SkeletonRow } from './Skeleton';
+import { Skeleton, SkeletonRow } from './Skeleton';
 
 interface LoadingStateProps {
   isSearching: boolean;

@@ -1,5 +1,5 @@
 // Contact Information
-export const CONTACT_EMAIL = 'j.brazillier@gmail.com';
+export const CONTACT_EMAIL = 'fastflix.movieapp@gmail.com';
 
 // App Store Links
 export const APP_STORE_LINKS = {

@@ -14,7 +14,7 @@ interface SimilarSectionProps {
   currentMediaType: 'movie' | 'tv';
 }
 
-export default function SimilarSection({ similarMovies, loading, currentMediaType }: SimilarSectionProps) {
+export default function SimilarSection({ similarMovies, loading, currentMediaType: _currentMediaType }: SimilarSectionProps) {
   const router = useRouter();
   const colorScheme = useColorScheme();
   const isDark = colorScheme === 'dark';

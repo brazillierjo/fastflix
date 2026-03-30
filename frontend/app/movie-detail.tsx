@@ -3,9 +3,6 @@ import { MotiView } from 'moti';
 import { useRouter, useLocalSearchParams } from 'expo-router';
 import React, { useEffect, useState } from 'react';
 import {
-  Image,
-  Linking,
-  ScrollView,
   Share,
   StatusBar,
   Text,
@@ -95,6 +92,7 @@ export default function MovieDetailScreen() {
   // Track movie view
   useEffect(() => {
     if (tmdbId > 0) trackMovieView(tmdbId, mediaType, title);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [tmdbId]);
 
   // Rating system
@@ -183,6 +181,7 @@ export default function MovieDetailScreen() {
         .catch(() => {})
         .finally(() => { setLoadingDetails(false); });
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [tmdbId, mediaType, needsDetails, tmdbLanguage, tmdbCountry]);
 
   // Fetch similar movies

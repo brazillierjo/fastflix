@@ -526,7 +526,7 @@
     "feedbackSubject": "[FastFlix Comentarios]",
     "feedbackBody": "Comparte tus comentarios o sugerencias:",
     "errorTitle": "No se puede abrir Mail",
-    "errorMessage": "Por favor envía un email a j.brazillier@gmail.com"
+    "errorMessage": "Por favor envía un email a fastflix.movieapp@gmail.com"
   },
   "ratings": {
     "sectionTitle": "Ya vistos",

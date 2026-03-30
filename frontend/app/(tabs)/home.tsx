@@ -13,13 +13,12 @@ import { useLanguage } from '@/contexts/LanguageContext';
 import { useSubscription } from '@/contexts/RevenueCatContext';
 import { useHomeData } from '@/hooks/useHomeData';
 import { useQueryClient } from '@tanstack/react-query';
-import { useFocusEffect, useNavigation } from 'expo-router';
+import { useFocusEffect, useNavigation, useRouter } from 'expo-router';
 import {
   getCardShadow,
   getSquircle,
   typography,
 } from '@/utils/designHelpers';
-import { useRouter } from 'expo-router';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import * as Haptics from 'expo-haptics';
 import { MotiView } from 'moti';
@@ -59,7 +58,7 @@ export default function HomeScreen() {
   const {
     dailyPick,
     trending,
-    recentSearches,
+    recentSearches: _recentSearches,
     quota,
     isLoading: isHomeLoading,
     isRefetching,
@@ -88,6 +87,7 @@ export default function HomeScreen() {
 
   // Scroll to top when home tab is tapped while already focused
   useEffect(() => {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const unsubscribe = navigation.addListener('tabPress' as any, () => {
       scrollViewRef.current?.scrollTo({ y: 0, animated: true });
     });
@@ -150,7 +150,7 @@ export default function HomeScreen() {
     }
   }, [isAuthenticated]);
 
-  const hasSetupData = setupGenres.length > 0 || setupPlatforms.length > 0;
+  const _hasSetupData = setupGenres.length > 0 || setupPlatforms.length > 0;
 
   // Subscription modal state
   const [showSubscriptionModal, setShowSubscriptionModal] = useState(false);
@@ -199,7 +199,7 @@ export default function HomeScreen() {
   }, [trialDay]);
 
   // Filter trending by user's genre preferences for guest "Recommended for you"
-  const guestRecommendations = React.useMemo(() => {
+  const _guestRecommendations = React.useMemo(() => {
     if (isAuthenticated || setupGenres.length === 0 || trending.length === 0) {
       return [];
     }
@@ -263,7 +263,7 @@ export default function HomeScreen() {
     : greetingBase;
 
   // Quota display
-  const quotaText = quota
+  const _quotaText = quota
     ? hasUnlimitedAccess
       ? t('home.quotaUnlimited') || 'Unlimited searches'
       : (t('home.quotaRemaining') || '{{count}} searches remaining today').replace(
@@ -608,7 +608,7 @@ export default function HomeScreen() {
                       </Text>
                       {item.providers?.length > 0 && (
                         <View className='mt-1 flex-row gap-1'>
-                          {item.providers.slice(0, 3).map((p: any, pi: number) => (
+                          {item.providers.slice(0, 3).map((p: { logo_path?: string }, pi: number) => (
                             <Image
                               key={pi}
                               source={{ uri: `${TMDB_IMAGE_BASE}/w45${p.logo_path}` }}
