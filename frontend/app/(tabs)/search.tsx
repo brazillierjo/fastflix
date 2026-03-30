@@ -197,17 +197,21 @@ export default function SearchScreen() {
     >
       <StatusBar barStyle={isDark ? 'light-content' : 'dark-content'} backgroundColor={isDark ? '#000000' : '#ffffff'} />
 
-      {/* History button — top right */}
+      {/* History button — top right, inside safe area */}
       {!showResults && !movieSearchMutation.isPending && isAuthenticated && (
-        <View className='absolute right-4 top-2 z-10'>
+        <View className='flex-row justify-end px-4 pb-0 pt-1'>
           <TouchableOpacity
             onPress={() => router.push('/search-history' as never)}
             hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
             accessibilityLabel='Search history'
             accessibilityRole='button'
-            className='h-10 w-10 items-center justify-center rounded-full bg-light-card dark:bg-dark-card'
+            className='flex-row items-center gap-1.5 rounded-full bg-light-card px-3 py-2 dark:bg-dark-card'
+            style={{ shadowColor: '#000', shadowOffset: { width: 0, height: 1 }, shadowOpacity: 0.08, shadowRadius: 3, elevation: 2 }}
           >
-            <Ionicons name='time-outline' size={22} color={isDark ? '#8E8E93' : '#8E8E93'} />
+            <Ionicons name='search' size={15} color={isDark ? '#8E8E93' : '#8E8E93'} />
+            <Text className='text-xs font-medium text-light-muted dark:text-dark-muted'>
+              {t('home.recentSearches') || 'History'}
+            </Text>
           </TouchableOpacity>
         </View>
       )}

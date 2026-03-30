@@ -338,12 +338,12 @@ export default function SearchForm({
       <ScrollView
         ref={scrollViewRef}
         className='flex-1 bg-light-background dark:bg-dark-background'
-        contentContainerStyle={{ paddingBottom: 100 }}
+        contentContainerStyle={{ flexGrow: 1, justifyContent: 'center', paddingBottom: 80 }}
         keyboardShouldPersistTaps='handled'
         showsVerticalScrollIndicator={false}
         {...panResponder.panHandlers}
       >
-        <View style={{ paddingTop: '15%' }} className='px-6'>
+        <View className='px-6'>
           {/* Welcome Section */}
           <View
             className='mb-8'
@@ -541,7 +541,6 @@ export default function SearchForm({
 
         </View>
 
-        {/* Recent searches moved to dedicated screen */}
 
       </ScrollView>
 
