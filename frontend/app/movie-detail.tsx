@@ -26,6 +26,7 @@ import { Skeleton } from '@/components/Skeleton';
 import { getSmallBorderRadius, getSquircle } from '@/utils/designHelpers';
 import AddToWatchlistButton from '@/components/AddToWatchlistButton';
 import * as Haptics from 'expo-haptics';
+import { trackMovieView, trackMovieShare, trackMarkWatched, trackUnmarkWatched, trackRate } from '@/services/analytics';
 
 import HeroSection from '@/components/movie-detail/HeroSection';
 import CastSection from '@/components/movie-detail/CastSection';
@@ -91,6 +92,11 @@ export default function MovieDetailScreen() {
 
   const { isAuthenticated } = useAuth();
 
+  // Track movie view
+  useEffect(() => {
+    if (tmdbId > 0) trackMovieView(tmdbId, mediaType, title);
+  }, [tmdbId]);
+
   // Rating system
   const { rating: savedRating, isWatched: savedIsWatched } = useMovieRating(tmdbId);
   const { rateMovie, isRating } = useRateMovie();
@@ -108,6 +114,7 @@ export default function MovieDetailScreen() {
 
   const handleMarkWatched = () => {
     if (isRating || !isAuthenticated) return;
+    trackMarkWatched(tmdbId, mediaType);
     Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
     setIsWatched(true);
     rateMovie(
@@ -118,6 +125,7 @@ export default function MovieDetailScreen() {
 
   const handleUnmarkWatched = () => {
     if (isDeleting || !isAuthenticated) return;
+    trackUnmarkWatched(tmdbId, mediaType);
     Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
     deleteRating(tmdbId, {
       onSuccess: () => { setIsWatched(false); setLocalRating(0); },
@@ -128,6 +136,7 @@ export default function MovieDetailScreen() {
     if (isRating || !isAuthenticated) return;
     const newRating = stars === localRating ? 0 : stars;
     setLocalRating(newRating);
+    trackRate(tmdbId, newRating);
     Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
     rateMovie(
       { tmdb_id: tmdbId, rating: newRating, title, media_type: mediaType, poster_path: posterPath || undefined },
@@ -215,8 +224,10 @@ export default function MovieDetailScreen() {
     const tmdbUrl = mediaType === 'tv'
       ? `https://www.themoviedb.org/tv/${tmdbId}`
       : `https://www.themoviedb.org/movie/${tmdbId}`;
-    try { await Share.share({ message: `${title} - ${tmdbUrl}`, url: tmdbUrl }); }
-    catch {}
+    try {
+      trackMovieShare(tmdbId, mediaType);
+      await Share.share({ message: `${title} - ${tmdbUrl}`, url: tmdbUrl });
+    } catch {}
   };
 
   // Helper: format TV status

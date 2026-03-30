@@ -19,6 +19,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useRouter } from 'expo-router';
 import { authService, User } from '../services/auth.service';
 import { backendAPIService } from '../services/backend-api.service';
+import { trackSignIn, trackSignOut, trackDeleteAccount } from '../services/analytics';
 
 export interface AuthContextType {
   // Authentication state
@@ -117,7 +118,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       setIsLoading(true);
 
       const authData = await authService.signInWithApple();
-
+      trackSignIn('apple');
       setUser(authData.user);
 
       // Link user to RevenueCat to associate purchases with userId
@@ -171,7 +172,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
         setIsLoading(true);
 
         const authData = await authService.signInWithGoogle(idToken);
-
+        trackSignIn('google');
         setUser(authData.user);
 
         // Link user to RevenueCat to associate purchases with userId
@@ -213,6 +214,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   const signOut = async () => {
     try {
       setIsLoading(true);
+      trackSignOut();
       await authService.signOut();
       setUser(null);
 
@@ -238,6 +240,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   const deleteAccount = async () => {
     try {
       setIsLoading(true);
+      trackDeleteAccount();
       const response = await backendAPIService.deleteAccount();
       if (!response.success) {
         throw new Error('Failed to delete account');

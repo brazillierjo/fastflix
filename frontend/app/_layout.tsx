@@ -16,6 +16,7 @@ import { AuthProvider } from '@/contexts/AuthContext';
 import { LanguageProvider } from '@/contexts/LanguageContext';
 import { SubscriptionProvider } from '@/contexts/RevenueCatContext';
 import { QueryProvider } from '@/providers/QueryProvider';
+import { AptabaseProvider } from '@aptabase/react-native';
 import * as Sentry from '@sentry/react-native';
 
 // Navigation integration for performance tracking
@@ -76,6 +77,7 @@ export default Sentry.wrap(function RootLayout() {
 
   return (
     <ErrorBoundary>
+      <AptabaseProvider appKey='A-EU-9072861721'>
       <QueryProvider>
         <LanguageProvider>
           <SubscriptionProvider>
@@ -127,6 +129,7 @@ export default Sentry.wrap(function RootLayout() {
           </SubscriptionProvider>
         </LanguageProvider>
       </QueryProvider>
+      </AptabaseProvider>
     </ErrorBoundary>
   );
 });

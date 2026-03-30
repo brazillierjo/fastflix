@@ -26,6 +26,7 @@ import {
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import { trackScreenView, trackSearch, trackSearchRefine, trackSubscriptionModalOpen } from '@/services/analytics';
 
 export default function SearchScreen() {
   const params = useLocalSearchParams<{ query?: string; ts?: string }>();
@@ -62,6 +63,9 @@ export default function SearchScreen() {
   const { isAuthenticated, isLoading } = useAuth();
   useSubscription();
 
+  // Track screen view
+  useEffect(() => { trackScreenView('search'); }, []);
+
   // Clean up timers on unmount
   useEffect(() => {
     const timers = timersRef.current;
@@ -92,6 +96,7 @@ export default function SearchScreen() {
       },
       {
         onSuccess: async data => {
+          trackSearch(query, data.movies?.length || 0);
           handleSearchSuccess(data);
 
           // Invalidate home data so recent searches update
@@ -127,7 +132,7 @@ export default function SearchScreen() {
                 },
                 {
                   text: t('subscription.required.subscribe') || 'Subscribe',
-                  onPress: () => setShowSubscriptionModal(true),
+                  onPress: () => { trackSubscriptionModalOpen(); setShowSubscriptionModal(true); },
                 },
               ]
             );
@@ -163,6 +168,7 @@ export default function SearchScreen() {
       },
       {
         onSuccess: data => {
+          trackSearchRefine(data.movies?.length || 0);
           handleSearchSuccess(data);
           setIsRefining(false);
         },

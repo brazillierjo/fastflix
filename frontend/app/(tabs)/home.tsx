@@ -34,6 +34,7 @@ import {
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Skeleton } from '@/components/Skeleton';
+import { trackScreenView, trackDailyPickView, trackTrendingClick, trackPullToRefresh, trackSubscriptionModalOpen } from '@/services/analytics';
 
 const SETUP_GENRES_KEY = '@fastflix/setup_genres';
 const SETUP_PLATFORMS_KEY = '@fastflix/setup_platforms';
@@ -80,6 +81,9 @@ export default function HomeScreen() {
   const scrollViewRef = useRef<ScrollView>(null);
   const quickSearchY = useRef(0);
   const navigation = useNavigation();
+
+  // Track screen view
+  useEffect(() => { trackScreenView('home'); }, []);
 
   // Scroll to top when home tab is tapped while already focused
   useEffect(() => {
@@ -217,7 +221,7 @@ export default function HomeScreen() {
   );
 
   const onRefresh = useCallback(() => {
-    // Refresh ALL sections: home data, taste profile, watchlist, for you
+    trackPullToRefresh('home');
     refetch().catch(() => {});
     queryClient.invalidateQueries({ queryKey: ['tasteProfile'] });
     queryClient.invalidateQueries({ queryKey: ['watchlist'] });
@@ -309,6 +313,7 @@ export default function HomeScreen() {
           <TouchableOpacity
             onPress={() => {
               if (!hasUnlimitedAccess) {
+                trackSubscriptionModalOpen();
                 setShowSubscriptionModal(true);
               }
             }}
@@ -430,7 +435,8 @@ export default function HomeScreen() {
               activeOpacity={0.8}
               accessibilityLabel={`${t('home.dailyPick')}: ${dailyPick.title || dailyPick.name}`}
               accessibilityRole='button'
-              onPress={() =>
+              onPress={() => {
+                trackDailyPickView(dailyPick.tmdb_id || dailyPick.id);
                 router.push({
                   pathname: '/movie-detail' as never,
                   params: {
@@ -444,8 +450,8 @@ export default function HomeScreen() {
                     creditsJson: JSON.stringify([]),
                     detailedInfoJson: JSON.stringify({}),
                   },
-                })
-              }
+                });
+              }}
               style={[getSquircle(16), getCardShadow(isDark)]}
               className='overflow-hidden border border-light-border bg-light-surface dark:border-dark-border dark:bg-dark-surface'
             >
@@ -523,7 +529,8 @@ export default function HomeScreen() {
                       key={item.tmdb_id || item.id || i}
                       accessibilityLabel={item.title}
                       accessibilityRole='button'
-                      onPress={() =>
+                      onPress={() => {
+                        trackTrendingClick(item.tmdb_id || item.id);
                         router.push({
                           pathname: '/movie-detail' as never,
                           params: {
@@ -537,8 +544,8 @@ export default function HomeScreen() {
                             creditsJson: JSON.stringify([]),
                             detailedInfoJson: JSON.stringify({}),
                           },
-                        })
-                      }
+                        });
+                      }}
                       activeOpacity={0.7}
                       style={{ width: 130 }}
                     >

@@ -7,7 +7,7 @@ import { Ionicons } from '@expo/vector-icons';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useRouter } from 'expo-router';
 import { MotiView } from 'moti';
-import React, { useCallback, useRef, useState } from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import {
   Dimensions,
   FlatList,
@@ -22,6 +22,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { cn } from '@/utils/cn';
 import { getNetflixGlow, getSquircle } from '@/utils/designHelpers';
+import { trackOnboardingStart, trackOnboardingComplete, trackOnboardingSkip } from '@/services/analytics';
 
 const { width: SCREEN_WIDTH } = Dimensions.get('window');
 const ONBOARDING_KEY = '@fastflix/onboarding_complete';
@@ -78,17 +79,19 @@ export default function OnboardingScreen() {
   const flatListRef = useRef<FlatList>(null);
   const [activeIndex, setActiveIndex] = useState(0);
 
+  useEffect(() => { trackOnboardingStart(); }, []);
+
   const completeOnboarding = useCallback(async () => {
+    trackOnboardingComplete();
     await AsyncStorage.setItem(ONBOARDING_KEY, 'true');
     router.replace('/setup' as never);
   }, [router]);
 
   const goToLogin = useCallback(async () => {
+    trackOnboardingSkip(activeIndex);
     await AsyncStorage.setItem(ONBOARDING_KEY, 'true');
-    // Don't mark setup as complete — returning users with preferences will auto-skip setup,
-    // new users will go through setup after auth
     router.replace('/auth' as never);
-  }, [router]);
+  }, [router, activeIndex]);
 
   const handleNext = useCallback(() => {
     if (activeIndex < SLIDES.length - 1) {

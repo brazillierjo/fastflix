@@ -14,7 +14,7 @@ import { cn } from '@/utils/cn';
 import { getButtonBorderRadius, getSquircle } from '@/utils/designHelpers';
 import * as Sentry from '@sentry/react-native';
 import { MotiView } from 'moti';
-import React, { useCallback, useMemo, useRef, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import {
   ActivityIndicator,
   FlatList,
@@ -26,6 +26,7 @@ import {
   View,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import { trackScreenView, trackWatchlistShare, trackWatchlistRefresh, trackPullToRefresh } from '@/services/analytics';
 
 type FilterType = 'all' | 'movie' | 'tv';
 type ViewMode = 'toWatch' | 'watched' | 'all';
@@ -44,6 +45,8 @@ export default function WatchlistScreen() {
   const [showAuthGate, setShowAuthGate] = useState(false);
   const [dismissedChanges, setDismissedChanges] = useState<Set<string>>(new Set());
   const flatListRef = useRef<FlatList>(null);
+
+  useEffect(() => { trackScreenView('watchlist'); }, []);
 
   const { changes: availabilityChanges, isChecking: isCheckingAvailability } =
     useAvailabilityCheck();
@@ -105,6 +108,8 @@ export default function WatchlistScreen() {
   }, [removeFromWatchlistAsync]);
 
   const handleRefresh = useCallback(() => {
+    trackWatchlistRefresh();
+    trackPullToRefresh('watchlist');
     refetch();
     refreshProviders();
   }, [refetch, refreshProviders]);
@@ -127,6 +132,7 @@ export default function WatchlistScreen() {
     const message = `\uD83C\uDFAC ${title}\n\n${itemLines}\n\n${footer}`;
 
     try {
+      trackWatchlistShare(toWatchItems.length);
       await Share.share({ message });
     } catch {
       // User cancelled or share failed silently

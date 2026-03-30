@@ -11,7 +11,7 @@ import { useLanguage } from '@/contexts/LanguageContext';
 import { useSubscription } from '@/contexts/RevenueCatContext';
 import { getAppVersion } from '@/utils/appVersion';
 import { MotiView } from 'moti';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   ActionSheetIOS,
   Alert,
@@ -23,6 +23,7 @@ import {
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { typography } from '@/utils/designHelpers';
+import { trackScreenView, trackLanguageChange, trackSubscriptionModalOpen } from '@/services/analytics';
 
 export default function ProfileScreen() {
   const { language, setLanguage, t } = useLanguage();
@@ -70,6 +71,8 @@ export default function ProfileScreen() {
   const [showAboutModal, setShowAboutModal] = useState(false);
   const [showFiltersModal, setShowFiltersModal] = useState(false);
   const [showAuthGate, setShowAuthGate] = useState(false);
+
+  useEffect(() => { trackScreenView('profile'); }, []);
 
   const languages = AVAILABLE_LANGUAGES;
   const currentLanguage = languages.find(lang => lang.code === language);
@@ -138,6 +141,7 @@ export default function ProfileScreen() {
         buttonIndex => {
           if (buttonIndex > 0) {
             const selectedLang = languages[buttonIndex - 1];
+            trackLanguageChange(selectedLang.code);
             setLanguage(selectedLang.code);
           }
         }
@@ -147,7 +151,7 @@ export default function ProfileScreen() {
         { text: t('common.cancel'), style: 'cancel' },
         ...languages.map(lang => ({
           text: `${lang.flag} ${lang.name}`,
-          onPress: () => setLanguage(lang.code),
+          onPress: () => { trackLanguageChange(lang.code); setLanguage(lang.code); },
         })),
       ]);
     }

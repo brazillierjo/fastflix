@@ -29,6 +29,7 @@ import { PurchasesPackage } from 'react-native-purchases';
 
 import PlanCard from '@/components/subscription/PlanCard';
 import FeaturesList from '@/components/subscription/FeaturesList';
+import { trackSubscriptionPlanSelect, trackSubscriptionPurchase, trackSubscriptionRestore } from '@/services/analytics';
 
 interface SubscriptionModalProps {
   visible: boolean;
@@ -57,6 +58,7 @@ export default function SubscriptionModal({
   } = useSubscription();
 
   const [selectedPlan, setSelectedPlan] = useState<PlanType>('quarterly');
+  const selectPlan = (plan: PlanType) => { trackSubscriptionPlanSelect(plan); setSelectedPlan(plan); };
   const [purchasing, setPurchasing] = useState(false);
   const [isLoadingOfferings, setIsLoadingOfferings] = useState(false);
   const colorScheme = useColorScheme();
@@ -134,6 +136,7 @@ export default function SubscriptionModal({
     try {
       setPurchasing(true);
       await purchasePackage(packageToPurchase);
+      trackSubscriptionPurchase(selectedPlan);
       if (onSubscriptionSuccess) onSubscriptionSuccess();
       onClose();
     } catch (error) {
@@ -149,6 +152,7 @@ export default function SubscriptionModal({
   const handleRestore = async () => {
     try {
       setPurchasing(true);
+      trackSubscriptionRestore();
       const restored = await restorePurchases();
       if (restored && onSubscriptionSuccess) {
         onSubscriptionSuccess();
@@ -335,7 +339,7 @@ export default function SubscriptionModal({
                   price={formatPrice(monthlyPackage.product.priceString)}
                   period={t('subscription.monthly.period') || '/month'}
                   selected={selectedPlan === 'monthly'}
-                  onPress={() => setSelectedPlan('monthly')}
+                  onPress={() => selectPlan('monthly')}
                   greenPrimary={greenPrimary}
                   greenDark={greenDark}
                   greenBg={greenBg}
@@ -353,7 +357,7 @@ export default function SubscriptionModal({
                   badgeLabel={t('subscription.popular') || 'POPULAR'}
                   badgeVariant='outline'
                   selected={selectedPlan === 'quarterly'}
-                  onPress={() => setSelectedPlan('quarterly')}
+                  onPress={() => selectPlan('quarterly')}
                   greenPrimary={greenPrimary}
                   greenDark={greenDark}
                   greenBg={greenBg}
@@ -371,7 +375,7 @@ export default function SubscriptionModal({
                   badgeLabel={t('subscription.bestValue') || 'BEST VALUE'}
                   badgeVariant='filled'
                   selected={selectedPlan === 'annual'}
-                  onPress={() => setSelectedPlan('annual')}
+                  onPress={() => selectPlan('annual')}
                   greenPrimary={greenPrimary}
                   greenDark={greenDark}
                   greenBg={greenBg}
