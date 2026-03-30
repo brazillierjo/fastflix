@@ -382,7 +382,8 @@
     "retry": "Retry",
     "remove": "Remove",
     "seeMore": "See more",
-    "seeAll": "See all"
+    "seeAll": "See all",
+    "copied": "Copied!"
   },
   "tabs": {
     "home": "Home",

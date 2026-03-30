@@ -12,9 +12,8 @@ import { useBackendMovieSearch } from '@/hooks/useBackendMovieSearch';
 import { ConversationMessage } from '@/services/backend-api.service';
 import { cn } from '@/utils/cn';
 import { useQueryClient } from '@tanstack/react-query';
-import AsyncStorage from '@react-native-async-storage/async-storage';
-import { useLocalSearchParams, useRouter, useFocusEffect } from 'expo-router';
-import React, { useCallback, useEffect, useRef, useState } from 'react';
+import { useLocalSearchParams, useRouter } from 'expo-router';
+import React, { useEffect, useRef, useState } from 'react';
 import {
   Alert,
   KeyboardAvoidingView,
@@ -86,18 +85,6 @@ export default function SearchScreen() {
     }
   }, [params.query, params.ts, setQuery, goBackToHome]);
 
-  // Pre-fill query from search history screen (via AsyncStorage)
-  useFocusEffect(
-    useCallback(() => {
-      AsyncStorage.getItem('@fastflix/prefill_query').then((val) => {
-        if (val) {
-          setQuery(val);
-          goBackToHome();
-          AsyncStorage.removeItem('@fastflix/prefill_query');
-        }
-      });
-    }, [setQuery, goBackToHome])
-  );
 
   const handleSearch = async () => {
     handleSearchStart();

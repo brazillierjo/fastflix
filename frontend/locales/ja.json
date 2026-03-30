@@ -354,7 +354,8 @@
     "retry": "再試行",
     "remove": "削除",
     "seeMore": "もっと見る",
-    "seeAll": "すべて見る"
+    "seeAll": "すべて見る",
+    "copied": "コピーしました"
   },
   "tabs": {
     "home": "ホーム",

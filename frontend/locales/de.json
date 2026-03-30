@@ -354,7 +354,8 @@
     "retry": "Erneut versuchen",
     "remove": "Entfernen",
     "seeMore": "Mehr anzeigen",
-    "seeAll": "Alle anzeigen"
+    "seeAll": "Alle anzeigen",
+    "copied": "Kopiert!"
   },
   "tabs": {
     "home": "Start",

@@ -1,15 +1,15 @@
 /**
  * Search History Screen
- * Shows all recent searches with tap-to-search functionality
+ * Shows recent searches with copy-to-clipboard
  */
 
 import { Ionicons } from '@expo/vector-icons';
-import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { useHomeData } from '@/hooks/useHomeData';
 import { useRouter } from 'expo-router';
+import * as Clipboard from 'expo-clipboard';
 import * as Haptics from 'expo-haptics';
-import React from 'react';
+import React, { useState } from 'react';
 import {
   FlatList,
   Text,
@@ -25,17 +25,20 @@ export default function SearchHistoryScreen() {
   const colorScheme = useColorScheme();
   const isDark = colorScheme === 'dark';
   const { recentSearches } = useHomeData();
+  const [copiedIndex, setCopiedIndex] = useState<number | null>(null);
 
   const searches = recentSearches
+    .slice(0, 15)
     .map((item: string | { query?: string; label?: string }) =>
       typeof item === 'string' ? item : item.query || item.label || ''
     )
     .filter((l: string) => l.length > 0);
 
-  const handleSelect = async (query: string) => {
-    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
-    await AsyncStorage.setItem('@fastflix/prefill_query', query);
-    router.back();
+  const handleCopy = async (query: string, index: number) => {
+    Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
+    await Clipboard.setStringAsync(query);
+    setCopiedIndex(index);
+    setTimeout(() => setCopiedIndex(null), 2000);
   };
 
   return (
@@ -77,36 +80,57 @@ export default function SearchHistoryScreen() {
           keyExtractor={(_, i) => String(i)}
           contentContainerStyle={{ paddingHorizontal: 16, paddingTop: 12, paddingBottom: 100 }}
           renderItem={({ item: query, index }) => (
-            <TouchableOpacity
-              onPress={() => handleSelect(query)}
-              activeOpacity={0.5}
-              className={`flex-row items-center bg-light-card px-4 py-3.5 dark:bg-dark-card ${
+            <View
+              className={`flex-row items-center bg-light-card dark:bg-dark-card ${
                 index === 0 ? 'rounded-t-xl' : ''
               } ${
                 index === searches.length - 1 ? 'rounded-b-xl' : 'border-b border-light-borderSubtle dark:border-dark-borderSubtle'
               }`}
             >
-              <Ionicons
-                name='time-outline'
-                size={18}
-                color='#8E8E93'
-                style={{ marginRight: 14 }}
-              />
-              <Text
-                className='flex-1 text-base text-light-text dark:text-dark-text'
-                numberOfLines={2}
+              <View className='flex-1 flex-row items-center px-4 py-3.5'>
+                <Ionicons
+                  name='time-outline'
+                  size={18}
+                  color='#8E8E93'
+                  style={{ marginRight: 14 }}
+                />
+                <Text
+                  className='flex-1 text-base text-light-text dark:text-dark-text'
+                  numberOfLines={2}
+                >
+                  {query}
+                </Text>
+              </View>
+              <TouchableOpacity
+                onPress={() => handleCopy(query, index)}
+                hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}
+                className='px-4 py-3.5'
+                accessibilityLabel='Copy'
+                accessibilityRole='button'
               >
-                {query}
-              </Text>
-              <Ionicons
-                name='arrow-up'
-                size={18}
-                color={isDark ? '#48484A' : '#C7C7CC'}
-                style={{ transform: [{ rotate: '-45deg' }], marginLeft: 8 }}
-              />
-            </TouchableOpacity>
+                <Ionicons
+                  name={copiedIndex === index ? 'checkmark-circle' : 'copy-outline'}
+                  size={20}
+                  color={copiedIndex === index ? '#22c55e' : (isDark ? '#8E8E93' : '#8E8E93')}
+                />
+              </TouchableOpacity>
+            </View>
           )}
         />
+      )}
+
+      {/* Toast */}
+      {copiedIndex !== null && (
+        <View
+          className='absolute bottom-24 left-0 right-0 items-center'
+          pointerEvents='none'
+        >
+          <View className='rounded-full bg-black/80 px-5 py-2.5 dark:bg-white/20'>
+            <Text className='text-sm font-medium text-white'>
+              {t('common.copied') || 'Copied!'}
+            </Text>
+          </View>
+        </View>
       )}
     </SafeAreaView>
   );
