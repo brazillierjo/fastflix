@@ -21,6 +21,7 @@ import {
 } from '@/utils/designHelpers';
 import { useRouter } from 'expo-router';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import * as Haptics from 'expo-haptics';
 import { MotiView } from 'moti';
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import {
@@ -236,14 +237,14 @@ export default function HomeScreen() {
           <Skeleton width='60%' height={28} borderRadius={8} />
           <Skeleton width='40%' height={14} borderRadius={6} style={{ marginTop: 8 }} />
         </View>
-        <View className='mt-6 px-6'>
+        <View className='mt-8 px-6'>
           <Skeleton width='100%' height={52} borderRadius={16} />
         </View>
-        <View className='mt-6 px-6'>
+        <View className='mt-8 px-6'>
           <Skeleton width='50%' height={18} borderRadius={6} />
           <Skeleton width='100%' height={200} borderRadius={16} style={{ marginTop: 12 }} />
         </View>
-        <View className='mt-6 px-6'>
+        <View className='mt-8 px-6'>
           <Skeleton width='60%' height={18} borderRadius={6} />
           <View className='mt-3 flex-row gap-3'>
             {[1, 2, 3, 4].map(i => (
@@ -422,7 +423,7 @@ export default function HomeScreen() {
           from={hasAnimated.current ? undefined : { opacity: 0, translateY: 12 }}
           animate={{ opacity: 1, translateY: 0 }}
           transition={{ type: 'timing', duration: 400, delay: 50 }}
-          className='mt-6 px-6'
+          className='mt-8 px-6'
         >
           <Text
             style={typography.title3}
@@ -436,6 +437,7 @@ export default function HomeScreen() {
               accessibilityLabel={`${t('home.dailyPick')}: ${dailyPick.title || dailyPick.name}`}
               accessibilityRole='button'
               onPress={() => {
+                Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
                 trackDailyPickView(dailyPick.tmdb_id || dailyPick.id);
                 router.push({
                   pathname: '/movie-detail' as never,
@@ -521,15 +523,16 @@ export default function HomeScreen() {
           <ScrollView
             horizontal
             showsHorizontalScrollIndicator={false}
-            contentContainerStyle={{ paddingHorizontal: 24, gap: 12 }}
+            contentContainerStyle={{ paddingLeft: 24, paddingRight: 16, gap: 4 }}
           >
             {trending.length > 0
               ? trending.map((item, i) => (
                     <TouchableOpacity
                       key={item.tmdb_id || item.id || i}
-                      accessibilityLabel={item.title}
+                      accessibilityLabel={`#${i + 1} ${item.title}`}
                       accessibilityRole='button'
                       onPress={() => {
+                        Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
                         trackTrendingClick(item.tmdb_id || item.id);
                         router.push({
                           pathname: '/movie-detail' as never,
@@ -547,47 +550,66 @@ export default function HomeScreen() {
                         });
                       }}
                       activeOpacity={0.7}
-                      style={{ width: 130 }}
+                      style={{ width: 150, flexDirection: 'row', alignItems: 'flex-end' }}
                     >
-                      <View
-                        style={[getSquircle(12), getCardShadow(isDark)]}
-                        className='h-[195px] overflow-hidden border border-light-border bg-light-surface dark:border-dark-border dark:bg-dark-surface'
+                      {/* Ranking number */}
+                      <Text
+                        style={{
+                          fontSize: 72,
+                          fontWeight: '900',
+                          lineHeight: 72,
+                          color: isDark ? '#1a1a1a' : '#f0f0f0',
+                          marginRight: -8,
+                          zIndex: 0,
+                          textShadowColor: isDark ? 'rgba(255,255,255,0.08)' : 'rgba(0,0,0,0.06)',
+                          textShadowOffset: { width: 1, height: 1 },
+                          textShadowRadius: 0,
+                        }}
                       >
-                        {item.poster_path ? (
-                          <Image
-                            source={{
-                              uri: `${TMDB_IMAGE_BASE}/w342${item.poster_path}`,
-                            }}
-                            className='h-full w-full'
-                            resizeMode='cover'
-                          />
-                        ) : (
-                          <View className='flex-1 items-center justify-center'>
-                            <Ionicons
-                              name='image-outline'
-                              size={28}
-                              color={isDark ? '#404040' : '#d4d4d4'}
+                        {i + 1}
+                      </Text>
+                      {/* Poster */}
+                      <View style={{ flex: 1 }}>
+                        <View
+                          style={[getSquircle(12), getCardShadow(isDark)]}
+                          className='h-[165px] overflow-hidden border border-light-border bg-light-surface dark:border-dark-border dark:bg-dark-surface'
+                        >
+                          {item.poster_path ? (
+                            <Image
+                              source={{
+                                uri: `${TMDB_IMAGE_BASE}/w342${item.poster_path}`,
+                              }}
+                              className='h-full w-full'
+                              resizeMode='cover'
                             />
+                          ) : (
+                            <View className='flex-1 items-center justify-center'>
+                              <Ionicons
+                                name='image-outline'
+                                size={28}
+                                color={isDark ? '#404040' : '#d4d4d4'}
+                              />
+                            </View>
+                          )}
+                        </View>
+                        <Text
+                          className='mt-1.5 text-xs font-medium text-light-text dark:text-dark-text'
+                          numberOfLines={1}
+                        >
+                          {item.title}
+                        </Text>
+                        {item.providers?.length > 0 && (
+                          <View className='mt-1 flex-row gap-1'>
+                            {item.providers.slice(0, 3).map((p: any, pi: number) => (
+                              <Image
+                                key={pi}
+                                source={{ uri: `${TMDB_IMAGE_BASE}/w45${p.logo_path}` }}
+                                style={{ width: 16, height: 16, borderRadius: 4 }}
+                              />
+                            ))}
                           </View>
                         )}
                       </View>
-                      <Text
-                        className='mt-1.5 text-xs font-medium text-light-text dark:text-dark-text'
-                        numberOfLines={1}
-                      >
-                        {item.title}
-                      </Text>
-                      {item.providers?.length > 0 && (
-                        <View className='mt-1 flex-row gap-1'>
-                          {item.providers.slice(0, 3).map((p: any, pi: number) => (
-                            <Image
-                              key={pi}
-                              source={{ uri: `${TMDB_IMAGE_BASE}/w45${p.logo_path}` }}
-                              style={{ width: 16, height: 16, borderRadius: 4 }}
-                            />
-                          ))}
-                        </View>
-                      )}
                     </TouchableOpacity>
                 ))
               : isHomeLoading
@@ -670,56 +692,7 @@ export default function HomeScreen() {
           <MyRatingsSection />
         </MotiView>
 
-        {/* Recent Searches - only for authenticated users */}
-        {isAuthenticated && recentSearches.length > 0 && (
-          <View className='mt-8'>
-            <Text
-              style={typography.title3}
-              className='mb-3 px-6 text-light-text dark:text-dark-text'
-            >
-              {t('home.recentSearches')}
-            </Text>
-            <ScrollView
-              horizontal
-              showsHorizontalScrollIndicator={false}
-              contentContainerStyle={{ paddingHorizontal: 24, gap: 8 }}
-            >
-              {recentSearches.map((item, i) => {
-                const label =
-                  typeof item === 'string' ? item : item.query || item.label || '';
-                return (
-                  <TouchableOpacity
-                    key={i}
-                    onPress={() =>
-                      router.push({
-                        pathname: '/search' as never,
-                        params: { query: label, ts: String(Date.now()) },
-                      })
-                    }
-                    activeOpacity={0.7}
-                    style={[getSquircle(12), { maxWidth: 240 }]}
-                    className='flex-row items-center gap-2 overflow-hidden border border-light-border bg-light-surface px-3.5 py-2.5 dark:border-dark-border dark:bg-dark-surface'
-                    accessibilityLabel={label}
-                    accessibilityRole='button'
-                  >
-                    <Ionicons
-                      name='time-outline'
-                      size={14}
-                      color={isDark ? '#a3a3a3' : '#737373'}
-                    />
-                    <Text
-                      className='shrink text-sm text-light-text dark:text-dark-text'
-                      numberOfLines={1}
-                      ellipsizeMode='tail'
-                    >
-                      {label}
-                    </Text>
-                  </TouchableOpacity>
-                );
-              })}
-            </ScrollView>
-          </View>
-        )}
+        {/* Recent Searches moved to Search screen */}
 
       </ScrollView>
 

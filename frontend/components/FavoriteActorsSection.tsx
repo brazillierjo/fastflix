@@ -45,13 +45,23 @@ export default function FavoriteActorsSection() {
 
   return (
     <View className='mt-8'>
-      <View className='mb-3 px-6'>
+      <View className='mb-3 flex-row items-center justify-between px-6'>
         <Text
           style={typography.title3}
           className='text-light-text dark:text-dark-text'
         >
           {t('favoriteActors.sectionTitle')}
         </Text>
+        {favoriteActors.length > 0 && (
+          <TouchableOpacity
+            onPress={() => router.push('/favorite-actors-list' as never)}
+            hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
+          >
+            <Text className='text-sm font-medium text-netflix-500'>
+              {t('common.seeAll') || 'See all'}
+            </Text>
+          </TouchableOpacity>
+        )}
       </View>
 
       {/* Empty state */}

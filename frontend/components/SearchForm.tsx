@@ -33,12 +33,18 @@ import Animated, {
   cancelAnimation,
 } from 'react-native-reanimated';
 
+interface RecentSearch {
+  query?: string;
+  label?: string;
+}
+
 interface SearchFormProps {
   query: string;
   setQuery: (query: string) => void;
   onSearch: () => void;
   loading: boolean;
   onSubscriptionPress?: () => void;
+  recentSearches?: (string | RecentSearch)[];
 }
 
 // Typewriter speed in ms per character
@@ -52,6 +58,7 @@ export default function SearchForm({
   onSearch,
   loading,
   onSubscriptionPress,
+  recentSearches = [],
 }: SearchFormProps) {
   const { t, getRandomPlaceholder } = useLanguage();
   const { hasUnlimitedAccess, isTrialEligible } = useSubscription();
@@ -538,6 +545,48 @@ export default function SearchForm({
               </Text>
             </TouchableOpacity>
           </View>
+
+          {/* Recent Searches */}
+          {recentSearches.length > 0 && !query.trim() && (
+            <View className='mt-6'>
+              <Text className='mb-2 text-sm font-medium text-light-textMuted dark:text-dark-textMuted'>
+                {t('home.recentSearches') || 'Recent searches'}
+              </Text>
+              <View className='flex-row flex-wrap gap-2'>
+                {recentSearches.slice(0, 6).map((item, i) => {
+                  const label =
+                    typeof item === 'string' ? item : item.query || item.label || '';
+                  return (
+                    <TouchableOpacity
+                      key={i}
+                      onPress={() => {
+                        Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+                        setQuery(label);
+                      }}
+                      activeOpacity={0.7}
+                      style={getSquircle(10)}
+                      className='flex-row items-center gap-1.5 bg-light-surface px-3 py-2 dark:bg-dark-surface'
+                      accessibilityLabel={label}
+                      accessibilityRole='button'
+                    >
+                      <Ionicons
+                        name='time-outline'
+                        size={13}
+                        color={isDark ? '#6b7280' : '#9ca3af'}
+                      />
+                      <Text
+                        className='text-sm text-light-textSecondary dark:text-dark-textSecondary'
+                        numberOfLines={1}
+                        style={{ maxWidth: 180 }}
+                      >
+                        {label}
+                      </Text>
+                    </TouchableOpacity>
+                  );
+                })}
+              </View>
+            </View>
+          )}
         </View>
       </ScrollView>
 

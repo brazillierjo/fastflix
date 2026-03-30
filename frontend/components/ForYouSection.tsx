@@ -194,7 +194,7 @@ export default function ForYouSection() {
         </View>
       )}
 
-      {/* Empty state */}
+      {/* Empty state with actionable CTA */}
       {isAuthenticated && !isLoading && recommendations.length === 0 && (
         <View
           style={[getSquircle(16), getCardShadow(isDark)]}
@@ -208,6 +208,15 @@ export default function ForYouSection() {
           <Text className='mt-3 text-center text-sm text-light-muted dark:text-dark-muted'>
             {t('forYou.empty')}
           </Text>
+          <TouchableOpacity
+            onPress={() => router.push('/search' as never)}
+            style={getSquircle(10)}
+            className='mt-4 bg-netflix-500 px-5 py-2.5'
+          >
+            <Text className='text-sm font-semibold text-white'>
+              {t('forYou.discover') || 'Discover movies'}
+            </Text>
+          </TouchableOpacity>
         </View>
       )}
 

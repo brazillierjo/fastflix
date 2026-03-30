@@ -9,6 +9,7 @@ import { useLanguage } from '@/contexts/LanguageContext';
 import { useSubscription } from '@/contexts/RevenueCatContext';
 import { useAppState } from '@/hooks/useAppState';
 import { useBackendMovieSearch } from '@/hooks/useBackendMovieSearch';
+import { useHomeData } from '@/hooks/useHomeData';
 import { ConversationMessage } from '@/services/backend-api.service';
 import { cn } from '@/utils/cn';
 import { useQueryClient } from '@tanstack/react-query';
@@ -62,6 +63,7 @@ export default function SearchScreen() {
   const isDark = colorScheme === 'dark';
   const { isAuthenticated, isLoading } = useAuth();
   useSubscription();
+  const { recentSearches } = useHomeData();
 
   // Track screen view
   useEffect(() => { trackScreenView('search'); }, []);
@@ -239,6 +241,7 @@ export default function SearchScreen() {
               onSearch={handleSearch}
               loading={movieSearchMutation.isPending}
               onSubscriptionPress={() => setShowSubscriptionModal(true)}
+              recentSearches={recentSearches}
             />
           )}
         </View>
