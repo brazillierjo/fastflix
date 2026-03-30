@@ -546,16 +546,17 @@ export default function SearchForm({
             </TouchableOpacity>
           </View>
 
-          {/* Recent Searches */}
+          {/* Recent Searches — iOS-style list */}
           {recentSearches.length > 0 && !query.trim() && (
             <View className='mt-6'>
-              <Text className='mb-2 text-sm font-medium text-light-textMuted dark:text-dark-textMuted'>
-                {t('home.recentSearches') || 'Recent searches'}
-              </Text>
-              <View className='flex-row flex-wrap gap-2'>
-                {recentSearches.slice(0, 6).map((item, i) => {
+              <View
+                style={getSquircle(14)}
+                className='overflow-hidden border border-light-border bg-light-surface dark:border-dark-border dark:bg-dark-surface'
+              >
+                {recentSearches.slice(0, 5).map((item, i) => {
                   const label =
                     typeof item === 'string' ? item : item.query || item.label || '';
+                  const isLast = i === Math.min(recentSearches.length, 5) - 1;
                   return (
                     <TouchableOpacity
                       key={i}
@@ -563,24 +564,32 @@ export default function SearchForm({
                         Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
                         setQuery(label);
                       }}
-                      activeOpacity={0.7}
-                      style={getSquircle(10)}
-                      className='flex-row items-center gap-1.5 bg-light-surface px-3 py-2 dark:bg-dark-surface'
+                      activeOpacity={0.6}
+                      className={cn(
+                        'flex-row items-center px-4 py-3',
+                        !isLast && 'border-b border-light-border/50 dark:border-dark-border/50'
+                      )}
                       accessibilityLabel={label}
                       accessibilityRole='button'
                     >
                       <Ionicons
                         name='time-outline'
-                        size={13}
-                        color={isDark ? '#6b7280' : '#9ca3af'}
+                        size={16}
+                        color={isDark ? '#525252' : '#b0b0b0'}
+                        style={{ marginRight: 12 }}
                       />
                       <Text
-                        className='text-sm text-light-textSecondary dark:text-dark-textSecondary'
+                        className='flex-1 text-sm text-light-text dark:text-dark-text'
                         numberOfLines={1}
-                        style={{ maxWidth: 180 }}
                       >
                         {label}
                       </Text>
+                      <Ionicons
+                        name='arrow-up-outline'
+                        size={16}
+                        color={isDark ? '#525252' : '#b0b0b0'}
+                        style={{ transform: [{ rotate: '-45deg' }] }}
+                      />
                     </TouchableOpacity>
                   );
                 })}
