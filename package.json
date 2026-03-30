@@ -6,11 +6,13 @@
   "scripts": {
     "dev:frontend": "cd frontend && npm start",
     "dev:backend": "cd backend && npm run dev",
+    "dev:backend-next": "cd backend-next && npm run dev",
     "dev:website": "cd website && npm run dev",
     "build:frontend": "cd frontend && npm run build",
     "build:backend": "cd backend && npm run build",
     "build:website": "cd website && npm run build",
     "install:all": "npm install && cd frontend && npm install && cd ../backend && npm install && cd ../website && npm install",
+    "prepare": "husky",
     "clean": "rm -rf frontend/node_modules backend/node_modules website/node_modules node_modules",
     "lint": "concurrently -n front,back,web -c blue,green,yellow \"npm run lint:frontend\" \"npm run lint:backend\" \"npm run lint:website\"",
     "lint:frontend": "cd frontend && npm run lint",
@@ -49,6 +51,7 @@
   "author": "Your Name",
   "license": "MIT",
   "devDependencies": {
-    "concurrently": "^9.2.1"
+    "concurrently": "^9.2.1",
+    "husky": "^9.1.7"
   }
 }

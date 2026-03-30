@@ -4,9 +4,10 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project Overview
 
-FastFlix is an AI-powered movie and TV show recommendation app with subscription management. It's a monorepo with three packages:
-- **frontend/**: React Native mobile app (Expo SDK 52)
-- **backend/**: Next.js 16 API deployed on Vercel
+FastFlix is an AI-powered movie and TV show recommendation app with subscription management. It's a monorepo with four packages:
+- **frontend/**: React Native mobile app (Expo SDK 54)
+- **backend/**: Hono API (Node.js) — deployed on VPS via Docker
+- **backend-next/**: Legacy Next.js API (Vercel) — being replaced by backend/
 - **website/**: Next.js marketing site
 
 ## Common Commands
