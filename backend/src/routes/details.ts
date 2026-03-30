@@ -42,7 +42,7 @@ const app = new Hono();
  * Fetch full details, credits, and providers for a single movie/TV show
  * Query params: tmdbId, mediaType, language, country
  */
-app.get("/", authMiddleware, rateLimitMiddleware("standard"), async (c) => {
+app.get("/details", authMiddleware, rateLimitMiddleware("standard"), async (c) => {
   try {
     const userId = getUserId(c);
 

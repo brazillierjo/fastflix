@@ -34,11 +34,17 @@ class TMDBService {
 
   constructor() {
     this.baseUrl = process.env.TMDB_BASE_URL || 'https://api.themoviedb.org/3';
-    this.apiKey = process.env.TMDB_API_KEY || '';
+    this.apiKey = '';
+  }
 
+  private getApiKey(): string {
     if (!this.apiKey) {
-      throw new Error('TMDB_API_KEY not found in environment variables');
+      this.apiKey = process.env.TMDB_API_KEY || '';
+      if (!this.apiKey) {
+        throw new Error('TMDB_API_KEY not found in environment variables');
+      }
     }
+    return this.apiKey;
   }
 
   /**
@@ -78,7 +84,7 @@ class TMDBService {
     }
 
     const url = new URL(`${this.baseUrl}${endpoint}`);
-    url.searchParams.append('api_key', this.apiKey);
+    url.searchParams.append('api_key', this.getApiKey());
 
     for (const [key, value] of Object.entries(params)) {
       url.searchParams.append(key, value);

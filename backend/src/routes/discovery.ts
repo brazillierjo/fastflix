@@ -40,7 +40,7 @@ const app = new Hono();
  * GET / (home)
  * Aggregate endpoint returning daily pick, trending, recent searches, and quota
  */
-app.get("/", authMiddleware, rateLimitMiddleware("standard"), async (c) => {
+app.get("/home", authMiddleware, rateLimitMiddleware("standard"), async (c) => {
   try {
     const userId = getUserId(c);
 
