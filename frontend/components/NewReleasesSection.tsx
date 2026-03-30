@@ -183,6 +183,21 @@ export default function NewReleasesSection() {
                   >
                     {item.title}
                   </Text>
+                  {/* Release date */}
+                  {item.release_date && (
+                    <Text className='mt-0.5 text-xs text-light-muted dark:text-dark-muted'>
+                      {(() => {
+                        try {
+                          return new Date(item.release_date + 'T00:00:00').toLocaleDateString(
+                            language || 'fr',
+                            { day: 'numeric', month: 'short' }
+                          );
+                        } catch {
+                          return item.release_date;
+                        }
+                      })()}
+                    </Text>
+                  )}
                   {/* Provider logos */}
                   {itemProviders.length > 0 && (
                     <View className='mt-1 flex-row gap-1'>
