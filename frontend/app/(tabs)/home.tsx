@@ -523,7 +523,7 @@ export default function HomeScreen() {
           <ScrollView
             horizontal
             showsHorizontalScrollIndicator={false}
-            contentContainerStyle={{ paddingLeft: 24, paddingRight: 16, gap: 4 }}
+            contentContainerStyle={{ paddingHorizontal: 24, gap: 12 }}
           >
             {trending.length > 0
               ? trending.map((item, i) => (
@@ -550,29 +550,13 @@ export default function HomeScreen() {
                         });
                       }}
                       activeOpacity={0.7}
-                      style={{ width: 150, flexDirection: 'row', alignItems: 'flex-end' }}
+                      style={{ width: 130 }}
                     >
-                      {/* Ranking number */}
-                      <Text
-                        style={{
-                          fontSize: 72,
-                          fontWeight: '900',
-                          lineHeight: 72,
-                          color: isDark ? '#1a1a1a' : '#f0f0f0',
-                          marginRight: -8,
-                          zIndex: 0,
-                          textShadowColor: isDark ? 'rgba(255,255,255,0.08)' : 'rgba(0,0,0,0.06)',
-                          textShadowOffset: { width: 1, height: 1 },
-                          textShadowRadius: 0,
-                        }}
-                      >
-                        {i + 1}
-                      </Text>
-                      {/* Poster */}
-                      <View style={{ flex: 1 }}>
+                      {/* Poster with ranking badge */}
+                      <View style={{ position: 'relative' }}>
                         <View
                           style={[getSquircle(12), getCardShadow(isDark)]}
-                          className='h-[165px] overflow-hidden border border-light-border bg-light-surface dark:border-dark-border dark:bg-dark-surface'
+                          className='h-[195px] overflow-hidden border border-light-border bg-light-surface dark:border-dark-border dark:bg-dark-surface'
                         >
                           {item.poster_path ? (
                             <Image
@@ -592,24 +576,47 @@ export default function HomeScreen() {
                             </View>
                           )}
                         </View>
-                        <Text
-                          className='mt-1.5 text-xs font-medium text-light-text dark:text-dark-text'
-                          numberOfLines={1}
+                        {/* Ranking badge */}
+                        <View
+                          style={{
+                            position: 'absolute',
+                            bottom: -6,
+                            left: -6,
+                            width: 28,
+                            height: 28,
+                            borderRadius: 14,
+                            backgroundColor: '#E50914',
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                            shadowColor: '#000',
+                            shadowOffset: { width: 0, height: 2 },
+                            shadowOpacity: 0.3,
+                            shadowRadius: 3,
+                            elevation: 4,
+                          }}
                         >
-                          {item.title}
-                        </Text>
-                        {item.providers?.length > 0 && (
-                          <View className='mt-1 flex-row gap-1'>
-                            {item.providers.slice(0, 3).map((p: any, pi: number) => (
-                              <Image
-                                key={pi}
-                                source={{ uri: `${TMDB_IMAGE_BASE}/w45${p.logo_path}` }}
-                                style={{ width: 16, height: 16, borderRadius: 4 }}
-                              />
-                            ))}
-                          </View>
-                        )}
+                          <Text style={{ color: '#fff', fontSize: 13, fontWeight: '800' }}>
+                            {i + 1}
+                          </Text>
+                        </View>
                       </View>
+                      <Text
+                        className='mt-2.5 text-xs font-medium text-light-text dark:text-dark-text'
+                        numberOfLines={1}
+                      >
+                        {item.title}
+                      </Text>
+                      {item.providers?.length > 0 && (
+                        <View className='mt-1 flex-row gap-1'>
+                          {item.providers.slice(0, 3).map((p: any, pi: number) => (
+                            <Image
+                              key={pi}
+                              source={{ uri: `${TMDB_IMAGE_BASE}/w45${p.logo_path}` }}
+                              style={{ width: 16, height: 16, borderRadius: 4 }}
+                            />
+                          ))}
+                        </View>
+                      )}
                     </TouchableOpacity>
                 ))
               : isHomeLoading
