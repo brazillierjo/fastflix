@@ -697,8 +697,8 @@ export default function HomeScreen() {
                       })
                     }
                     activeOpacity={0.7}
-                    style={[getSquircle(12), { maxWidth: 220 }]}
-                    className='flex-row items-center gap-2 border border-light-border bg-light-surface px-3 py-2.5 dark:border-dark-border dark:bg-dark-surface'
+                    style={[getSquircle(12), { maxWidth: 240 }]}
+                    className='flex-row items-center gap-2 overflow-hidden border border-light-border bg-light-surface px-3.5 py-2.5 dark:border-dark-border dark:bg-dark-surface'
                     accessibilityLabel={label}
                     accessibilityRole='button'
                   >
@@ -708,8 +708,9 @@ export default function HomeScreen() {
                       color={isDark ? '#a3a3a3' : '#737373'}
                     />
                     <Text
-                      className='text-sm text-light-text dark:text-dark-text'
+                      className='shrink text-sm text-light-text dark:text-dark-text'
                       numberOfLines={1}
+                      ellipsizeMode='tail'
                     >
                       {label}
                     </Text>
