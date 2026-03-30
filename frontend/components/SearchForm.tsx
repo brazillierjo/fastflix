@@ -350,7 +350,9 @@ export default function SearchForm({
         showsVerticalScrollIndicator={false}
         {...panResponder.panHandlers}
       >
-        <View className='flex-1 justify-center px-6'>
+        {/* Spacer to push content to center */}
+        <View className='flex-1' />
+        <View className='px-6'>
           {/* Welcome Section */}
           <View
             className='mb-8'
@@ -547,58 +549,61 @@ export default function SearchForm({
           </View>
 
         </View>
-      </ScrollView>
 
-      {/* Recent Searches — fixed at bottom */}
-      {recentSearches.filter((item) => {
-        const l = typeof item === 'string' ? item : item.query || item.label || '';
-        return l.length > 0;
-      }).length > 0 && (
-        <View className='bg-light-background px-6 pb-4 pt-2 dark:bg-dark-background'>
-          <Text className='mb-2 text-xs font-medium uppercase tracking-wide text-light-textMuted dark:text-dark-textMuted'>
-            {t('home.recentSearches') || 'Recent'}
-          </Text>
-          <ScrollView
-            horizontal
-            showsHorizontalScrollIndicator={false}
-            contentContainerStyle={{ gap: 8 }}
-            keyboardShouldPersistTaps='handled'
-          >
-            {recentSearches.slice(0, 8).map((item, i) => {
-              const label =
-                typeof item === 'string' ? item : item.query || item.label || '';
-              if (!label) return null;
-              return (
-                <TouchableOpacity
-                  key={i}
-                  onPress={() => {
-                    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
-                    setQuery(label);
-                  }}
-                  activeOpacity={0.6}
-                  style={getSquircle(20)}
-                  className='flex-row items-center gap-1.5 border border-light-border bg-light-surface px-3 py-2 dark:border-dark-border dark:bg-dark-surface'
-                  accessibilityLabel={label}
-                  accessibilityRole='button'
-                >
-                  <Ionicons
-                    name='time-outline'
-                    size={13}
-                    color={isDark ? '#525252' : '#b0b0b0'}
-                  />
-                  <Text
-                    className='text-xs text-light-textSecondary dark:text-dark-textSecondary'
-                    numberOfLines={1}
-                    style={{ maxWidth: 200 }}
+        {/* Recent Searches — below CTA, inside ScrollView */}
+        {recentSearches.filter((item) => {
+          const l = typeof item === 'string' ? item : item.query || item.label || '';
+          return l.length > 0;
+        }).length > 0 && (
+          <View className='mt-8 px-6 pb-6'>
+            <Text className='mb-2.5 text-xs font-medium uppercase tracking-wide text-light-textMuted dark:text-dark-textMuted'>
+              {t('home.recentSearches') || 'Recent'}
+            </Text>
+            <ScrollView
+              horizontal
+              showsHorizontalScrollIndicator={false}
+              contentContainerStyle={{ gap: 8 }}
+              keyboardShouldPersistTaps='handled'
+            >
+              {recentSearches.slice(0, 8).map((item, i) => {
+                const label =
+                  typeof item === 'string' ? item : item.query || item.label || '';
+                if (!label) return null;
+                return (
+                  <TouchableOpacity
+                    key={i}
+                    onPress={() => {
+                      Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+                      setQuery(label);
+                    }}
+                    activeOpacity={0.6}
+                    style={getSquircle(20)}
+                    className='flex-row items-center gap-1.5 border border-light-border bg-light-surface px-3 py-2 dark:border-dark-border dark:bg-dark-surface'
+                    accessibilityLabel={label}
+                    accessibilityRole='button'
                   >
-                    {label}
-                  </Text>
-                </TouchableOpacity>
-              );
-            })}
-          </ScrollView>
-        </View>
-      )}
+                    <Ionicons
+                      name='time-outline'
+                      size={13}
+                      color={isDark ? '#525252' : '#8E8E93'}
+                    />
+                    <Text
+                      className='text-xs text-light-textSecondary dark:text-dark-textSecondary'
+                      numberOfLines={1}
+                      style={{ maxWidth: 200 }}
+                    >
+                      {label}
+                    </Text>
+                  </TouchableOpacity>
+                );
+              })}
+            </ScrollView>
+          </View>
+        )}
+
+        {/* Bottom spacer to balance centering */}
+        <View className='flex-1' />
+      </ScrollView>
 
       {/* Filters Bottom Sheet */}
       <FiltersBottomSheet
