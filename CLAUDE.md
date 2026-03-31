@@ -161,6 +161,7 @@ curl -X POST http://localhost:3002/api/search \
 ### Backend (VPS)
 - **Auto**: GitHub Actions (`.github/workflows/deploy-fastflix-api.yml`) on push to `main` modifying `backend/`
 - **Manual**: `docker compose pull fastflix-api && docker compose up -d fastflix-api` on VPS
+- **Pipeline**: Build Docker → Push to Docker Hub → SSH to VPS (via SSH key) → pull + restart
 
 ### Website (Vercel)
 - Auto-deploy on push to `main`
@@ -168,3 +169,15 @@ curl -X POST http://localhost:3002/api/search \
 ### Frontend (OTA)
 - `expo-updates` for over-the-air updates
 - EAS Build for native builds
+
+### GitHub Actions Secrets Required
+
+| Secret | Description | Where to find |
+|--------|-------------|---------------|
+| `DOCKER_USERNAME` | `bzrjoh` | Docker Hub username |
+| `DOCKER_PASSWORD` | Docker Hub PAT | Docker Hub → Account Settings → Security → Access Tokens |
+| `VPS_HOST` | `217.65.144.15` | Hostinger VPS IP |
+| `VPS_USERNAME` | `root` | VPS SSH user |
+| `VPS_SSH_KEY` | SSH private key (ed25519) | `cat ~/.ssh/id_ed25519_macbook_pro_m4` on Mac |
+
+**Note**: VPS has `PasswordAuthentication no` — only SSH key auth works. The same key is used for both FastFlix and Mio Tutor deploys.
