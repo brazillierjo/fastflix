@@ -129,7 +129,7 @@ interface HealthCheckResponse {
 
 class BackendAPIService {
   private baseUrl: string;
-  private timeout: number = 30000; // 30 seconds
+  private timeout: number = 45000; // 45 seconds (AI searches can take time)
 
   constructor() {
     // Get API URL from environment

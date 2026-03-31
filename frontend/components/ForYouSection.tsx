@@ -284,16 +284,16 @@ export default function ForYouSection() {
                       {item.vote_average > 0 && (
                         <View className='flex-row items-center gap-1'>
                           <Ionicons name='star' size={12} color='#fbbf24' />
-                          <Text className='text-xs font-medium text-light-muted dark:text-dark-muted'>
+                          <Text className='text-xs font-medium text-light-textSecondary dark:text-dark-textSecondary'>
                             {item.vote_average.toFixed(1)}
                           </Text>
                         </View>
                       )}
                       <View
                         style={getSquircle(4)}
-                        className='bg-light-border px-1.5 py-0.5 dark:bg-dark-border'
+                        className='bg-netflix-500/15 px-1.5 py-0.5'
                       >
-                        <Text className='text-[11px] font-medium uppercase text-light-muted dark:text-dark-muted'>
+                        <Text className='text-[11px] font-semibold uppercase text-netflix-500'>
                           {item.media_type === 'tv' ? 'TV' : 'Film'}
                         </Text>
                       </View>
@@ -302,7 +302,7 @@ export default function ForYouSection() {
                     {/* Overview */}
                     {item.overview ? (
                       <Text
-                        className='mt-1 text-xs leading-4 text-light-muted dark:text-dark-muted'
+                        className='mt-1 text-xs leading-4 text-light-text dark:text-dark-text'
                         numberOfLines={2}
                       >
                         {item.overview}
@@ -322,10 +322,10 @@ export default function ForYouSection() {
 
                 {/* AI reason — full width bottom */}
                 {item.reason && (
-                  <View className='flex-row items-start gap-1.5 bg-netflix-500/10 px-3 py-2'>
+                  <View className='flex-row items-start gap-1.5 bg-netflix-500/8 px-3 py-2'>
                     <Ionicons name='sparkles' size={11} color='#E50914' style={{ marginTop: 1 }} />
-                    <Text className='flex-1 text-[11px] font-medium leading-4 text-netflix-500'>
-                      <Text className='font-bold'>
+                    <Text className='flex-1 text-[11px] italic leading-4 text-light-textSecondary dark:text-dark-textSecondary'>
+                      <Text className='font-semibold not-italic text-light-text dark:text-dark-text'>
                         {item.media_type === 'tv' ? t('forYou.whyThisShow') : t('forYou.whyThisMovie')}
                       </Text>
                       {' '}{item.reason}

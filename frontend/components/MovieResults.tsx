@@ -296,10 +296,10 @@ export default function MovieResults({
 
                         {/* AI reason */}
                         {movie.reason && (
-                          <View className='mb-2 flex-row items-start gap-1.5 rounded-lg bg-netflix-500/10 px-2.5 py-1.5'>
+                          <View className='mb-2 flex-row items-start gap-1.5 rounded-lg bg-netflix-500/8 px-2.5 py-1.5'>
                             <Ionicons name='sparkles' size={12} color='#E50914' style={{ marginTop: 1 }} />
-                            <Text className='flex-1 text-xs font-medium leading-4 text-netflix-500'>
-                              <Text className='font-bold'>
+                            <Text className='flex-1 text-xs italic leading-4 text-light-textSecondary dark:text-dark-textSecondary'>
+                              <Text className='font-semibold not-italic text-light-text dark:text-dark-text'>
                                 {movie.media_type === 'tv' ? t('forYou.whyThisShow') : t('forYou.whyThisMovie')}
                               </Text>
                               {' '}{movie.reason}

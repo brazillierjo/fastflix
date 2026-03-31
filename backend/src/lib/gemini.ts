@@ -69,7 +69,7 @@ class GeminiService {
     recentTitles?: { title: string; mediaType: string }[]
   ): Promise<AIRecommendationResult> {
     const genAI = this.getClient();
-    const modelName = process.env.GEMINI_MODEL || 'gemini-2.5-flash';
+    const modelName = process.env.GEMINI_MODEL || 'gemini-2.0-flash';
     const model = genAI.getGenerativeModel({ model: modelName });
 
     // Sanitize user query to prevent prompt injection
