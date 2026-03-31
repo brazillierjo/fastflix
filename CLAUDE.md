@@ -161,7 +161,8 @@ curl -X POST http://localhost:3002/api/search \
 ### Backend (VPS)
 - **Auto**: GitHub Actions (`.github/workflows/deploy-fastflix-api.yml`) on push to `main` modifying `backend/`
 - **Manual**: `docker compose pull fastflix-api && docker compose up -d fastflix-api` on VPS
-- **Pipeline**: Build Docker → Push to Docker Hub → SSH to VPS (via SSH key) → pull + restart
+- **Pipeline**: Build Docker → Push to Docker Hub → SSH to VPS (via password) → pull + restart
+- **Timeouts**: 60s connect, 5m command execution
 
 ### Website (Vercel)
 - Auto-deploy on push to `main`
@@ -178,6 +179,10 @@ curl -X POST http://localhost:3002/api/search \
 | `DOCKER_PASSWORD` | Docker Hub PAT | Docker Hub → Account Settings → Security → Access Tokens |
 | `VPS_HOST` | `217.65.144.15` | Hostinger VPS IP |
 | `VPS_USERNAME` | `root` | VPS SSH user |
-| `VPS_SSH_KEY` | SSH private key (ed25519) | `cat ~/.ssh/id_ed25519_macbook_pro_m4` on Mac |
+| `VPS_PASSWORD` | VPS root password | Hostinger hPanel → VPS → Settings → Reset root password |
 
-**Note**: VPS has `PasswordAuthentication no` — only SSH key auth works. The same key is used for both FastFlix and Mio Tutor deploys.
+**Notes**:
+- VPS `PasswordAuthentication` is enabled in sshd_config for GitHub Actions deploys
+- Local SSH uses key auth (`~/.ssh/id_ed25519_macbook_pro_m4`)
+- Same VPS password is used for both FastFlix and Mio Tutor repos
+- If password is reset on Hostinger, update it in both repos + set it on VPS via `echo "root:NEW_PASSWORD" | chpasswd`
