@@ -684,6 +684,14 @@ app.get("/for-you", authMiddleware, rateLimitMiddleware("ai"), async (c) => {
       });
     }
 
+    // Build title→reason map from AI result
+    const reasonMap = new Map<string, string>();
+    for (let i = 0; i < aiResult.recommendations.length; i++) {
+      if (aiResult.reasons[i]) {
+        reasonMap.set(aiResult.recommendations[i].toLowerCase(), aiResult.reasons[i]);
+      }
+    }
+
     // Enrich recommendations with TMDB data
     const includeMovies = contentTypes.includes("movies");
     const includeTvShows = contentTypes.includes("TV shows");
@@ -693,6 +701,15 @@ app.get("/for-you", authMiddleware, rateLimitMiddleware("ai"), async (c) => {
       includeTvShows,
       language
     );
+
+    // Attach reasons to enriched results
+    for (const result of enrichedResults) {
+      const reason = reasonMap.get(result.title.toLowerCase())
+        || reasonMap.get((result.original_title || "").toLowerCase());
+      if (reason) {
+        result.reason = reason;
+      }
+    }
 
     // Filter out already-watched and watchlisted items
     const filteredResults = enrichedResults.filter((item) => !excludeIds.has(item.tmdb_id));

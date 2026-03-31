@@ -33,6 +33,7 @@ export interface MovieResult {
   genre_ids: number[];
   popularity: number;
   adult?: boolean;
+  reason?: string; // AI-generated personalized reason for recommending this title
 }
 
 export interface Cast {
@@ -109,6 +110,7 @@ export interface StreamingProvider {
 
 export interface AIRecommendationResult {
   recommendations: string[]; // Just titles from Gemini
+  reasons: string[]; // Personalized reasons per recommendation (same index)
   conversationalResponse: string;
   detectedPlatforms: string[]; // Detected streaming platforms from query
   isFallback?: boolean; // True when AI failed and fallback response is returned

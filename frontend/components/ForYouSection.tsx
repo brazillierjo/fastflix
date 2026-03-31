@@ -286,8 +286,18 @@ export default function ForYouSection() {
                     </View>
                   </View>
 
-                  {/* Overview snippet */}
-                  {item.overview ? (
+                  {/* AI reason */}
+                  {item.reason ? (
+                    <View className='mt-1 flex-row items-start gap-1'>
+                      <Ionicons name='sparkles' size={11} color='#E50914' style={{ marginTop: 1 }} />
+                      <Text
+                        className='flex-1 text-xs italic leading-4 text-light-muted dark:text-dark-muted'
+                        numberOfLines={2}
+                      >
+                        {item.reason}
+                      </Text>
+                    </View>
+                  ) : item.overview ? (
                     <Text
                       className='mt-1 text-xs leading-4 text-light-muted dark:text-dark-muted'
                       numberOfLines={2}

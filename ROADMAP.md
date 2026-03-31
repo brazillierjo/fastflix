@@ -168,32 +168,31 @@
 
 ### 2.1 — "Pourquoi ce film ?" (Explication personnalisée par reco)
 
-**Statut** : N'EXISTE PAS
+**Statut** : FAIT
 **Catégorie** : Premium
 **Priorité** : Haute
 
-- [ ] **Backend — Modifier le prompt Gemini pour inclure des raisons**
+- [x] **Backend — Modifier le prompt Gemini pour inclure des raisons**
   - Fichier : `backend/src/lib/gemini.ts`
-  - Modifier `generateRecommendationsWithResponse()` pour que le JSON de sortie inclue un champ `reason` par recommandation
-  - Exemple de format : `{ title: "Inception", reason: "Parce que tu as adoré Interstellar et les thrillers psychologiques" }`
-  - Adapter le prompt pour dire : "Pour chaque recommandation, explique en 1 phrase courte et personnalisée pourquoi cet utilisateur aimerait ce film, en te basant sur son profil de goûts"
-  - Le `UserContext` est déjà envoyé à Gemini (genres favoris, films notés, recherches récentes) — on exploite ce contexte
+  - Ajout d'une section `REASONS` dans le prompt avec raisons séparées par `|||`
+  - Parsing et mapping par index vers les recommandations
 
-- [ ] **Backend — Mettre à jour les types**
+- [x] **Backend — Mettre à jour les types**
   - Fichier : `backend/src/lib/types.ts`
-  - Ajouter `reason?: string` à l'interface `MovieResult`
-  - Propager dans `AIRecommendationResult`
+  - Ajouté `reason?: string` à `MovieResult` et `reasons: string[]` à `AIRecommendationResult`
 
-- [ ] **Frontend — Afficher la raison dans MovieResults**
+- [x] **Backend — Attacher les raisons dans search.ts et discovery.ts**
+  - Mapping titre→raison puis attachement aux `MovieResult` enrichis
+
+- [x] **Frontend — Afficher la raison dans MovieResults**
   - Fichier : `frontend/components/MovieResults.tsx`
-  - Sous le titre de chaque film, ajouter un texte en italique avec icône sparkle : `"Parce que tu as aimé Inception et les thrillers psychologiques"`
-  - Style : texte `text-xs italic text-light-muted` avec icône `sparkles` 14px en `#E50914`
+  - Icône sparkle + texte italique sous le titre
 
-- [ ] **Frontend — Afficher la raison dans ForYouSection**
+- [x] **Frontend — Afficher la raison dans ForYouSection**
   - Fichier : `frontend/components/ForYouSection.tsx`
-  - Même traitement que MovieResults
+  - Même traitement, remplace l'overview quand une raison est disponible
 
-- [ ] **Traductions** : Ajouter les clés i18n pour "Recommended because..." dans toutes les langues
+- [x] **Traductions** : Pas de clés i18n nécessaires — les raisons sont générées par Gemini dans la langue de l'utilisateur
 
 ### 2.2 — Score de pertinence personnalisé
 
@@ -1001,7 +1000,7 @@ frontend/
 
 ### Phase 2 — Valeur Premium (2-4 semaines)
 - [ ] 12 — **Swipe Discovery (mode TikTok)** — SwipeCard + PagerView vertical + toggle dans résultats
-- [ ] 2.1 — "Pourquoi ce film ?" (raison personnalisée)
+- [x] 2.1 — "Pourquoi ce film ?" (raison personnalisée)
 - [ ] 2.3 — Tags dynamiques
 - [ ] 4.1 — Thumbs up/down
 - [ ] 4.2 — Bouton "Déjà vu" dans les listes

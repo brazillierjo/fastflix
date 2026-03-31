@@ -263,18 +263,21 @@ Creative expansion algorithms:
 
 CRITICAL: Be EXCEPTIONALLY generous and creative in recommendations. Cast a wide net - better to include comprehensive relevant results than miss hidden gems. Include cult classics, international variants, and thematic connections.
 
-Provide three distinct outputs:
+Provide four distinct outputs:
 
 1. RECOMMENDATIONS: Up to ${maxRecommendations} ${contentTypeText} matching the request (be generous and inventive). Include exact titles, franchise variations, spiritual successors, and thematically similar works. List only titles separated by commas.
 
-2. DETECTED_PLATFORMS: Extract any specific streaming platforms mentioned in the user's request (e.g., "Netflix", "Disney+", "Amazon Prime", "HBO", "Hulu", "Apple TV"). If no specific platform is mentioned, leave this empty. List only platform names separated by commas.
+2. REASONS: For each recommendation (in the SAME order), provide a short personalized reason (max 15 words) explaining why this user would love it, based on their profile. Reference specific movies they liked, genres they prefer, or themes that connect. Separate each reason with " ||| ". If no user profile is available, give a generic but engaging reason for each title.
 
-3. MESSAGE: A conversational, engaging message that adapts to the user's tone and style. Provide encouragement and context about their request without mentioning specific results. Be enthusiastic and personalized, matching their energy level (humorous, serious, casual, etc.). Include a brief insight about your selection strategy.
-CRITICAL LANGUAGE INSTRUCTION: You MUST respond in ${languageName} language ONLY. This is the user's application interface language. Do NOT auto-detect the language from the query. Even if the user writes in English, French, or any other language, you MUST respond in ${languageName}. This is mandatory for a consistent user experience.
-Limit to 3-4 sentences maximum.
+3. DETECTED_PLATFORMS: Extract any specific streaming platforms mentioned in the user's request (e.g., "Netflix", "Disney+", "Amazon Prime", "HBO", "Hulu", "Apple TV"). If no specific platform is mentioned, leave this empty. List only platform names separated by commas.
+
+4. MESSAGE: A conversational, engaging message that adapts to the user's tone and style. Provide encouragement and context about their request without mentioning specific results. Be enthusiastic and personalized, matching their energy level (humorous, serious, casual, etc.). Include a brief insight about your selection strategy.
+CRITICAL LANGUAGE INSTRUCTION: You MUST respond in ${languageName} language ONLY for MESSAGE and REASONS. This is the user's application interface language. Do NOT auto-detect the language from the query. Even if the user writes in English, French, or any other language, you MUST respond in ${languageName}. This is mandatory for a consistent user experience.
+Limit MESSAGE to 3-4 sentences maximum.
 
 Format your response exactly like this:
 RECOMMENDATIONS: [comma-separated list of titles]
+REASONS: [reason1 ||| reason2 ||| reason3 ||| ...]
 DETECTED_PLATFORMS: [comma-separated list of platforms]
 MESSAGE: [your conversational message]`;
 
@@ -291,7 +294,10 @@ MESSAGE: [your conversational message]`;
 
       // Parse the response
       const recommendationsMatch = text.match(
-        /RECOMMENDATIONS:\s*([\s\S]+?)(?=\nDETECTED_PLATFORMS:|\nMESSAGE:|$)/
+        /RECOMMENDATIONS:\s*([\s\S]+?)(?=\nREASONS:|\nDETECTED_PLATFORMS:|\nMESSAGE:|$)/
+      );
+      const reasonsMatch = text.match(
+        /REASONS:\s*([\s\S]+?)(?=\nDETECTED_PLATFORMS:|\nMESSAGE:|$)/
       );
       const platformsMatch = text.match(/DETECTED_PLATFORMS:\s*([^\n]*)/); // Capture only until end of line
       const messageMatch = text.match(/MESSAGE:\s*([\s\S]+)$/);
@@ -301,6 +307,13 @@ MESSAGE: [your conversational message]`;
             .split(',')
             .map((title) => title.trim())
             .filter((title) => title.length > 0 && title.length < 200)
+        : [];
+
+      const reasons = reasonsMatch
+        ? reasonsMatch[1]
+            .split('|||')
+            .map((reason) => reason.trim())
+            .filter((reason) => reason.length > 0)
         : [];
 
       // List of known streaming platforms to validate against
@@ -364,6 +377,7 @@ MESSAGE: [your conversational message]`;
 
       return {
         recommendations,
+        reasons,
         conversationalResponse,
         detectedPlatforms,
       };
@@ -378,6 +392,7 @@ MESSAGE: [your conversational message]`;
       });
       return {
         recommendations: [],
+        reasons: [],
         conversationalResponse:
           'Our AI is temporarily unavailable. Please try again in a moment.',
         detectedPlatforms: [],

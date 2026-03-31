@@ -33,6 +33,7 @@ export interface MovieResult {
   genre_ids: number[];
   popularity: number;
   adult?: boolean;
+  reason?: string;
 }
 
 export interface StreamingProvider {

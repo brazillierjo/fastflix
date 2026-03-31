@@ -32,6 +32,7 @@ export interface Movie {
   first_air_date?: string;
   vote_average: number;
   media_type?: 'movie' | 'tv' | 'person';
+  reason?: string;
 }
 
 export interface Cast {
@@ -108,6 +109,7 @@ const transformMovieResult = (result: MovieResult): Movie => {
     first_air_date: result.first_air_date,
     vote_average: result.vote_average,
     media_type: result.media_type,
+    reason: result.reason,
   };
 };
 

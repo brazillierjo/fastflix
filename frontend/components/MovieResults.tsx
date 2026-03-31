@@ -32,6 +32,7 @@ interface Movie {
   first_air_date?: string;
   vote_average: number;
   media_type?: 'movie' | 'tv' | 'person';
+  reason?: string;
 }
 
 interface StreamingProvider {
@@ -282,9 +283,17 @@ export default function MovieResults({
 
                       {/* RIGHT: Content */}
                       <View className='flex-1 p-4'>
-                        <Text className='mb-2 text-xl font-semibold text-light-text dark:text-dark-text'>
+                        <Text className='mb-1 text-xl font-semibold text-light-text dark:text-dark-text'>
                           {movie.title || movie.name}
                         </Text>
+                        {movie.reason && (
+                          <View className='mb-2 flex-row items-start gap-1'>
+                            <Ionicons name='sparkles' size={12} color='#E50914' style={{ marginTop: 2 }} />
+                            <Text className='flex-1 text-xs italic text-light-muted dark:text-dark-muted'>
+                              {movie.reason}
+                            </Text>
+                          </View>
+                        )}
                         <Text className='mb-3 text-sm text-light-textSecondary dark:text-dark-textSecondary'>
                           {movie.overview
                             ? movie.overview.length > 80
