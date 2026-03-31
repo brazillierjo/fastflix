@@ -41,6 +41,18 @@ jobs:
           cache-from: type=gha
           cache-to: type=gha,mode=max
 
-      # Watchtower on VPS auto-detects new images every 30s and redeploys
-      - name: Deployment note
-        run: echo "Image pushed to Docker Hub. Watchtower on VPS will auto-deploy within 30 seconds."
+      - name: Deploy to VPS
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.VPS_HOST }}
+          username: ${{ secrets.VPS_USERNAME }}
+          key: ${{ secrets.VPS_SSH_KEY }}
+          timeout: 60s
+          command_timeout: 5m
+          script: |
+            cd /opt/mio
+            docker compose stop fastflix-api || true
+            docker compose rm -f fastflix-api || true
+            docker compose pull fastflix-api
+            docker compose up -d fastflix-api
+            echo "Deployed fastflix-api"
