@@ -160,56 +160,26 @@
 | i18n complet | **EXISTE** | LanguageContext, clés de traduction |
 | Website marketing | **EXISTE** | `website/` — Next.js sur Vercel |
 
+### IA & Personnalisation (implémenté)
+
+| Feature | Statut | Détails |
+|---------|--------|---------|
+| "Pourquoi ce film ?" (2.1) | **EXISTE** | Raison IA personnalisée par reco, affichée en bas de chaque card (search + ForYou) |
+| Score de pertinence % (2.2) | **EXISTE** | Badge Match coloré (vert/orange/gris) via `computeMatchScore()` |
+| Cache ForYou en DB | **EXISTE** | Recommandations cachées 7 jours en Turso, invalidées au changement de profil |
+| Gating premium | **EXISTE** | Raisons IA, matchScore, ForYou réservés aux premium ; free = pas d'appel Gemini inutile |
+| Animation loading IA | **EXISTE** | Sparkle pulsant + texte "L'IA analyse vos goûts..." au lieu de skeleton |
+| Badge watchlist sur cards | **EXISTE** | Icône bookmark rouge sur poster si film dans la watchlist (search + ForYou) |
+| Icônes sections Home | **EXISTE** | Bookmark (À voir), Checkmark (Déjà vus), Heart (Acteurs favoris) |
+| Gemini 2.5 Flash Lite | **EXISTE** | Modèle IA le moins cher ($0.10/$0.40 par 1M tokens), rapide, pas de sunset |
+
 ---
 
 ## 2. WOW Effect
 
 > **Objectif** : que l'utilisateur dise "ok, ça me comprend vraiment"
-
-### 2.1 — "Pourquoi ce film ?" (Explication personnalisée par reco)
-
-**Statut** : FAIT
-**Catégorie** : Premium
-**Priorité** : Haute
-
-- [x] **Backend — Modifier le prompt Gemini pour inclure des raisons**
-  - Fichier : `backend/src/lib/gemini.ts`
-  - Ajout d'une section `REASONS` dans le prompt avec raisons séparées par `|||`
-  - Parsing et mapping par index vers les recommandations
-
-- [x] **Backend — Mettre à jour les types**
-  - Fichier : `backend/src/lib/types.ts`
-  - Ajouté `reason?: string` à `MovieResult` et `reasons: string[]` à `AIRecommendationResult`
-
-- [x] **Backend — Attacher les raisons dans search.ts et discovery.ts**
-  - Mapping titre→raison puis attachement aux `MovieResult` enrichis
-
-- [x] **Frontend — Afficher la raison dans MovieResults**
-  - Fichier : `frontend/components/MovieResults.tsx`
-  - Icône sparkle + texte italique sous le titre
-
-- [x] **Frontend — Afficher la raison dans ForYouSection**
-  - Fichier : `frontend/components/ForYouSection.tsx`
-  - Même traitement, remplace l'overview quand une raison est disponible
-
-- [x] **Traductions** : Pas de clés i18n nécessaires — les raisons sont générées par Gemini dans la langue de l'utilisateur
-
-### 2.2 — Score de pertinence personnalisé
-
-**Statut** : FAIT
-**Catégorie** : Premium
-**Priorité** : Moyenne
-
-- [x] **Backend — Exposer le score d'affinité dans les réponses**
-  - Ajouté `computeMatchScore()` dans `affinity.ts` (genre matching + vote average, 0-100%)
-  - `matchScore` attaché dans `/for-you` et `/search`
-  - Pénalité forte si genres disliked, bonus vote average
-
-- [x] **Frontend — Badge "Match XX%"**
-  - Badge coloré sur ForYouSection et MovieResults
-  - Vert >80%, orange 50-80%, gris <50%
-
----
+> 
+> 2.1 et 2.2 sont **FAITS** — voir section "IA & Personnalisation" dans les features existantes.
 
 ### 3.3 — Améliorer l'historique de recherche (re-lancer une recherche)
 
@@ -235,7 +205,7 @@
 
 ### 4.1 — Thumbs up/down sur chaque recommandation
 
-**Statut** : N'EXISTE PAS (le rating 1-5 existe mais uniquement dans movie-detail après "Mark Watched")
+**Statut** : CONSOLIDÉ DANS LE MODE SWIPE (section 12.4 — SwipeActions)
 **Catégorie** : Premium
 **Priorité** : Haute
 
@@ -264,7 +234,7 @@
 
 ### 4.2 — Bouton "Déjà vu"
 
-**Statut** : PARTIELLEMENT EXISTE ("Mark as Watched" existe dans movie-detail, mais pas dans les listes)
+**Statut** : CONSOLIDÉ DANS LE MODE SWIPE (section 12.4 — SwipeActions, bouton "eye")
 **Catégorie** : Premium
 **Priorité** : Moyenne
 
@@ -285,7 +255,7 @@
 
 ### 4.3 — "On affine tes goûts en temps réel" (indicateur visuel)
 
-**Statut** : N'EXISTE PAS
+**Statut** : CONSOLIDÉ DANS LE MODE SWIPE (toast après chaque like/dislike)
 **Catégorie** : Premium
 **Priorité** : Basse
 
@@ -917,39 +887,49 @@ frontend/
 
 ## Résumé des priorités
 
+> **Principe** : Le mode Swipe Discovery (TikTok-like) consolide plusieurs features en une seule expérience immersive. Les features 4.1 (thumbs up/down), 4.2 (déjà vu), 4.3 (toast goûts), 5.1 (providers sur cards) sont intégrées directement dans les boutons latéraux du mode swipe plutôt qu'implémentées séparément.
+
 ### Phase 1 — Quick Wins (1-2 semaines)
 - [ ] 3.1 — Suggestions cliquables sur SearchForm
-- [ ] 5.1 — Logos providers dans MovieResults et ForYouSection
 - [ ] 5.2 — Badge "Disponible" / "Location/Achat"
 - [ ] 10.1 — Mode humeur (grille sur la Home)
 - [ ] 6.2 — Renommer Trending → "Tendances pour toi"
-- [ ] 9.2 — Micro-animations loading IA améliorées
-
-### Phase 2 — Valeur Premium (2-4 semaines)
-- [ ] 12 — **Swipe Discovery (mode TikTok)** — SwipeCard + PagerView vertical + toggle dans résultats
-- [x] 2.1 — "Pourquoi ce film ?" (raison personnalisée)
-- [ ] 2.3 — Tags dynamiques
-- [ ] 4.1 — Thumbs up/down
-- [ ] 4.2 — Bouton "Déjà vu" dans les listes
 - [ ] 3.2 — Bouton "Surprends-moi"
 - [ ] 7.1 — Tableau comparatif Free vs Premium
-- [ ] 9.4 — Note + nombre d'avis
+
+### Phase 2 — Swipe Discovery TikTok (feature phare, 2-4 semaines)
+
+Le mode swipe est LA feature différenciante. Il consolide :
+- **4.1** — 👍/👎 → boutons latéraux like/dislike avec feedback haptic
+- **4.2** — Déjà vu → bouton latéral "eye" mark as watched
+- **4.3** — Toast "Goûts mis à jour" → animation après chaque interaction
+- **5.1** — Logos providers → affichés sur chaque SwipeCard
+- **2.1/2.2** — Raison IA + Match % → affichés dans l'overlay bas
+- **2.3** — Tags dynamiques → pills de genre sur chaque card
+
+Implémentation par étapes :
+- [ ] 12.1 — Backend `POST /api/user/taste-profile/feedback` (like/dislike)
+- [ ] 12.2 — Composant `SwipeDiscoveryView` (PagerView vertical)
+- [ ] 12.3 — Composant `SwipeCard` (layout plein écran immersif)
+- [ ] 12.4 — Composant `SwipeActions` (boutons latéraux : like, dislike, watchlist, déjà vu, partage, détails)
+- [ ] 12.5 — Points d'entrée (toggle dans résultats de recherche + bouton "Explorer" sur Home)
+- [ ] 12.6 — Backend `GET /api/feed` (feed infini paginé)
+- [ ] 12.7 — Écran `swipe-discovery.tsx` (mode fini + mode infini)
+- [ ] 12.8 — Analytics swipe
+- [ ] 12.10 — Free: 5 swipes/session, Premium: illimité
 
 ### Phase 3 — Rétention (4-6 semaines)
 - [ ] 8.1 — Push notifications (disponibilité watchlist)
 - [ ] 8.2 — Notifications "nouveau film pour toi"
 - [ ] 11.1 — Notifier à la sortie
 - [ ] 6.1 — "Parce que tu as regardé X"
-- [x] 2.2 — Score de pertinence %
 - [ ] 7.2 — Widget "Temps gagné"
-- [ ] 12.6 — Feed infini paginé (`/api/feed`) pour le mode swipe
 
 ### Phase 4 — Différenciation (6+ semaines)
 - [ ] 12.5 (entrée 3) — Onglet "Explore" dédié avec feed infini TikTok
 - [ ] 12.9 — Auto-play trailer en background
 - [ ] 8.3 — Match entre amis
 - [ ] 8.4 — Mode soirée (écran dédié)
-- [ ] 4.3 — Toast "Goûts mis à jour"
 - [ ] 3.3 — Historique: re-lancer une recherche + effacer
 
 ### Phase finale — Mise à jour du site web
