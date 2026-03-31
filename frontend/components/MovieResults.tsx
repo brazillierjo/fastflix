@@ -286,21 +286,26 @@ export default function MovieResults({
                         <Text className='mb-1 text-xl font-semibold text-light-text dark:text-dark-text'>
                           {movie.title || movie.name}
                         </Text>
-                        {movie.reason && (
-                          <View className='mb-2 flex-row items-start gap-1'>
-                            <Ionicons name='sparkles' size={12} color='#E50914' style={{ marginTop: 2 }} />
-                            <Text className='flex-1 text-xs italic text-light-muted dark:text-dark-muted'>
-                              {movie.reason}
-                            </Text>
-                          </View>
-                        )}
-                        <Text className='mb-3 text-sm text-light-textSecondary dark:text-dark-textSecondary'>
+                        <Text className='mb-2 text-sm text-light-textSecondary dark:text-dark-textSecondary'>
                           {movie.overview
                             ? movie.overview.length > 80
                               ? `${movie.overview.substring(0, 80)}...`
                               : movie.overview
                             : t('movies.noDescription')}
                         </Text>
+
+                        {/* AI reason */}
+                        {movie.reason && (
+                          <View className='mb-2 flex-row items-start gap-1.5 rounded-lg bg-netflix-500/10 px-2.5 py-1.5'>
+                            <Ionicons name='sparkles' size={12} color='#E50914' style={{ marginTop: 1 }} />
+                            <Text className='flex-1 text-xs font-medium leading-4 text-netflix-500'>
+                              <Text className='font-bold'>
+                                {movie.media_type === 'tv' ? t('forYou.whyThisShow') : t('forYou.whyThisMovie')}
+                              </Text>
+                              {' '}{movie.reason}
+                            </Text>
+                          </View>
+                        )}
 
                         {/* Streaming platforms (collapsed - max 4) */}
                         {streamingProviders[movie.id] &&

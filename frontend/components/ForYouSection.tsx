@@ -63,7 +63,7 @@ function ForYouAILoading({ isDark, t }: { isDark: boolean; t: (key: string) => s
           {t('forYou.loading')}
         </Text>
         <Text className='mt-1 text-center text-xs text-light-muted dark:text-dark-muted'>
-          {t('forYou.subtitle')}
+          {t('forYou.loadingSubtitle')}
         </Text>
       </MotiView>
     </View>
@@ -243,90 +243,95 @@ export default function ForYouSection() {
                 onPress={() => navigateToDetail(item)}
                 activeOpacity={0.7}
                 style={[getSquircle(12), getCardShadow(isDark)]}
-                className='flex-row border border-light-border bg-light-surface p-3 dark:border-dark-border dark:bg-dark-surface'
+                className='overflow-hidden border border-light-border bg-light-surface dark:border-dark-border dark:bg-dark-surface'
               >
-                {/* Poster */}
-                {item.poster_path ? (
-                  <View style={getSquircle(8)} className='h-28 w-20 overflow-hidden'>
-                    <Image
-                      source={{
-                        uri: `${TMDB_IMAGE_BASE}/w185${item.poster_path}`,
-                      }}
-                      className='h-full w-full'
-                      resizeMode='cover'
-                    />
-                  </View>
-                ) : (
-                  <View
-                    style={getSquircle(8)}
-                    className='h-28 w-20 items-center justify-center bg-light-border dark:bg-dark-border'
-                  >
-                    <Ionicons
-                      name='image-outline'
-                      size={24}
-                      color={isDark ? '#404040' : '#d4d4d4'}
-                    />
-                  </View>
-                )}
+                <View className='flex-row p-3'>
+                  {/* Poster */}
+                  {item.poster_path ? (
+                    <View style={getSquircle(8)} className='h-28 w-20 overflow-hidden'>
+                      <Image
+                        source={{
+                          uri: `${TMDB_IMAGE_BASE}/w185${item.poster_path}`,
+                        }}
+                        className='h-full w-full'
+                        resizeMode='cover'
+                      />
+                    </View>
+                  ) : (
+                    <View
+                      style={getSquircle(8)}
+                      className='h-28 w-20 items-center justify-center bg-light-border dark:bg-dark-border'
+                    >
+                      <Ionicons
+                        name='image-outline'
+                        size={24}
+                        color={isDark ? '#404040' : '#d4d4d4'}
+                      />
+                    </View>
+                  )}
 
-                {/* Content */}
-                <View className='ml-3 flex-1 justify-center'>
-                  <Text
-                    className='text-base font-bold text-light-text dark:text-dark-text'
-                    numberOfLines={1}
-                  >
-                    {item.title}
-                  </Text>
+                  {/* Content */}
+                  <View className='ml-3 flex-1 justify-center'>
+                    <Text
+                      className='text-base font-bold text-light-text dark:text-dark-text'
+                      numberOfLines={1}
+                    >
+                      {item.title}
+                    </Text>
 
-                  {/* Rating + Media type */}
-                  <View className='mt-1 flex-row items-center gap-2'>
-                    {item.vote_average > 0 && (
-                      <View className='flex-row items-center gap-1'>
-                        <Ionicons name='star' size={12} color='#fbbf24' />
-                        <Text className='text-xs font-medium text-light-muted dark:text-dark-muted'>
-                          {item.vote_average.toFixed(1)}
+                    {/* Rating + Media type */}
+                    <View className='mt-1 flex-row items-center gap-2'>
+                      {item.vote_average > 0 && (
+                        <View className='flex-row items-center gap-1'>
+                          <Ionicons name='star' size={12} color='#fbbf24' />
+                          <Text className='text-xs font-medium text-light-muted dark:text-dark-muted'>
+                            {item.vote_average.toFixed(1)}
+                          </Text>
+                        </View>
+                      )}
+                      <View
+                        style={getSquircle(4)}
+                        className='bg-light-border px-1.5 py-0.5 dark:bg-dark-border'
+                      >
+                        <Text className='text-[11px] font-medium uppercase text-light-muted dark:text-dark-muted'>
+                          {item.media_type === 'tv' ? 'TV' : 'Film'}
                         </Text>
                       </View>
-                    )}
-                    <View
-                      style={getSquircle(4)}
-                      className='bg-light-border px-1.5 py-0.5 dark:bg-dark-border'
-                    >
-                      <Text className='text-[11px] font-medium uppercase text-light-muted dark:text-dark-muted'>
-                        {item.media_type === 'tv' ? 'TV' : 'Film'}
-                      </Text>
                     </View>
-                  </View>
 
-                  {/* AI reason */}
-                  {item.reason ? (
-                    <View className='mt-1 flex-row items-start gap-1'>
-                      <Ionicons name='sparkles' size={11} color='#E50914' style={{ marginTop: 1 }} />
+                    {/* Overview */}
+                    {item.overview ? (
                       <Text
-                        className='flex-1 text-xs italic leading-4 text-light-muted dark:text-dark-muted'
+                        className='mt-1 text-xs leading-4 text-light-muted dark:text-dark-muted'
                         numberOfLines={2}
                       >
-                        {item.reason}
+                        {item.overview}
                       </Text>
-                    </View>
-                  ) : item.overview ? (
-                    <Text
-                      className='mt-1 text-xs leading-4 text-light-muted dark:text-dark-muted'
-                      numberOfLines={2}
-                    >
-                      {item.overview}
-                    </Text>
-                  ) : null}
+                    ) : null}
+                  </View>
+
+                  {/* Chevron */}
+                  <View className='justify-center pl-1'>
+                    <Ionicons
+                      name='chevron-forward'
+                      size={16}
+                      color={isDark ? '#525252' : '#a3a3a3'}
+                    />
+                  </View>
                 </View>
 
-                {/* Chevron */}
-                <View className='justify-center pl-1'>
-                  <Ionicons
-                    name='chevron-forward'
-                    size={16}
-                    color={isDark ? '#525252' : '#a3a3a3'}
-                  />
-                </View>
+                {/* AI reason — full width bottom */}
+                {item.reason && (
+                  <View className='flex-row items-start gap-1.5 bg-netflix-500/10 px-3 py-2'>
+                    <Ionicons name='sparkles' size={11} color='#E50914' style={{ marginTop: 1 }} />
+                    <Text className='flex-1 text-[11px] font-medium leading-4 text-netflix-500'>
+                      <Text className='font-bold'>
+                        {item.media_type === 'tv' ? t('forYou.whyThisShow') : t('forYou.whyThisMovie')}
+                      </Text>
+                      {' '}{item.reason}
+                    </Text>
+                  </View>
+                )}
               </TouchableOpacity>
             </View>
           ))}

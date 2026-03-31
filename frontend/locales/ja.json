@@ -417,7 +417,10 @@
     "signInPrompt": "サインインしてパーソナライズされたおすすめを取得",
     "empty": "映画を評価してパーソナライズされたおすすめを取得しましょう",
     "loading": "AIがあなたの好みを分析中...",
-    "discover": "映画を探す"
+    "loadingSubtitle": "少々お待ちください",
+    "discover": "映画を探す",
+    "whyThisMovie": "なぜこの映画？",
+    "whyThisShow": "なぜこのドラマ？"
   },
   "home": {
     "greeting": "こんにちは！",

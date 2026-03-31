@@ -417,7 +417,10 @@
     "signInPrompt": "Accedi per raccomandazioni personalizzate",
     "empty": "Valuta dei film per ottenere raccomandazioni personalizzate",
     "loading": "L'IA analizza i tuoi gusti...",
-    "discover": "Scopri film"
+    "loadingSubtitle": "Ci vorrà solo un attimo",
+    "discover": "Scopri film",
+    "whyThisMovie": "Perché questo film?",
+    "whyThisShow": "Perché questa serie?"
   },
   "home": {
     "greeting": "Ciao!",

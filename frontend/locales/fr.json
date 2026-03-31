@@ -417,7 +417,10 @@
     "signInPrompt": "Connectez-vous pour des recommandations personnalisées",
     "empty": "Notez des films pour obtenir des recommandations personnalisées",
     "loading": "L'IA analyse vos goûts...",
-    "discover": "Découvrir des films"
+    "loadingSubtitle": "Ça ne prendra qu'un instant",
+    "discover": "Découvrir des films",
+    "whyThisMovie": "Pourquoi ce film ?",
+    "whyThisShow": "Pourquoi cette série ?"
   },
   "home": {
     "greeting": "Bonjour !",

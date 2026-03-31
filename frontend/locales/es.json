@@ -417,7 +417,10 @@
     "signInPrompt": "Inicia sesión para recomendaciones personalizadas",
     "empty": "Valora películas para obtener recomendaciones personalizadas",
     "loading": "La IA analiza tus gustos...",
-    "discover": "Descubrir películas"
+    "loadingSubtitle": "Solo será un momento",
+    "discover": "Descubrir películas",
+    "whyThisMovie": "¿Por qué esta película?",
+    "whyThisShow": "¿Por qué esta serie?"
   },
   "home": {
     "greeting": "Hola!",

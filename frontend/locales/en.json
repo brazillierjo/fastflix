@@ -445,7 +445,10 @@
     "signInPrompt": "Sign in for personalized picks",
     "empty": "Rate some movies to get personalized recommendations",
     "loading": "AI is analyzing your taste...",
-    "discover": "Discover movies"
+    "loadingSubtitle": "This will only take a moment",
+    "discover": "Discover movies",
+    "whyThisMovie": "Why this movie?",
+    "whyThisShow": "Why this show?"
   },
   "home": {
     "greeting": "Hello!",

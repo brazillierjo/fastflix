@@ -697,11 +697,13 @@ app.get("/for-you", authMiddleware, rateLimitMiddleware("ai"), async (c) => {
       });
     }
 
-    // Build title→reason map from AI result
-    const reasonMap = new Map<string, string>();
+    // Build title→reason map + index→reason map from AI result
+    const reasonByTitle = new Map<string, string>();
+    const reasonByIndex = new Map<number, string>();
     for (let i = 0; i < aiResult.recommendations.length; i++) {
       if (aiResult.reasons[i]) {
-        reasonMap.set(aiResult.recommendations[i].toLowerCase(), aiResult.reasons[i]);
+        reasonByTitle.set(aiResult.recommendations[i].toLowerCase(), aiResult.reasons[i]);
+        reasonByIndex.set(i, aiResult.reasons[i]);
       }
     }
 
@@ -715,13 +717,16 @@ app.get("/for-you", authMiddleware, rateLimitMiddleware("ai"), async (c) => {
       language
     );
 
-    // Attach reasons to enriched results
+    // Attach reasons to enriched results (try title match first, then index)
+    let enrichedIdx = 0;
     for (const result of enrichedResults) {
-      const reason = reasonMap.get(result.title.toLowerCase())
-        || reasonMap.get((result.original_title || "").toLowerCase());
+      const reason = reasonByTitle.get(result.title.toLowerCase())
+        || reasonByTitle.get((result.original_title || "").toLowerCase())
+        || reasonByIndex.get(enrichedIdx);
       if (reason) {
         result.reason = reason;
       }
+      enrichedIdx++;
     }
 
     // Filter out already-watched and watchlisted items

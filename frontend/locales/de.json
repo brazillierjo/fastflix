@@ -417,7 +417,10 @@
     "signInPrompt": "Melde dich an für personalisierte Empfehlungen",
     "empty": "Bewerte Filme, um personalisierte Empfehlungen zu erhalten",
     "loading": "KI analysiert deinen Geschmack...",
-    "discover": "Filme entdecken"
+    "loadingSubtitle": "Das dauert nur einen Moment",
+    "discover": "Filme entdecken",
+    "whyThisMovie": "Warum dieser Film?",
+    "whyThisShow": "Warum diese Serie?"
   },
   "home": {
     "greeting": "Hallo!",
