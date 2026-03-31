@@ -420,7 +420,8 @@
     "loadingSubtitle": "Solo será un momento",
     "discover": "Descubrir películas",
     "whyThisMovie": "¿Por qué esta película?",
-    "whyThisShow": "¿Por qué esta serie?"
+    "whyThisShow": "¿Por qué esta serie?",
+    "premiumPrompt": "Pasa a Premium para recomendaciones IA personalizadas"
   },
   "home": {
     "greeting": "Hola!",

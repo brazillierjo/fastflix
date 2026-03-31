@@ -6,6 +6,7 @@
 import { Ionicons } from '@expo/vector-icons';
 import { useAuth } from '@/contexts/AuthContext';
 import { useLanguage } from '@/contexts/LanguageContext';
+import { useSubscription } from '@/contexts/RevenueCatContext';
 import {
   getCardShadow,
   getSquircle,
@@ -78,6 +79,7 @@ function ForYouAILoading({ isDark, t }: { isDark: boolean; t: (key: string) => s
 export default function ForYouSection() {
   const { t } = useLanguage();
   const { isAuthenticated } = useAuth();
+  const { hasUnlimitedAccess } = useSubscription();
   const { language, country } = useLanguage();
   const router = useRouter();
   const colorScheme = useColorScheme();
@@ -108,7 +110,7 @@ export default function ForYouSection() {
       }
       return { recommendations: [], streamingProviders: {}, hasProfile: false };
     },
-    enabled: isAuthenticated,
+    enabled: isAuthenticated && hasUnlimitedAccess,
     staleTime: 1000 * 60 * 30,
     gcTime: 1000 * 60 * 60,
   });
@@ -156,7 +158,7 @@ export default function ForYouSection() {
       </Text>
 
       {/* Movies / TV toggle */}
-      {isAuthenticated && (
+      {isAuthenticated && hasUnlimitedAccess && (
         <View className='mb-3 flex-row gap-2'>
           <TouchableOpacity
             onPress={() => { setActiveTab('movie'); setExpanded(false); }}
@@ -179,8 +181,8 @@ export default function ForYouSection() {
         </View>
       )}
 
-      {/* Guest state: sign in prompt */}
-      {!isAuthenticated && (
+      {/* Guest or free user state: sign in / upgrade prompt */}
+      {(!isAuthenticated || (isAuthenticated && !hasUnlimitedAccess)) && (
         <View
           style={[getSquircle(16), getCardShadow(isDark)]}
           className='items-center justify-center border border-light-border bg-light-surface px-6 py-8 dark:border-dark-border dark:bg-dark-surface'
@@ -202,18 +204,18 @@ export default function ForYouSection() {
             color={isDark ? '#a3a3a3' : '#737373'}
           />
           <Text className='mt-2 text-center text-sm font-medium text-light-text dark:text-dark-text'>
-            {t('forYou.signInPrompt')}
+            {isAuthenticated ? t('forYou.premiumPrompt') : t('forYou.signInPrompt')}
           </Text>
         </View>
       )}
 
       {/* Loading state */}
-      {isAuthenticated && isLoading && (
+      {isAuthenticated && hasUnlimitedAccess && isLoading && (
         <ForYouAILoading isDark={isDark} t={t} />
       )}
 
       {/* Empty state with actionable CTA */}
-      {isAuthenticated && !isLoading && recommendations.length === 0 && (
+      {isAuthenticated && hasUnlimitedAccess && !isLoading && recommendations.length === 0 && (
         <View
           style={[getSquircle(16), getCardShadow(isDark)]}
           className='items-center justify-center border border-light-border bg-light-surface px-6 py-8 dark:border-dark-border dark:bg-dark-surface'
@@ -239,7 +241,7 @@ export default function ForYouSection() {
       )}
 
       {/* Recommendations list */}
-      {isAuthenticated && !isLoading && recommendations.length > 0 && (
+      {isAuthenticated && hasUnlimitedAccess && !isLoading && recommendations.length > 0 && (
         <View className='gap-3'>
           {recommendations.slice(0, expanded ? 15 : 3).map((item, _i) => (
             <View

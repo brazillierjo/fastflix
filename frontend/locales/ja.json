@@ -420,7 +420,8 @@
     "loadingSubtitle": "少々お待ちください",
     "discover": "映画を探す",
     "whyThisMovie": "なぜこの映画？",
-    "whyThisShow": "なぜこのドラマ？"
+    "whyThisShow": "なぜこのドラマ？",
+    "premiumPrompt": "プレミアムにアップグレードしてAIのおすすめを取得"
   },
   "home": {
     "greeting": "こんにちは！",

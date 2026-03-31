@@ -582,6 +582,15 @@ app.get("/for-you", authMiddleware, rateLimitMiddleware("ai"), async (c) => {
   try {
     const userId = getUserId(c);
 
+    // Premium-only endpoint
+    const isPremium = await db.hasAccess(userId);
+    if (!isPremium) {
+      return c.json({
+        success: true,
+        data: { recommendations: [], streamingProviders: {}, hasProfile: false },
+      });
+    }
+
     const language = c.req.query("language") || "fr-FR";
     const country = c.req.query("country") || "FR";
 

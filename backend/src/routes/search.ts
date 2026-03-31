@@ -287,16 +287,6 @@ app.post("/", authMiddleware, rateLimitMiddleware("ai"), async (c) => {
       });
     }
 
-    // Build title→reason map + index→reason map from AI result
-    const reasonByTitle = new Map<string, string>();
-    const reasonByIndex = new Map<number, string>();
-    for (let i = 0; i < aiResult.recommendations.length; i++) {
-      if (aiResult.reasons[i]) {
-        reasonByTitle.set(aiResult.recommendations[i].toLowerCase(), aiResult.reasons[i]);
-        reasonByIndex.set(i, aiResult.reasons[i]);
-      }
-    }
-
     // Enrich with TMDB data
     const enrichedResults = await tmdb.enrichRecommendations(
       aiResult.recommendations,
@@ -305,21 +295,28 @@ app.post("/", authMiddleware, rateLimitMiddleware("ai"), async (c) => {
       language
     );
 
-    // Attach reasons to enriched results (try title match first, then index)
-    let enrichedIdx = 0;
-    for (const result of enrichedResults) {
-      const reason = reasonByTitle.get(result.title.toLowerCase())
-        || reasonByTitle.get((result.original_title || '').toLowerCase())
-        || reasonByIndex.get(enrichedIdx);
-      if (reason) {
-        result.reason = reason;
+    // Premium-only: attach AI reasons and match scores
+    if (isPremium) {
+      const reasonByTitle = new Map<string, string>();
+      const reasonByIndex = new Map<number, string>();
+      for (let i = 0; i < aiResult.recommendations.length; i++) {
+        if (aiResult.reasons[i]) {
+          reasonByTitle.set(aiResult.recommendations[i].toLowerCase(), aiResult.reasons[i]);
+          reasonByIndex.set(i, aiResult.reasons[i]);
+        }
       }
-      enrichedIdx++;
-    }
 
-    // Compute match scores
-    for (const result of enrichedResults) {
-      result.matchScore = computeMatchScore(result.genre_ids, result.vote_average, tasteProfile);
+      let enrichedIdx = 0;
+      for (const result of enrichedResults) {
+        const reason = reasonByTitle.get(result.title.toLowerCase())
+          || reasonByTitle.get((result.original_title || '').toLowerCase())
+          || reasonByIndex.get(enrichedIdx);
+        if (reason) {
+          result.reason = reason;
+        }
+        result.matchScore = computeMatchScore(result.genre_ids, result.vote_average, tasteProfile);
+        enrichedIdx++;
+      }
     }
 
     const [rawStreamingProviders, { credits, detailedInfo }] = await Promise.all([

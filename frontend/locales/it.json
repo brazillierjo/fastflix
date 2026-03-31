@@ -420,7 +420,8 @@
     "loadingSubtitle": "Ci vorrà solo un attimo",
     "discover": "Scopri film",
     "whyThisMovie": "Perché questo film?",
-    "whyThisShow": "Perché questa serie?"
+    "whyThisShow": "Perché questa serie?",
+    "premiumPrompt": "Passa a Premium per raccomandazioni IA personalizzate"
   },
   "home": {
     "greeting": "Ciao!",

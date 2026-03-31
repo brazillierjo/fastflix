@@ -420,7 +420,8 @@
     "loadingSubtitle": "Ça ne prendra qu'un instant",
     "discover": "Découvrir des films",
     "whyThisMovie": "Pourquoi ce film ?",
-    "whyThisShow": "Pourquoi cette série ?"
+    "whyThisShow": "Pourquoi cette série ?",
+    "premiumPrompt": "Passez à Premium pour des recommandations IA personnalisées"
   },
   "home": {
     "greeting": "Bonjour !",

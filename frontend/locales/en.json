@@ -448,7 +448,8 @@
     "loadingSubtitle": "This will only take a moment",
     "discover": "Discover movies",
     "whyThisMovie": "Why this movie?",
-    "whyThisShow": "Why this show?"
+    "whyThisShow": "Why this show?",
+    "premiumPrompt": "Upgrade to Premium for personalized AI recommendations"
   },
   "home": {
     "greeting": "Hello!",
