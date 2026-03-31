@@ -336,7 +336,7 @@ class DatabaseService {
   async hasAccess(userId: string): Promise<boolean> {
     // RevenueCat is the single source of truth for subscription status
     try {
-      const { checkPremiumAccess } = await import('./revenuecat');
+      const { checkPremiumAccess } = await import('./revenuecat.js');
       const { isPremium } = await checkPremiumAccess(userId);
       return isPremium;
     } catch (error) {
@@ -363,7 +363,7 @@ class DatabaseService {
     let rcActive = false;
     let rcExpiresAt: string | null = null;
     try {
-      const { checkPremiumAccess } = await import('./revenuecat');
+      const { checkPremiumAccess } = await import('./revenuecat.js');
       const rc = await checkPremiumAccess(userId);
       rcActive = rc.isPremium;
       rcExpiresAt = rc.expiresAt;
