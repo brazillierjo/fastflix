@@ -320,9 +320,9 @@ export default function ForYouSection() {
                   </View>
                 </View>
 
-                {/* AI reason — full width bottom */}
+                {/* AI reason — full width bottom with border-top */}
                 {item.reason && (
-                  <View className='flex-row items-start gap-1.5 bg-netflix-500/8 px-3 py-2'>
+                  <View className='flex-row items-start gap-1.5 border-t border-light-border bg-netflix-500/5 px-3 py-2 dark:border-dark-border'>
                     <Ionicons name='sparkles' size={11} color='#E50914' style={{ marginTop: 1 }} />
                     <Text className='flex-1 text-[11px] italic leading-4 text-light-textSecondary dark:text-dark-textSecondary'>
                       <Text className='font-semibold not-italic text-light-text dark:text-dark-text'>

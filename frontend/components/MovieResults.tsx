@@ -227,8 +227,9 @@ export default function MovieResults({
                   <TouchableOpacity
                     onPress={() => navigateToDetail(movie)}
                     activeOpacity={0.7}
+                    style={{ overflow: 'hidden' }}
                   >
-                    {/* Collapsed card with side image */}
+                    {/* Card content */}
                     <View className='flex-row'>
                       {/* LEFT: Image */}
                       <View
@@ -286,26 +287,13 @@ export default function MovieResults({
                         <Text className='mb-1 text-xl font-semibold text-light-text dark:text-dark-text'>
                           {movie.title || movie.name}
                         </Text>
-                        <Text className='mb-2 text-sm text-light-textSecondary dark:text-dark-textSecondary'>
+                        <Text className='mb-2 text-sm text-light-text dark:text-dark-text'>
                           {movie.overview
                             ? movie.overview.length > 80
                               ? `${movie.overview.substring(0, 80)}...`
                               : movie.overview
                             : t('movies.noDescription')}
                         </Text>
-
-                        {/* AI reason */}
-                        {movie.reason && (
-                          <View className='mb-2 flex-row items-start gap-1.5 rounded-lg bg-netflix-500/8 px-2.5 py-1.5'>
-                            <Ionicons name='sparkles' size={12} color='#E50914' style={{ marginTop: 1 }} />
-                            <Text className='flex-1 text-xs italic leading-4 text-light-textSecondary dark:text-dark-textSecondary'>
-                              <Text className='font-semibold not-italic text-light-text dark:text-dark-text'>
-                                {movie.media_type === 'tv' ? t('forYou.whyThisShow') : t('forYou.whyThisMovie')}
-                              </Text>
-                              {' '}{movie.reason}
-                            </Text>
-                          </View>
-                        )}
 
                         {/* Streaming platforms (collapsed - max 4) */}
                         {streamingProviders[movie.id] &&
@@ -345,6 +333,19 @@ export default function MovieResults({
                         </View>
                       </View>
                     </View>
+
+                    {/* AI reason — full width bottom with border-top */}
+                    {movie.reason && (
+                      <View className='flex-row items-start gap-1.5 border-t border-light-border bg-netflix-500/5 px-4 py-2.5 dark:border-dark-border'>
+                        <Ionicons name='sparkles' size={12} color='#E50914' style={{ marginTop: 1 }} />
+                        <Text className='flex-1 text-xs italic leading-4 text-light-textSecondary dark:text-dark-textSecondary'>
+                          <Text className='font-semibold not-italic text-light-text dark:text-dark-text'>
+                            {movie.media_type === 'tv' ? t('forYou.whyThisShow') : t('forYou.whyThisMovie')}
+                          </Text>
+                          {' '}{movie.reason}
+                        </Text>
+                      </View>
+                    )}
                   </TouchableOpacity>
                 </MotiView>
               );
