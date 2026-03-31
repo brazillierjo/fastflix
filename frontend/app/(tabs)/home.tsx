@@ -681,22 +681,22 @@ export default function HomeScreen() {
           <WatchlistSection />
         </MotiView>
 
-        {/* My Favorite Actors */}
+        {/* My Ratings (Déjà vus) */}
         <MotiView
           from={hasAnimated.current ? undefined : { opacity: 0, translateY: 12 }}
           animate={{ opacity: 1, translateY: 0 }}
           transition={{ type: 'spring', damping: 18, stiffness: 180, delay: 240 }}
         >
-          <FavoriteActorsSection />
+          <MyRatingsSection />
         </MotiView>
 
-        {/* My Ratings */}
+        {/* My Favorite Actors */}
         <MotiView
           from={hasAnimated.current ? undefined : { opacity: 0, translateY: 12 }}
           animate={{ opacity: 1, translateY: 0 }}
           transition={{ type: 'spring', damping: 18, stiffness: 180, delay: 280 }}
         >
-          <MyRatingsSection />
+          <FavoriteActorsSection />
         </MotiView>
 
         {/* Recent Searches moved to Search screen */}

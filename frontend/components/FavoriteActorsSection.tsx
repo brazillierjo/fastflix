@@ -46,12 +46,15 @@ export default function FavoriteActorsSection() {
   return (
     <View className='mt-8'>
       <View className='mb-3 flex-row items-center justify-between px-6'>
-        <Text
-          style={typography.title3}
-          className='text-light-text dark:text-dark-text'
-        >
-          {t('favoriteActors.sectionTitle')}
-        </Text>
+        <View className='flex-row items-center gap-2'>
+          <Ionicons name='heart' size={18} color='#E50914' />
+          <Text
+            style={typography.title3}
+            className='text-light-text dark:text-dark-text'
+          >
+            {t('favoriteActors.sectionTitle')}
+          </Text>
+        </View>
         {favoriteActors.length > 0 && (
           <TouchableOpacity
             onPress={() => router.push('/favorite-actors-list' as never)}

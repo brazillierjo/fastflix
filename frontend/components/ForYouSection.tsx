@@ -11,11 +11,12 @@ import {
   getSquircle,
   typography,
 } from '@/utils/designHelpers';
+import { useWatchlist } from '@/hooks/useWatchlist';
 import { MotiView } from 'moti';
 import { useQuery } from '@tanstack/react-query';
 import { backendAPIService, MovieResult, StreamingProvider } from '@/services/backend-api.service';
 import { useRouter } from 'expo-router';
-import React, { useState } from 'react';
+import React, { useMemo, useState } from 'react';
 import {
   Image,
   Text,
@@ -83,6 +84,11 @@ export default function ForYouSection() {
   const isDark = colorScheme === 'dark';
   const [expanded, setExpanded] = useState(false);
   const [activeTab, setActiveTab] = useState<'movie' | 'tv'>('movie');
+  const { items: watchlistItems } = useWatchlist();
+  const watchlistIds = useMemo(
+    () => new Set((watchlistItems || []).map((w) => w.tmdb_id)),
+    [watchlistItems]
+  );
 
   const tmdbLanguage = language?.includes('-') ? language : `${language || 'en'}-${(country || 'US').toUpperCase()}`;
   const tmdbCountry = (country || 'US').toUpperCase();
@@ -247,28 +253,35 @@ export default function ForYouSection() {
               >
                 <View className='flex-row p-3'>
                   {/* Poster */}
-                  {item.poster_path ? (
-                    <View style={getSquircle(8)} className='h-28 w-20 overflow-hidden'>
-                      <Image
-                        source={{
-                          uri: `${TMDB_IMAGE_BASE}/w185${item.poster_path}`,
-                        }}
-                        className='h-full w-full'
-                        resizeMode='cover'
-                      />
-                    </View>
-                  ) : (
-                    <View
-                      style={getSquircle(8)}
-                      className='h-28 w-20 items-center justify-center bg-light-border dark:bg-dark-border'
-                    >
-                      <Ionicons
-                        name='image-outline'
-                        size={24}
-                        color={isDark ? '#404040' : '#d4d4d4'}
-                      />
-                    </View>
-                  )}
+                  <View className='relative'>
+                    {item.poster_path ? (
+                      <View style={getSquircle(8)} className='h-28 w-20 overflow-hidden'>
+                        <Image
+                          source={{
+                            uri: `${TMDB_IMAGE_BASE}/w185${item.poster_path}`,
+                          }}
+                          className='h-full w-full'
+                          resizeMode='cover'
+                        />
+                      </View>
+                    ) : (
+                      <View
+                        style={getSquircle(8)}
+                        className='h-28 w-20 items-center justify-center bg-light-border dark:bg-dark-border'
+                      >
+                        <Ionicons
+                          name='image-outline'
+                          size={24}
+                          color={isDark ? '#404040' : '#d4d4d4'}
+                        />
+                      </View>
+                    )}
+                    {watchlistIds.has(item.tmdb_id) && (
+                      <View className='absolute -right-1 -top-1 rounded-full bg-white p-0.5 dark:bg-black'>
+                        <Ionicons name='bookmark' size={14} color='#E50914' />
+                      </View>
+                    )}
+                  </View>
 
                   {/* Content */}
                   <View className='ml-3 flex-1 justify-center'>

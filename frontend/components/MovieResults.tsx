@@ -2,7 +2,7 @@ import { Ionicons } from '@expo/vector-icons';
 import { LinearGradient } from 'expo-linear-gradient';
 import { MotiView } from 'moti';
 import { useRouter } from 'expo-router';
-import React, { useCallback, useRef, useState } from 'react';
+import React, { useCallback, useMemo, useRef, useState } from 'react';
 import {
   ActivityIndicator,
   Image,
@@ -14,6 +14,7 @@ import {
   View,
 } from 'react-native';
 import { useLanguage } from '../contexts/LanguageContext';
+import { useWatchlist } from '../hooks/useWatchlist';
 import { ConversationMessage } from '../services/backend-api.service';
 import {
   getCardShadow,
@@ -96,6 +97,11 @@ export default function MovieResults({
   const colorScheme = useColorScheme();
   const isDark = colorScheme === 'dark';
   const router = useRouter();
+  const { items: watchlistItems } = useWatchlist();
+  const watchlistIds = useMemo(
+    () => new Set((watchlistItems || []).map((w) => w.tmdb_id)),
+    [watchlistItems]
+  );
 
   const scrollViewRef = useRef<ScrollView>(null);
   const [refineQuery, setRefineQuery] = useState('');
@@ -276,6 +282,12 @@ export default function MovieResults({
                                 <Text className='text-sm font-bold text-white'>
                                   {movie.vote_average.toFixed(1)}
                                 </Text>
+                              </View>
+                            )}
+                            {/* Watchlist badge */}
+                            {watchlistIds.has(movie.id) && (
+                              <View className='absolute left-2 top-2 rounded-full bg-white/90 p-1 dark:bg-black/80'>
+                                <Ionicons name='bookmark' size={14} color='#E50914' />
                               </View>
                             )}
                           </>

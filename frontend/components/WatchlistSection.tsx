@@ -47,12 +47,15 @@ export default function WatchlistSection() {
       className='mt-8'
     >
       <View className='mb-3 flex-row items-center justify-between px-6'>
-        <Text
-          style={typography.title3}
-          className='text-light-text dark:text-dark-text'
-        >
-          {t('watchlist.sectionTitle')}
-        </Text>
+        <View className='flex-row items-center gap-2'>
+          <Ionicons name='bookmark' size={18} color='#E50914' />
+          <Text
+            style={typography.title3}
+            className='text-light-text dark:text-dark-text'
+          >
+            {t('watchlist.sectionTitle')}
+          </Text>
+        </View>
         {items.length > 0 && (
           <TouchableOpacity
             onPress={() => router.push('/watchlist-full' as never)}
