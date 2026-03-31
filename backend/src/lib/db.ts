@@ -82,25 +82,21 @@ class DatabaseService {
   }): Promise<User> {
     this.initialize();
 
-    try {
-      const { id, email, name, avatar_url, auth_provider, provider_user_id } = data;
+    const { id, email, name, avatar_url, auth_provider, provider_user_id } = data;
 
-      await this.client!.execute({
-        sql: `INSERT INTO users (id, email, name, avatar_url, auth_provider, provider_user_id)
-              VALUES (?, ?, ?, ?, ?, ?)`,
-        args: [id, email, name, avatar_url, auth_provider, provider_user_id],
-      });
+    await this.client!.execute({
+      sql: `INSERT INTO users (id, email, name, avatar_url, auth_provider, provider_user_id)
+            VALUES (?, ?, ?, ?, ?, ?)`,
+      args: [id, email, name, avatar_url, auth_provider, provider_user_id],
+    });
 
-      // Return the created user
-      const user = await this.getUserById(id);
-      if (!user) {
-        throw new Error('Failed to retrieve created user');
-      }
-
-      return user;
-    } catch (error) {
-      throw error;
+    // Return the created user
+    const user = await this.getUserById(id);
+    if (!user) {
+      throw new Error('Failed to retrieve created user');
     }
+
+    return user;
   }
 
   /**
@@ -109,20 +105,16 @@ class DatabaseService {
   async getUserById(id: string): Promise<User | null> {
     this.initialize();
 
-    try {
-      const result = await this.client!.execute({
-        sql: 'SELECT * FROM users WHERE id = ? AND deleted_at IS NULL',
-        args: [id],
-      });
+    const result = await this.client!.execute({
+      sql: 'SELECT * FROM users WHERE id = ? AND deleted_at IS NULL',
+      args: [id],
+    });
 
-      if (result.rows.length === 0) {
-        return null;
-      }
-
-      return rowToObject<User>(result.rows[0]);
-    } catch (error) {
-      throw error;
+    if (result.rows.length === 0) {
+      return null;
     }
+
+    return rowToObject<User>(result.rows[0]);
   }
 
   /**
@@ -131,20 +123,16 @@ class DatabaseService {
   async getUserByEmail(email: string): Promise<User | null> {
     this.initialize();
 
-    try {
-      const result = await this.client!.execute({
-        sql: 'SELECT * FROM users WHERE email = ? AND deleted_at IS NULL',
-        args: [email],
-      });
+    const result = await this.client!.execute({
+      sql: 'SELECT * FROM users WHERE email = ? AND deleted_at IS NULL',
+      args: [email],
+    });
 
-      if (result.rows.length === 0) {
-        return null;
-      }
-
-      return rowToObject<User>(result.rows[0]);
-    } catch (error) {
-      throw error;
+    if (result.rows.length === 0) {
+      return null;
     }
+
+    return rowToObject<User>(result.rows[0]);
   }
 
   /**
@@ -156,20 +144,16 @@ class DatabaseService {
   ): Promise<User | null> {
     this.initialize();
 
-    try {
-      const result = await this.client!.execute({
-        sql: 'SELECT * FROM users WHERE auth_provider = ? AND provider_user_id = ? AND deleted_at IS NULL',
-        args: [auth_provider, provider_user_id],
-      });
+    const result = await this.client!.execute({
+      sql: 'SELECT * FROM users WHERE auth_provider = ? AND provider_user_id = ? AND deleted_at IS NULL',
+      args: [auth_provider, provider_user_id],
+    });
 
-      if (result.rows.length === 0) {
-        return null;
-      }
-
-      return rowToObject<User>(result.rows[0]);
-    } catch (error) {
-      throw error;
+    if (result.rows.length === 0) {
+      return null;
     }
+
+    return rowToObject<User>(result.rows[0]);
   }
 
   /**
@@ -184,46 +168,42 @@ class DatabaseService {
   ): Promise<User> {
     this.initialize();
 
-    try {
-      const updates: string[] = [];
-      const args: (string | null)[] = [];
+    const updates: string[] = [];
+    const args: (string | null)[] = [];
 
-      if (data.name !== undefined) {
-        updates.push('name = ?');
-        args.push(data.name);
-      }
+    if (data.name !== undefined) {
+      updates.push('name = ?');
+      args.push(data.name);
+    }
 
-      if (data.avatar_url !== undefined) {
-        updates.push('avatar_url = ?');
-        args.push(data.avatar_url);
-      }
+    if (data.avatar_url !== undefined) {
+      updates.push('avatar_url = ?');
+      args.push(data.avatar_url);
+    }
 
-      if (updates.length === 0) {
-        // No updates, just return current user
-        const user = await this.getUserById(id);
-        if (!user) {
-          throw new Error('User not found');
-        }
-        return user;
-      }
-
-      updates.push("updated_at = datetime('now')");
-      args.push(id);
-
-      await this.client!.execute({
-        sql: `UPDATE users SET ${updates.join(', ')} WHERE id = ?`,
-        args,
-      });
-
+    if (updates.length === 0) {
+      // No updates, just return current user
       const user = await this.getUserById(id);
       if (!user) {
-        throw new Error('Failed to retrieve updated user');
+        throw new Error('User not found');
       }
-
       return user;
-    } catch (error) {
-      throw error;
     }
+
+    updates.push("updated_at = datetime('now')");
+    args.push(id);
+
+    await this.client!.execute({
+      sql: `UPDATE users SET ${updates.join(', ')} WHERE id = ?`,
+      args,
+    });
+
+    const user = await this.getUserById(id);
+    if (!user) {
+      throw new Error('Failed to retrieve updated user');
+    }
+
+    return user;
   }
 
   /**
@@ -235,20 +215,16 @@ class DatabaseService {
   ): Promise<User | null> {
     this.initialize();
 
-    try {
-      const result = await this.client!.execute({
-        sql: 'SELECT * FROM users WHERE auth_provider = ? AND provider_user_id = ? AND deleted_at IS NOT NULL',
-        args: [auth_provider, provider_user_id],
-      });
+    const result = await this.client!.execute({
+      sql: 'SELECT * FROM users WHERE auth_provider = ? AND provider_user_id = ? AND deleted_at IS NOT NULL',
+      args: [auth_provider, provider_user_id],
+    });
 
-      if (result.rows.length === 0) {
-        return null;
-      }
-
-      return rowToObject<User>(result.rows[0]);
-    } catch (error) {
-      throw error;
+    if (result.rows.length === 0) {
+      return null;
     }
+
+    return rowToObject<User>(result.rows[0]);
   }
 
   /**
@@ -322,38 +298,34 @@ class DatabaseService {
   }): Promise<void> {
     this.initialize();
 
-    try {
-      const { user_id, revenuecat_user_id, status, expires_at, product_id } = subscription;
+    const { user_id, revenuecat_user_id, status, expires_at, product_id } = subscription;
 
-      // First, check if a subscription exists for this user
-      const existing = await this.client!.execute({
-        sql: 'SELECT * FROM subscriptions WHERE user_id = ?',
-        args: [user_id],
+    // First, check if a subscription exists for this user
+    const existing = await this.client!.execute({
+      sql: 'SELECT * FROM subscriptions WHERE user_id = ?',
+      args: [user_id],
+    });
+
+    if (existing.rows.length > 0) {
+      // Update existing subscription
+      await this.client!.execute({
+        sql: `UPDATE subscriptions
+              SET revenuecat_user_id = ?,
+                  status = ?,
+                  expires_at = ?,
+                  product_id = ?,
+                  last_updated = CURRENT_TIMESTAMP
+              WHERE user_id = ?`,
+        args: [revenuecat_user_id, status, expires_at, product_id, user_id],
       });
-
-      if (existing.rows.length > 0) {
-        // Update existing subscription
-        await this.client!.execute({
-          sql: `UPDATE subscriptions
-                SET revenuecat_user_id = ?,
-                    status = ?,
-                    expires_at = ?,
-                    product_id = ?,
-                    last_updated = CURRENT_TIMESTAMP
-                WHERE user_id = ?`,
-          args: [revenuecat_user_id, status, expires_at, product_id, user_id],
-        });
-      } else {
-        // Insert new subscription with user_id (device_id can be null)
-        await this.client!.execute({
-          sql: `INSERT INTO subscriptions
-                (user_id, revenuecat_user_id, status, expires_at, product_id)
-                VALUES (?, ?, ?, ?, ?)`,
-          args: [user_id, revenuecat_user_id, status, expires_at, product_id],
-        });
-      }
-    } catch (error) {
-      throw error;
+    } else {
+      // Insert new subscription with user_id (device_id can be null)
+      await this.client!.execute({
+        sql: `INSERT INTO subscriptions
+              (user_id, revenuecat_user_id, status, expires_at, product_id)
+              VALUES (?, ?, ?, ?, ?)`,
+        args: [user_id, revenuecat_user_id, status, expires_at, product_id],
+      });
     }
   }
 
@@ -517,54 +489,50 @@ class DatabaseService {
   ): Promise<UserPreferences> {
     this.initialize();
 
-    try {
-      const updates: string[] = [];
-      const args: (string | number)[] = [];
+    const updates: string[] = [];
+    const args: (string | number)[] = [];
 
-      if (preferences.country !== undefined) {
-        updates.push('pref_country = ?');
-        args.push(preferences.country);
-      }
-
-      if (preferences.contentType !== undefined) {
-        updates.push('pref_content_type = ?');
-        args.push(preferences.contentType);
-      }
-
-      if (preferences.platforms !== undefined) {
-        updates.push('pref_platforms = ?');
-        args.push(JSON.stringify(preferences.platforms));
-      }
-
-      if (preferences.includeFlatrate !== undefined) {
-        updates.push('pref_include_flatrate = ?');
-        args.push(preferences.includeFlatrate ? 1 : 0);
-      }
-
-      if (preferences.includeRent !== undefined) {
-        updates.push('pref_include_rent = ?');
-        args.push(preferences.includeRent ? 1 : 0);
-      }
-
-      if (preferences.includeBuy !== undefined) {
-        updates.push('pref_include_buy = ?');
-        args.push(preferences.includeBuy ? 1 : 0);
-      }
-
-      if (updates.length > 0) {
-        updates.push("updated_at = datetime('now')");
-        args.push(userId);
-
-        await this.client!.execute({
-          sql: `UPDATE users SET ${updates.join(', ')} WHERE id = ?`,
-          args,
-        });
-      }
-
-      return this.getUserPreferences(userId);
-    } catch (error) {
-      throw error;
+    if (preferences.country !== undefined) {
+      updates.push('pref_country = ?');
+      args.push(preferences.country);
     }
+
+    if (preferences.contentType !== undefined) {
+      updates.push('pref_content_type = ?');
+      args.push(preferences.contentType);
+    }
+
+    if (preferences.platforms !== undefined) {
+      updates.push('pref_platforms = ?');
+      args.push(JSON.stringify(preferences.platforms));
+    }
+
+    if (preferences.includeFlatrate !== undefined) {
+      updates.push('pref_include_flatrate = ?');
+      args.push(preferences.includeFlatrate ? 1 : 0);
+    }
+
+    if (preferences.includeRent !== undefined) {
+      updates.push('pref_include_rent = ?');
+      args.push(preferences.includeRent ? 1 : 0);
+    }
+
+    if (preferences.includeBuy !== undefined) {
+      updates.push('pref_include_buy = ?');
+      args.push(preferences.includeBuy ? 1 : 0);
+    }
+
+    if (updates.length > 0) {
+      updates.push("updated_at = datetime('now')");
+      args.push(userId);
+
+      await this.client!.execute({
+        sql: `UPDATE users SET ${updates.join(', ')} WHERE id = ?`,
+        args,
+      });
+    }
+
+    return this.getUserPreferences(userId);
   }
 
   // ==========================================================================
@@ -633,18 +601,14 @@ class DatabaseService {
   async removeFromWatchlist(userId: string, itemId: string): Promise<boolean> {
     this.initialize();
 
-    try {
-      const result = await this.client!.execute({
-        sql: 'DELETE FROM watchlist WHERE id = ? AND user_id = ?',
-        args: [itemId, userId],
-      });
+    const result = await this.client!.execute({
+      sql: 'DELETE FROM watchlist WHERE id = ? AND user_id = ?',
+      args: [itemId, userId],
+    });
 
-      const deleted = result.rowsAffected > 0;
+    const deleted = result.rowsAffected > 0;
 
-      return deleted;
-    } catch (error) {
-      throw error;
-    }
+    return deleted;
   }
 
   /**
@@ -752,16 +716,12 @@ class DatabaseService {
   async updateWatchlistProviders(itemId: string, providers: StreamingProvider[]): Promise<void> {
     this.initialize();
 
-    try {
-      const providersJson = JSON.stringify(providers);
+    const providersJson = JSON.stringify(providers);
 
-      await this.client!.execute({
-        sql: `UPDATE watchlist SET providers_json = ?, last_provider_check = datetime('now') WHERE id = ?`,
-        args: [providersJson, itemId],
-      });
-    } catch (error) {
-      throw error;
-    }
+    await this.client!.execute({
+      sql: `UPDATE watchlist SET providers_json = ?, last_provider_check = datetime('now') WHERE id = ?`,
+      args: [providersJson, itemId],
+    });
   }
 
   /**
@@ -853,22 +813,18 @@ class DatabaseService {
   ): Promise<void> {
     this.initialize();
 
-    try {
-      // Use INSERT OR REPLACE with COALESCE to handle upsert
-      await this.client!.execute({
-        sql: `INSERT INTO user_quotas (user_id, date, search_count, watchlist_additions)
-              VALUES (?, ?, ?, ?)
-              ON CONFLICT(user_id, date) DO UPDATE SET ${field} = ${field} + 1`,
-        args: [
-          userId,
-          date,
-          field === 'search_count' ? 1 : 0,
-          field === 'watchlist_additions' ? 1 : 0,
-        ],
-      });
-    } catch (error) {
-      throw error;
-    }
+    // Use INSERT OR REPLACE with COALESCE to handle upsert
+    await this.client!.execute({
+      sql: `INSERT INTO user_quotas (user_id, date, search_count, watchlist_additions)
+            VALUES (?, ?, ?, ?)
+            ON CONFLICT(user_id, date) DO UPDATE SET ${field} = ${field} + 1`,
+      args: [
+        userId,
+        date,
+        field === 'search_count' ? 1 : 0,
+        field === 'watchlist_additions' ? 1 : 0,
+      ],
+    });
   }
 
   // ==========================================================================
@@ -881,14 +837,10 @@ class DatabaseService {
   async addSearchHistory(userId: string, query: string, resultsCount: number): Promise<void> {
     this.initialize();
 
-    try {
-      await this.client!.execute({
-        sql: 'INSERT INTO search_history (user_id, query, results_count) VALUES (?, ?, ?)',
-        args: [userId, query, resultsCount],
-      });
-    } catch (error) {
-      throw error;
-    }
+    await this.client!.execute({
+      sql: 'INSERT INTO search_history (user_id, query, results_count) VALUES (?, ?, ?)',
+      args: [userId, query, resultsCount],
+    });
   }
 
   /**
@@ -1001,70 +953,66 @@ class DatabaseService {
   ): Promise<UserTasteProfile> {
     this.initialize();
 
-    try {
-      // Check if profile exists
-      const existing = await this.client!.execute({
-        sql: 'SELECT user_id FROM user_taste_profile WHERE user_id = ?',
-        args: [userId],
+    // Check if profile exists
+    const existing = await this.client!.execute({
+      sql: 'SELECT user_id FROM user_taste_profile WHERE user_id = ?',
+      args: [userId],
+    });
+
+    if (existing.rows.length === 0) {
+      // Insert new profile
+      await this.client!.execute({
+        sql: `INSERT INTO user_taste_profile (user_id, favorite_genres, disliked_genres, favorite_decades, rated_movies, favorite_actors)
+              VALUES (?, ?, ?, ?, ?, ?)`,
+        args: [
+          userId,
+          JSON.stringify(data.favorite_genres || []),
+          JSON.stringify(data.disliked_genres || []),
+          JSON.stringify(data.favorite_decades || []),
+          JSON.stringify(data.rated_movies || []),
+          JSON.stringify(data.favorite_actors || []),
+        ],
       });
+    } else {
+      // Update existing profile
+      const updates: string[] = [];
+      const args: (string | number)[] = [];
 
-      if (existing.rows.length === 0) {
-        // Insert new profile
-        await this.client!.execute({
-          sql: `INSERT INTO user_taste_profile (user_id, favorite_genres, disliked_genres, favorite_decades, rated_movies, favorite_actors)
-                VALUES (?, ?, ?, ?, ?, ?)`,
-          args: [
-            userId,
-            JSON.stringify(data.favorite_genres || []),
-            JSON.stringify(data.disliked_genres || []),
-            JSON.stringify(data.favorite_decades || []),
-            JSON.stringify(data.rated_movies || []),
-            JSON.stringify(data.favorite_actors || []),
-          ],
-        });
-      } else {
-        // Update existing profile
-        const updates: string[] = [];
-        const args: (string | number)[] = [];
-
-        if (data.favorite_genres !== undefined) {
-          updates.push('favorite_genres = ?');
-          args.push(JSON.stringify(data.favorite_genres));
-        }
-
-        if (data.disliked_genres !== undefined) {
-          updates.push('disliked_genres = ?');
-          args.push(JSON.stringify(data.disliked_genres));
-        }
-
-        if (data.favorite_decades !== undefined) {
-          updates.push('favorite_decades = ?');
-          args.push(JSON.stringify(data.favorite_decades));
-        }
-
-        if (data.rated_movies !== undefined) {
-          updates.push('rated_movies = ?');
-          args.push(JSON.stringify(data.rated_movies));
-        }
-
-        if (data.favorite_actors !== undefined) {
-          updates.push('favorite_actors = ?');
-          args.push(JSON.stringify(data.favorite_actors));
-        }
-
-        if (updates.length > 0) {
-          args.push(userId);
-          await this.client!.execute({
-            sql: `UPDATE user_taste_profile SET ${updates.join(', ')} WHERE user_id = ?`,
-            args,
-          });
-        }
+      if (data.favorite_genres !== undefined) {
+        updates.push('favorite_genres = ?');
+        args.push(JSON.stringify(data.favorite_genres));
       }
 
-      return this.getUserTasteProfile(userId);
-    } catch (error) {
-      throw error;
+      if (data.disliked_genres !== undefined) {
+        updates.push('disliked_genres = ?');
+        args.push(JSON.stringify(data.disliked_genres));
+      }
+
+      if (data.favorite_decades !== undefined) {
+        updates.push('favorite_decades = ?');
+        args.push(JSON.stringify(data.favorite_decades));
+      }
+
+      if (data.rated_movies !== undefined) {
+        updates.push('rated_movies = ?');
+        args.push(JSON.stringify(data.rated_movies));
+      }
+
+      if (data.favorite_actors !== undefined) {
+        updates.push('favorite_actors = ?');
+        args.push(JSON.stringify(data.favorite_actors));
+      }
+
+      if (updates.length > 0) {
+        args.push(userId);
+        await this.client!.execute({
+          sql: `UPDATE user_taste_profile SET ${updates.join(', ')} WHERE user_id = ?`,
+          args,
+        });
+      }
     }
+
+    return this.getUserTasteProfile(userId);
   }
 
   /**
@@ -1222,16 +1170,12 @@ class DatabaseService {
   async savePushToken(userId: string, token: string, platform: string = 'ios'): Promise<void> {
     this.initialize();
 
-    try {
-      await this.client!.execute({
-        sql: `INSERT INTO push_tokens (user_id, token, platform)
-              VALUES (?, ?, ?)
-              ON CONFLICT(user_id, token) DO UPDATE SET platform = ?, created_at = CURRENT_TIMESTAMP`,
-        args: [userId, token, platform, platform],
-      });
-    } catch (error) {
-      throw error;
-    }
+    await this.client!.execute({
+      sql: `INSERT INTO push_tokens (user_id, token, platform)
+            VALUES (?, ?, ?)
+            ON CONFLICT(user_id, token) DO UPDATE SET platform = ?, created_at = CURRENT_TIMESTAMP`,
+      args: [userId, token, platform, platform],
+    });
   }
 
   /**
@@ -1279,41 +1223,37 @@ class DatabaseService {
   ): Promise<WatchlistItem | null> {
     this.initialize();
 
-    try {
-      const updates: string[] = ['watched = ?'];
-      const args: (string | number | null)[] = [data.watched ? 1 : 0];
+    const updates: string[] = ['watched = ?'];
+    const args: (string | number | null)[] = [data.watched ? 1 : 0];
 
-      if (data.watched) {
-        updates.push("watched_at = datetime('now')");
-      } else {
-        updates.push('watched_at = NULL');
-      }
-
-      if (data.rating !== undefined) {
-        updates.push('user_rating = ?');
-        args.push(data.rating);
-      }
-
-      if (data.note !== undefined) {
-        updates.push('user_note = ?');
-        args.push(data.note);
-      }
-
-      args.push(itemId, userId);
-
-      const result = await this.client!.execute({
-        sql: `UPDATE watchlist SET ${updates.join(', ')} WHERE id = ? AND user_id = ?`,
-        args,
-      });
-
-      if (result.rowsAffected === 0) {
-        return null;
-      }
-
-      return this.getWatchlistItemById(itemId);
-    } catch (error) {
-      throw error;
+    if (data.watched) {
+      updates.push("watched_at = datetime('now')");
+    } else {
+      updates.push('watched_at = NULL');
     }
+
+    if (data.rating !== undefined) {
+      updates.push('user_rating = ?');
+      args.push(data.rating);
+    }
+
+    if (data.note !== undefined) {
+      updates.push('user_note = ?');
+      args.push(data.note);
+    }
+
+    args.push(itemId, userId);
+
+    const result = await this.client!.execute({
+      sql: `UPDATE watchlist SET ${updates.join(', ')} WHERE id = ? AND user_id = ?`,
+      args,
+    });
+
+    if (result.rowsAffected === 0) {
+      return null;
+    }
+
+    return this.getWatchlistItemById(itemId);
   }
 
   /**

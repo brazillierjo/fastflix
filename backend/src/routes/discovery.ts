@@ -15,7 +15,6 @@ import type {
   TrendingItem,
   HomeResponse,
   StreamingProvider,
-  MovieResult,
   UserContext,
 } from "../lib/types.js";
 import { FREE_TIER_LIMITS } from "../lib/types.js";

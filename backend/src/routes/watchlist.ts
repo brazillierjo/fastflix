@@ -91,7 +91,7 @@ app.delete("/:id", async (c) => {
     await db.recordActivity(userId, today);
 
     return c.json({ success: true, data: { deleted: true } });
-  } catch (error) {
+  } catch {
     return c.json({ error: "Failed to remove from watchlist" }, 500);
   }
 });
@@ -157,7 +157,7 @@ app.post("/refresh-providers", async (c) => {
       success: true,
       data: { refreshed: successCount, total: itemsToRefresh.length },
     });
-  } catch (error) {
+  } catch {
     return c.json({ error: "Failed to refresh providers" }, 500);
   }
 });
@@ -208,7 +208,7 @@ app.get("/check-availability", async (c) => {
     await Promise.all(checkPromises);
 
     return c.json({ success: true, data: { changes, checkedCount: unwatchedItems.length } });
-  } catch (error) {
+  } catch {
     return c.json({ error: "Failed to check availability" }, 500);
   }
 });

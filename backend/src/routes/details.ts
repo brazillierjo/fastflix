@@ -6,8 +6,7 @@
 import { Hono } from "hono";
 import { z } from "zod";
 import { tmdb } from "../lib/tmdb.js";
-import { db } from "../lib/db.js";
-import { authMiddleware, getUserId } from "../middleware/auth.js";
+import { authMiddleware } from "../middleware/auth.js";
 import { rateLimitMiddleware } from "../middleware/rate-limit.js";
 
 // Validation schemas
@@ -44,8 +43,6 @@ const app = new Hono();
  */
 app.get("/details", authMiddleware, rateLimitMiddleware("standard"), async (c) => {
   try {
-    const userId = getUserId(c);
-
     const tmdbId = parseInt(c.req.query("tmdbId") || "0", 10);
     const mediaType = (c.req.query("mediaType") || "movie") as "movie" | "tv";
     const language = c.req.query("language") || "fr-FR";

@@ -90,22 +90,18 @@ class TMDBService {
       url.searchParams.append(key, value);
     }
 
-    try {
-      const response = await fetch(url.toString(), { signal: AbortSignal.timeout(10000) });
+    const response = await fetch(url.toString(), { signal: AbortSignal.timeout(10000) });
 
-      if (!response.ok) {
-        throw new Error(`TMDB API error: ${response.status} ${response.statusText}`);
-      }
-
-      const data = await response.json();
-
-      // Store in cache
-      this.cache.set(cacheKey, { data, timestamp: Date.now() });
-
-      return data as T;
-    } catch (error) {
-      throw error;
+    if (!response.ok) {
+      throw new Error(`TMDB API error: ${response.status} ${response.statusText}`);
     }
+
+    const data = await response.json();
+
+    // Store in cache
+    this.cache.set(cacheKey, { data, timestamp: Date.now() });
+
+    return data as T;
   }
 
   /**

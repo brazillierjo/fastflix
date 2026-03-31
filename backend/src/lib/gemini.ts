@@ -149,7 +149,7 @@ If the user says "comédie romantique moderne" or "modern romantic comedy", you 
       const highlyRated = userContext.ratedMovies?.filter((m) => m.rating >= 4);
       const neutralRated = userContext.ratedMovies?.filter((m) => m.rating === 3);
       const dislikedMovies = userContext.ratedMovies?.filter((m) => m.rating >= 1 && m.rating <= 2);
-      const watchedNoRating = userContext.ratedMovies?.filter((m) => m.rating === 0);
+      const _watchedNoRating = userContext.ratedMovies?.filter((m) => m.rating === 0);
 
       if (highlyRated && highlyRated.length > 0) {
         profileLines.push(

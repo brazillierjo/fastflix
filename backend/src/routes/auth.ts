@@ -176,7 +176,7 @@ app.get("/me", authMiddleware, async (c) => {
         willRenew: subscriptionDetails.willRenew,
       },
     });
-  } catch (error) {
+  } catch {
     return c.json({ error: "Failed to get user info" }, 500);
   }
 });

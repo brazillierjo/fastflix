@@ -103,7 +103,7 @@ export async function verifyAppleToken(identityToken: string): Promise<AppleToke
     };
   } catch (error) {
     console.error('Apple token verification failed:', error);
-    throw new Error('Invalid Apple identity token');
+    throw new Error('Invalid Apple identity token', { cause: error });
   }
 }
 
@@ -159,7 +159,7 @@ export async function verifyGoogleToken(idToken: string): Promise<GoogleTokenPay
     };
   } catch (error) {
     console.error('Google token verification failed:', error);
-    throw new Error('Invalid Google ID token');
+    throw new Error('Invalid Google ID token', { cause: error });
   }
 }
 

@@ -51,7 +51,7 @@ app.get("/preferences", async (c) => {
   try {
     const preferences = await db.getUserPreferences(getUserId(c));
     return c.json({ success: true, data: { preferences } });
-  } catch (error) {
+  } catch {
     return c.json({ error: "Failed to fetch preferences" }, 500);
   }
 });
@@ -74,7 +74,7 @@ app.get("/taste-profile", async (c) => {
   try {
     const profile = await db.getUserTasteProfile(getUserId(c));
     return c.json({ success: true, data: { profile } });
-  } catch (error) {
+  } catch {
     return c.json({ error: "Failed to fetch taste profile" }, 500);
   }
 });
@@ -184,7 +184,7 @@ app.get("/stats", async (c) => {
   try {
     const stats = await db.getUserStats(getUserId(c));
     return c.json({ success: true, data: stats });
-  } catch (error) {
+  } catch {
     return c.json({ error: "Failed to fetch user stats" }, 500);
   }
 });
@@ -194,7 +194,7 @@ app.post("/delete", async (c) => {
   try {
     await db.softDeleteUser(getUserId(c));
     return c.json({ success: true, message: "Account deleted successfully" });
-  } catch (error) {
+  } catch {
     return c.json({ error: "Failed to delete account" }, 500);
   }
 });

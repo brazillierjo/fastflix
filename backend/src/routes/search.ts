@@ -5,11 +5,10 @@ import { searchRequestSchema } from "../lib/validation.js";
 import { gemini } from "../lib/gemini.js";
 import { tmdb } from "../lib/tmdb.js";
 import { db } from "../lib/db.js";
-import { authMiddleware, getUserId, getUser } from "../middleware/auth.js";
+import { authMiddleware, getUserId } from "../middleware/auth.js";
 import { rateLimitMiddleware } from "../middleware/rate-limit.js";
 import { captureException } from "../lib/sentry.js";
 import type {
-  SearchResponse,
   MovieResult,
   StreamingProvider,
   UserContext,
@@ -130,11 +129,8 @@ const app = new Hono();
 
 // POST /search — AI-powered search
 app.post("/", authMiddleware, rateLimitMiddleware("ai"), async (c) => {
-  const startTime = Date.now();
-
   try {
     const userId = getUserId(c);
-    const user = getUser(c);
 
     const body = await c.req.json();
     const validatedData = searchRequestSchema.parse(body);
