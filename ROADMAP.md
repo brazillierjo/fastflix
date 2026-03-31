@@ -1025,3 +1025,6 @@ frontend/
 - [ ] 8.4 — Mode soirée (écran dédié)
 - [ ] 4.3 — Toast "Goûts mis à jour"
 - [ ] 3.3 — Historique: re-lancer une recherche + effacer
+
+### Phase finale — Mise à jour du site web
+- [ ] **Mettre à jour le site web FastFlix** pour refléter toutes les nouvelles features implémentées (screenshots, descriptions, pricing, changelog, etc.)
