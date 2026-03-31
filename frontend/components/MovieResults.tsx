@@ -336,7 +336,7 @@ export default function MovieResults({
 
                     {/* AI reason — full width bottom with border-top */}
                     {movie.reason && (
-                      <View className='flex-row items-start gap-1.5 border-t border-light-border bg-netflix-500/5 px-4 py-2.5 dark:border-dark-border'>
+                      <View className='flex-row items-start gap-1.5 border-t border-light-border px-4 py-2.5 dark:border-dark-border'>
                         <Ionicons name='sparkles' size={12} color='#E50914' style={{ marginTop: 1 }} />
                         <Text className='flex-1 text-xs italic leading-4 text-light-textSecondary dark:text-dark-textSecondary'>
                           <Text className='font-semibold not-italic text-light-text dark:text-dark-text'>
