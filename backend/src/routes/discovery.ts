@@ -7,7 +7,7 @@ import { Hono } from "hono";
 import { db } from "../lib/db.js";
 import { tmdb } from "../lib/tmdb.js";
 import { gemini } from "../lib/gemini.js";
-import { computeAffinityScore, getWatchedTmdbIds } from "../lib/affinity.js";
+import { computeAffinityScore, computeMatchScore, getWatchedTmdbIds } from "../lib/affinity.js";
 import { authMiddleware, getUserId } from "../middleware/auth.js";
 import { rateLimitMiddleware } from "../middleware/rate-limit.js";
 import type {
@@ -774,6 +774,11 @@ app.get("/for-you", authMiddleware, rateLimitMiddleware("ai"), async (c) => {
     const finalRecommendations = hasFilters
       ? top20.filter((item) => filteredProvidersMap[item.tmdb_id]?.length > 0)
       : top20;
+
+    // Compute match scores
+    for (const item of finalRecommendations) {
+      item.matchScore = computeMatchScore(item.genre_ids, item.vote_average, tasteProfile);
+    }
 
     // Cache results in DB (async, don't await)
     db.setForYouCache(userId, finalRecommendations, filteredProvidersMap, language).catch(() => {});

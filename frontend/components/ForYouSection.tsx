@@ -292,7 +292,7 @@ export default function ForYouSection() {
                       {item.title}
                     </Text>
 
-                    {/* Rating + Media type */}
+                    {/* Rating + Media type + Match score */}
                     <View className='mt-1 flex-row items-center gap-2'>
                       {item.vote_average > 0 && (
                         <View className='flex-row items-center gap-1'>
@@ -310,6 +310,30 @@ export default function ForYouSection() {
                           {item.media_type === 'tv' ? 'TV' : 'Film'}
                         </Text>
                       </View>
+                      {item.matchScore != null && item.matchScore > 0 && (
+                        <View
+                          style={getSquircle(4)}
+                          className={`px-1.5 py-0.5 ${
+                            item.matchScore >= 80
+                              ? 'bg-green-500/15'
+                              : item.matchScore >= 50
+                                ? 'bg-orange-500/15'
+                                : 'bg-neutral-500/15'
+                          }`}
+                        >
+                          <Text
+                            className={`text-[11px] font-bold ${
+                              item.matchScore >= 80
+                                ? 'text-green-600'
+                                : item.matchScore >= 50
+                                  ? 'text-orange-500'
+                                  : 'text-neutral-500'
+                            }`}
+                          >
+                            {item.matchScore}%
+                          </Text>
+                        </View>
+                      )}
                     </View>
 
                     {/* Overview */}

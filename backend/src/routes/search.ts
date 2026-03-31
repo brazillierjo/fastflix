@@ -8,6 +8,7 @@ import { db } from "../lib/db.js";
 import { authMiddleware, getUserId } from "../middleware/auth.js";
 import { rateLimitMiddleware } from "../middleware/rate-limit.js";
 import { captureException } from "../lib/sentry.js";
+import { computeMatchScore } from "../lib/affinity.js";
 import type {
   MovieResult,
   StreamingProvider,
@@ -314,6 +315,11 @@ app.post("/", authMiddleware, rateLimitMiddleware("ai"), async (c) => {
         result.reason = reason;
       }
       enrichedIdx++;
+    }
+
+    // Compute match scores
+    for (const result of enrichedResults) {
+      result.matchScore = computeMatchScore(result.genre_ids, result.vote_average, tasteProfile);
     }
 
     const [rawStreamingProviders, { credits, detailedInfo }] = await Promise.all([

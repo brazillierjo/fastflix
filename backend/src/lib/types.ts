@@ -34,6 +34,7 @@ export interface MovieResult {
   popularity: number;
   adult?: boolean;
   reason?: string; // AI-generated personalized reason for recommending this title
+  matchScore?: number; // 0-100 affinity score based on user taste profile
 }
 
 export interface Cast {

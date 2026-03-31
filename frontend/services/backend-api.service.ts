@@ -34,6 +34,7 @@ export interface MovieResult {
   popularity: number;
   adult?: boolean;
   reason?: string;
+  matchScore?: number;
 }
 
 export interface StreamingProvider {

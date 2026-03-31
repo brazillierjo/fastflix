@@ -59,6 +59,50 @@ export function computeAffinityScore(
 }
 
 /**
+ * Compute a normalized match score (0-100%) for a content item.
+ * Combines genre affinity with vote average for a user-friendly percentage.
+ */
+export function computeMatchScore(
+  genreIds: number[],
+  voteAverage: number,
+  tasteProfile: UserTasteProfile
+): number {
+  if (!tasteProfile.favorite_genres.length && !tasteProfile.disliked_genres.length) {
+    return 0; // No profile = no score
+  }
+
+  const favoriteSet = new Set(tasteProfile.favorite_genres.map(g => g.toLowerCase()));
+  const dislikedSet = new Set(tasteProfile.disliked_genres.map(g => g.toLowerCase()));
+
+  const itemGenres = (genreIds || [])
+    .map(gid => GENRE_ID_TO_NAME[gid]?.toLowerCase())
+    .filter(Boolean);
+
+  if (itemGenres.length === 0) return 0;
+
+  // Genre match ratio (0-1): how many of the item's genres are favorites
+  let matchCount = 0;
+  let penaltyCount = 0;
+  for (const name of itemGenres) {
+    if (favoriteSet.has(name)) matchCount++;
+    if (dislikedSet.has(name)) penaltyCount++;
+  }
+
+  // If any disliked genre, cap score low
+  if (penaltyCount > 0) {
+    return Math.max(10, Math.round(20 - penaltyCount * 10));
+  }
+
+  // Genre score: 0-70 points
+  const genreScore = Math.round((matchCount / Math.max(itemGenres.length, 1)) * 70);
+
+  // Vote average bonus: 0-30 points (scaled from 0-10 rating)
+  const voteBonus = Math.round(Math.min(voteAverage, 10) * 3);
+
+  return Math.min(100, genreScore + voteBonus);
+}
+
+/**
  * Build a Set of TMDB IDs the user has already watched (rated_movies with any rating including 0)
  */
 export function getWatchedTmdbIds(tasteProfile: UserTasteProfile): Set<number> {

@@ -196,20 +196,18 @@
 
 ### 2.2 — Score de pertinence personnalisé
 
-**Statut** : PARTIELLEMENT EXISTE (affinityScore backend, pas affiché)
+**Statut** : FAIT
 **Catégorie** : Premium
 **Priorité** : Moyenne
 
-- [ ] **Backend — Exposer le score d'affinité dans les réponses**
-  - Fichier : `backend/src/routes/discovery.ts`
-  - Le `computeAffinityScore()` existe déjà dans `backend/src/lib/affinity.ts`
-  - Ajouter `matchScore: number` (0-100%) dans les réponses `/for-you` et `/home`
-  - Normaliser le score brut en pourcentage : `Math.min(100, Math.round((score / maxPossibleScore) * 100))`
+- [x] **Backend — Exposer le score d'affinité dans les réponses**
+  - Ajouté `computeMatchScore()` dans `affinity.ts` (genre matching + vote average, 0-100%)
+  - `matchScore` attaché dans `/for-you` et `/search`
+  - Pénalité forte si genres disliked, bonus vote average
 
-- [ ] **Frontend — Badge "Match XX%"**
-  - Fichiers : `ForYouSection.tsx`, `MovieResults.tsx`, `NewReleasesSection.tsx`
-  - Afficher un badge coloré : vert >80%, orange 50-80%, gris <50%
-  - Style : pill `bg-green-500/15 text-green-600` avec `text-[11px] font-bold`
+- [x] **Frontend — Badge "Match XX%"**
+  - Badge coloré sur ForYouSection et MovieResults
+  - Vert >80%, orange 50-80%, gris <50%
 
 ### 2.3 — Tags dynamiques ("Mind-blowing", "Twist final", "Feel good")
 
@@ -1013,7 +1011,7 @@ frontend/
 - [ ] 8.2 — Notifications "nouveau film pour toi"
 - [ ] 11.1 — Notifier à la sortie
 - [ ] 6.1 — "Parce que tu as regardé X"
-- [ ] 2.2 — Score de pertinence %
+- [x] 2.2 — Score de pertinence %
 - [ ] 7.2 — Widget "Temps gagné"
 - [ ] 12.6 — Feed infini paginé (`/api/feed`) pour le mode swipe
 

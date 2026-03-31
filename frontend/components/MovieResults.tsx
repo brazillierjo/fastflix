@@ -34,6 +34,7 @@ interface Movie {
   vote_average: number;
   media_type?: 'movie' | 'tv' | 'person';
   reason?: string;
+  matchScore?: number;
 }
 
 interface StreamingProvider {
@@ -296,9 +297,35 @@ export default function MovieResults({
 
                       {/* RIGHT: Content */}
                       <View className='flex-1 p-4'>
-                        <Text className='mb-1 text-xl font-semibold text-light-text dark:text-dark-text'>
-                          {movie.title || movie.name}
-                        </Text>
+                        <View className='mb-1 flex-row items-center gap-2'>
+                          <Text className='flex-1 text-xl font-semibold text-light-text dark:text-dark-text' numberOfLines={1}>
+                            {movie.title || movie.name}
+                          </Text>
+                          {movie.matchScore != null && movie.matchScore > 0 && (
+                            <View
+                              style={getSmallBorderRadius()}
+                              className={`px-2 py-0.5 ${
+                                movie.matchScore >= 80
+                                  ? 'bg-green-500/15'
+                                  : movie.matchScore >= 50
+                                    ? 'bg-orange-500/15'
+                                    : 'bg-neutral-500/15'
+                              }`}
+                            >
+                              <Text
+                                className={`text-[11px] font-bold ${
+                                  movie.matchScore >= 80
+                                    ? 'text-green-600'
+                                    : movie.matchScore >= 50
+                                      ? 'text-orange-500'
+                                      : 'text-neutral-500'
+                                }`}
+                              >
+                                {movie.matchScore}%
+                              </Text>
+                            </View>
+                          )}
+                        </View>
                         <Text className='mb-2 text-sm text-light-text dark:text-dark-text'>
                           {movie.overview
                             ? movie.overview.length > 80

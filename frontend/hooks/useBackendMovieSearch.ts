@@ -33,6 +33,7 @@ export interface Movie {
   vote_average: number;
   media_type?: 'movie' | 'tv' | 'person';
   reason?: string;
+  matchScore?: number;
 }
 
 export interface Cast {
@@ -110,6 +111,7 @@ const transformMovieResult = (result: MovieResult): Movie => {
     vote_average: result.vote_average,
     media_type: result.media_type,
     reason: result.reason,
+    matchScore: result.matchScore,
   };
 };
 
