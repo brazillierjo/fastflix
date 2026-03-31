@@ -209,78 +209,7 @@
   - Badge coloré sur ForYouSection et MovieResults
   - Vert >80%, orange 50-80%, gris <50%
 
-### 2.3 — Tags dynamiques ("Mind-blowing", "Twist final", "Feel good")
-
-**Statut** : N'EXISTE PAS
-**Catégorie** : Premium
-**Priorité** : Moyenne
-
-- [ ] **Backend — Demander des tags au prompt Gemini**
-  - Fichier : `backend/src/lib/gemini.ts`
-  - Ajouter au prompt : "Pour chaque film, génère 1 à 3 tags courts (max 15 caractères) décrivant l'ambiance ou le style, ex: 'Mind-blowing', 'Twist final', 'Feel good', 'Visuellement fou', 'Sombre'"
-  - Ajouter `tags?: string[]` au format de sortie JSON
-
-- [ ] **Backend — Types**
-  - Fichier : `backend/src/lib/types.ts`
-  - Ajouter `tags?: string[]` à `MovieResult`
-
-- [ ] **Frontend — Afficher les tags comme pills**
-  - Fichiers : `MovieResults.tsx`, `ForYouSection.tsx`, movie-detail
-  - Tags en pills colorées sous le titre : fond semi-transparent, texte `text-[10px] font-semibold uppercase`
-  - Palette de couleurs par catégorie de tag (mood, genre, style)
-
 ---
-
-## 3. Réduire la friction
-
-> **Objectif** : éliminer le syndrome de la page blanche
-
-### 3.1 — Suggestions cliquables sur l'écran de recherche
-
-**Statut** : PARTIELLEMENT EXISTE ("No idea?" existe, mais pas de pills cliquables)
-**Catégorie** : Free
-**Priorité** : Haute
-
-- [ ] **Frontend — Ajouter des chips de suggestions dans SearchForm**
-  - Fichier : `frontend/components/SearchForm.tsx`
-  - Sous l'input, ajouter une section "Essayez :" avec des pills cliquables
-  - Exemples : `"Un film comme Interstellar"`, `"Une série courte et addictive"`, `"Un truc drôle ce soir"`, `"Thriller psychologique récent"`, `"Animation pour adultes"`
-  - Au tap : pré-remplir l'input avec le texte de la pill
-  - Stocker les suggestions dans les fichiers de traduction (`frontend/constants/` ou `translations`)
-  - Style : `ScrollView horizontal`, pills avec `getSquircle(20)`, `bg-light-surface dark:bg-dark-surface`, `border border-light-border`
-  - Animation d'entrée `MotiView` avec stagger delay
-
-- [ ] **Traductions** : Ajouter 5-8 suggestions par langue (fr, en, es, de, it, pt)
-
-### 3.2 — Bouton "Surprends-moi" (mode aléatoire)
-
-**Statut** : N'EXISTE PAS (le "No idea?" est un autofill, pas une recherche directe)
-**Catégorie** : Free (1 par jour) / Premium (illimité)
-**Priorité** : Haute
-
-- [ ] **Backend — Nouveau endpoint `GET /api/surprise`**
-  - Fichier : créer `backend/src/routes/surprise.ts`
-  - Logique : combiner trending + genres favoris de l'utilisateur + random seed
-  - Utiliser Gemini avec un prompt court : "Recommande 1 film/série aléatoire mais excellent, que l'utilisateur ne s'attend pas à voir, basé sur son profil"
-  - Retourner 1 seul résultat enrichi (poster, providers, overview, raison)
-  - Rate limit : 1/jour free, illimité premium
-
-- [ ] **Backend — Monter la route**
-  - Fichier : `backend/src/index.ts`
-  - Ajouter `app.route("/api/surprise", surpriseRoutes)`
-
-- [ ] **Frontend — Bouton "Surprends-moi" sur Home**
-  - Fichier : `frontend/app/(tabs)/home.tsx`
-  - Bouton plein width sous le CTA de recherche ou à côté
-  - Style : outline rouge avec icône `dice-outline` ou `sparkles`
-  - Au tap : appel API → navigation directe vers `movie-detail` avec le résultat
-  - Animation de chargement : spinner + texte "L'IA cherche..." avec shimmer
-
-- [ ] **Frontend — Service API**
-  - Fichier : `frontend/services/backend-api.service.ts`
-  - Ajouter méthode `getSurprise()`
-
-- [ ] **Traductions** : clé `home.surpriseMe`
 
 ### 3.3 — Améliorer l'historique de recherche (re-lancer une recherche)
 
@@ -288,7 +217,7 @@
 **Catégorie** : Premium (auth requis)
 **Priorité** : Moyenne
 
-- [ ] **Frontend — Tap sur un historique = lance la recherche**
+- [ ] **Frontend — Tap sur un historique = lance la recherche** (on a déjà essayé, l'input ne se remplissait jamais. utiliser un skill peut-etre ?)
   - Fichier : `frontend/app/search-history.tsx`
   - Au tap sur un item : naviguer vers `/(tabs)/search` avec `query` et `ts` params (déjà supporté)
   - Garder le bouton copie comme action secondaire (swipe ou long press)
