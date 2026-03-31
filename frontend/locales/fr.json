@@ -416,7 +416,7 @@
     "subtitle": "Basé sur vos goûts",
     "signInPrompt": "Connectez-vous pour des recommandations personnalisées",
     "empty": "Notez des films pour obtenir des recommandations personnalisées",
-    "loading": "Recherche de films que vous aimerez...",
+    "loading": "L'IA analyse vos goûts...",
     "discover": "Découvrir des films"
   },
   "home": {

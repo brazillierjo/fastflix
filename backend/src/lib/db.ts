@@ -9,6 +9,7 @@ import type {
   UserPreferences,
   WatchlistItem,
   StreamingProvider,
+  MovieResult,
   UserQuota,
   SearchHistoryEntry,
   UserTasteProfile,
@@ -1392,6 +1393,115 @@ class DatabaseService {
     const b = new Date(dateB);
     const diffMs = Math.abs(b.getTime() - a.getTime());
     return Math.round(diffMs / (1000 * 60 * 60 * 24));
+  }
+
+  // ==========================================================================
+  // For You Cache Methods
+  // ==========================================================================
+
+  /**
+   * Ensure the for_you_cache table exists
+   */
+  private async ensureForYouCacheTable(): Promise<void> {
+    await this.getClient().execute({
+      sql: `CREATE TABLE IF NOT EXISTS for_you_cache (
+        user_id TEXT PRIMARY KEY,
+        recommendations_json TEXT NOT NULL,
+        providers_json TEXT NOT NULL,
+        language TEXT NOT NULL DEFAULT 'fr-FR',
+        created_at TEXT NOT NULL DEFAULT (datetime('now')),
+        updated_at TEXT NOT NULL DEFAULT (datetime('now'))
+      )`,
+      args: [],
+    });
+  }
+
+  /**
+   * Get cached For You recommendations for a user
+   * Returns null if no cache or cache is older than maxAgeDays
+   */
+  async getForYouCache(userId: string, maxAgeDays: number = 7): Promise<{
+    recommendations: MovieResult[];
+    streamingProviders: { [key: number]: StreamingProvider[] };
+  } | null> {
+    this.initialize();
+
+    try {
+      await this.ensureForYouCacheTable();
+
+      const result = await this.client!.execute({
+        sql: `SELECT recommendations_json, providers_json, updated_at
+              FROM for_you_cache
+              WHERE user_id = ?
+              AND datetime(updated_at, '+' || ? || ' days') > datetime('now')`,
+        args: [userId, maxAgeDays],
+      });
+
+      if (result.rows.length === 0) return null;
+
+      const row = result.rows[0];
+      return {
+        recommendations: JSON.parse(row.recommendations_json as string),
+        streamingProviders: JSON.parse(row.providers_json as string),
+      };
+    } catch {
+      return null;
+    }
+  }
+
+  /**
+   * Store For You recommendations in cache
+   */
+  async setForYouCache(
+    userId: string,
+    recommendations: MovieResult[],
+    streamingProviders: { [key: number]: StreamingProvider[] },
+    language: string
+  ): Promise<void> {
+    this.initialize();
+
+    try {
+      await this.ensureForYouCacheTable();
+
+      await this.client!.execute({
+        sql: `INSERT INTO for_you_cache (user_id, recommendations_json, providers_json, language, updated_at)
+              VALUES (?, ?, ?, ?, datetime('now'))
+              ON CONFLICT(user_id) DO UPDATE SET
+                recommendations_json = ?,
+                providers_json = ?,
+                language = ?,
+                updated_at = datetime('now')`,
+        args: [
+          userId,
+          JSON.stringify(recommendations),
+          JSON.stringify(streamingProviders),
+          language,
+          JSON.stringify(recommendations),
+          JSON.stringify(streamingProviders),
+          language,
+        ],
+      });
+    } catch (error) {
+      console.error('Failed to cache For You results:', error);
+    }
+  }
+
+  /**
+   * Invalidate For You cache for a user (when taste profile changes)
+   */
+  async invalidateForYouCache(userId: string): Promise<void> {
+    this.initialize();
+
+    try {
+      await this.ensureForYouCacheTable();
+
+      await this.client!.execute({
+        sql: 'DELETE FROM for_you_cache WHERE user_id = ?',
+        args: [userId],
+      });
+    } catch {
+      // Ignore errors
+    }
   }
 }
 

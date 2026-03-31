@@ -11,7 +11,7 @@ import {
   getSquircle,
   typography,
 } from '@/utils/designHelpers';
-import { Skeleton } from '@/components/Skeleton';
+import { MotiView } from 'moti';
 import { useQuery } from '@tanstack/react-query';
 import { backendAPIService, MovieResult, StreamingProvider } from '@/services/backend-api.service';
 import { useRouter } from 'expo-router';
@@ -35,21 +35,37 @@ interface ForYouData {
 }
 
 /**
- * Skeleton loading row placeholder using Skeleton shimmer component
+ * AI loading animation with pulsing sparkle and status text
  */
-function ForYouSkeletonRow({ isDark }: { isDark: boolean }) {
+function ForYouAILoading({ isDark, t }: { isDark: boolean; t: (key: string) => string }) {
   return (
     <View
-      style={[getSquircle(12), getCardShadow(isDark)]}
-      className='flex-row border border-light-border bg-light-surface p-3 dark:border-dark-border dark:bg-dark-surface'
+      style={[getSquircle(16), getCardShadow(isDark)]}
+      className='items-center justify-center border border-netflix-500/20 bg-netflix-500/5 px-6 py-10 dark:bg-netflix-500/10'
     >
-      <Skeleton width={80} height={112} borderRadius={8} />
-      <View className='ml-3 flex-1 justify-center'>
-        <Skeleton width='75%' height={16} borderRadius={6} />
-        <Skeleton width='40%' height={12} borderRadius={4} style={{ marginTop: 8 }} />
-        <Skeleton width='100%' height={12} borderRadius={4} style={{ marginTop: 6 }} />
-        <Skeleton width='65%' height={12} borderRadius={4} style={{ marginTop: 4 }} />
-      </View>
+      <MotiView
+        from={{ scale: 0.8, opacity: 0.4 }}
+        animate={{ scale: 1.2, opacity: 1 }}
+        transition={{
+          type: 'timing',
+          duration: 1200,
+          loop: true,
+        }}
+      >
+        <Ionicons name='sparkles' size={36} color='#E50914' />
+      </MotiView>
+      <MotiView
+        from={{ opacity: 0, translateY: 8 }}
+        animate={{ opacity: 1, translateY: 0 }}
+        transition={{ type: 'timing', duration: 600, delay: 300 }}
+      >
+        <Text className='mt-4 text-center text-sm font-semibold text-light-text dark:text-dark-text'>
+          {t('forYou.loading')}
+        </Text>
+        <Text className='mt-1 text-center text-xs text-light-muted dark:text-dark-muted'>
+          {t('forYou.subtitle')}
+        </Text>
+      </MotiView>
     </View>
   );
 }
@@ -187,11 +203,7 @@ export default function ForYouSection() {
 
       {/* Loading state */}
       {isAuthenticated && isLoading && (
-        <View className='gap-3'>
-          {[1, 2, 3].map((i) => (
-            <ForYouSkeletonRow key={i} isDark={isDark} />
-          ))}
-        </View>
+        <ForYouAILoading isDark={isDark} t={t} />
       )}
 
       {/* Empty state with actionable CTA */}

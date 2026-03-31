@@ -444,7 +444,7 @@
     "subtitle": "Based on your taste",
     "signInPrompt": "Sign in for personalized picks",
     "empty": "Rate some movies to get personalized recommendations",
-    "loading": "Finding movies you'll love...",
+    "loading": "AI is analyzing your taste...",
     "discover": "Discover movies"
   },
   "home": {

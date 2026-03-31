@@ -84,7 +84,9 @@ app.put("/taste-profile", async (c) => {
   try {
     const body = await c.req.json();
     const validatedData = updateTasteProfileSchema.parse(body);
-    const updatedProfile = await db.updateTasteProfile(getUserId(c), validatedData);
+    const uid = getUserId(c);
+    const updatedProfile = await db.updateTasteProfile(uid, validatedData);
+    db.invalidateForYouCache(uid).catch(() => {});
     return c.json({ success: true, data: { profile: updatedProfile } });
   } catch (error) {
     if (error instanceof z.ZodError) return c.json({ error: "Invalid request data", details: error.issues }, 400);
@@ -97,10 +99,12 @@ app.post("/taste-profile/rate", async (c) => {
   try {
     const body = await c.req.json();
     const validatedData = rateMovieSchema.parse(body);
+    const uid = getUserId(c);
     const updatedProfile = await db.rateMovie(
-      getUserId(c), validatedData.tmdb_id, validatedData.rating,
+      uid, validatedData.tmdb_id, validatedData.rating,
       validatedData.title, validatedData.media_type, validatedData.poster_path
     );
+    db.invalidateForYouCache(uid).catch(() => {});
     return c.json({ success: true, data: { profile: updatedProfile } });
   } catch (error) {
     if (error instanceof z.ZodError) return c.json({ error: "Invalid request data", details: error.issues }, 400);
@@ -113,7 +117,9 @@ app.delete("/taste-profile/rate", async (c) => {
   try {
     const body = await c.req.json();
     const validatedData = deleteRatingSchema.parse(body);
-    const updatedProfile = await db.removeRating(getUserId(c), validatedData.tmdb_id);
+    const uid = getUserId(c);
+    const updatedProfile = await db.removeRating(uid, validatedData.tmdb_id);
+    db.invalidateForYouCache(uid).catch(() => {});
     return c.json({ success: true, data: { profile: updatedProfile } });
   } catch (error) {
     if (error instanceof z.ZodError) return c.json({ error: "Invalid request data", details: error.issues }, 400);
@@ -126,10 +132,12 @@ app.post("/taste-profile/favorite-actors", async (c) => {
   try {
     const body = await c.req.json();
     const validatedData = favoriteActorSchema.parse(body);
+    const uid = getUserId(c);
     const updatedProfile = await db.favoriteActor(
-      getUserId(c), validatedData.tmdb_id, validatedData.name,
+      uid, validatedData.tmdb_id, validatedData.name,
       validatedData.profile_path, validatedData.known_for_department
     );
+    db.invalidateForYouCache(uid).catch(() => {});
     return c.json({ success: true, data: { profile: updatedProfile } });
   } catch (error) {
     if (error instanceof z.ZodError) return c.json({ error: "Invalid request data", details: error.issues }, 400);
@@ -142,7 +150,9 @@ app.delete("/taste-profile/favorite-actors", async (c) => {
   try {
     const body = await c.req.json();
     const validatedData = unfavoriteActorSchema.parse(body);
-    const updatedProfile = await db.unfavoriteActor(getUserId(c), validatedData.tmdb_id);
+    const uid = getUserId(c);
+    const updatedProfile = await db.unfavoriteActor(uid, validatedData.tmdb_id);
+    db.invalidateForYouCache(uid).catch(() => {});
     return c.json({ success: true, data: { profile: updatedProfile } });
   } catch (error) {
     if (error instanceof z.ZodError) return c.json({ error: "Invalid request data", details: error.issues }, 400);

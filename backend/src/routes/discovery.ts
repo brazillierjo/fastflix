@@ -585,6 +585,20 @@ app.get("/for-you", authMiddleware, rateLimitMiddleware("ai"), async (c) => {
     const language = c.req.query("language") || "fr-FR";
     const country = c.req.query("country") || "FR";
 
+    // Check cache first (valid for 7 days)
+    const cached = await db.getForYouCache(userId, 7);
+    if (cached) {
+      c.header("Cache-Control", "private, max-age=1800");
+      return c.json({
+        success: true,
+        data: {
+          recommendations: cached.recommendations,
+          streamingProviders: cached.streamingProviders,
+          hasProfile: true,
+        },
+      });
+    }
+
     // Fetch taste profile, watchlist, search history, preferences, and trending in parallel
     const [tasteProfile, watchlist, recentSearchHistory, preferences, trendingItems] =
       await Promise.all([
@@ -755,6 +769,9 @@ app.get("/for-you", authMiddleware, rateLimitMiddleware("ai"), async (c) => {
     const finalRecommendations = hasFilters
       ? top20.filter((item) => filteredProvidersMap[item.tmdb_id]?.length > 0)
       : top20;
+
+    // Cache results in DB (async, don't await)
+    db.setForYouCache(userId, finalRecommendations, filteredProvidersMap, language).catch(() => {});
 
     c.header("Cache-Control", "private, max-age=1800");
     return c.json({
