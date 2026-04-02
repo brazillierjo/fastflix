@@ -218,16 +218,6 @@ export default function SwipeActions({
         isActive: feedbackState === 'dislike',
       },
       {
-        icon: 'bookmark-outline',
-        activeIcon: 'bookmark',
-        color: '#fff',
-        activeColor: '#ffd60a',
-        onPress: handleWatchlist,
-        label: t('swipeDiscovery.watchlist'),
-        isActive: inWatchlist,
-        disabled: isToggling || !isAuthenticated,
-      },
-      {
         icon: 'eye-outline',
         activeIcon: 'eye',
         color: '#fff',
@@ -236,6 +226,16 @@ export default function SwipeActions({
         label: t('swipeDiscovery.watched'),
         isActive: isWatched,
         disabled: isRating || isDeleting || !isAuthenticated,
+      },
+      {
+        icon: 'bookmark-outline',
+        activeIcon: 'bookmark',
+        color: '#fff',
+        activeColor: '#ffd60a',
+        onPress: handleWatchlist,
+        label: t('swipeDiscovery.watchlist'),
+        isActive: inWatchlist,
+        disabled: isToggling || !isAuthenticated,
       },
       {
         icon: 'arrow-redo-outline',
