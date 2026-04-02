@@ -216,6 +216,18 @@ export function trackSwipeToDetail(tmdbId: number) {
   trackEvent('swipe_to_detail', { tmdb_id: tmdbId });
 }
 
+export function trackSwipeWatched(tmdbId: number) {
+  trackEvent('swipe_watched', { tmdb_id: tmdbId });
+}
+
 export function trackSwipeSession(durationSeconds: number, itemsViewed: number) {
   trackEvent('swipe_session', { duration_seconds: durationSeconds, items_viewed: itemsViewed });
+}
+
+export function trackBecauseYouWatchedClick(tmdbId: number, sourceTitle: string) {
+  trackEvent('because_you_watched_click', { tmdb_id: tmdbId, source_title: sourceTitle });
+}
+
+export function trackFeedPageLoad(page: number, itemCount: number) {
+  trackEvent('feed_page_load', { page, item_count: itemCount });
 }

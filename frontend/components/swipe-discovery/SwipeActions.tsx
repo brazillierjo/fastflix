@@ -1,7 +1,7 @@
 import { Ionicons } from '@expo/vector-icons';
 import * as Haptics from 'expo-haptics';
 import { useRouter } from 'expo-router';
-import React, { useCallback, useMemo, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { Share, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { MotiView, AnimatePresence } from 'moti';
 import { useAuth } from '@/contexts/AuthContext';
@@ -22,6 +22,7 @@ import {
   trackSwipeWatchlist,
   trackSwipeShare,
   trackSwipeToDetail,
+  trackSwipeWatched,
 } from '@/services/analytics';
 
 interface SwipeActionsProps {
@@ -73,10 +74,18 @@ export default function SwipeActions({
   const { rateMovie, isRating } = useRateMovie();
   const { deleteRating, isDeleting } = useDeleteRating();
 
+  const toastTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
   const showToast = useCallback((message: string) => {
+    if (toastTimer.current) clearTimeout(toastTimer.current);
     setToastMessage(message);
     setToastKey((k) => k + 1);
-    setTimeout(() => setToastMessage(null), 1800);
+    toastTimer.current = setTimeout(() => setToastMessage(null), 1800);
+  }, []);
+
+  useEffect(() => {
+    return () => {
+      if (toastTimer.current) clearTimeout(toastTimer.current);
+    };
   }, []);
 
   const handleLike = useCallback(() => {
@@ -149,6 +158,7 @@ export default function SwipeActions({
       deleteRating(item.tmdb_id);
       showToast(t('swipeDiscovery.unmarkedWatched'));
     } else {
+      trackSwipeWatched(item.tmdb_id);
       rateMovie({
         tmdb_id: item.tmdb_id,
         rating: 0,

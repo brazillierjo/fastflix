@@ -12,7 +12,6 @@ import { useRouter } from 'expo-router';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useAuth } from '@/contexts/AuthContext';
 import { useLanguage } from '@/contexts/LanguageContext';
-import { useSubscription } from '@/contexts/RevenueCatContext';
 import {
   backendAPIService,
   type MovieResult,
@@ -23,6 +22,7 @@ import {
   trackScreenView,
   trackSwipeView,
   trackSwipeSession,
+  trackFeedPageLoad,
 } from '@/services/analytics';
 
 const TAB_BAR_HEIGHT = Platform.OS === 'ios' ? 80 : 60;
@@ -30,7 +30,6 @@ const TAB_BAR_HEIGHT = Platform.OS === 'ios' ? 80 : 60;
 export default function ForYouScreen() {
   const { t, language } = useLanguage();
   const { isAuthenticated } = useAuth();
-  const { hasUnlimitedAccess: _hasUnlimitedAccess } = useSubscription();
   const router = useRouter();
   const insets = useSafeAreaInsets();
 
@@ -91,6 +90,7 @@ export default function ForYouScreen() {
             }
             setHasMore(res.data.hasMore);
             pageRef.current = page;
+            trackFeedPageLoad(page, newItems.length);
           }
         } else {
           // Guest: public trending

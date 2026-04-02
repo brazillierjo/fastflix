@@ -19,6 +19,7 @@ import {
   getSquircle,
   typography,
 } from '@/utils/designHelpers';
+import { trackBecauseYouWatchedClick } from '@/services/analytics';
 
 const TMDB_IMAGE_BASE = 'https://image.tmdb.org/t/p';
 
@@ -77,6 +78,7 @@ export default function BecauseYouWatchedSection() {
             key={item.tmdb_id || i}
             onPress={() => {
               Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+              trackBecauseYouWatchedClick(item.tmdb_id, data.sourceTitle || '');
               router.push({
                 pathname: '/movie-detail' as never,
                 params: {
@@ -88,6 +90,7 @@ export default function BecauseYouWatchedSection() {
                   overview: '',
                   providersJson: JSON.stringify(item.providers || []),
                   creditsJson: JSON.stringify([]),
+                  crewJson: JSON.stringify([]),
                   detailedInfoJson: JSON.stringify({}),
                 },
               });
@@ -133,9 +136,9 @@ export default function BecauseYouWatchedSection() {
             </View>
             {item.providers && item.providers.length > 0 && (
               <View className="mt-1 flex-row gap-1">
-                {item.providers.slice(0, 3).map((p, pi) => (
+                {item.providers.slice(0, 3).map((p) => (
                   <Image
-                    key={pi}
+                    key={p.logo_path}
                     source={{ uri: `${TMDB_IMAGE_BASE}/w92${p.logo_path}` }}
                     style={{ width: 20, height: 20, borderRadius: 4 }}
                   />
