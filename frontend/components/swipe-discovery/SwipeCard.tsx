@@ -83,39 +83,30 @@ export default function SwipeCard({
 
   return (
     <View style={styles.container}>
-      {/* Full-bleed poster background */}
-      {(backdropUri || posterUri) && (
-        <Image
-          source={{ uri: backdropUri || posterUri || '' }}
-          style={StyleSheet.absoluteFill}
-          resizeMode="cover"
+      {/* Poster — top 55% of the screen with fade to black */}
+      <View style={styles.posterArea}>
+        {(backdropUri || posterUri) && (
+          <Image
+            source={{ uri: backdropUri || posterUri || '' }}
+            style={StyleSheet.absoluteFill}
+            resizeMode="cover"
+          />
+        )}
+        {/* Top gradient — status bar / Dynamic Island */}
+        <LinearGradient
+          colors={['rgba(0,0,0,0.5)', 'rgba(0,0,0,0.15)', 'transparent']}
+          locations={[0, 0.6, 1]}
+          style={styles.topGradient}
+          pointerEvents="none"
         />
-      )}
-
-      {/* Top gradient — protects Dynamic Island area */}
-      <LinearGradient
-        colors={['rgba(0,0,0,0.6)', 'rgba(0,0,0,0.2)', 'transparent']}
-        locations={[0, 0.5, 1]}
-        style={styles.topGradient}
-        pointerEvents="none"
-      />
-
-      {/* Gradient overlay — strong at bottom for text readability */}
-      <LinearGradient
-        colors={[
-          'rgba(0,0,0,0)',
-          'rgba(0,0,0,0.05)',
-          'rgba(0,0,0,0.55)',
-          'rgba(0,0,0,0.9)',
-          'rgba(0,0,0,0.98)',
-        ]}
-        locations={[0, 0.35, 0.58, 0.78, 1]}
-        style={[
-          StyleSheet.absoluteFill,
-          bottomInset > 0 && { paddingBottom: bottomInset },
-        ]}
-        pointerEvents="box-none"
-      />
+        {/* Bottom fade into black */}
+        <LinearGradient
+          colors={['transparent', 'rgba(0,0,0,0.7)', '#000']}
+          locations={[0.3, 0.7, 1]}
+          style={styles.posterFade}
+          pointerEvents="none"
+        />
+      </View>
 
       {/* Info panel — anchored to bottom */}
       <View
@@ -218,13 +209,24 @@ const styles = StyleSheet.create({
     backgroundColor: '#000',
   },
 
+  posterArea: {
+    height: '55%',
+    overflow: 'hidden',
+  },
   topGradient: {
     position: 'absolute',
     top: 0,
     left: 0,
     right: 0,
-    height: 100,
+    height: 80,
     zIndex: 1,
+  },
+  posterFade: {
+    position: 'absolute',
+    bottom: 0,
+    left: 0,
+    right: 0,
+    height: '40%',
   },
 
   // ── Info panel ──────────────────────────────────────
