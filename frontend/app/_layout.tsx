@@ -113,7 +113,11 @@ export default Sentry.wrap(function RootLayout() {
                 />
                 <Stack.Screen
                   name='actor-detail'
-                  options={{ gestureEnabled: true, animation: 'slide_from_right' }}
+                  options={{
+                    gestureEnabled: true,
+                    fullScreenGestureEnabled: true,
+                    animation: 'slide_from_right',
+                  }}
                 />
                 <Stack.Screen
                   name='favorite-actors-list'
