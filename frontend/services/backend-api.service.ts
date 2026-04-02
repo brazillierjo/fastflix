@@ -187,17 +187,15 @@ class BackendAPIService {
       if (!response.ok) {
         const errorData = await response.json().catch(() => ({}));
 
-        // Handle 401 Unauthorized - token expired or invalid
+        // Handle 401 Unauthorized - only clear if our token is still the current one
+        // (prevents cascade when multiple concurrent requests all get 401)
         if (response.status === 401) {
-          console.warn(
-            '⚠️ 401 Unauthorized - Token expired or invalid. Clearing auth data.'
-          );
-          // Clear auth token and user data
-          await SecureStore.deleteItemAsync(AUTH_TOKEN_KEY);
-          await SecureStore.deleteItemAsync('fastflix_user_data');
-
-          // Note: The app will detect the missing token and show login screen
-          // This is handled by AuthContext checking getCurrentUser() on mount
+          const currentToken = await SecureStore.getItemAsync(AUTH_TOKEN_KEY);
+          if (currentToken === authToken) {
+            console.warn('⚠️ 401 Unauthorized - Clearing invalid auth data.');
+            await SecureStore.deleteItemAsync(AUTH_TOKEN_KEY);
+            await SecureStore.deleteItemAsync('fastflix_user_data');
+          }
         }
 
         return {
