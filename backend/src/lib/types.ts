@@ -12,7 +12,7 @@ export interface SearchRequest {
   query: string;
   includeMovies: boolean;
   includeTvShows: boolean;
-  platform: 'ios' | 'android';
+  platform: "ios" | "android";
   appVersion: string;
   language?: string; // 'fr-FR', 'en-US', etc.
   country?: string; // 'FR', 'US', etc.
@@ -22,7 +22,7 @@ export interface MovieResult {
   tmdb_id: number;
   title: string;
   original_title?: string;
-  media_type: 'movie' | 'tv';
+  media_type: "movie" | "tv";
   overview: string;
   poster_path: string | null;
   backdrop_path: string | null;
@@ -81,8 +81,18 @@ export interface DetailedInfo {
   created_by?: Array<{ id: number; name: string; profile_path: string | null }>;
   networks?: Array<{ id: number; name: string; logo_path: string | null }>;
   origin_country?: string[];
-  last_episode_to_air?: { episode_number: number; season_number: number; name: string; air_date: string } | null;
-  next_episode_to_air?: { episode_number: number; season_number: number; name: string; air_date: string } | null;
+  last_episode_to_air?: {
+    episode_number: number;
+    season_number: number;
+    name: string;
+    air_date: string;
+  } | null;
+  next_episode_to_air?: {
+    episode_number: number;
+    season_number: number;
+    name: string;
+    air_date: string;
+  } | null;
   in_production?: boolean;
 }
 
@@ -102,7 +112,7 @@ export interface StreamingProvider {
   provider_name: string;
   logo_path: string;
   display_priority: number;
-  availability_type: 'flatrate' | 'rent' | 'buy' | 'ads'; // How content is available
+  availability_type: "flatrate" | "rent" | "buy" | "ads"; // How content is available
 }
 
 // ============================================================================
@@ -118,7 +128,7 @@ export interface AIRecommendationResult {
 }
 
 export interface ConversationMessage {
-  role: 'user' | 'assistant';
+  role: "user" | "assistant";
   content: string;
 }
 
@@ -163,7 +173,7 @@ export interface TMDBMovie {
   genre_ids: number[];
   popularity: number;
   adult: boolean;
-  media_type?: 'movie';
+  media_type?: "movie";
 }
 
 export interface TMDBTVShow {
@@ -178,7 +188,7 @@ export interface TMDBTVShow {
   first_air_date: string;
   genre_ids: number[];
   popularity: number;
-  media_type?: 'tv';
+  media_type?: "tv";
 }
 
 export interface TMDBSearchResponse {
@@ -216,7 +226,7 @@ export interface User {
   email: string;
   name: string | null;
   avatar_url: string | null;
-  auth_provider: 'apple' | 'google';
+  auth_provider: "apple" | "google";
   provider_user_id: string;
   created_at: string;
   updated_at: string;
@@ -256,7 +266,7 @@ export interface GoogleAuthRequest {
 
 export interface UserPreferences {
   country: string;
-  contentType: 'all' | 'movies' | 'tvshows';
+  contentType: "all" | "movies" | "tvshows";
   platforms: number[]; // TMDB provider IDs
   includeFlatrate: boolean; // Subscription-based
   includeRent: boolean; // Rental
@@ -278,7 +288,7 @@ export interface WatchlistItem {
   id: string;
   user_id: string;
   tmdb_id: number;
-  media_type: 'movie' | 'tv';
+  media_type: "movie" | "tv";
   title: string;
   poster_path: string | null;
   added_at: string;
@@ -293,7 +303,7 @@ export interface WatchlistItem {
 
 export interface AddToWatchlistRequest {
   tmdbId: number;
-  mediaType: 'movie' | 'tv';
+  mediaType: "movie" | "tv";
   title: string;
   posterPath: string | null;
   providers: StreamingProvider[];
@@ -346,7 +356,7 @@ export interface RatedMovie {
   tmdb_id: number;
   rating: number;
   title: string;
-  media_type?: 'movie' | 'tv';
+  media_type?: "movie" | "tv";
   poster_path?: string;
 }
 
@@ -375,7 +385,7 @@ export interface TrendingItem {
   title: string;
   poster_path: string | null;
   vote_average: number;
-  media_type: 'movie' | 'tv';
+  media_type: "movie" | "tv";
   genre_ids?: number[];
   providers?: { provider_name: string; logo_path: string }[];
 }
@@ -387,7 +397,7 @@ export interface DailyPick {
   poster_path: string | null;
   backdrop_path: string | null;
   vote_average: number;
-  media_type: 'movie' | 'tv';
+  media_type: "movie" | "tv";
   genres: Genre[];
   providers: StreamingProvider[];
 }

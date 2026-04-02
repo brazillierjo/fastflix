@@ -17,7 +17,7 @@ import type {
   Genre,
   AvailableProvider,
   TrendingItem,
-} from './types';
+} from "./types";
 
 interface CachedData<T> {
   data: T;
@@ -33,15 +33,15 @@ class TMDBService {
   private cleanupInterval = 100; // Clean expired entries every N requests
 
   constructor() {
-    this.baseUrl = process.env.TMDB_BASE_URL || 'https://api.themoviedb.org/3';
-    this.apiKey = '';
+    this.baseUrl = process.env.TMDB_BASE_URL || "https://api.themoviedb.org/3";
+    this.apiKey = "";
   }
 
   private getApiKey(): string {
     if (!this.apiKey) {
-      this.apiKey = process.env.TMDB_API_KEY || '';
+      this.apiKey = process.env.TMDB_API_KEY || "";
       if (!this.apiKey) {
-        throw new Error('TMDB_API_KEY not found in environment variables');
+        throw new Error("TMDB_API_KEY not found in environment variables");
       }
     }
     return this.apiKey;
@@ -84,7 +84,7 @@ class TMDBService {
     }
 
     const url = new URL(`${this.baseUrl}${endpoint}`);
-    url.searchParams.append('api_key', this.getApiKey());
+    url.searchParams.append("api_key", this.getApiKey());
 
     for (const [key, value] of Object.entries(params)) {
       url.searchParams.append(key, value);
@@ -107,17 +107,17 @@ class TMDBService {
   /**
    * Search for a movie by title
    */
-  async searchMovieByTitle(title: string, language: string = 'fr-FR'): Promise<TMDBMovie | null> {
+  async searchMovieByTitle(title: string, language: string = "fr-FR"): Promise<TMDBMovie | null> {
     try {
-      const data = await this.makeRequest<TMDBSearchResponse>('/search/movie', {
+      const data = await this.makeRequest<TMDBSearchResponse>("/search/movie", {
         query: title,
         language,
-        include_adult: 'false',
+        include_adult: "false",
       });
 
       if (data.results && data.results.length > 0) {
         const movie = data.results[0] as TMDBMovie;
-        return { ...movie, media_type: 'movie' };
+        return { ...movie, media_type: "movie" };
       }
 
       return null;
@@ -129,17 +129,17 @@ class TMDBService {
   /**
    * Search for a TV show by title
    */
-  async searchTVByTitle(title: string, language: string = 'fr-FR'): Promise<TMDBTVShow | null> {
+  async searchTVByTitle(title: string, language: string = "fr-FR"): Promise<TMDBTVShow | null> {
     try {
-      const data = await this.makeRequest<TMDBSearchResponse>('/search/tv', {
+      const data = await this.makeRequest<TMDBSearchResponse>("/search/tv", {
         query: title,
         language,
-        include_adult: 'false',
+        include_adult: "false",
       });
 
       if (data.results && data.results.length > 0) {
         const tv = data.results[0] as TMDBTVShow;
-        return { ...tv, media_type: 'tv' };
+        return { ...tv, media_type: "tv" };
       }
 
       return null;
@@ -153,20 +153,20 @@ class TMDBService {
    */
   async searchMulti(
     title: string,
-    language: string = 'fr-FR'
+    language: string = "fr-FR"
   ): Promise<(TMDBMovie | TMDBTVShow) | null> {
     try {
-      const data = await this.makeRequest<TMDBSearchResponse>('/search/multi', {
+      const data = await this.makeRequest<TMDBSearchResponse>("/search/multi", {
         query: title,
         language,
-        include_adult: 'false',
+        include_adult: "false",
       });
 
       if (data.results && data.results.length > 0) {
         // Filter out person results, keep only movie/tv
         const mediaResults = data.results.filter(
           (result): result is TMDBMovie | TMDBTVShow =>
-            result.media_type === 'movie' || result.media_type === 'tv'
+            result.media_type === "movie" || result.media_type === "tv"
         );
 
         if (mediaResults.length > 0) {
@@ -185,24 +185,26 @@ class TMDBService {
    */
   async searchMultiAll(
     query: string,
-    language: string = 'fr-FR',
+    language: string = "fr-FR",
     limit: number = 10
-  ): Promise<Array<{
-    id: number;
-    media_type: 'movie' | 'tv' | 'person';
-    title: string;
-    poster_path: string | null;
-    profile_path?: string | null;
-    vote_average?: number;
-    release_date?: string;
-    first_air_date?: string;
-    known_for_department?: string;
-  }>> {
+  ): Promise<
+    Array<{
+      id: number;
+      media_type: "movie" | "tv" | "person";
+      title: string;
+      poster_path: string | null;
+      profile_path?: string | null;
+      vote_average?: number;
+      release_date?: string;
+      first_air_date?: string;
+      known_for_department?: string;
+    }>
+  > {
     try {
       const data = await this.makeRequest<{
         results: Array<{
           id: number;
-          media_type: 'movie' | 'tv' | 'person';
+          media_type: "movie" | "tv" | "person";
           title?: string;
           name?: string;
           poster_path?: string | null;
@@ -212,23 +214,25 @@ class TMDBService {
           first_air_date?: string;
           known_for_department?: string;
         }>;
-      }>('/search/multi', {
+      }>("/search/multi", {
         query,
         language,
-        include_adult: 'false',
+        include_adult: "false",
       });
 
       if (!data.results) return [];
 
       return data.results
-        .filter(r => r.media_type === 'movie' || r.media_type === 'tv' || r.media_type === 'person')
+        .filter(
+          (r) => r.media_type === "movie" || r.media_type === "tv" || r.media_type === "person"
+        )
         .slice(0, limit)
-        .map(r => ({
+        .map((r) => ({
           id: r.id,
           media_type: r.media_type,
-          title: r.title || r.name || '',
+          title: r.title || r.name || "",
           poster_path: r.poster_path || null,
-          profile_path: r.media_type === 'person' ? (r.profile_path || null) : undefined,
+          profile_path: r.media_type === "person" ? r.profile_path || null : undefined,
           vote_average: r.vote_average,
           release_date: r.release_date,
           first_air_date: r.first_air_date,
@@ -243,14 +247,14 @@ class TMDBService {
    * Convert TMDB movie/TV result to MovieResult format
    */
   private convertToMovieResult(tmdbResult: TMDBMovie | TMDBTVShow): MovieResult {
-    const isMovie = 'title' in tmdbResult;
+    const isMovie = "title" in tmdbResult;
 
     return {
       tmdb_id: tmdbResult.id,
       title: isMovie ? tmdbResult.title : tmdbResult.name,
       original_title: isMovie ? tmdbResult.original_title : tmdbResult.original_name,
-      media_type: isMovie ? 'movie' : 'tv',
-      overview: tmdbResult.overview || '',
+      media_type: isMovie ? "movie" : "tv",
+      overview: tmdbResult.overview || "",
       poster_path: tmdbResult.poster_path,
       backdrop_path: tmdbResult.backdrop_path,
       vote_average: tmdbResult.vote_average || 0,
@@ -272,7 +276,7 @@ class TMDBService {
     titles: string[],
     includeMovies: boolean,
     includeTvShows: boolean,
-    language: string = 'fr-FR'
+    language: string = "fr-FR"
   ): Promise<MovieResult[]> {
     const enrichedResults: MovieResult[] = [];
     const errors: string[] = [];
@@ -311,7 +315,9 @@ class TMDBService {
         })
       );
 
-      console.log(`📦 TMDB batch ${Math.floor(i / BATCH_SIZE) + 1}/${Math.ceil(titles.length / BATCH_SIZE)} enriched in ${Date.now() - batchStart}ms`);
+      console.log(
+        `📦 TMDB batch ${Math.floor(i / BATCH_SIZE) + 1}/${Math.ceil(titles.length / BATCH_SIZE)} enriched in ${Date.now() - batchStart}ms`
+      );
 
       // Collect results from this batch
       for (const result of batchResults) {
@@ -331,7 +337,9 @@ class TMDBService {
       }
     }
 
-    console.log(`📦 TMDB enrichment complete: ${deduplicated.length} results in ${Date.now() - startTime}ms (${errors.length} failures)`);
+    console.log(
+      `📦 TMDB enrichment complete: ${deduplicated.length} results in ${Date.now() - startTime}ms (${errors.length} failures)`
+    );
     return deduplicated;
   }
 
@@ -341,8 +349,8 @@ class TMDBService {
    */
   async getWatchProviders(
     tmdbId: number,
-    mediaType: 'movie' | 'tv',
-    country: string = 'FR'
+    mediaType: "movie" | "tv",
+    country: string = "FR"
   ): Promise<StreamingProvider[]> {
     try {
       const endpoint = `/${mediaType}/${tmdbId}/watch/providers`;
@@ -362,7 +370,7 @@ class TMDBService {
       // Helper to add providers with availability type
       const addProviders = (
         list: typeof regionData.flatrate | undefined,
-        type: 'flatrate' | 'rent' | 'buy' | 'ads'
+        type: "flatrate" | "rent" | "buy" | "ads"
       ) => {
         if (!list) return;
         for (const provider of list) {
@@ -381,9 +389,9 @@ class TMDBService {
       };
 
       // Add providers in priority order (flatrate first, then rent, then buy)
-      addProviders(regionData.flatrate, 'flatrate');
-      addProviders(regionData.rent, 'rent');
-      addProviders(regionData.buy, 'buy');
+      addProviders(regionData.flatrate, "flatrate");
+      addProviders(regionData.rent, "rent");
+      addProviders(regionData.buy, "buy");
 
       return providers;
     } catch {
@@ -396,7 +404,7 @@ class TMDBService {
    */
   async getBatchWatchProviders(
     items: MovieResult[],
-    country: string = 'FR'
+    country: string = "FR"
   ): Promise<{ [key: number]: StreamingProvider[] }> {
     const result: { [key: number]: StreamingProvider[] } = {};
     const BATCH_SIZE = 5;
@@ -419,7 +427,7 @@ class TMDBService {
   /**
    * Get detailed information for a movie
    */
-  async getMovieDetails(tmdbId: number, language: string = 'fr-FR'): Promise<DetailedInfo | null> {
+  async getMovieDetails(tmdbId: number, language: string = "fr-FR"): Promise<DetailedInfo | null> {
     try {
       const data = await this.makeRequest<{
         genres: Genre[];
@@ -435,7 +443,12 @@ class TMDBService {
         original_title: string;
         imdb_id: string | null;
         spoken_languages: Array<{ english_name: string; iso_639_1: string; name: string }>;
-        belongs_to_collection: { id: number; name: string; poster_path: string | null; backdrop_path: string | null } | null;
+        belongs_to_collection: {
+          id: number;
+          name: string;
+          poster_path: string | null;
+          backdrop_path: string | null;
+        } | null;
       }>(`/movie/${tmdbId}`, { language });
 
       const releaseYear = data.release_date ? new Date(data.release_date).getFullYear() : undefined;
@@ -448,14 +461,23 @@ class TMDBService {
         poster_path: data.poster_path || undefined,
         budget: data.budget || undefined,
         revenue: data.revenue || undefined,
-        production_companies: data.production_companies?.map(c => ({ id: c.id, name: c.name, logo_path: c.logo_path })) || undefined,
+        production_companies:
+          data.production_companies?.map((c) => ({
+            id: c.id,
+            name: c.name,
+            logo_path: c.logo_path,
+          })) || undefined,
         production_countries: data.production_countries || undefined,
         original_language: data.original_language || undefined,
         original_title: data.original_title || undefined,
         imdb_id: data.imdb_id || undefined,
         spoken_languages: data.spoken_languages || undefined,
         belongs_to_collection: data.belongs_to_collection
-          ? { id: data.belongs_to_collection.id, name: data.belongs_to_collection.name, poster_path: data.belongs_to_collection.poster_path }
+          ? {
+              id: data.belongs_to_collection.id,
+              name: data.belongs_to_collection.name,
+              poster_path: data.belongs_to_collection.poster_path,
+            }
           : null,
       };
     } catch {
@@ -466,7 +488,7 @@ class TMDBService {
   /**
    * Get detailed information for a TV show
    */
-  async getTVDetails(tmdbId: number, language: string = 'fr-FR'): Promise<DetailedInfo | null> {
+  async getTVDetails(tmdbId: number, language: string = "fr-FR"): Promise<DetailedInfo | null> {
     try {
       const data = await this.makeRequest<{
         genres: Genre[];
@@ -481,8 +503,18 @@ class TMDBService {
         networks: Array<{ id: number; name: string; logo_path: string | null }>;
         original_language: string;
         origin_country: string[];
-        last_episode_to_air: { episode_number: number; season_number: number; name: string; air_date: string } | null;
-        next_episode_to_air: { episode_number: number; season_number: number; name: string; air_date: string } | null;
+        last_episode_to_air: {
+          episode_number: number;
+          season_number: number;
+          name: string;
+          air_date: string;
+        } | null;
+        next_episode_to_air: {
+          episode_number: number;
+          season_number: number;
+          name: string;
+          air_date: string;
+        } | null;
         in_production: boolean;
       }>(`/tv/${tmdbId}`, { language });
 
@@ -505,15 +537,29 @@ class TMDBService {
         first_air_year: firstAirYear,
         tagline: data.tagline || undefined,
         poster_path: data.poster_path || undefined,
-        created_by: data.created_by?.map(c => ({ id: c.id, name: c.name, profile_path: c.profile_path })) || undefined,
-        networks: data.networks?.map(n => ({ id: n.id, name: n.name, logo_path: n.logo_path })) || undefined,
+        created_by:
+          data.created_by?.map((c) => ({ id: c.id, name: c.name, profile_path: c.profile_path })) ||
+          undefined,
+        networks:
+          data.networks?.map((n) => ({ id: n.id, name: n.name, logo_path: n.logo_path })) ||
+          undefined,
         original_language: data.original_language || undefined,
         origin_country: data.origin_country || undefined,
         last_episode_to_air: data.last_episode_to_air
-          ? { episode_number: data.last_episode_to_air.episode_number, season_number: data.last_episode_to_air.season_number, name: data.last_episode_to_air.name, air_date: data.last_episode_to_air.air_date }
+          ? {
+              episode_number: data.last_episode_to_air.episode_number,
+              season_number: data.last_episode_to_air.season_number,
+              name: data.last_episode_to_air.name,
+              air_date: data.last_episode_to_air.air_date,
+            }
           : null,
         next_episode_to_air: data.next_episode_to_air
-          ? { episode_number: data.next_episode_to_air.episode_number, season_number: data.next_episode_to_air.season_number, name: data.next_episode_to_air.name, air_date: data.next_episode_to_air.air_date }
+          ? {
+              episode_number: data.next_episode_to_air.episode_number,
+              season_number: data.next_episode_to_air.season_number,
+              name: data.next_episode_to_air.name,
+              air_date: data.next_episode_to_air.air_date,
+            }
           : null,
         in_production: data.in_production,
       };
@@ -525,15 +571,21 @@ class TMDBService {
   /**
    * Key crew jobs to extract from credits
    */
-  private static KEY_CREW_JOBS = new Set(['Director', 'Writer', 'Screenplay', 'Creator', 'Executive Producer']);
+  private static KEY_CREW_JOBS = new Set([
+    "Director",
+    "Writer",
+    "Screenplay",
+    "Creator",
+    "Executive Producer",
+  ]);
 
   /**
    * Get credits (cast and key crew) for a movie or TV show
    */
   async getCredits(
     tmdbId: number,
-    mediaType: 'movie' | 'tv',
-    language: string = 'fr-FR'
+    mediaType: "movie" | "tv",
+    language: string = "fr-FR"
   ): Promise<{ cast: Cast[]; crew: CrewMember[] }> {
     try {
       const endpoint = `/${mediaType}/${tmdbId}/credits`;
@@ -568,7 +620,11 @@ class TMDBService {
       const seenCrewIds = new Set<number>();
       const crew: CrewMember[] = [];
       for (const member of data.crew || []) {
-        if (TMDBService.KEY_CREW_JOBS.has(member.job) && !seenCrewIds.has(member.id) && crew.length < 5) {
+        if (
+          TMDBService.KEY_CREW_JOBS.has(member.job) &&
+          !seenCrewIds.has(member.id) &&
+          crew.length < 5
+        ) {
           seenCrewIds.add(member.id);
           crew.push({
             id: member.id,
@@ -591,7 +647,7 @@ class TMDBService {
    */
   async getBatchDetailsAndCredits(
     items: MovieResult[],
-    language: string = 'fr-FR'
+    language: string = "fr-FR"
   ): Promise<{
     credits: { [key: number]: { cast: Cast[]; crew: CrewMember[] } };
     detailedInfo: { [key: number]: DetailedInfo };
@@ -606,7 +662,7 @@ class TMDBService {
         batch.map(async (item) => {
           // Fetch details and credits in parallel for each item
           const [details, creditsResult] = await Promise.all([
-            item.media_type === 'movie'
+            item.media_type === "movie"
               ? this.getMovieDetails(item.tmdb_id, language)
               : this.getTVDetails(item.tmdb_id, language),
             this.getCredits(item.tmdb_id, item.media_type, language),
@@ -629,7 +685,7 @@ class TMDBService {
    * Get list of available streaming providers for a country
    * Returns providers sorted by popularity (display_priority)
    */
-  async getAvailableProviders(country: string = 'FR'): Promise<AvailableProvider[]> {
+  async getAvailableProviders(country: string = "FR"): Promise<AvailableProvider[]> {
     try {
       // TMDB provides a list of all available watch providers
       const data = await this.makeRequest<{
@@ -639,7 +695,7 @@ class TMDBService {
           logo_path: string;
           display_priorities: { [country: string]: number };
         }>;
-      }>('/watch/providers/movie', {
+      }>("/watch/providers/movie", {
         watch_region: country,
       });
 
@@ -667,9 +723,9 @@ class TMDBService {
   /**
    * Get trending movies and TV shows for the week
    */
-  async getTrending(language: string = 'fr-FR'): Promise<TrendingItem[]> {
+  async getTrending(language: string = "fr-FR"): Promise<TrendingItem[]> {
     try {
-      const data = await this.makeRequest<TMDBTrendingResponse>('/trending/all/week', {
+      const data = await this.makeRequest<TMDBTrendingResponse>("/trending/all/week", {
         language,
       });
 
@@ -680,16 +736,16 @@ class TMDBService {
       return data.results
         .filter(
           (item): item is TMDBMovie | TMDBTVShow =>
-            item.media_type === 'movie' || item.media_type === 'tv'
+            item.media_type === "movie" || item.media_type === "tv"
         )
         .map((item) => {
-          const isMovie = 'title' in item;
+          const isMovie = "title" in item;
           return {
             tmdb_id: item.id,
             title: isMovie ? (item as TMDBMovie).title : (item as TMDBTVShow).name,
             poster_path: item.poster_path,
             vote_average: item.vote_average || 0,
-            media_type: (isMovie ? 'movie' : 'tv') as 'movie' | 'tv',
+            media_type: (isMovie ? "movie" : "tv") as "movie" | "tv",
             genre_ids: item.genre_ids || [],
           };
         });
@@ -704,24 +760,21 @@ class TMDBService {
    */
   async discoverByGenres(
     genreIds: number[],
-    mediaType: 'movie' | 'tv',
+    mediaType: "movie" | "tv",
     page: number = 1,
-    language: string = 'fr-FR'
+    language: string = "fr-FR"
   ): Promise<(TMDBMovie | TMDBTVShow)[]> {
     try {
       const params: Record<string, string> = {
-        with_genres: genreIds.join(','),
-        sort_by: 'vote_average.desc',
-        'vote_count.gte': '100',
+        with_genres: genreIds.join(","),
+        sort_by: "vote_average.desc",
+        "vote_count.gte": "100",
         page: String(page),
-        include_adult: 'false',
+        include_adult: "false",
         language,
       };
 
-      const data = await this.makeRequest<TMDBSearchResponse>(
-        `/discover/${mediaType}`,
-        params
-      );
+      const data = await this.makeRequest<TMDBSearchResponse>(`/discover/${mediaType}`, params);
 
       if (!data.results || data.results.length === 0) {
         return [];
@@ -741,21 +794,20 @@ class TMDBService {
    */
   async getSimilar(
     tmdbId: number,
-    mediaType: 'movie' | 'tv',
-    language: string = 'fr-FR'
+    mediaType: "movie" | "tv",
+    language: string = "fr-FR"
   ): Promise<MovieResult[]> {
     try {
-      const data = await this.makeRequest<TMDBSearchResponse>(
-        `/${mediaType}/${tmdbId}/similar`,
-        { language }
-      );
+      const data = await this.makeRequest<TMDBSearchResponse>(`/${mediaType}/${tmdbId}/similar`, {
+        language,
+      });
 
       if (!data.results || data.results.length === 0) {
         return [];
       }
 
       return data.results.slice(0, 10).map((item) => {
-        const isMovie = mediaType === 'movie';
+        const isMovie = mediaType === "movie";
         const movie = item as TMDBMovie;
         const tv = item as TMDBTVShow;
 
@@ -764,7 +816,7 @@ class TMDBService {
           title: isMovie ? movie.title : tv.name,
           original_title: isMovie ? movie.original_title : tv.original_name,
           media_type: mediaType,
-          overview: item.overview || '',
+          overview: item.overview || "",
           poster_path: item.poster_path,
           backdrop_path: item.backdrop_path,
           vote_average: item.vote_average || 0,
@@ -785,7 +837,7 @@ class TMDBService {
    */
   async getPersonDetails(
     personId: number,
-    language: string = 'fr-FR'
+    language: string = "fr-FR"
   ): Promise<{
     id: number;
     name: string;
@@ -805,7 +857,7 @@ class TMDBService {
       character: string;
       vote_average: number;
       release_date: string;
-      media_type: 'movie';
+      media_type: "movie";
     }>;
     tv_credits: Array<{
       id: number;
@@ -814,7 +866,7 @@ class TMDBService {
       character: string;
       vote_average: number;
       first_air_date: string;
-      media_type: 'tv';
+      media_type: "tv";
     }>;
   } | null> {
     try {
@@ -855,7 +907,7 @@ class TMDBService {
           }>;
         };
       }>(`/person/${personId}`, {
-        append_to_response: 'movie_credits,tv_credits',
+        append_to_response: "movie_credits,tv_credits",
         language,
       });
 
@@ -868,8 +920,8 @@ class TMDBService {
           poster_path: credit.poster_path,
           character: credit.character,
           vote_average: credit.vote_average || 0,
-          release_date: credit.release_date || '',
-          media_type: 'movie' as const,
+          release_date: credit.release_date || "",
+          media_type: "movie" as const,
         }));
 
       const tvCredits = (data.tv_credits?.cast || [])
@@ -881,19 +933,19 @@ class TMDBService {
           poster_path: credit.poster_path,
           character: credit.character,
           vote_average: credit.vote_average || 0,
-          first_air_date: credit.first_air_date || '',
-          media_type: 'tv' as const,
+          first_air_date: credit.first_air_date || "",
+          media_type: "tv" as const,
         }));
 
       return {
         id: data.id,
         name: data.name,
-        biography: data.biography || '',
+        biography: data.biography || "",
         birthday: data.birthday,
         deathday: data.deathday,
         place_of_birth: data.place_of_birth,
         profile_path: data.profile_path,
-        known_for_department: data.known_for_department || '',
+        known_for_department: data.known_for_department || "",
         also_known_as: data.also_known_as || [],
         imdb_id: data.imdb_id || null,
         gender: data.gender ?? 0,
@@ -910,8 +962,8 @@ class TMDBService {
    */
   async getFullDetails(
     tmdbId: number,
-    mediaType: 'movie' | 'tv',
-    language: string = 'fr-FR'
+    mediaType: "movie" | "tv",
+    language: string = "fr-FR"
   ): Promise<{
     overview: string;
     backdrop_path: string | null;
@@ -921,12 +973,12 @@ class TMDBService {
     title: string;
   } | null> {
     try {
-      if (mediaType === 'movie') {
-        const data = await this.makeRequest<
-          TMDBMovie & { genres: Genre[] }
-        >(`/movie/${tmdbId}`, { language });
+      if (mediaType === "movie") {
+        const data = await this.makeRequest<TMDBMovie & { genres: Genre[] }>(`/movie/${tmdbId}`, {
+          language,
+        });
         return {
-          overview: data.overview || '',
+          overview: data.overview || "",
           backdrop_path: data.backdrop_path,
           poster_path: data.poster_path,
           vote_average: data.vote_average || 0,
@@ -934,11 +986,11 @@ class TMDBService {
           title: data.title,
         };
       } else {
-        const data = await this.makeRequest<
-          TMDBTVShow & { genres: Genre[] }
-        >(`/tv/${tmdbId}`, { language });
+        const data = await this.makeRequest<TMDBTVShow & { genres: Genre[] }>(`/tv/${tmdbId}`, {
+          language,
+        });
         return {
-          overview: data.overview || '',
+          overview: data.overview || "",
           backdrop_path: data.backdrop_path,
           poster_path: data.poster_path,
           vote_average: data.vote_average || 0,

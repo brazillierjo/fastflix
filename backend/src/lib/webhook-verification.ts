@@ -3,11 +3,11 @@
  * Verifies webhook signatures to ensure requests are from RevenueCat
  */
 
-import crypto from 'crypto';
+import crypto from "crypto";
 
 // Check if we're in production
 const isProduction =
-  process.env.NODE_ENV === 'production' || process.env.VERCEL_ENV === 'production';
+  process.env.NODE_ENV === "production" || process.env.VERCEL_ENV === "production";
 
 /**
  * Verify RevenueCat webhook signature
@@ -29,39 +29,39 @@ export function verifyRevenueCatSignature(
   if (!secret) {
     if (isProduction) {
       console.error(
-        '[SECURITY] RevenueCat webhook secret not configured in production - rejecting request'
+        "[SECURITY] RevenueCat webhook secret not configured in production - rejecting request"
       );
       return false;
     }
     // Only allow skipping in development
     console.warn(
-      '[DEV] RevenueCat webhook secret not configured - skipping signature verification'
+      "[DEV] RevenueCat webhook secret not configured - skipping signature verification"
     );
     return true;
   }
 
   // If no signature provided, reject
   if (!signature) {
-    console.error('❌ No signature provided in X-Revenuecat-Signature header');
+    console.error("❌ No signature provided in X-Revenuecat-Signature header");
     return false;
   }
 
   try {
     // Compute HMAC-SHA256 of the payload
-    const hmac = crypto.createHmac('sha256', secret);
+    const hmac = crypto.createHmac("sha256", secret);
     hmac.update(payload);
-    const computedSignature = hmac.digest('hex');
+    const computedSignature = hmac.digest("hex");
 
     // Compare signatures (timing-safe comparison)
     const isValid = crypto.timingSafeEqual(Buffer.from(signature), Buffer.from(computedSignature));
 
     if (!isValid) {
-      console.error('❌ Invalid RevenueCat webhook signature');
+      console.error("❌ Invalid RevenueCat webhook signature");
     }
 
     return isValid;
   } catch (error) {
-    console.error('❌ Error verifying webhook signature:', error);
+    console.error("❌ Error verifying webhook signature:", error);
     return false;
   }
 }

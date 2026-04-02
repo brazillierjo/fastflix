@@ -5,7 +5,7 @@
  * Uses in-memory cache (5 min TTL) to reduce API calls.
  */
 
-const REVENUECAT_API_URL = 'https://api.revenuecat.com/v2';
+const REVENUECAT_API_URL = "https://api.revenuecat.com/v2";
 const CACHE_TTL_MS = 5 * 60 * 1000; // 5 minutes
 
 export interface SubscriptionStatus {
@@ -46,7 +46,9 @@ async function fetchFromRevenueCat(userId: string): Promise<SubscriptionStatus> 
   const projectId = process.env.REVENUECAT_PROJECT_ID;
 
   if (!apiKey || !projectId) {
-    console.error('❌ RevenueCat API not configured (missing REVENUECAT_SECRET_API_KEY or REVENUECAT_PROJECT_ID)');
+    console.error(
+      "❌ RevenueCat API not configured (missing REVENUECAT_SECRET_API_KEY or REVENUECAT_PROJECT_ID)"
+    );
     return { isPremium: false, expiresAt: null };
   }
 
@@ -56,7 +58,7 @@ async function fetchFromRevenueCat(userId: string): Promise<SubscriptionStatus> 
     const response = await fetch(url, {
       headers: {
         Authorization: `Bearer ${apiKey}`,
-        'Content-Type': 'application/json',
+        "Content-Type": "application/json",
       },
     });
 
@@ -68,7 +70,10 @@ async function fetchFromRevenueCat(userId: string): Promise<SubscriptionStatus> 
 
     if (!response.ok) {
       const errorBody = await response.text();
-      console.error(`❌ RevenueCat API error: ${response.status} ${response.statusText}`, errorBody);
+      console.error(
+        `❌ RevenueCat API error: ${response.status} ${response.statusText}`,
+        errorBody
+      );
       return { isPremium: false, expiresAt: null };
     }
 

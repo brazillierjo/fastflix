@@ -11,10 +11,7 @@ import { rateLimitMiddleware } from "../middleware/rate-limit.js";
 
 // Validation schemas
 const similarParamsSchema = z.object({
-  tmdbId: z
-    .string()
-    .regex(/^\d+$/, "TMDB ID must be a number")
-    .transform(Number),
+  tmdbId: z.string().regex(/^\d+$/, "TMDB ID must be a number").transform(Number),
 });
 
 const similarQuerySchema = z.object({
@@ -24,10 +21,7 @@ const similarQuerySchema = z.object({
 });
 
 const personParamsSchema = z.object({
-  personId: z
-    .string()
-    .regex(/^\d+$/, "Person ID must be a number")
-    .transform(Number),
+  personId: z.string().regex(/^\d+$/, "Person ID must be a number").transform(Number),
 });
 
 const personQuerySchema = z.object({

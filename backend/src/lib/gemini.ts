@@ -3,18 +3,18 @@
  * Handles AI-powered movie recommendations using Gemini
  */
 
-import { GoogleGenerativeAI } from '@google/generative-ai';
-import * as Sentry from '@sentry/node';
-import type { AIRecommendationResult, UserContext, ConversationMessage } from './types';
+import { GoogleGenerativeAI } from "@google/generative-ai";
+import * as Sentry from "@sentry/node";
+import type { AIRecommendationResult, UserContext, ConversationMessage } from "./types";
 
 /**
  * Sanitize user input to prevent prompt injection attacks
  */
 function sanitizeInput(input: string): string {
   return input
-    .replace(/^(system|assistant|user):/gi, '')
-    .replace(/ignore (previous|all|above) instructions/gi, '')
-    .replace(/\{[\s\S]*?\}/g, '') // Remove JSON-like injections
+    .replace(/^(system|assistant|user):/gi, "")
+    .replace(/ignore (previous|all|above) instructions/gi, "")
+    .replace(/\{[\s\S]*?\}/g, "") // Remove JSON-like injections
     .trim()
     .slice(0, 1000); // Max 1000 chars
 }
@@ -34,7 +34,7 @@ class GeminiService {
     const apiKey = process.env.GOOGLE_API_KEY;
 
     if (!apiKey) {
-      throw new Error('Missing Google AI API key in environment variables');
+      throw new Error("Missing Google AI API key in environment variables");
     }
 
     this.genAI = new GoogleGenerativeAI(apiKey);
@@ -58,7 +58,7 @@ class GeminiService {
   async generateRecommendationsWithResponse(
     query: string,
     contentTypes: string[],
-    language: string = 'fr-FR',
+    language: string = "fr-FR",
     filters?: {
       yearFrom?: number;
       yearTo?: number;
@@ -69,16 +69,16 @@ class GeminiService {
     recentTitles?: { title: string; mediaType: string }[]
   ): Promise<AIRecommendationResult> {
     const genAI = this.getClient();
-    const modelName = process.env.GEMINI_MODEL || 'gemini-2.5-flash-lite';
+    const modelName = process.env.GEMINI_MODEL || "gemini-2.5-flash-lite";
     const model = genAI.getGenerativeModel({ model: modelName });
 
     // Sanitize user query to prevent prompt injection
     const sanitizedQuery = sanitizeInput(query);
 
     Sentry.addBreadcrumb({
-      category: 'gemini',
-      message: 'Starting AI recommendation generation',
-      level: 'info',
+      category: "gemini",
+      message: "Starting AI recommendation generation",
+      level: "info",
       data: { queryLength: sanitizedQuery.length, model: modelName, maxRecommendations },
     });
 
@@ -86,26 +86,26 @@ class GeminiService {
 
     // Map language codes to full language names for clearer instructions
     const languageMap: { [key: string]: string } = {
-      fr: 'French',
-      'fr-FR': 'French',
-      en: 'English',
-      'en-US': 'English',
-      it: 'Italian',
-      'it-IT': 'Italian',
-      ja: 'Japanese',
-      'ja-JP': 'Japanese',
-      es: 'Spanish',
-      'es-ES': 'Spanish',
-      de: 'German',
-      'de-DE': 'German',
+      fr: "French",
+      "fr-FR": "French",
+      en: "English",
+      "en-US": "English",
+      it: "Italian",
+      "it-IT": "Italian",
+      ja: "Japanese",
+      "ja-JP": "Japanese",
+      es: "Spanish",
+      "es-ES": "Spanish",
+      de: "German",
+      "de-DE": "German",
     };
-    const languageName = languageMap[language] || 'English';
+    const languageName = languageMap[language] || "English";
 
-    const contentTypeText = contentTypes.join(' and ');
+    const contentTypeText = contentTypes.join(" and ");
     const currentYear = new Date().getFullYear();
 
     // Build year constraint text if filters are provided
-    let yearConstraint = '';
+    let yearConstraint = "";
     if (filters?.yearFrom && filters?.yearTo) {
       yearConstraint = `\n\nYEAR CONSTRAINT: Only include ${contentTypeText} released between ${filters.yearFrom} and ${filters.yearTo}. This is a STRICT requirement - do not include anything outside this range.`;
     } else if (filters?.yearFrom) {
@@ -116,7 +116,7 @@ class GeminiService {
 
     // Build temporal vocabulary section
     const temporalVocabulary = `
-TEMPORAL AWARENESS (CRITICAL - Today is ${new Date().toISOString().split('T')[0]}, current year is ${currentYear}):
+TEMPORAL AWARENESS (CRITICAL - Today is ${new Date().toISOString().split("T")[0]}, current year is ${currentYear}):
 When the user uses temporal terms, interpret them STRICTLY as follows:
 - "modern", "moderne", "recent", "récent", "new", "nouveau", "latest", "dernier" → ONLY films from ${currentYear - 5} to ${currentYear} (last 5 years)
 - "contemporary", "contemporain", "current" → films from ${currentYear - 10} to ${currentYear}
@@ -132,18 +132,18 @@ When the user uses temporal terms, interpret them STRICTLY as follows:
 If the user says "comédie romantique moderne" or "modern romantic comedy", you MUST ONLY suggest films released between ${currentYear - 5} and ${currentYear}. DO NOT suggest films from the 80s, 90s, or 2000s for "modern" queries.`;
 
     // Build user profile section for personalization
-    let userProfileSection = '';
+    let userProfileSection = "";
     if (userContext) {
       const profileLines: string[] = [];
 
       if (userContext.favoriteGenres && userContext.favoriteGenres.length > 0) {
-        profileLines.push(`- Favorite genres: [${userContext.favoriteGenres.join(', ')}]`);
+        profileLines.push(`- Favorite genres: [${userContext.favoriteGenres.join(", ")}]`);
       }
       if (userContext.dislikedGenres && userContext.dislikedGenres.length > 0) {
-        profileLines.push(`- Genres to avoid: [${userContext.dislikedGenres.join(', ')}]`);
+        profileLines.push(`- Genres to avoid: [${userContext.dislikedGenres.join(", ")}]`);
       }
       if (userContext.favoriteDecades && userContext.favoriteDecades.length > 0) {
-        profileLines.push(`- Preferred decades: [${userContext.favoriteDecades.join(', ')}]`);
+        profileLines.push(`- Preferred decades: [${userContext.favoriteDecades.join(", ")}]`);
       }
 
       const highlyRated = userContext.ratedMovies?.filter((m) => m.rating >= 4);
@@ -153,29 +153,29 @@ If the user says "comédie romantique moderne" or "modern romantic comedy", you 
 
       if (highlyRated && highlyRated.length > 0) {
         profileLines.push(
-          `- LOVED (rated 4-5 stars): [${highlyRated.map((m) => m.title).join(', ')}]`
+          `- LOVED (rated 4-5 stars): [${highlyRated.map((m) => m.title).join(", ")}]`
         );
       }
       if (neutralRated && neutralRated.length > 0) {
         profileLines.push(
-          `- Found OK but not great (rated 3 stars): [${neutralRated.map((m) => m.title).join(', ')}]`
+          `- Found OK but not great (rated 3 stars): [${neutralRated.map((m) => m.title).join(", ")}]`
         );
       }
       if (dislikedMovies && dislikedMovies.length > 0) {
         profileLines.push(
-          `- DISLIKED (rated 1-2 stars): [${dislikedMovies.map((m) => m.title).join(', ')}]`
+          `- DISLIKED (rated 1-2 stars): [${dislikedMovies.map((m) => m.title).join(", ")}]`
         );
       }
       // All watched titles (any rating) to avoid re-recommending
       const allWatched = userContext.ratedMovies?.filter((m) => m.title);
       if (allWatched && allWatched.length > 0) {
         profileLines.push(
-          `- Already watched (DO NOT recommend these): [${allWatched.map((m) => m.title).join(', ')}]`
+          `- Already watched (DO NOT recommend these): [${allWatched.map((m) => m.title).join(", ")}]`
         );
       }
       if (userContext.recentSearches && userContext.recentSearches.length > 0) {
         profileLines.push(
-          `- Recent searches: [${userContext.recentSearches.map((s) => `"${s}"`).join(', ')}]`
+          `- Recent searches: [${userContext.recentSearches.map((s) => `"${s}"`).join(", ")}]`
         );
       }
 
@@ -183,7 +183,7 @@ If the user says "comédie romantique moderne" or "modern romantic comedy", you 
         userProfileSection = `
 
 USER PROFILE (use to personalize recommendations):
-${profileLines.join('\n')}
+${profileLines.join("\n")}
 
 Use this profile to:
 1. PRIORITIZE recommendations matching favorite genres and decades
@@ -198,34 +198,34 @@ Use this profile to:
     }
 
     // Build conversation history section for multi-turn refinement
-    let conversationSection = '';
+    let conversationSection = "";
     if (conversationHistory && conversationHistory.length > 0) {
       const historyLines = conversationHistory.map((msg) => {
-        const roleLabel = msg.role === 'user' ? 'User' : 'Assistant';
+        const roleLabel = msg.role === "user" ? "User" : "Assistant";
         // Sanitize conversation history to prevent prompt injection
-        const sanitizedContent = msg.role === 'user' ? sanitizeInput(msg.content) : msg.content;
+        const sanitizedContent = msg.role === "user" ? sanitizeInput(msg.content) : msg.content;
         return `${roleLabel}: ${sanitizedContent}`;
       });
       conversationSection = `
 
 CONVERSATION HISTORY (the user is refining their search - use this context to understand what they want):
-${historyLines.join('\n')}
+${historyLines.join("\n")}
 
 The user's latest message is a REFINEMENT of the above conversation. Take into account what was previously discussed and recommended. If the user asks to exclude something, narrow down, or change direction, adapt your recommendations accordingly.`;
     }
 
     // Build recent titles awareness section
-    let recentTitlesSection = '';
+    let recentTitlesSection = "";
     if (recentTitles && recentTitles.length > 0) {
-      const movieTitles = recentTitles.filter(t => t.mediaType === 'movie').map(t => t.title);
-      const tvTitles = recentTitles.filter(t => t.mediaType === 'tv').map(t => t.title);
+      const movieTitles = recentTitles.filter((t) => t.mediaType === "movie").map((t) => t.title);
+      const tvTitles = recentTitles.filter((t) => t.mediaType === "tv").map((t) => t.title);
       const lines: string[] = [];
-      if (movieTitles.length > 0) lines.push(`Recent/trending movies: ${movieTitles.join(', ')}`);
-      if (tvTitles.length > 0) lines.push(`Recent/trending TV shows: ${tvTitles.join(', ')}`);
+      if (movieTitles.length > 0) lines.push(`Recent/trending movies: ${movieTitles.join(", ")}`);
+      if (tvTitles.length > 0) lines.push(`Recent/trending TV shows: ${tvTitles.join(", ")}`);
       recentTitlesSection = `
 
 RECENT RELEASES AWARENESS (these are currently popular/new titles — your training data may not include them):
-${lines.join('\n')}
+${lines.join("\n")}
 
 Use these ONLY when relevant to the user's query. Do NOT blindly recommend trending titles — only include them if they genuinely match what the user is asking for. Your own knowledge remains your primary source. These titles supplement your knowledge for recent content you might not know about.`;
     }
@@ -283,12 +283,9 @@ MESSAGE: [your conversational message]`;
 
     try {
       const timeoutPromise = new Promise<never>((_, reject) =>
-        setTimeout(() => reject(new Error('Gemini API timeout after 30s')), 30000)
+        setTimeout(() => reject(new Error("Gemini API timeout after 30s")), 30000)
       );
-      const result = await Promise.race([
-        model.generateContent(prompt),
-        timeoutPromise,
-      ]);
+      const result = await Promise.race([model.generateContent(prompt), timeoutPromise]);
       const response = await result.response;
       const text = response.text().trim();
 
@@ -304,58 +301,58 @@ MESSAGE: [your conversational message]`;
 
       const recommendations = recommendationsMatch
         ? recommendationsMatch[1]
-            .split(',')
+            .split(",")
             .map((title) => title.trim())
             .filter((title) => title.length > 0 && title.length < 200)
         : [];
 
       const reasons = reasonsMatch
         ? reasonsMatch[1]
-            .split('|||')
+            .split("|||")
             .map((reason) => reason.trim())
             .filter((reason) => reason.length > 0)
         : [];
 
       // List of known streaming platforms to validate against
       const knownPlatforms = [
-        'netflix',
-        'disney',
-        'disneyplus',
-        'disney+',
-        'amazon',
-        'prime',
-        'primevideo',
-        'hbo',
-        'hbomax',
-        'apple',
-        'appletv',
-        'hulu',
-        'paramount',
-        'peacock',
-        'showtime',
-        'starz',
-        'crave',
-        'crunchyroll',
-        'funimation',
+        "netflix",
+        "disney",
+        "disneyplus",
+        "disney+",
+        "amazon",
+        "prime",
+        "primevideo",
+        "hbo",
+        "hbomax",
+        "apple",
+        "appletv",
+        "hulu",
+        "paramount",
+        "peacock",
+        "showtime",
+        "starz",
+        "crave",
+        "crunchyroll",
+        "funimation",
       ];
 
       const detectedPlatforms =
         platformsMatch && platformsMatch[1]
           ? platformsMatch[1]
-              .split(',')
+              .split(",")
               .map((platform) => platform.trim())
               .filter((platform) => {
                 // Ignore empty strings and 'none'
-                if (platform.length === 0 || platform.toLowerCase() === 'none') {
+                if (platform.length === 0 || platform.toLowerCase() === "none") {
                   return false;
                 }
                 // Validate that this looks like a platform name (not a sentence)
                 // A platform name should be short (< 30 chars) and not contain ':' or '.'
-                if (platform.length > 30 || platform.includes(':') || platform.includes('.')) {
+                if (platform.length > 30 || platform.includes(":") || platform.includes(".")) {
                   return false;
                 }
                 // Check if it matches a known platform
-                const normalized = platform.toLowerCase().replace(/\s+/g, '');
+                const normalized = platform.toLowerCase().replace(/\s+/g, "");
                 const isKnown = knownPlatforms.some(
                   (known) => normalized.includes(known) || known.includes(normalized)
                 );
@@ -365,13 +362,13 @@ MESSAGE: [your conversational message]`;
 
       const conversationalResponse = messageMatch
         ? messageMatch[1].trim()
-        : 'Here are my recommendations for you!';
+        : "Here are my recommendations for you!";
 
       const geminiDuration = Date.now() - geminiStartTime;
       Sentry.addBreadcrumb({
-        category: 'gemini',
+        category: "gemini",
         message: `AI generation completed in ${geminiDuration}ms`,
-        level: 'info',
+        level: "info",
         data: { durationMs: geminiDuration, recommendationCount: recommendations.length },
       });
 
@@ -383,18 +380,20 @@ MESSAGE: [your conversational message]`;
       };
     } catch (error) {
       const geminiDuration = Date.now() - geminiStartTime;
-      console.error('⚠️ AI recommendation generation failed, returning fallback:', error);
+      console.error("⚠️ AI recommendation generation failed, returning fallback:", error);
       Sentry.addBreadcrumb({
-        category: 'gemini',
-        message: 'AI generation failed, returning fallback',
-        level: 'error',
-        data: { durationMs: geminiDuration, error: error instanceof Error ? error.message : 'Unknown' },
+        category: "gemini",
+        message: "AI generation failed, returning fallback",
+        level: "error",
+        data: {
+          durationMs: geminiDuration,
+          error: error instanceof Error ? error.message : "Unknown",
+        },
       });
       return {
         recommendations: [],
         reasons: [],
-        conversationalResponse:
-          'Our AI is temporarily unavailable. Please try again in a moment.',
+        conversationalResponse: "Our AI is temporarily unavailable. Please try again in a moment.",
         detectedPlatforms: [],
         isFallback: true,
       };

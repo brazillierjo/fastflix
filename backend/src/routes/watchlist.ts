@@ -137,7 +137,10 @@ app.post("/refresh-providers", async (c) => {
     const itemsToRefresh = await db.getWatchlistItemsNeedingRefresh(userId);
 
     if (itemsToRefresh.length === 0) {
-      return c.json({ success: true, data: { refreshed: 0, message: "All providers are up to date" } });
+      return c.json({
+        success: true,
+        data: { refreshed: 0, message: "All providers are up to date" },
+      });
     }
 
     const refreshPromises = itemsToRefresh.map(async (item) => {
@@ -183,7 +186,11 @@ app.get("/check-availability", async (c) => {
 
     const checkPromises = unwatchedItems.map(async (item) => {
       try {
-        const currentProviders = await tmdb.getWatchProviders(item.tmdb_id, item.media_type, item.country);
+        const currentProviders = await tmdb.getWatchProviders(
+          item.tmdb_id,
+          item.media_type,
+          item.country
+        );
         const oldProviderIds = new Set(item.providers.map((p: StreamingProvider) => p.provider_id));
         const currentProviderIds = new Set(currentProviders.map((p) => p.provider_id));
 

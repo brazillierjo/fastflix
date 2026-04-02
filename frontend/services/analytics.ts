@@ -187,3 +187,35 @@ export function trackNotificationPermission(granted: boolean) {
 export function trackAppOpen() {
   trackEvent('app_open');
 }
+
+// ============================================================================
+// Swipe Discovery Events
+// ============================================================================
+
+export function trackSwipeView(tmdbId: number, position: number, source: string) {
+  trackEvent('swipe_view', { tmdb_id: tmdbId, position, source });
+}
+
+export function trackSwipeLike(tmdbId: number) {
+  trackEvent('swipe_like', { tmdb_id: tmdbId });
+}
+
+export function trackSwipeDislike(tmdbId: number) {
+  trackEvent('swipe_dislike', { tmdb_id: tmdbId });
+}
+
+export function trackSwipeWatchlist(tmdbId: number) {
+  trackEvent('swipe_watchlist', { tmdb_id: tmdbId });
+}
+
+export function trackSwipeShare(tmdbId: number) {
+  trackEvent('swipe_share', { tmdb_id: tmdbId });
+}
+
+export function trackSwipeToDetail(tmdbId: number) {
+  trackEvent('swipe_to_detail', { tmdb_id: tmdbId });
+}
+
+export function trackSwipeSession(durationSeconds: number, itemsViewed: number) {
+  trackEvent('swipe_session', { duration_seconds: durationSeconds, items_viewed: itemsViewed });
+}

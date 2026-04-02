@@ -24,6 +24,7 @@ import webhookRoute from "./routes/webhook.js";
 import quotasRoute from "./routes/quotas.js";
 import searchHistoryRoute from "./routes/search-history.js";
 import notificationsRoute from "./routes/notifications.js";
+import feedRoute from "./routes/feed.js";
 
 // Initialize Sentry
 initSentry();
@@ -107,6 +108,11 @@ app.route("/api/subscription/webhook", webhookRoute);
 // QUOTAS ROUTES
 // ===========================================
 app.route("/api/quotas", quotasRoute);
+
+// ===========================================
+// FEED ROUTES (Swipe Discovery)
+// ===========================================
+app.route("/api/feed", feedRoute);
 
 // ===========================================
 // NOTIFICATIONS ROUTES

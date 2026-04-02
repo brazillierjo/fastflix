@@ -561,5 +561,25 @@
   },
   "search": {
     "noHistory": "最近の検索はありません"
+  },
+  "swipeDiscovery": {
+    "endOfResults": "結果の終わり",
+    "endOfResultsSubtitle": "新しい検索でさらにおすすめを見つけましょう",
+    "newSearch": "新しい検索",
+    "upgradeCTA": "無制限の探索をアンロック",
+    "upgradeSubtitle": "サブスクリプションで発見を続けよう",
+    "upgradeButton": "プランを見る",
+    "swipeUp": "上にスワイプ",
+    "like": "いいね",
+    "dislike": "興味なし",
+    "watchlist": "ウォッチリスト",
+    "watched": "視聴済み",
+    "share": "共有",
+    "details": "詳細",
+    "tasteUpdated": "好みを更新しました！",
+    "addedToWatchlist": "リストに追加しました",
+    "removedFromWatchlist": "リストから削除しました",
+    "markedWatched": "視聴済みにしました",
+    "exploreBySwipe": "スワイプで探索"
   }
 }

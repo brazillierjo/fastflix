@@ -9,6 +9,7 @@ import React, { useEffect } from 'react';
 import 'react-native-reanimated';
 import { ErrorBoundary } from '@/components/ErrorBoundary';
 import { AuthProvider } from '@/contexts/AuthContext';
+import { SwipeDataProvider } from '@/contexts/SwipeDataContext';
 import { LanguageProvider } from '@/contexts/LanguageContext';
 import { SubscriptionProvider } from '@/contexts/RevenueCatContext';
 import { QueryProvider } from '@/providers/QueryProvider';
@@ -81,6 +82,7 @@ export default Sentry.wrap(function RootLayout() {
         <LanguageProvider>
           <SubscriptionProvider>
             <AuthProvider>
+            <SwipeDataProvider>
               <Stack
                 screenOptions={{
                   headerShown: false,
@@ -125,9 +127,18 @@ export default Sentry.wrap(function RootLayout() {
                   name='search-history'
                   options={{ headerShown: false, animation: 'slide_from_right' }}
                 />
+                <Stack.Screen
+                  name='swipe-discovery'
+                  options={{
+                    gestureEnabled: false,
+                    animation: 'slide_from_bottom',
+                    headerShown: false,
+                  }}
+                />
                 <Stack.Screen name='+not-found' />
               </Stack>
               <StatusBar style='auto' />
+            </SwipeDataProvider>
             </AuthProvider>
           </SubscriptionProvider>
         </LanguageProvider>

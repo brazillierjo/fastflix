@@ -47,9 +47,7 @@ app.get("/", authMiddleware, rateLimitMiddleware("readonly"), async (c) => {
         },
         remaining: {
           searches:
-            limits.searches === -1
-              ? -1
-              : Math.max(0, limits.searches - searchQuota.search_count),
+            limits.searches === -1 ? -1 : Math.max(0, limits.searches - searchQuota.search_count),
         },
       },
     });

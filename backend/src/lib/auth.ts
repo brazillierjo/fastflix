@@ -3,10 +3,10 @@
  * JWT generation/verification and Apple/Google token validation
  */
 
-import jwt from 'jsonwebtoken';
-import appleSignin from 'apple-signin-auth';
-import { OAuth2Client } from 'google-auth-library';
-import type { JWTPayload } from './types';
+import jwt from "jsonwebtoken";
+import appleSignin from "apple-signin-auth";
+import { OAuth2Client } from "google-auth-library";
+import type { JWTPayload } from "./types";
 
 // ============================================================================
 // JWT Functions
@@ -19,7 +19,7 @@ function getJWTSecret(): string {
   const secret = process.env.JWT_SECRET;
 
   if (!secret) {
-    throw new Error('JWT_SECRET environment variable is not set');
+    throw new Error("JWT_SECRET environment variable is not set");
   }
 
   return secret;
@@ -34,14 +34,14 @@ function getJWTSecret(): string {
 export function generateJWT(userId: string, email: string): string {
   const secret = getJWTSecret();
 
-  const payload: Omit<JWTPayload, 'iat' | 'exp'> = {
+  const payload: Omit<JWTPayload, "iat" | "exp"> = {
     userId,
     email,
   };
 
   // Token expires in 30 days
   const token = jwt.sign(payload, secret, {
-    expiresIn: '30d',
+    expiresIn: "30d",
   });
 
   return token;
@@ -59,8 +59,8 @@ export function verifyJWT(token: string): JWTPayload | null {
     return decoded;
   } catch (error) {
     console.error(
-      'JWT verification failed:',
-      error instanceof Error ? error.message : 'Unknown error'
+      "JWT verification failed:",
+      error instanceof Error ? error.message : "Unknown error"
     );
     return null;
   }
@@ -87,7 +87,7 @@ export async function verifyAppleToken(identityToken: string): Promise<AppleToke
     const clientId = process.env.APPLE_CLIENT_ID;
 
     if (!clientId) {
-      throw new Error('APPLE_CLIENT_ID environment variable is not set');
+      throw new Error("APPLE_CLIENT_ID environment variable is not set");
     }
 
     const appleResponse = await appleSignin.verifyIdToken(identityToken, {
@@ -98,12 +98,12 @@ export async function verifyAppleToken(identityToken: string): Promise<AppleToke
     return {
       sub: appleResponse.sub,
       email: appleResponse.email,
-      email_verified: appleResponse.email_verified === 'true',
-      is_private_email: appleResponse.is_private_email === 'true',
+      email_verified: appleResponse.email_verified === "true",
+      is_private_email: appleResponse.is_private_email === "true",
     };
   } catch (error) {
-    console.error('Apple token verification failed:', error);
-    throw new Error('Invalid Apple identity token', { cause: error });
+    console.error("Apple token verification failed:", error);
+    throw new Error("Invalid Apple identity token", { cause: error });
   }
 }
 
@@ -131,7 +131,7 @@ export async function verifyGoogleToken(idToken: string): Promise<GoogleTokenPay
 
     if (!iosClientId && !androidClientId) {
       throw new Error(
-        'GOOGLE_CLIENT_ID or GOOGLE_ANDROID_CLIENT_ID environment variable must be set'
+        "GOOGLE_CLIENT_ID or GOOGLE_ANDROID_CLIENT_ID environment variable must be set"
       );
     }
 
@@ -147,19 +147,19 @@ export async function verifyGoogleToken(idToken: string): Promise<GoogleTokenPay
     const payload = ticket.getPayload();
 
     if (!payload) {
-      throw new Error('Invalid Google ID token - no payload');
+      throw new Error("Invalid Google ID token - no payload");
     }
 
     return {
       sub: payload.sub,
-      email: payload.email || '',
+      email: payload.email || "",
       email_verified: payload.email_verified || false,
       name: payload.name,
       picture: payload.picture,
     };
   } catch (error) {
-    console.error('Google token verification failed:', error);
-    throw new Error('Invalid Google ID token', { cause: error });
+    console.error("Google token verification failed:", error);
+    throw new Error("Invalid Google ID token", { cause: error });
   }
 }
 
@@ -178,9 +178,9 @@ export function extractTokenFromHeader(authHeader: string | null): string | null
   }
 
   // Expected format: "Bearer <token>"
-  const parts = authHeader.split(' ');
+  const parts = authHeader.split(" ");
 
-  if (parts.length !== 2 || parts[0] !== 'Bearer') {
+  if (parts.length !== 2 || parts[0] !== "Bearer") {
     return null;
   }
 

@@ -67,8 +67,7 @@ app.get("/home", authMiddleware, rateLimitMiddleware("standard"), async (c) => {
     const allowRent = preferences.includeRent;
     const allowBuy = preferences.includeBuy;
     const hasAvailabilityFilter = allowFlatrate || allowRent || allowBuy;
-    const platformSet =
-      preferences.platforms.length > 0 ? new Set(preferences.platforms) : null;
+    const platformSet = preferences.platforms.length > 0 ? new Set(preferences.platforms) : null;
     const hasFilters = hasAvailabilityFilter || platformSet !== null;
 
     function filterProviders(providers: StreamingProvider[]) {
@@ -729,9 +728,10 @@ app.get("/for-you", authMiddleware, rateLimitMiddleware("ai"), async (c) => {
     // Attach reasons to enriched results (try title match first, then index)
     let enrichedIdx = 0;
     for (const result of enrichedResults) {
-      const reason = reasonByTitle.get(result.title.toLowerCase())
-        || reasonByTitle.get((result.original_title || "").toLowerCase())
-        || reasonByIndex.get(enrichedIdx);
+      const reason =
+        reasonByTitle.get(result.title.toLowerCase()) ||
+        reasonByTitle.get((result.original_title || "").toLowerCase()) ||
+        reasonByIndex.get(enrichedIdx);
       if (reason) {
         result.reason = reason;
       }

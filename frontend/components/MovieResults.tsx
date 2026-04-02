@@ -14,6 +14,7 @@ import {
   View,
 } from 'react-native';
 import { useLanguage } from '../contexts/LanguageContext';
+import { useSwipeData } from '../contexts/SwipeDataContext';
 import { useWatchlist } from '../hooks/useWatchlist';
 import { ConversationMessage } from '../services/backend-api.service';
 import {
@@ -98,6 +99,7 @@ export default function MovieResults({
   const colorScheme = useColorScheme();
   const isDark = colorScheme === 'dark';
   const router = useRouter();
+  const { setSwipeData } = useSwipeData();
   const { items: watchlistItems } = useWatchlist();
   const watchlistIds = useMemo(
     () => new Set((watchlistItems || []).map((w) => w.tmdb_id)),
@@ -139,6 +141,52 @@ export default function MovieResults({
     setRefineQuery('');
   };
 
+  const handleSwipeMode = useCallback(() => {
+    const items = movies.map((m) => ({
+      tmdb_id: m.id,
+      title: m.title || m.name || '',
+      media_type: (m.media_type === 'tv' ? 'tv' : 'movie') as 'movie' | 'tv',
+      overview: m.overview || '',
+      poster_path: m.poster_path || null,
+      backdrop_path: null,
+      vote_average: m.vote_average || 0,
+      vote_count: 0,
+      genre_ids: [],
+      popularity: 0,
+      reason: m.reason,
+      matchScore: m.matchScore,
+      release_date: m.release_date,
+      first_air_date: m.first_air_date,
+    }));
+
+    const creditsMap: Record<number, { id: number; name: string; character: string; profile_path: string | null }[]> = {};
+    const crewMap: Record<number, { id: number; name: string; job: string; profile_path: string | null }[]> = {};
+    movies.forEach((m) => {
+      creditsMap[m.id] = (credits[m.id] || []).map((c) => ({
+        id: c.id,
+        name: c.name,
+        character: c.character,
+        profile_path: c.profile_path || null,
+      }));
+      crewMap[m.id] = (crew[m.id] || []).map((c) => ({
+        id: c.id,
+        name: c.name,
+        job: c.job,
+        profile_path: c.profile_path || null,
+      }));
+    });
+
+    setSwipeData({
+      items,
+      providers: streamingProviders as Record<number, { provider_id: number; provider_name: string; logo_path: string; display_priority: number; availability_type: 'flatrate' | 'rent' | 'buy' | 'ads' }[]>,
+      credits: creditsMap,
+      crew: crewMap,
+      detailedInfo: detailedInfo as Record<number, import('@/services/backend-api.service').DetailedInfo>,
+      source: 'search',
+    });
+    router.push('/swipe-discovery?source=search' as never);
+  }, [movies, streamingProviders, credits, crew, detailedInfo, setSwipeData, router]);
+
   return (
     <MotiView
       from={{ opacity: 0, translateY: 20 }}
@@ -165,6 +213,18 @@ export default function MovieResults({
         <Text className='text-center text-lg font-semibold text-light-text dark:text-dark-text'>
           {t('movies.recommendations')}
         </Text>
+
+        <TouchableOpacity
+          onPress={handleSwipeMode}
+          className='absolute right-0 z-10 h-12 w-12 items-center justify-center rounded-full'
+          hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
+        >
+          <Ionicons
+            name='phone-portrait-outline'
+            size={22}
+            color={isDark ? '#ffffff' : '#0f172a'}
+          />
+        </TouchableOpacity>
       </View>
 
       <ScrollView ref={scrollViewRef}>

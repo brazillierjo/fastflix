@@ -64,7 +64,8 @@ app.put("/preferences", async (c) => {
     const updatedPreferences = await db.updateUserPreferences(getUserId(c), validatedData);
     return c.json({ success: true, data: { preferences: updatedPreferences } });
   } catch (error) {
-    if (error instanceof z.ZodError) return c.json({ error: "Invalid request data", details: error.issues }, 400);
+    if (error instanceof z.ZodError)
+      return c.json({ error: "Invalid request data", details: error.issues }, 400);
     return c.json({ error: "Failed to update preferences" }, 500);
   }
 });
@@ -89,7 +90,8 @@ app.put("/taste-profile", async (c) => {
     db.invalidateForYouCache(uid).catch(() => {});
     return c.json({ success: true, data: { profile: updatedProfile } });
   } catch (error) {
-    if (error instanceof z.ZodError) return c.json({ error: "Invalid request data", details: error.issues }, 400);
+    if (error instanceof z.ZodError)
+      return c.json({ error: "Invalid request data", details: error.issues }, 400);
     return c.json({ error: "Failed to update taste profile" }, 500);
   }
 });
@@ -101,13 +103,18 @@ app.post("/taste-profile/rate", async (c) => {
     const validatedData = rateMovieSchema.parse(body);
     const uid = getUserId(c);
     const updatedProfile = await db.rateMovie(
-      uid, validatedData.tmdb_id, validatedData.rating,
-      validatedData.title, validatedData.media_type, validatedData.poster_path
+      uid,
+      validatedData.tmdb_id,
+      validatedData.rating,
+      validatedData.title,
+      validatedData.media_type,
+      validatedData.poster_path
     );
     db.invalidateForYouCache(uid).catch(() => {});
     return c.json({ success: true, data: { profile: updatedProfile } });
   } catch (error) {
-    if (error instanceof z.ZodError) return c.json({ error: "Invalid request data", details: error.issues }, 400);
+    if (error instanceof z.ZodError)
+      return c.json({ error: "Invalid request data", details: error.issues }, 400);
     return c.json({ error: "Failed to rate movie" }, 500);
   }
 });
@@ -122,7 +129,8 @@ app.delete("/taste-profile/rate", async (c) => {
     db.invalidateForYouCache(uid).catch(() => {});
     return c.json({ success: true, data: { profile: updatedProfile } });
   } catch (error) {
-    if (error instanceof z.ZodError) return c.json({ error: "Invalid request data", details: error.issues }, 400);
+    if (error instanceof z.ZodError)
+      return c.json({ error: "Invalid request data", details: error.issues }, 400);
     return c.json({ error: "Failed to remove rating" }, 500);
   }
 });
@@ -134,13 +142,17 @@ app.post("/taste-profile/favorite-actors", async (c) => {
     const validatedData = favoriteActorSchema.parse(body);
     const uid = getUserId(c);
     const updatedProfile = await db.favoriteActor(
-      uid, validatedData.tmdb_id, validatedData.name,
-      validatedData.profile_path, validatedData.known_for_department
+      uid,
+      validatedData.tmdb_id,
+      validatedData.name,
+      validatedData.profile_path,
+      validatedData.known_for_department
     );
     db.invalidateForYouCache(uid).catch(() => {});
     return c.json({ success: true, data: { profile: updatedProfile } });
   } catch (error) {
-    if (error instanceof z.ZodError) return c.json({ error: "Invalid request data", details: error.issues }, 400);
+    if (error instanceof z.ZodError)
+      return c.json({ error: "Invalid request data", details: error.issues }, 400);
     return c.json({ error: "Failed to favorite actor" }, 500);
   }
 });
@@ -155,7 +167,8 @@ app.delete("/taste-profile/favorite-actors", async (c) => {
     db.invalidateForYouCache(uid).catch(() => {});
     return c.json({ success: true, data: { profile: updatedProfile } });
   } catch (error) {
-    if (error instanceof z.ZodError) return c.json({ error: "Invalid request data", details: error.issues }, 400);
+    if (error instanceof z.ZodError)
+      return c.json({ error: "Invalid request data", details: error.issues }, 400);
     return c.json({ error: "Failed to unfavorite actor" }, 500);
   }
 });
@@ -172,14 +185,23 @@ app.post("/taste-profile/backfill-posters", async (c) => {
       if (movie.poster_path) continue;
       try {
         const mediaType = movie.media_type || "movie";
-        let details = mediaType === "tv"
-          ? await tmdb.getTVDetails(movie.tmdb_id) : await tmdb.getMovieDetails(movie.tmdb_id);
+        let details =
+          mediaType === "tv"
+            ? await tmdb.getTVDetails(movie.tmdb_id)
+            : await tmdb.getMovieDetails(movie.tmdb_id);
         if (!details?.poster_path) {
-          details = mediaType === "tv"
-            ? await tmdb.getMovieDetails(movie.tmdb_id) : await tmdb.getTVDetails(movie.tmdb_id);
+          details =
+            mediaType === "tv"
+              ? await tmdb.getMovieDetails(movie.tmdb_id)
+              : await tmdb.getTVDetails(movie.tmdb_id);
         }
-        if (details?.poster_path) { movie.poster_path = details.poster_path; updated++; }
-      } catch { /* skip */ }
+        if (details?.poster_path) {
+          movie.poster_path = details.poster_path;
+          updated++;
+        }
+      } catch {
+        /* skip */
+      }
     }
 
     if (updated > 0) await db.updateTasteProfile(userId, { rated_movies: ratedMovies });

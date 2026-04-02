@@ -807,6 +807,23 @@ class BackendAPIService {
       method: 'GET',
     });
   }
+
+  // ==========================================================================
+  // Swipe Discovery Methods
+  // ==========================================================================
+
+  async submitSwipeFeedback(params: {
+    tmdb_id: number;
+    type: 'like' | 'dislike';
+    title: string;
+    media_type?: 'movie' | 'tv';
+    poster_path?: string;
+  }): Promise<APIResponse<{ success: boolean }>> {
+    return await this.makeRequest('/api/feed/feedback', {
+      method: 'POST',
+      body: JSON.stringify(params),
+    });
+  }
 }
 
 export interface TMDBQuickSearchResult {

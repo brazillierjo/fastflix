@@ -14,14 +14,17 @@ const store = new Map<string, RateLimitEntry>();
 
 // Cleanup old entries every 5 minutes
 if (process.env.NODE_ENV !== "test") {
-  setInterval(() => {
-    const now = Date.now();
-    for (const [key, entry] of store.entries()) {
-      if (entry.resetTime < now) {
-        store.delete(key);
+  setInterval(
+    () => {
+      const now = Date.now();
+      for (const [key, entry] of store.entries()) {
+        if (entry.resetTime < now) {
+          store.delete(key);
+        }
       }
-    }
-  }, 5 * 60 * 1000);
+    },
+    5 * 60 * 1000
+  );
 }
 
 export interface RateLimitResult {

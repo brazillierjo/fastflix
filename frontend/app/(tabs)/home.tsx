@@ -11,6 +11,8 @@ import TrialEndingModal from '@/components/TrialEndingModal';
 import { useAuth } from '@/contexts/AuthContext';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { useSubscription } from '@/contexts/RevenueCatContext';
+import { useSwipeData } from '@/contexts/SwipeDataContext';
+import { backendAPIService } from '@/services/backend-api.service';
 import { useHomeData } from '@/hooks/useHomeData';
 import { useQueryClient } from '@tanstack/react-query';
 import { useFocusEffect, useNavigation, useRouter } from 'expo-router';
@@ -45,6 +47,7 @@ export default function HomeScreen() {
   const { t, language } = useLanguage();
   const { user, isAuthenticated, isLoading } = useAuth();
   const { hasUnlimitedAccess, customerInfo } = useSubscription();
+  const { setSwipeData } = useSwipeData();
   const router = useRouter();
   const colorScheme = useColorScheme();
   const isDark = colorScheme === 'dark';
@@ -154,6 +157,29 @@ export default function HomeScreen() {
 
   // Subscription modal state
   const [showSubscriptionModal, setShowSubscriptionModal] = useState(false);
+  const [isLoadingSwipe, setIsLoadingSwipe] = useState(false);
+
+  const handleExploreBySwipe = useCallback(async () => {
+    if (isLoadingSwipe) return;
+    setIsLoadingSwipe(true);
+    try {
+      const tmdbLanguage = language === 'fr' ? 'fr-FR' : language === 'es' ? 'es-ES' : language === 'de' ? 'de-DE' : language === 'it' ? 'it-IT' : language === 'ja' ? 'ja-JP' : 'en-US';
+      const res = await backendAPIService.getForYou({ language: tmdbLanguage });
+      if (res.success && res.data && res.data.recommendations.length > 0) {
+        setSwipeData({
+          items: res.data.recommendations,
+          providers: res.data.streamingProviders || {},
+          credits: {},
+          crew: {},
+          detailedInfo: {},
+          source: 'forYou',
+        });
+        router.push('/swipe-discovery?source=forYou' as never);
+      }
+    } finally {
+      setIsLoadingSwipe(false);
+    }
+  }, [language, setSwipeData, router, isLoadingSwipe]);
 
   // Trial ending modal state
   const [showTrialEndingModal, setShowTrialEndingModal] = useState(false);
@@ -417,6 +443,24 @@ export default function HomeScreen() {
             </View>
           </TouchableOpacity>
         </View>
+
+        {/* Explore by Swiping button — premium + authenticated */}
+        {isAuthenticated && hasUnlimitedAccess && (
+          <View className='mt-3 px-6'>
+            <TouchableOpacity
+              onPress={handleExploreBySwipe}
+              activeOpacity={0.8}
+              disabled={isLoadingSwipe}
+              style={[getSquircle(16), { overflow: 'hidden' }]}
+              className='flex-row items-center justify-center gap-2 border border-netflix-500/30 bg-netflix-500/10 px-6 py-3'
+            >
+              <Ionicons name='swap-vertical' size={18} color='#E50914' />
+              <Text className='text-sm font-semibold text-netflix-500'>
+                {isLoadingSwipe ? '...' : t('swipeDiscovery.exploreBySwipe')}
+              </Text>
+            </TouchableOpacity>
+          </View>
+        )}
 
         {/* Daily Pick Card */}
         <MotiView

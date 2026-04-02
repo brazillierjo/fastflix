@@ -3,24 +3,38 @@
  * Scores items based on user taste profile (genres, rated movies, decades)
  */
 
-import type { UserTasteProfile } from './types';
+import type { UserTasteProfile } from "./types";
 
 /**
  * TMDB genre ID → genre name mapping (movies + TV combined)
  */
 const GENRE_ID_TO_NAME: Record<number, string> = {
   // Movie genres
-  28: 'Action', 12: 'Adventure', 16: 'Animation', 35: 'Comedy',
-  80: 'Crime', 99: 'Documentary', 18: 'Drama', 10751: 'Family',
-  14: 'Fantasy', 36: 'History', 27: 'Horror', 10402: 'Music',
-  9648: 'Mystery', 10749: 'Romance', 878: 'Sci-Fi', 10770: 'TV Movie',
-  53: 'Thriller', 10752: 'War', 37: 'Western',
+  28: "Action",
+  12: "Adventure",
+  16: "Animation",
+  35: "Comedy",
+  80: "Crime",
+  99: "Documentary",
+  18: "Drama",
+  10751: "Family",
+  14: "Fantasy",
+  36: "History",
+  27: "Horror",
+  10402: "Music",
+  9648: "Mystery",
+  10749: "Romance",
+  878: "Sci-Fi",
+  10770: "TV Movie",
+  53: "Thriller",
+  10752: "War",
+  37: "Western",
   // TV-specific genres
-  10759: 'Action',      // Action & Adventure
-  10765: 'Sci-Fi',      // Sci-Fi & Fantasy
-  10768: 'War',         // War & Politics
-  10762: 'Family',      // Kids
-  10766: 'Drama',       // Soap → Drama
+  10759: "Action", // Action & Adventure
+  10765: "Sci-Fi", // Sci-Fi & Fantasy
+  10768: "War", // War & Politics
+  10762: "Family", // Kids
+  10766: "Drama", // Soap → Drama
 };
 
 /**
@@ -32,14 +46,11 @@ const GENRE_ID_TO_NAME: Record<number, string> = {
  * - -3 per genre matching a disliked genre (stronger penalty)
  * - +0.5 bonus for high vote average (>= 7.5)
  */
-export function computeAffinityScore(
-  genreIds: number[],
-  tasteProfile: UserTasteProfile
-): number {
+export function computeAffinityScore(genreIds: number[], tasteProfile: UserTasteProfile): number {
   if (!genreIds || genreIds.length === 0) return 0;
 
-  const favoriteSet = new Set(tasteProfile.favorite_genres.map(g => g.toLowerCase()));
-  const dislikedSet = new Set(tasteProfile.disliked_genres.map(g => g.toLowerCase()));
+  const favoriteSet = new Set(tasteProfile.favorite_genres.map((g) => g.toLowerCase()));
+  const dislikedSet = new Set(tasteProfile.disliked_genres.map((g) => g.toLowerCase()));
 
   let score = 0;
 
@@ -71,11 +82,11 @@ export function computeMatchScore(
     return 0; // No profile = no score
   }
 
-  const favoriteSet = new Set(tasteProfile.favorite_genres.map(g => g.toLowerCase()));
-  const dislikedSet = new Set(tasteProfile.disliked_genres.map(g => g.toLowerCase()));
+  const favoriteSet = new Set(tasteProfile.favorite_genres.map((g) => g.toLowerCase()));
+  const dislikedSet = new Set(tasteProfile.disliked_genres.map((g) => g.toLowerCase()));
 
   const itemGenres = (genreIds || [])
-    .map(gid => GENRE_ID_TO_NAME[gid]?.toLowerCase())
+    .map((gid) => GENRE_ID_TO_NAME[gid]?.toLowerCase())
     .filter(Boolean);
 
   if (itemGenres.length === 0) return 0;
@@ -106,7 +117,7 @@ export function computeMatchScore(
  * Build a Set of TMDB IDs the user has already watched (rated_movies with any rating including 0)
  */
 export function getWatchedTmdbIds(tasteProfile: UserTasteProfile): Set<number> {
-  return new Set(tasteProfile.rated_movies.map(m => m.tmdb_id));
+  return new Set(tasteProfile.rated_movies.map((m) => m.tmdb_id));
 }
 
 /**

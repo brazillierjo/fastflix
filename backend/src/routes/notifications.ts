@@ -15,10 +15,7 @@ const registerPushTokenSchema = z.object({
     .string()
     .min(1, "Push token is required")
     .max(500)
-    .regex(
-      /^ExponentPushToken\[.+\]$|^[A-Za-z0-9_:.-]+$/,
-      "Invalid push token format"
-    ),
+    .regex(/^ExponentPushToken\[.+\]$|^[A-Za-z0-9_:.-]+$/, "Invalid push token format"),
   platform: z.enum(["ios", "android"]).default("ios"),
 });
 

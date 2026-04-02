@@ -3,7 +3,7 @@
  * Turso (libSQL) database client and operations
  */
 
-import { createClient, Client, Row } from '@libsql/client';
+import { createClient, Client, Row } from "@libsql/client";
 import type {
   User,
   UserPreferences,
@@ -16,7 +16,7 @@ import type {
   RatedMovie,
   FavoriteActor,
   UserStats,
-} from './types';
+} from "./types";
 
 /**
  * Helper function to safely convert a database row to a specific type
@@ -45,7 +45,7 @@ class DatabaseService {
     const authToken = process.env.TURSO_AUTH_TOKEN;
 
     if (!url || !authToken) {
-      throw new Error('Missing Turso credentials in environment variables');
+      throw new Error("Missing Turso credentials in environment variables");
     }
 
     this.client = createClient({
@@ -78,7 +78,7 @@ class DatabaseService {
     email: string;
     name: string | null;
     avatar_url: string | null;
-    auth_provider: 'apple' | 'google';
+    auth_provider: "apple" | "google";
     provider_user_id: string;
   }): Promise<User> {
     this.initialize();
@@ -94,7 +94,7 @@ class DatabaseService {
     // Return the created user
     const user = await this.getUserById(id);
     if (!user) {
-      throw new Error('Failed to retrieve created user');
+      throw new Error("Failed to retrieve created user");
     }
 
     return user;
@@ -107,7 +107,7 @@ class DatabaseService {
     this.initialize();
 
     const result = await this.client!.execute({
-      sql: 'SELECT * FROM users WHERE id = ? AND deleted_at IS NULL',
+      sql: "SELECT * FROM users WHERE id = ? AND deleted_at IS NULL",
       args: [id],
     });
 
@@ -125,7 +125,7 @@ class DatabaseService {
     this.initialize();
 
     const result = await this.client!.execute({
-      sql: 'SELECT * FROM users WHERE email = ? AND deleted_at IS NULL',
+      sql: "SELECT * FROM users WHERE email = ? AND deleted_at IS NULL",
       args: [email],
     });
 
@@ -140,13 +140,13 @@ class DatabaseService {
    * Get user by provider and provider_user_id
    */
   async getUserByProvider(
-    auth_provider: 'apple' | 'google',
+    auth_provider: "apple" | "google",
     provider_user_id: string
   ): Promise<User | null> {
     this.initialize();
 
     const result = await this.client!.execute({
-      sql: 'SELECT * FROM users WHERE auth_provider = ? AND provider_user_id = ? AND deleted_at IS NULL',
+      sql: "SELECT * FROM users WHERE auth_provider = ? AND provider_user_id = ? AND deleted_at IS NULL",
       args: [auth_provider, provider_user_id],
     });
 
@@ -173,12 +173,12 @@ class DatabaseService {
     const args: (string | null)[] = [];
 
     if (data.name !== undefined) {
-      updates.push('name = ?');
+      updates.push("name = ?");
       args.push(data.name);
     }
 
     if (data.avatar_url !== undefined) {
-      updates.push('avatar_url = ?');
+      updates.push("avatar_url = ?");
       args.push(data.avatar_url);
     }
 
@@ -186,7 +186,7 @@ class DatabaseService {
       // No updates, just return current user
       const user = await this.getUserById(id);
       if (!user) {
-        throw new Error('User not found');
+        throw new Error("User not found");
       }
       return user;
     }
@@ -195,13 +195,13 @@ class DatabaseService {
     args.push(id);
 
     await this.client!.execute({
-      sql: `UPDATE users SET ${updates.join(', ')} WHERE id = ?`,
+      sql: `UPDATE users SET ${updates.join(", ")} WHERE id = ?`,
       args,
     });
 
     const user = await this.getUserById(id);
     if (!user) {
-      throw new Error('Failed to retrieve updated user');
+      throw new Error("Failed to retrieve updated user");
     }
 
     return user;
@@ -211,13 +211,13 @@ class DatabaseService {
    * Find a soft-deleted user by provider (for reactivation on re-login)
    */
   async getDeletedUserByProvider(
-    auth_provider: 'apple' | 'google',
+    auth_provider: "apple" | "google",
     provider_user_id: string
   ): Promise<User | null> {
     this.initialize();
 
     const result = await this.client!.execute({
-      sql: 'SELECT * FROM users WHERE auth_provider = ? AND provider_user_id = ? AND deleted_at IS NOT NULL',
+      sql: "SELECT * FROM users WHERE auth_provider = ? AND provider_user_id = ? AND deleted_at IS NOT NULL",
       args: [auth_provider, provider_user_id],
     });
 
@@ -241,7 +241,7 @@ class DatabaseService {
 
     const user = await this.getUserById(userId);
     if (!user) {
-      throw new Error('Failed to reactivate user');
+      throw new Error("Failed to reactivate user");
     }
     return user;
   }
@@ -260,7 +260,7 @@ class DatabaseService {
 
     // Clean up push tokens so they don't receive notifications
     await this.client!.execute({
-      sql: 'DELETE FROM push_tokens WHERE user_id = ?',
+      sql: "DELETE FROM push_tokens WHERE user_id = ?",
       args: [userId],
     });
   }
@@ -303,7 +303,7 @@ class DatabaseService {
 
     // First, check if a subscription exists for this user
     const existing = await this.client!.execute({
-      sql: 'SELECT * FROM subscriptions WHERE user_id = ?',
+      sql: "SELECT * FROM subscriptions WHERE user_id = ?",
       args: [user_id],
     });
 
@@ -337,11 +337,11 @@ class DatabaseService {
   async hasAccess(userId: string): Promise<boolean> {
     // RevenueCat is the single source of truth for subscription status
     try {
-      const { checkPremiumAccess } = await import('./revenuecat.js');
+      const { checkPremiumAccess } = await import("./revenuecat.js");
       const { isPremium } = await checkPremiumAccess(userId);
       return isPremium;
     } catch (error) {
-      console.error('❌ RevenueCat API check failed:', error);
+      console.error("❌ RevenueCat API check failed:", error);
       return false;
     }
   }
@@ -364,7 +364,7 @@ class DatabaseService {
     let rcActive = false;
     let rcExpiresAt: string | null = null;
     try {
-      const { checkPremiumAccess } = await import('./revenuecat.js');
+      const { checkPremiumAccess } = await import("./revenuecat.js");
       const rc = await checkPremiumAccess(userId);
       rcActive = rc.isPremium;
       rcExpiresAt = rc.expiresAt;
@@ -386,7 +386,7 @@ class DatabaseService {
       if (result.rows.length === 0) {
         return {
           isActive: rcActive,
-          status: rcActive ? 'active' : null,
+          status: rcActive ? "active" : null,
           productId: null,
           expiresAt: rcExpiresAt,
           createdAt: null,
@@ -399,16 +399,16 @@ class DatabaseService {
 
       return {
         isActive: rcActive,
-        status: rcActive ? 'active' : dbStatus,
+        status: rcActive ? "active" : dbStatus,
         productId: row.product_id as string | null,
         expiresAt: rcExpiresAt || (row.expires_at as string | null),
         createdAt: row.created_at as string | null,
-        willRenew: rcActive && dbStatus === 'active',
+        willRenew: rcActive && dbStatus === "active",
       };
     } catch {
       return {
         isActive: rcActive,
-        status: rcActive ? 'active' : null,
+        status: rcActive ? "active" : null,
         productId: null,
         expiresAt: null,
         createdAt: null,
@@ -438,8 +438,8 @@ class DatabaseService {
       if (result.rows.length === 0) {
         // Return defaults
         return {
-          country: 'FR',
-          contentType: 'all',
+          country: "FR",
+          contentType: "all",
           platforms: [],
           includeFlatrate: true,
           includeRent: false,
@@ -461,8 +461,8 @@ class DatabaseService {
       }
 
       return {
-        country: (row.pref_country as string) || 'FR',
-        contentType: (row.pref_content_type as 'all' | 'movies' | 'tvshows') || 'all',
+        country: (row.pref_country as string) || "FR",
+        contentType: (row.pref_content_type as "all" | "movies" | "tvshows") || "all",
         platforms,
         includeFlatrate: Number(row.pref_include_flatrate) === 1,
         includeRent: Number(row.pref_include_rent) === 1,
@@ -471,8 +471,8 @@ class DatabaseService {
     } catch {
       // Return defaults on error
       return {
-        country: 'FR',
-        contentType: 'all',
+        country: "FR",
+        contentType: "all",
         platforms: [],
         includeFlatrate: true,
         includeRent: false,
@@ -494,32 +494,32 @@ class DatabaseService {
     const args: (string | number)[] = [];
 
     if (preferences.country !== undefined) {
-      updates.push('pref_country = ?');
+      updates.push("pref_country = ?");
       args.push(preferences.country);
     }
 
     if (preferences.contentType !== undefined) {
-      updates.push('pref_content_type = ?');
+      updates.push("pref_content_type = ?");
       args.push(preferences.contentType);
     }
 
     if (preferences.platforms !== undefined) {
-      updates.push('pref_platforms = ?');
+      updates.push("pref_platforms = ?");
       args.push(JSON.stringify(preferences.platforms));
     }
 
     if (preferences.includeFlatrate !== undefined) {
-      updates.push('pref_include_flatrate = ?');
+      updates.push("pref_include_flatrate = ?");
       args.push(preferences.includeFlatrate ? 1 : 0);
     }
 
     if (preferences.includeRent !== undefined) {
-      updates.push('pref_include_rent = ?');
+      updates.push("pref_include_rent = ?");
       args.push(preferences.includeRent ? 1 : 0);
     }
 
     if (preferences.includeBuy !== undefined) {
-      updates.push('pref_include_buy = ?');
+      updates.push("pref_include_buy = ?");
       args.push(preferences.includeBuy ? 1 : 0);
     }
 
@@ -528,7 +528,7 @@ class DatabaseService {
       args.push(userId);
 
       await this.client!.execute({
-        sql: `UPDATE users SET ${updates.join(', ')} WHERE id = ?`,
+        sql: `UPDATE users SET ${updates.join(", ")} WHERE id = ?`,
         args,
       });
     }
@@ -547,7 +547,7 @@ class DatabaseService {
     userId: string,
     item: {
       tmdbId: number;
-      mediaType: 'movie' | 'tv';
+      mediaType: "movie" | "tv";
       title: string;
       posterPath: string | null;
       providers: StreamingProvider[];
@@ -579,13 +579,13 @@ class DatabaseService {
       // Return the created item
       const watchlistItem = await this.getWatchlistItemById(id);
       if (!watchlistItem) {
-        throw new Error('Failed to retrieve created watchlist item');
+        throw new Error("Failed to retrieve created watchlist item");
       }
 
       return watchlistItem;
     } catch (error) {
       // Check for unique constraint violation (item already exists)
-      if (error instanceof Error && error.message.includes('UNIQUE constraint failed')) {
+      if (error instanceof Error && error.message.includes("UNIQUE constraint failed")) {
         // Return existing item
         const existing = await this.getWatchlistItemByTmdbId(userId, item.tmdbId, item.mediaType);
         if (existing) {
@@ -603,7 +603,7 @@ class DatabaseService {
     this.initialize();
 
     const result = await this.client!.execute({
-      sql: 'DELETE FROM watchlist WHERE id = ? AND user_id = ?',
+      sql: "DELETE FROM watchlist WHERE id = ? AND user_id = ?",
       args: [itemId, userId],
     });
 
@@ -615,19 +615,19 @@ class DatabaseService {
   /**
    * Get user's watchlist
    */
-  async getWatchlist(userId: string, mediaType?: 'movie' | 'tv'): Promise<WatchlistItem[]> {
+  async getWatchlist(userId: string, mediaType?: "movie" | "tv"): Promise<WatchlistItem[]> {
     this.initialize();
 
     try {
-      let sql = 'SELECT * FROM watchlist WHERE user_id = ?';
+      let sql = "SELECT * FROM watchlist WHERE user_id = ?";
       const args: (string | number)[] = [userId];
 
       if (mediaType) {
-        sql += ' AND media_type = ?';
+        sql += " AND media_type = ?";
         args.push(mediaType);
       }
 
-      sql += ' ORDER BY added_at DESC';
+      sql += " ORDER BY added_at DESC";
 
       const result = await this.client!.execute({ sql, args });
 
@@ -643,13 +643,13 @@ class DatabaseService {
   async isInWatchlist(
     userId: string,
     tmdbId: number,
-    mediaType: 'movie' | 'tv'
+    mediaType: "movie" | "tv"
   ): Promise<{ inWatchlist: boolean; itemId: string | null }> {
     this.initialize();
 
     try {
       const result = await this.client!.execute({
-        sql: 'SELECT id FROM watchlist WHERE user_id = ? AND tmdb_id = ? AND media_type = ?',
+        sql: "SELECT id FROM watchlist WHERE user_id = ? AND tmdb_id = ? AND media_type = ?",
         args: [userId, tmdbId, mediaType],
       });
 
@@ -671,7 +671,7 @@ class DatabaseService {
 
     try {
       const result = await this.client!.execute({
-        sql: 'SELECT * FROM watchlist WHERE id = ?',
+        sql: "SELECT * FROM watchlist WHERE id = ?",
         args: [id],
       });
 
@@ -691,13 +691,13 @@ class DatabaseService {
   async getWatchlistItemByTmdbId(
     userId: string,
     tmdbId: number,
-    mediaType: 'movie' | 'tv'
+    mediaType: "movie" | "tv"
   ): Promise<WatchlistItem | null> {
     this.initialize();
 
     try {
       const result = await this.client!.execute({
-        sql: 'SELECT * FROM watchlist WHERE user_id = ? AND tmdb_id = ? AND media_type = ?',
+        sql: "SELECT * FROM watchlist WHERE user_id = ? AND tmdb_id = ? AND media_type = ?",
         args: [userId, tmdbId, mediaType],
       });
 
@@ -753,7 +753,7 @@ class DatabaseService {
 
     try {
       const result = await this.client!.execute({
-        sql: 'SELECT COUNT(*) as count FROM watchlist WHERE user_id = ?',
+        sql: "SELECT COUNT(*) as count FROM watchlist WHERE user_id = ?",
         args: [userId],
       });
 
@@ -775,7 +775,7 @@ class DatabaseService {
 
     try {
       const result = await this.client!.execute({
-        sql: 'SELECT * FROM user_quotas WHERE user_id = ? AND date = ?',
+        sql: "SELECT * FROM user_quotas WHERE user_id = ? AND date = ?",
         args: [userId, date],
       });
 
@@ -810,7 +810,7 @@ class DatabaseService {
   async incrementQuota(
     userId: string,
     date: string,
-    field: 'search_count' | 'watchlist_additions'
+    field: "search_count" | "watchlist_additions"
   ): Promise<void> {
     this.initialize();
 
@@ -822,8 +822,8 @@ class DatabaseService {
       args: [
         userId,
         date,
-        field === 'search_count' ? 1 : 0,
-        field === 'watchlist_additions' ? 1 : 0,
+        field === "search_count" ? 1 : 0,
+        field === "watchlist_additions" ? 1 : 0,
       ],
     });
   }
@@ -839,7 +839,7 @@ class DatabaseService {
     this.initialize();
 
     await this.client!.execute({
-      sql: 'INSERT INTO search_history (user_id, query, results_count) VALUES (?, ?, ?)',
+      sql: "INSERT INTO search_history (user_id, query, results_count) VALUES (?, ?, ?)",
       args: [userId, query, resultsCount],
     });
   }
@@ -852,7 +852,7 @@ class DatabaseService {
 
     try {
       const result = await this.client!.execute({
-        sql: 'SELECT * FROM search_history WHERE user_id = ? ORDER BY created_at DESC LIMIT ?',
+        sql: "SELECT * FROM search_history WHERE user_id = ? ORDER BY created_at DESC LIMIT ?",
         args: [userId, limit],
       });
 
@@ -886,7 +886,7 @@ class DatabaseService {
       });
     } catch {
       // Non-critical - don't fail the request if activity tracking fails
-      console.warn('Failed to record activity for user', userId);
+      console.warn("Failed to record activity for user", userId);
     }
   }
 
@@ -911,7 +911,7 @@ class DatabaseService {
 
     try {
       const result = await this.client!.execute({
-        sql: 'SELECT * FROM user_taste_profile WHERE user_id = ?',
+        sql: "SELECT * FROM user_taste_profile WHERE user_id = ?",
         args: [userId],
       });
 
@@ -923,7 +923,7 @@ class DatabaseService {
 
       const parseJsonArray = <T>(value: unknown): T[] => {
         try {
-          if (typeof value === 'string' && value) {
+          if (typeof value === "string" && value) {
             return JSON.parse(value);
           }
           return [];
@@ -950,13 +950,13 @@ class DatabaseService {
    */
   async updateTasteProfile(
     userId: string,
-    data: Partial<Omit<UserTasteProfile, 'user_id'>>
+    data: Partial<Omit<UserTasteProfile, "user_id">>
   ): Promise<UserTasteProfile> {
     this.initialize();
 
     // Check if profile exists
     const existing = await this.client!.execute({
-      sql: 'SELECT user_id FROM user_taste_profile WHERE user_id = ?',
+      sql: "SELECT user_id FROM user_taste_profile WHERE user_id = ?",
       args: [userId],
     });
 
@@ -980,34 +980,34 @@ class DatabaseService {
       const args: (string | number)[] = [];
 
       if (data.favorite_genres !== undefined) {
-        updates.push('favorite_genres = ?');
+        updates.push("favorite_genres = ?");
         args.push(JSON.stringify(data.favorite_genres));
       }
 
       if (data.disliked_genres !== undefined) {
-        updates.push('disliked_genres = ?');
+        updates.push("disliked_genres = ?");
         args.push(JSON.stringify(data.disliked_genres));
       }
 
       if (data.favorite_decades !== undefined) {
-        updates.push('favorite_decades = ?');
+        updates.push("favorite_decades = ?");
         args.push(JSON.stringify(data.favorite_decades));
       }
 
       if (data.rated_movies !== undefined) {
-        updates.push('rated_movies = ?');
+        updates.push("rated_movies = ?");
         args.push(JSON.stringify(data.rated_movies));
       }
 
       if (data.favorite_actors !== undefined) {
-        updates.push('favorite_actors = ?');
+        updates.push("favorite_actors = ?");
         args.push(JSON.stringify(data.favorite_actors));
       }
 
       if (updates.length > 0) {
         args.push(userId);
         await this.client!.execute({
-          sql: `UPDATE user_taste_profile SET ${updates.join(', ')} WHERE user_id = ?`,
+          sql: `UPDATE user_taste_profile SET ${updates.join(", ")} WHERE user_id = ?`,
           args,
         });
       }
@@ -1024,7 +1024,7 @@ class DatabaseService {
     tmdbId: number,
     rating: number,
     title: string,
-    mediaType?: 'movie' | 'tv',
+    mediaType?: "movie" | "tv",
     posterPath?: string
   ): Promise<UserTasteProfile> {
     this.initialize();
@@ -1036,7 +1036,13 @@ class DatabaseService {
         const ratedMovies = [...profile.rated_movies];
 
         const existingIndex = ratedMovies.findIndex((m) => m.tmdb_id === tmdbId);
-        const entry = { tmdb_id: tmdbId, rating, title, ...(mediaType ? { media_type: mediaType } : {}), ...(posterPath ? { poster_path: posterPath } : {}) };
+        const entry = {
+          tmdb_id: tmdbId,
+          rating,
+          title,
+          ...(mediaType ? { media_type: mediaType } : {}),
+          ...(posterPath ? { poster_path: posterPath } : {}),
+        };
 
         if (existingIndex >= 0) {
           ratedMovies[existingIndex] = entry;
@@ -1108,7 +1114,12 @@ class DatabaseService {
         const favoriteActors = [...profile.favorite_actors];
 
         const existingIndex = favoriteActors.findIndex((a) => a.tmdb_id === tmdbId);
-        const entry: FavoriteActor = { tmdb_id: tmdbId, name, ...(profilePath ? { profile_path: profilePath } : {}), ...(knownForDepartment ? { known_for_department: knownForDepartment } : {}) };
+        const entry: FavoriteActor = {
+          tmdb_id: tmdbId,
+          name,
+          ...(profilePath ? { profile_path: profilePath } : {}),
+          ...(knownForDepartment ? { known_for_department: knownForDepartment } : {}),
+        };
 
         if (existingIndex >= 0) {
           favoriteActors[existingIndex] = entry;
@@ -1168,7 +1179,7 @@ class DatabaseService {
   /**
    * Save a push notification token for a user
    */
-  async savePushToken(userId: string, token: string, platform: string = 'ios'): Promise<void> {
+  async savePushToken(userId: string, token: string, platform: string = "ios"): Promise<void> {
     this.initialize();
 
     await this.client!.execute({
@@ -1197,7 +1208,7 @@ class DatabaseService {
       id: row.id as string,
       user_id: row.user_id as string,
       tmdb_id: Number(row.tmdb_id),
-      media_type: row.media_type as 'movie' | 'tv',
+      media_type: row.media_type as "movie" | "tv",
       title: row.title as string,
       poster_path: row.poster_path as string | null,
       added_at: row.added_at as string,
@@ -1224,29 +1235,29 @@ class DatabaseService {
   ): Promise<WatchlistItem | null> {
     this.initialize();
 
-    const updates: string[] = ['watched = ?'];
+    const updates: string[] = ["watched = ?"];
     const args: (string | number | null)[] = [data.watched ? 1 : 0];
 
     if (data.watched) {
       updates.push("watched_at = datetime('now')");
     } else {
-      updates.push('watched_at = NULL');
+      updates.push("watched_at = NULL");
     }
 
     if (data.rating !== undefined) {
-      updates.push('user_rating = ?');
+      updates.push("user_rating = ?");
       args.push(data.rating);
     }
 
     if (data.note !== undefined) {
-      updates.push('user_note = ?');
+      updates.push("user_note = ?");
       args.push(data.note);
     }
 
     args.push(itemId, userId);
 
     const result = await this.client!.execute({
-      sql: `UPDATE watchlist SET ${updates.join(', ')} WHERE id = ? AND user_id = ?`,
+      sql: `UPDATE watchlist SET ${updates.join(", ")} WHERE id = ? AND user_id = ?`,
       args,
     });
 
@@ -1265,7 +1276,7 @@ class DatabaseService {
 
     try {
       const result = await this.client!.execute({
-        sql: 'SELECT COUNT(*) as count FROM watchlist WHERE user_id = ? AND watched = 1',
+        sql: "SELECT COUNT(*) as count FROM watchlist WHERE user_id = ? AND watched = 1",
         args: [userId],
       });
 
@@ -1290,7 +1301,7 @@ class DatabaseService {
       const [searchCountResult, watchlistCount, watchedCount, user, activityDatesResult] =
         await Promise.all([
           this.client!.execute({
-            sql: 'SELECT COUNT(*) as count FROM search_history WHERE user_id = ?',
+            sql: "SELECT COUNT(*) as count FROM search_history WHERE user_id = ?",
             args: [userId],
           }),
           this.getWatchlistCount(userId),
@@ -1339,7 +1350,7 @@ class DatabaseService {
       return { currentStreak: 0, longestStreak: 0 };
     }
 
-    const today = new Date().toISOString().split('T')[0];
+    const today = new Date().toISOString().split("T")[0];
     let currentStreak = 0;
     let longestStreak = 0;
     let streak = 1;
@@ -1420,7 +1431,10 @@ class DatabaseService {
    * Get cached For You recommendations for a user
    * Returns null if no cache or cache is older than maxAgeDays
    */
-  async getForYouCache(userId: string, maxAgeDays: number = 7): Promise<{
+  async getForYouCache(
+    userId: string,
+    maxAgeDays: number = 7
+  ): Promise<{
     recommendations: MovieResult[];
     streamingProviders: { [key: number]: StreamingProvider[] };
   } | null> {
@@ -1482,7 +1496,7 @@ class DatabaseService {
         ],
       });
     } catch (error) {
-      console.error('Failed to cache For You results:', error);
+      console.error("Failed to cache For You results:", error);
     }
   }
 
@@ -1496,7 +1510,7 @@ class DatabaseService {
       await this.ensureForYouCacheTable();
 
       await this.client!.execute({
-        sql: 'DELETE FROM for_you_cache WHERE user_id = ?',
+        sql: "DELETE FROM for_you_cache WHERE user_id = ?",
         args: [userId],
       });
     } catch {

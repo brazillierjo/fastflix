@@ -561,5 +561,25 @@
   },
   "search": {
     "noHistory": "No recent searches yet"
+  },
+  "swipeDiscovery": {
+    "endOfResults": "End of results",
+    "endOfResultsSubtitle": "Try a new search for more recommendations",
+    "newSearch": "New search",
+    "upgradeCTA": "Unlock unlimited exploration",
+    "upgradeSubtitle": "Subscribe to keep discovering amazing content",
+    "upgradeButton": "See plans",
+    "swipeUp": "Swipe up for more",
+    "like": "Like",
+    "dislike": "Not for me",
+    "watchlist": "Watchlist",
+    "watched": "Watched",
+    "share": "Share",
+    "details": "Details",
+    "tasteUpdated": "Tastes updated!",
+    "addedToWatchlist": "Added to watchlist",
+    "removedFromWatchlist": "Removed from watchlist",
+    "markedWatched": "Marked as watched",
+    "exploreBySwipe": "Explore by swiping"
   }
 }

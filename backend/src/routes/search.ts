@@ -209,7 +209,9 @@ app.post("/", authMiddleware, rateLimitMiddleware("ai"), async (c) => {
 
     const hasUserContext = Object.keys(userContext).length > 0;
     const hasPlatformFilters = platforms && platforms.length > 0;
-    const maxRecommendations = hasPlatformFilters ? FILTERED_RECOMMENDATIONS : DEFAULT_RECOMMENDATIONS;
+    const maxRecommendations = hasPlatformFilters
+      ? FILTERED_RECOMMENDATIONS
+      : DEFAULT_RECOMMENDATIONS;
 
     // Check cache
     cleanExpiredCache();
@@ -308,9 +310,10 @@ app.post("/", authMiddleware, rateLimitMiddleware("ai"), async (c) => {
 
       let enrichedIdx = 0;
       for (const result of enrichedResults) {
-        const reason = reasonByTitle.get(result.title.toLowerCase())
-          || reasonByTitle.get((result.original_title || '').toLowerCase())
-          || reasonByIndex.get(enrichedIdx);
+        const reason =
+          reasonByTitle.get(result.title.toLowerCase()) ||
+          reasonByTitle.get((result.original_title || "").toLowerCase()) ||
+          reasonByIndex.get(enrichedIdx);
         if (reason) {
           result.reason = reason;
         }

@@ -561,5 +561,25 @@
   },
   "search": {
     "noHistory": "Sin búsquedas recientes"
+  },
+  "swipeDiscovery": {
+    "endOfResults": "Fin de los resultados",
+    "endOfResultsSubtitle": "Prueba una nueva búsqueda para más recomendaciones",
+    "newSearch": "Nueva búsqueda",
+    "upgradeCTA": "Desbloquea la exploración ilimitada",
+    "upgradeSubtitle": "Suscríbete para seguir descubriendo",
+    "upgradeButton": "Ver planes",
+    "swipeUp": "Desliza hacia arriba",
+    "like": "Me gusta",
+    "dislike": "No es para mí",
+    "watchlist": "Lista",
+    "watched": "Ya vista",
+    "share": "Compartir",
+    "details": "Detalles",
+    "tasteUpdated": "¡Gustos actualizados!",
+    "addedToWatchlist": "Añadido a la lista",
+    "removedFromWatchlist": "Eliminado de la lista",
+    "markedWatched": "Marcada como vista",
+    "exploreBySwipe": "Explora deslizando"
   }
 }

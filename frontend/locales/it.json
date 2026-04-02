@@ -561,5 +561,25 @@
   },
   "search": {
     "noHistory": "Nessuna ricerca recente"
+  },
+  "swipeDiscovery": {
+    "endOfResults": "Fine dei risultati",
+    "endOfResultsSubtitle": "Prova una nuova ricerca per più raccomandazioni",
+    "newSearch": "Nuova ricerca",
+    "upgradeCTA": "Sblocca l'esplorazione illimitata",
+    "upgradeSubtitle": "Abbonati per continuare a scoprire",
+    "upgradeButton": "Vedi piani",
+    "swipeUp": "Scorri verso l'alto",
+    "like": "Mi piace",
+    "dislike": "Non fa per me",
+    "watchlist": "Lista",
+    "watched": "Già visto",
+    "share": "Condividi",
+    "details": "Dettagli",
+    "tasteUpdated": "Gusti aggiornati!",
+    "addedToWatchlist": "Aggiunto alla lista",
+    "removedFromWatchlist": "Rimosso dalla lista",
+    "markedWatched": "Segnato come visto",
+    "exploreBySwipe": "Esplora scorrendo"
   }
 }
