@@ -74,8 +74,8 @@ export default function ForYouScreen() {
             language: tmdbLanguage,
             exclude: page > 1 ? exclude : undefined,
           });
-          if (res.success && res.data) {
-            const newItems = res.data.items || [];
+          if (res.success && res.data && (res.data.items?.length ?? 0) > 0) {
+            const newItems = res.data.items;
             if (page === 1) {
               setItems(newItems);
               setProviders(res.data.providers || {});
@@ -91,6 +91,28 @@ export default function ForYouScreen() {
             setHasMore(res.data.hasMore);
             pageRef.current = page;
             trackFeedPageLoad(page, newItems.length);
+          } else if (page === 1) {
+            // Feed returned empty or failed — fallback to trending
+            const trendingRes = await backendAPIService.getTrending({
+              language: tmdbLanguage,
+            });
+            if (trendingRes.success && trendingRes.data) {
+              const rawItems = (Array.isArray(trendingRes.data) ? trendingRes.data : []) as {
+                tmdb_id: number; title: string; media_type?: 'movie' | 'tv';
+                poster_path?: string | null; vote_average?: number; genre_ids?: number[];
+                overview?: string; backdrop_path?: string | null;
+                release_date?: string; first_air_date?: string;
+              }[];
+              setItems(rawItems.map((item) => ({
+                tmdb_id: item.tmdb_id, title: item.title,
+                media_type: item.media_type || 'movie', overview: item.overview || '',
+                poster_path: item.poster_path || null, backdrop_path: item.backdrop_path || null,
+                vote_average: item.vote_average || 0, vote_count: 0,
+                genre_ids: item.genre_ids || [], popularity: 0,
+                release_date: item.release_date, first_air_date: item.first_air_date,
+              })));
+              setHasMore(false);
+            }
           }
         } else {
           // Guest: public trending
