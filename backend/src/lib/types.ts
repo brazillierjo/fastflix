@@ -387,6 +387,10 @@ export interface TrendingItem {
   vote_average: number;
   media_type: "movie" | "tv";
   genre_ids?: number[];
+  overview?: string;
+  backdrop_path?: string | null;
+  release_date?: string;
+  first_air_date?: string;
   providers?: { provider_name: string; logo_path: string }[];
 }
 

@@ -213,13 +213,15 @@ async function serveTrending(
     tmdb_id: item.tmdb_id,
     title: item.title,
     media_type: item.media_type,
-    overview: "",
+    overview: item.overview || "",
     poster_path: item.poster_path,
-    backdrop_path: null,
+    backdrop_path: item.backdrop_path || null,
     vote_average: item.vote_average,
     vote_count: 0,
     genre_ids: item.genre_ids || [],
     popularity: 0,
+    release_date: item.release_date,
+    first_air_date: item.first_air_date,
   }));
 
   const hasMore = start + size < trending.length;

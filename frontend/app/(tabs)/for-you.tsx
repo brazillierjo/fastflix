@@ -107,19 +107,25 @@ export default function ForYouScreen() {
               poster_path?: string | null;
               vote_average?: number;
               genre_ids?: number[];
+              overview?: string;
+              backdrop_path?: string | null;
+              release_date?: string;
+              first_air_date?: string;
             }[];
             setItems(
               rawItems.map((item) => ({
                 tmdb_id: item.tmdb_id,
                 title: item.title,
                 media_type: item.media_type || 'movie',
-                overview: '',
+                overview: item.overview || '',
                 poster_path: item.poster_path || null,
-                backdrop_path: null,
+                backdrop_path: item.backdrop_path || null,
                 vote_average: item.vote_average || 0,
                 vote_count: 0,
                 genre_ids: item.genre_ids || [],
                 popularity: 0,
+                release_date: item.release_date,
+                first_air_date: item.first_air_date,
               }))
             );
             setHasMore(false);
