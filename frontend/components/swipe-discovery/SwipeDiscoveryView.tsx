@@ -1,17 +1,17 @@
 import { Ionicons } from '@expo/vector-icons';
 import { LinearGradient } from 'expo-linear-gradient';
 import PagerView from 'react-native-pager-view';
-import React, { useCallback, useMemo, useRef, useState } from 'react';
+import React, { useCallback, useRef, useState } from 'react';
 import {
   Animated,
   Dimensions,
-  PanResponder,
   StyleSheet,
   Image,
   Text,
   TouchableOpacity,
   View,
 } from 'react-native';
+import { Gesture, GestureDetector } from 'react-native-gesture-handler';
 import { useRouter } from 'expo-router';
 import * as Haptics from 'expo-haptics';
 import { trackSwipeToDetail } from '@/services/analytics';
@@ -30,7 +30,7 @@ import type {
 } from '@/services/backend-api.service';
 
 const FREE_SWIPE_LIMIT = 5;
-const SWIPE_LEFT_THRESHOLD = 100;
+const SWIPE_LEFT_THRESHOLD = 70;
 const { width: SCREEN_W } = Dimensions.get('window');
 
 const TMDB_IMG = 'https://image.tmdb.org/t/p';
@@ -48,6 +48,7 @@ interface SwipeLeftItem {
 
 /**
  * Swipe left to reveal a movie-detail preview behind, then navigate.
+ * Uses react-native-gesture-handler to coordinate with PagerView's native gestures.
  */
 function SwipeLeftDetector({
   children,
@@ -61,47 +62,47 @@ function SwipeLeftDetector({
   const pan = useRef(new Animated.Value(0)).current;
   const navigated = useRef(false);
 
-  const panResponder = useMemo(
-    () =>
-      PanResponder.create({
-        onMoveShouldSetPanResponder: (_evt, { dx, dy }) =>
-          Math.abs(dx) > Math.abs(dy) * 1.5 && Math.abs(dx) > 15,
-        onPanResponderMove: (_evt, { dx }) => {
-          if (dx < 0) pan.setValue(dx);
-        },
-        onPanResponderRelease: (_evt, { dx, vx }) => {
-          if (
-            !navigated.current &&
-            (dx < -SWIPE_LEFT_THRESHOLD || (dx < -50 && vx < -0.5))
-          ) {
-            navigated.current = true;
-            Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
-            Animated.timing(pan, {
-              toValue: -SCREEN_W,
-              duration: 200,
-              useNativeDriver: true,
-            }).start(() => {
-              onSwipeLeft();
-              setTimeout(() => {
-                pan.setValue(0);
-                navigated.current = false;
-              }, 400);
-            });
-          } else {
-            Animated.spring(pan, {
-              toValue: 0,
-              useNativeDriver: true,
-              tension: 80,
-              friction: 10,
-            }).start();
-          }
-        },
-        onPanResponderTerminate: () => {
-          Animated.spring(pan, { toValue: 0, useNativeDriver: true }).start();
-        },
-      }),
-    [onSwipeLeft, pan]
-  );
+  const gesture = Gesture.Pan()
+    // Only activate on clearly horizontal moves — let PagerView handle vertical
+    .activeOffsetX([-15, 15])
+    .failOffsetY([-20, 20])
+    .onUpdate((e) => {
+      if (e.translationX < 0) pan.setValue(e.translationX);
+    })
+    .onEnd((e) => {
+      if (
+        !navigated.current &&
+        (e.translationX < -SWIPE_LEFT_THRESHOLD ||
+          (e.translationX < -40 && e.velocityX < -300))
+      ) {
+        navigated.current = true;
+        Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+        Animated.timing(pan, {
+          toValue: -SCREEN_W,
+          duration: 200,
+          useNativeDriver: true,
+        }).start(() => {
+          onSwipeLeft();
+          setTimeout(() => {
+            pan.setValue(0);
+            navigated.current = false;
+          }, 400);
+        });
+      } else {
+        Animated.spring(pan, {
+          toValue: 0,
+          useNativeDriver: true,
+          tension: 80,
+          friction: 10,
+        }).start();
+      }
+    })
+    .onFinalize(() => {
+      // Safety reset if gesture is cancelled
+      if (!navigated.current) {
+        Animated.spring(pan, { toValue: 0, useNativeDriver: true }).start();
+      }
+    });
 
   const posterUri = item.poster_path
     ? `${TMDB_IMG}/w780${item.poster_path}`
@@ -113,57 +114,64 @@ function SwipeLeftDetector({
       : '';
 
   return (
-    <View style={{ flex: 1 }} {...panResponder.panHandlers}>
-      {/* Detail preview behind — mimics movie-detail hero */}
-      <View style={peekStyles.container} pointerEvents="none">
-        {/* Hero image */}
-        {posterUri && (
-          <Image
-            source={{ uri: posterUri }}
-            style={peekStyles.heroImage}
-            resizeMode="cover"
+    <GestureDetector gesture={gesture}>
+      <View style={{ flex: 1 }}>
+        {/* Detail preview behind — mimics movie-detail hero */}
+        <View style={peekStyles.container} pointerEvents="none">
+          {/* Hero image */}
+          {posterUri && (
+            <Image
+              source={{ uri: posterUri }}
+              style={peekStyles.heroImage}
+              resizeMode="cover"
+            />
+          )}
+          <LinearGradient
+            colors={[
+              'rgba(0,0,0,0)',
+              'rgba(0,0,0,0.4)',
+              'rgba(0,0,0,0.9)',
+              '#000',
+            ]}
+            locations={[0, 0.4, 0.75, 1]}
+            style={peekStyles.heroGradient}
           />
-        )}
-        <LinearGradient
-          colors={['rgba(0,0,0,0)', 'rgba(0,0,0,0.4)', 'rgba(0,0,0,0.9)', '#000']}
-          locations={[0, 0.4, 0.75, 1]}
-          style={peekStyles.heroGradient}
-        />
-        {/* Title + meta over the hero */}
-        <View style={peekStyles.heroInfo}>
-          <Text style={peekStyles.heroTitle} numberOfLines={2}>
-            {item.title}
-          </Text>
-          <View style={peekStyles.heroMeta}>
-            {item.vote_average > 0 && (
-              <>
-                <Ionicons name="star" size={14} color="#E50914" />
-                <Text style={peekStyles.heroRating}>
-                  {item.vote_average.toFixed(1)}
+          {/* Title + meta over the hero */}
+          <View style={peekStyles.heroInfo}>
+            <Text style={peekStyles.heroTitle} numberOfLines={2}>
+              {item.title}
+            </Text>
+            <View style={peekStyles.heroMeta}>
+              {item.vote_average > 0 && (
+                <>
+                  <Ionicons name="star" size={14} color="#E50914" />
+                  <Text style={peekStyles.heroRating}>
+                    {item.vote_average.toFixed(1)}
+                  </Text>
+                </>
+              )}
+              {year ? <Text style={peekStyles.heroYear}>{year}</Text> : null}
+              <View style={peekStyles.heroBadge}>
+                <Text style={peekStyles.heroBadgeText}>
+                  {item.media_type === 'tv' ? 'TV' : 'Film'}
                 </Text>
-              </>
-            )}
-            {year ? <Text style={peekStyles.heroYear}>{year}</Text> : null}
-            <View style={peekStyles.heroBadge}>
-              <Text style={peekStyles.heroBadgeText}>
-                {item.media_type === 'tv' ? 'TV' : 'Film'}
-              </Text>
+              </View>
             </View>
           </View>
+          {/* Synopsis preview below hero */}
+          <View style={peekStyles.synopsisArea}>
+            <Text style={peekStyles.synopsisText} numberOfLines={4}>
+              {item.overview}
+            </Text>
+          </View>
         </View>
-        {/* Synopsis preview below hero */}
-        <View style={peekStyles.synopsisArea}>
-          <Text style={peekStyles.synopsisText} numberOfLines={4}>
-            {item.overview}
-          </Text>
-        </View>
-      </View>
 
-      {/* Card that slides left */}
-      <Animated.View style={{ flex: 1, transform: [{ translateX: pan }] }}>
-        {children}
-      </Animated.View>
-    </View>
+        {/* Card that slides left */}
+        <Animated.View style={{ flex: 1, transform: [{ translateX: pan }] }}>
+          {children}
+        </Animated.View>
+      </View>
+    </GestureDetector>
   );
 }
 

@@ -241,9 +241,18 @@ async function serveTrending(
 
   const hasMore = start + size < trending.length;
 
+  // Fetch providers for trending items
+  const asMovieResults = items.map((item) => ({
+    ...item,
+    overview: item.overview,
+    vote_count: 0,
+    popularity: 0,
+  }));
+  const providers = await tmdb.getBatchWatchProviders(asMovieResults, country);
+
   return c.json({
     success: true,
-    data: { items, providers: {}, hasMore, page },
+    data: { items, providers, hasMore, page },
   });
 }
 
