@@ -22,30 +22,34 @@ function PersonAvatar({ profilePath, name, subtitle, isDark, onPress }: PersonAv
       accessibilityLabel={`${name}, ${subtitle}`}
       accessibilityRole='button'
     >
-      <View className='items-center' style={{ width: 80 }}>
+      <View className='flex-row items-center gap-2.5' style={{ width: 180 }}>
         <View
-          style={{ width: 64, height: 64, borderRadius: 32, overflow: 'hidden' }}
-          className='mb-1.5 bg-light-surface dark:bg-dark-surface'
+          style={{ width: 52, height: 52, borderRadius: 26, overflow: 'hidden', flexShrink: 0 }}
+          className='bg-light-surface dark:bg-dark-surface'
         >
           {profilePath ? (
             <Image
               source={{ uri: `https://image.tmdb.org/t/p/w185${profilePath}` }}
-              style={{ width: 64, height: 64 }}
+              style={{ width: 52, height: 52 }}
               resizeMode='cover'
               accessibilityLabel={`Photo of ${name}`}
             />
           ) : (
             <View className='flex-1 items-center justify-center'>
-              <Ionicons name='person' size={28} color={isDark ? '#555' : '#bbb'} />
+              <Ionicons name='person' size={22} color={isDark ? '#555' : '#bbb'} />
             </View>
           )}
         </View>
-        <Text className='text-center text-xs font-medium text-light-text dark:text-dark-text' numberOfLines={2}>
-          {name}
-        </Text>
-        <Text className='text-center text-xs text-light-textMuted dark:text-dark-textMuted' numberOfLines={1}>
-          {subtitle}
-        </Text>
+        <View style={{ flex: 1 }}>
+          <Text className='text-sm font-semibold text-light-text dark:text-dark-text' numberOfLines={1}>
+            {name}
+          </Text>
+          {subtitle ? (
+            <Text className='text-xs text-light-textMuted dark:text-dark-textMuted' numberOfLines={1}>
+              {subtitle}
+            </Text>
+          ) : null}
+        </View>
       </View>
     </TouchableOpacity>
   );
