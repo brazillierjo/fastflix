@@ -1,12 +1,22 @@
 import { Ionicons } from '@expo/vector-icons';
 import * as Haptics from 'expo-haptics';
 import { useRouter } from 'expo-router';
-import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import React, {
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from 'react';
 import { Share, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { MotiView, AnimatePresence } from 'moti';
 import { useAuth } from '@/contexts/AuthContext';
 import { useWatchlistToggle } from '@/hooks/useWatchlist';
-import { useMovieRating, useRateMovie, useDeleteRating } from '@/hooks/useRating';
+import {
+  useMovieRating,
+  useRateMovie,
+  useDeleteRating,
+} from '@/hooks/useRating';
 import { useLanguage } from '@/contexts/LanguageContext';
 import {
   backendAPIService,
@@ -78,7 +88,7 @@ export default function SwipeActions({
   const showToast = useCallback((message: string) => {
     if (toastTimer.current) clearTimeout(toastTimer.current);
     setToastMessage(message);
-    setToastKey((k) => k + 1);
+    setToastKey(k => k + 1);
     toastTimer.current = setTimeout(() => setToastMessage(null), 1800);
   }, []);
 
@@ -291,7 +301,7 @@ export default function SwipeActions({
   );
 
   return (
-    <View style={styles.container} pointerEvents="box-none">
+    <View style={styles.container} pointerEvents='box-none'>
       <View style={styles.column}>
         {actions.map((action, index) => {
           const active = action.isActive;

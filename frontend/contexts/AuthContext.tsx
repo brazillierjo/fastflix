@@ -19,7 +19,11 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useRouter } from 'expo-router';
 import { authService, User } from '../services/auth.service';
 import { backendAPIService } from '../services/backend-api.service';
-import { trackSignIn, trackSignOut, trackDeleteAccount } from '../services/analytics';
+import {
+  trackSignIn,
+  trackSignOut,
+  trackDeleteAccount,
+} from '../services/analytics';
 
 export interface AuthContextType {
   // Authentication state
@@ -261,7 +265,8 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       console.error('Delete account error:', error);
       Alert.alert(
         t('errors.title') || 'Error',
-        t('profile.deleteAccountError') || 'Failed to delete account. Please try again.'
+        t('profile.deleteAccountError') ||
+          'Failed to delete account. Please try again.'
       );
     } finally {
       setIsLoading(false);

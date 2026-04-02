@@ -52,10 +52,7 @@ export default function AnimatedCheckmark({
       });
 
       // Animate checkmark in after circle
-      checkmarkOpacity.value = withDelay(
-        200,
-        withTiming(1, { duration: 200 })
-      );
+      checkmarkOpacity.value = withDelay(200, withTiming(1, { duration: 200 }));
       checkmarkScale.value = withDelay(
         200,
         withSpring(1, { damping: 10, stiffness: 180 })
@@ -100,7 +97,7 @@ export default function AnimatedCheckmark({
     <Animated.View style={[styles.overlay, containerStyle]}>
       <Animated.View style={[styles.circle, circleStyle]}>
         <Animated.View style={checkmarkStyle}>
-          <Ionicons name="checkmark" size={32} color="#FFFFFF" />
+          <Ionicons name='checkmark' size={32} color='#FFFFFF' />
         </Animated.View>
       </Animated.View>
     </Animated.View>

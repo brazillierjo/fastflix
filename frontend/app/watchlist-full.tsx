@@ -48,18 +48,14 @@ export default function WatchlistFullScreen() {
 
   const handleLongPress = useCallback(
     (item: WatchlistItem) => {
-      Alert.alert(
-        t('watchlist.removeTitle'),
-        t('watchlist.removeMessage'),
-        [
-          { text: t('common.cancel'), style: 'cancel' },
-          {
-            text: t('common.remove'),
-            style: 'destructive',
-            onPress: () => removeFromWatchlist(item.id),
-          },
-        ]
-      );
+      Alert.alert(t('watchlist.removeTitle'), t('watchlist.removeMessage'), [
+        { text: t('common.cancel'), style: 'cancel' },
+        {
+          text: t('common.remove'),
+          style: 'destructive',
+          onPress: () => removeFromWatchlist(item.id),
+        },
+      ]);
     },
     [t, removeFromWatchlist]
   );
@@ -69,7 +65,7 @@ export default function WatchlistFullScreen() {
       if (!item.providers || item.providers.length === 0) return null;
       return (
         <View style={styles.providersRow}>
-          {item.providers.slice(0, 4).map((provider) => (
+          {item.providers.slice(0, 4).map(provider => (
             <Image
               key={provider.provider_id}
               source={{ uri: `${TMDB_IMAGE_BASE}/w45${provider.logo_path}` }}
@@ -77,7 +73,9 @@ export default function WatchlistFullScreen() {
             />
           ))}
           {item.providers.length > 4 && (
-            <Text style={[typography.caption1, { color: isDark ? '#888' : '#999' }]}>
+            <Text
+              style={[typography.caption1, { color: isDark ? '#888' : '#999' }]}
+            >
               +{item.providers.length - 4}
             </Text>
           )}
@@ -107,14 +105,11 @@ export default function WatchlistFullScreen() {
               : undefined
           }
           style={[styles.poster, { borderRadius: 8 }]}
-          resizeMode="cover"
+          resizeMode='cover'
         />
         <View style={styles.cardContent}>
           <Text
-            style={[
-              typography.headline,
-              { color: isDark ? '#fff' : '#000' },
-            ]}
+            style={[typography.headline, { color: isDark ? '#fff' : '#000' }]}
             numberOfLines={2}
           >
             {item.title}
@@ -122,7 +117,7 @@ export default function WatchlistFullScreen() {
           {renderProviders(item)}
         </View>
         <Ionicons
-          name="chevron-forward"
+          name='chevron-forward'
           size={18}
           color={isDark ? '#555' : '#ccc'}
           style={styles.chevron}
@@ -139,7 +134,10 @@ export default function WatchlistFullScreen() {
 
   return (
     <SafeAreaView
-      style={[styles.container, { backgroundColor: getSystemBackground(isDark) }]}
+      style={[
+        styles.container,
+        { backgroundColor: getSystemBackground(isDark) },
+      ]}
       edges={['top']}
     >
       {/* Header */}
@@ -150,7 +148,7 @@ export default function WatchlistFullScreen() {
           hitSlop={{ top: 12, bottom: 12, left: 12, right: 12 }}
         >
           <Ionicons
-            name="chevron-back"
+            name='chevron-back'
             size={28}
             color={isDark ? '#fff' : '#000'}
           />
@@ -178,7 +176,7 @@ export default function WatchlistFullScreen() {
           !isLoading ? (
             <View style={styles.emptyContainer}>
               <Ionicons
-                name="bookmark-outline"
+                name='bookmark-outline'
                 size={48}
                 color={isDark ? '#555' : '#ccc'}
               />

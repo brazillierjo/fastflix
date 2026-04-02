@@ -2,7 +2,13 @@ import { Ionicons } from '@expo/vector-icons';
 import { MotiView } from 'moti';
 import { useRouter } from 'expo-router';
 import React, { useState } from 'react';
-import { Image, Text, TouchableOpacity, useColorScheme, View } from 'react-native';
+import {
+  Image,
+  Text,
+  TouchableOpacity,
+  useColorScheme,
+  View,
+} from 'react-native';
 import { useLanguage } from '@/contexts/LanguageContext';
 import type { CastMember, CrewMemberData } from './types';
 
@@ -16,7 +22,13 @@ interface PersonRowProps {
   onPress: () => void;
 }
 
-function PersonRow({ profilePath, name, subtitle, isDark, onPress }: PersonRowProps) {
+function PersonRow({
+  profilePath,
+  name,
+  subtitle,
+  isDark,
+  onPress,
+}: PersonRowProps) {
   return (
     <TouchableOpacity
       activeOpacity={0.7}
@@ -26,7 +38,13 @@ function PersonRow({ profilePath, name, subtitle, isDark, onPress }: PersonRowPr
       className='flex-row items-center gap-3 py-2'
     >
       <View
-        style={{ width: 44, height: 44, borderRadius: 22, overflow: 'hidden', flexShrink: 0 }}
+        style={{
+          width: 44,
+          height: 44,
+          borderRadius: 22,
+          overflow: 'hidden',
+          flexShrink: 0,
+        }}
         className='bg-light-surface dark:bg-dark-surface'
       >
         {profilePath ? (
@@ -37,21 +55,35 @@ function PersonRow({ profilePath, name, subtitle, isDark, onPress }: PersonRowPr
           />
         ) : (
           <View className='flex-1 items-center justify-center'>
-            <Ionicons name='person' size={20} color={isDark ? '#555' : '#bbb'} />
+            <Ionicons
+              name='person'
+              size={20}
+              color={isDark ? '#555' : '#bbb'}
+            />
           </View>
         )}
       </View>
       <View style={{ flex: 1 }}>
-        <Text className='text-sm font-semibold text-light-text dark:text-dark-text' numberOfLines={1}>
+        <Text
+          className='text-sm font-semibold text-light-text dark:text-dark-text'
+          numberOfLines={1}
+        >
           {name}
         </Text>
         {subtitle ? (
-          <Text className='text-xs text-light-textMuted dark:text-dark-textMuted' numberOfLines={1}>
+          <Text
+            className='text-xs text-light-textMuted dark:text-dark-textMuted'
+            numberOfLines={1}
+          >
             {subtitle}
           </Text>
         ) : null}
       </View>
-      <Ionicons name='chevron-forward' size={16} color={isDark ? '#555' : '#ccc'} />
+      <Ionicons
+        name='chevron-forward'
+        size={16}
+        color={isDark ? '#555' : '#ccc'}
+      />
     </TouchableOpacity>
   );
 }
@@ -106,17 +138,28 @@ interface CastSectionProps {
   mediaType: 'movie' | 'tv';
 }
 
-export default function CastSection({ cast, crew, createdBy, mediaType }: CastSectionProps) {
+export default function CastSection({
+  cast,
+  crew,
+  createdBy,
+  mediaType,
+}: CastSectionProps) {
   const router = useRouter();
   const colorScheme = useColorScheme();
   const isDark = colorScheme === 'dark';
   const { t } = useLanguage();
 
-  const keyCrew = crew.filter(c =>
-    ['Director', 'Writer', 'Screenplay', 'Producer'].includes(c.job)
-  ).slice(0, 10);
+  const keyCrew = crew
+    .filter(c =>
+      ['Director', 'Writer', 'Screenplay', 'Producer'].includes(c.job)
+    )
+    .slice(0, 10);
 
-  const navigateToPerson = (id: number, name: string, profilePath: string | null) => {
+  const navigateToPerson = (
+    id: number,
+    name: string,
+    profilePath: string | null
+  ) => {
     router.push({
       pathname: '/actor-detail' as never,
       params: { personId: String(id), name, profilePath: profilePath || '' },
@@ -142,7 +185,13 @@ export default function CastSection({ cast, crew, createdBy, mediaType }: CastSe
                 name={actor.name}
                 subtitle={actor.character}
                 isDark={isDark}
-                onPress={() => navigateToPerson(actor.id, actor.name, actor.profile_path || null)}
+                onPress={() =>
+                  navigateToPerson(
+                    actor.id,
+                    actor.name,
+                    actor.profile_path || null
+                  )
+                }
               />
             )}
           />
@@ -166,7 +215,13 @@ export default function CastSection({ cast, crew, createdBy, mediaType }: CastSe
                 name={member.name}
                 subtitle={member.job}
                 isDark={isDark}
-                onPress={() => navigateToPerson(member.id, member.name, member.profile_path || null)}
+                onPress={() =>
+                  navigateToPerson(
+                    member.id,
+                    member.name,
+                    member.profile_path || null
+                  )
+                }
               />
             )}
           />
@@ -183,14 +238,27 @@ export default function CastSection({ cast, crew, createdBy, mediaType }: CastSe
           <ExpandableList
             title={t('movieDetail.createdBy') || 'Created by'}
             items={createdBy}
-            renderItem={(creator: { id: number; name: string; profile_path: string | null }, idx: number) => (
+            renderItem={(
+              creator: {
+                id: number;
+                name: string;
+                profile_path: string | null;
+              },
+              idx: number
+            ) => (
               <PersonRow
                 key={`creator-${creator.id}-${idx}`}
                 profilePath={creator.profile_path}
                 name={creator.name}
                 subtitle=''
                 isDark={isDark}
-                onPress={() => navigateToPerson(creator.id, creator.name, creator.profile_path)}
+                onPress={() =>
+                  navigateToPerson(
+                    creator.id,
+                    creator.name,
+                    creator.profile_path
+                  )
+                }
               />
             )}
           />

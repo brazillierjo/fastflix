@@ -198,17 +198,29 @@ export function useWatchlistToggle(
       return response.data?.item;
     },
     onMutate: async () => {
-      await queryClient.cancelQueries({ queryKey: [...WATCHLIST_CHECK_QUERY_KEY, tmdbId, mediaType] });
-      const previousCheck = queryClient.getQueryData([...WATCHLIST_CHECK_QUERY_KEY, tmdbId, mediaType]);
-      queryClient.setQueryData([...WATCHLIST_CHECK_QUERY_KEY, tmdbId, mediaType], {
-        inWatchlist: true,
-        itemId: 'optimistic-temp',
+      await queryClient.cancelQueries({
+        queryKey: [...WATCHLIST_CHECK_QUERY_KEY, tmdbId, mediaType],
       });
+      const previousCheck = queryClient.getQueryData([
+        ...WATCHLIST_CHECK_QUERY_KEY,
+        tmdbId,
+        mediaType,
+      ]);
+      queryClient.setQueryData(
+        [...WATCHLIST_CHECK_QUERY_KEY, tmdbId, mediaType],
+        {
+          inWatchlist: true,
+          itemId: 'optimistic-temp',
+        }
+      );
       return { previousCheck };
     },
     onError: (_err, _vars, context) => {
       if (context?.previousCheck) {
-        queryClient.setQueryData([...WATCHLIST_CHECK_QUERY_KEY, tmdbId, mediaType], context.previousCheck);
+        queryClient.setQueryData(
+          [...WATCHLIST_CHECK_QUERY_KEY, tmdbId, mediaType],
+          context.previousCheck
+        );
       }
     },
     onSettled: () => {
@@ -230,17 +242,29 @@ export function useWatchlistToggle(
       return response.data?.deleted;
     },
     onMutate: async () => {
-      await queryClient.cancelQueries({ queryKey: [...WATCHLIST_CHECK_QUERY_KEY, tmdbId, mediaType] });
-      const previousCheck = queryClient.getQueryData([...WATCHLIST_CHECK_QUERY_KEY, tmdbId, mediaType]);
-      queryClient.setQueryData([...WATCHLIST_CHECK_QUERY_KEY, tmdbId, mediaType], {
-        inWatchlist: false,
-        itemId: null,
+      await queryClient.cancelQueries({
+        queryKey: [...WATCHLIST_CHECK_QUERY_KEY, tmdbId, mediaType],
       });
+      const previousCheck = queryClient.getQueryData([
+        ...WATCHLIST_CHECK_QUERY_KEY,
+        tmdbId,
+        mediaType,
+      ]);
+      queryClient.setQueryData(
+        [...WATCHLIST_CHECK_QUERY_KEY, tmdbId, mediaType],
+        {
+          inWatchlist: false,
+          itemId: null,
+        }
+      );
       return { previousCheck };
     },
     onError: (_err, _vars, context) => {
       if (context?.previousCheck) {
-        queryClient.setQueryData([...WATCHLIST_CHECK_QUERY_KEY, tmdbId, mediaType], context.previousCheck);
+        queryClient.setQueryData(
+          [...WATCHLIST_CHECK_QUERY_KEY, tmdbId, mediaType],
+          context.previousCheck
+        );
       }
     },
     onSettled: () => {

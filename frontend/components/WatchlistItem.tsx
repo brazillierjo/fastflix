@@ -108,7 +108,9 @@ function WatchlistItemComponent({
       activeOpacity={0.8}
       accessibilityLabel={`${item.title}, ${item.media_type === 'tv' ? 'TV Show' : 'Movie'}`}
       accessibilityRole='button'
-      accessibilityHint={isExpanded ? 'Collapse details' : 'Expand for more details'}
+      accessibilityHint={
+        isExpanded ? 'Collapse details' : 'Expand for more details'
+      }
     >
       <MotiView
         animate={{
@@ -185,7 +187,7 @@ function WatchlistItemComponent({
                         resizeMode='contain'
                       />
                       {newProviderNames.includes(provider.provider_name) && (
-                        <View className='absolute -right-1 -top-1 h-3 w-3 rounded-full bg-green-500 border border-white dark:border-dark-card' />
+                        <View className='absolute -right-1 -top-1 h-3 w-3 rounded-full border border-white bg-green-500 dark:border-dark-card' />
                       )}
                     </View>
                   ))}
@@ -254,7 +256,9 @@ function WatchlistItemComponent({
                     const badge = getAvailabilityBadge(
                       provider.availability_type
                     );
-                    const isNew = newProviderNames.includes(provider.provider_name);
+                    const isNew = newProviderNames.includes(
+                      provider.provider_name
+                    );
                     return (
                       <View
                         key={`${item.id}-provider-detail-${idx}`}
@@ -269,7 +273,7 @@ function WatchlistItemComponent({
                             resizeMode='contain'
                           />
                           {isNew && (
-                            <View className='absolute -right-1 -top-1 h-3 w-3 rounded-full bg-green-500 border border-white dark:border-dark-surface' />
+                            <View className='absolute -right-1 -top-1 h-3 w-3 rounded-full border border-white bg-green-500 dark:border-dark-surface' />
                           )}
                         </View>
                         <View>

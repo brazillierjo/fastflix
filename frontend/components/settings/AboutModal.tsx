@@ -54,76 +54,76 @@ export default function AboutModal({ visible, onClose }: AboutModalProps) {
       onRequestClose={onClose}
     >
       <GestureHandlerRootView style={{ flex: 1 }}>
-      <SafeAreaView className='flex-1 bg-light-background dark:bg-dark-background'>
-        {/* Header */}
-        <View className='flex-row items-center justify-between border-b border-light-border px-4 py-3 dark:border-dark-border'>
-          <View className='w-20' />
-          <Text className='text-lg font-semibold text-light-text dark:text-dark-text'>
-            {t('profile.aboutApp') || 'About'}
-          </Text>
-          <TouchableOpacity
-            onPress={onClose}
-            className='min-w-[80px] items-center justify-center rounded-full bg-netflix-500 px-4 py-2'
-            hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}
-          >
-            <Text className='text-base font-semibold text-white'>
-              {t('common.done') || 'Done'}
+        <SafeAreaView className='flex-1 bg-light-background dark:bg-dark-background'>
+          {/* Header */}
+          <View className='flex-row items-center justify-between border-b border-light-border px-4 py-3 dark:border-dark-border'>
+            <View className='w-20' />
+            <Text className='text-lg font-semibold text-light-text dark:text-dark-text'>
+              {t('profile.aboutApp') || 'About'}
             </Text>
-          </TouchableOpacity>
-        </View>
-
-        {/* Content */}
-        <View className='flex-1 px-4 pt-6'>
-          {/* App Info */}
-          <View className='mb-8 items-center'>
-            <View className='mb-3 h-20 w-20 items-center justify-center rounded-2xl bg-netflix-500'>
-              <Ionicons name='film' size={40} color='#ffffff' />
-            </View>
-            <Text className='text-2xl font-bold text-light-text dark:text-dark-text'>
-              FastFlix
-            </Text>
-            <Text className='mt-1 text-base text-light-muted dark:text-dark-muted'>
-              {t('profile.version') || 'Version'} {getAppVersion()}
-            </Text>
+            <TouchableOpacity
+              onPress={onClose}
+              className='min-w-[80px] items-center justify-center rounded-full bg-netflix-500 px-4 py-2'
+              hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}
+            >
+              <Text className='text-base font-semibold text-white'>
+                {t('common.done') || 'Done'}
+              </Text>
+            </TouchableOpacity>
           </View>
 
-          {/* Links */}
-          <View className='overflow-hidden rounded-xl bg-light-card dark:bg-dark-card'>
-            {links.map((link, index) => (
-              <View key={link.url}>
-                <TouchableOpacity
-                  onPress={() => Linking.openURL(link.url)}
-                  className='flex-row items-center px-4 py-3'
-                >
-                  <View className='mr-3 h-8 w-8 items-center justify-center rounded-lg bg-light-background dark:bg-dark-background'>
-                    <Ionicons
-                      name={link.icon}
-                      size={18}
-                      color={isDark ? '#ffffff' : '#0f172a'}
-                    />
-                  </View>
-                  <Text className='flex-1 text-base text-light-text dark:text-dark-text'>
-                    {link.title}
-                  </Text>
-                  <Ionicons
-                    name='open-outline'
-                    size={18}
-                    color={isDark ? '#6b7280' : '#9ca3af'}
-                  />
-                </TouchableOpacity>
-                {index < links.length - 1 && (
-                  <View className='ml-16 h-px bg-light-border dark:bg-dark-border' />
-                )}
+          {/* Content */}
+          <View className='flex-1 px-4 pt-6'>
+            {/* App Info */}
+            <View className='mb-8 items-center'>
+              <View className='mb-3 h-20 w-20 items-center justify-center rounded-2xl bg-netflix-500'>
+                <Ionicons name='film' size={40} color='#ffffff' />
               </View>
-            ))}
-          </View>
+              <Text className='text-2xl font-bold text-light-text dark:text-dark-text'>
+                FastFlix
+              </Text>
+              <Text className='mt-1 text-base text-light-muted dark:text-dark-muted'>
+                {t('profile.version') || 'Version'} {getAppVersion()}
+              </Text>
+            </View>
 
-          {/* Footer */}
-          <Text className='mt-8 text-center text-sm text-light-muted dark:text-dark-muted'>
-            Made with ❤️ for movie lovers
-          </Text>
-        </View>
-      </SafeAreaView>
+            {/* Links */}
+            <View className='overflow-hidden rounded-xl bg-light-card dark:bg-dark-card'>
+              {links.map((link, index) => (
+                <View key={link.url}>
+                  <TouchableOpacity
+                    onPress={() => Linking.openURL(link.url)}
+                    className='flex-row items-center px-4 py-3'
+                  >
+                    <View className='mr-3 h-8 w-8 items-center justify-center rounded-lg bg-light-background dark:bg-dark-background'>
+                      <Ionicons
+                        name={link.icon}
+                        size={18}
+                        color={isDark ? '#ffffff' : '#0f172a'}
+                      />
+                    </View>
+                    <Text className='flex-1 text-base text-light-text dark:text-dark-text'>
+                      {link.title}
+                    </Text>
+                    <Ionicons
+                      name='open-outline'
+                      size={18}
+                      color={isDark ? '#6b7280' : '#9ca3af'}
+                    />
+                  </TouchableOpacity>
+                  {index < links.length - 1 && (
+                    <View className='ml-16 h-px bg-light-border dark:bg-dark-border' />
+                  )}
+                </View>
+              ))}
+            </View>
+
+            {/* Footer */}
+            <Text className='mt-8 text-center text-sm text-light-muted dark:text-dark-muted'>
+              Made with ❤️ for movie lovers
+            </Text>
+          </View>
+        </SafeAreaView>
       </GestureHandlerRootView>
     </Modal>
   );

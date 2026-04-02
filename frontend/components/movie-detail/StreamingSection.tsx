@@ -8,16 +8,43 @@ import { getCardShadow, getSquircle } from '@/utils/designHelpers';
 import { Skeleton } from '@/components/Skeleton';
 import type { StreamingProvider } from './types';
 
-function getAvailabilityBadge(availabilityType: string | undefined, t: (key: string) => string) {
+function getAvailabilityBadge(
+  availabilityType: string | undefined,
+  t: (key: string) => string
+) {
   switch (availabilityType) {
     case 'flatrate':
-      return { label: t('availability.subscription') || 'Subscription', bgColor: 'bg-green-500/20', textColor: 'text-green-500', icon: 'checkmark-circle' as const, iconColor: '#22c55e' };
+      return {
+        label: t('availability.subscription') || 'Subscription',
+        bgColor: 'bg-green-500/20',
+        textColor: 'text-green-500',
+        icon: 'checkmark-circle' as const,
+        iconColor: '#22c55e',
+      };
     case 'rent':
-      return { label: t('availability.rent') || 'Rent', bgColor: 'bg-blue-500/20', textColor: 'text-blue-500', icon: 'time' as const, iconColor: '#3b82f6' };
+      return {
+        label: t('availability.rent') || 'Rent',
+        bgColor: 'bg-blue-500/20',
+        textColor: 'text-blue-500',
+        icon: 'time' as const,
+        iconColor: '#3b82f6',
+      };
     case 'buy':
-      return { label: t('availability.buy') || 'Buy', bgColor: 'bg-amber-500/20', textColor: 'text-amber-500', icon: 'cart' as const, iconColor: '#f59e0b' };
+      return {
+        label: t('availability.buy') || 'Buy',
+        bgColor: 'bg-amber-500/20',
+        textColor: 'text-amber-500',
+        icon: 'cart' as const,
+        iconColor: '#f59e0b',
+      };
     case 'ads':
-      return { label: t('availability.ads') || 'Free (Ads)', bgColor: 'bg-purple-500/20', textColor: 'text-purple-500', icon: 'play-circle' as const, iconColor: '#a855f7' };
+      return {
+        label: t('availability.ads') || 'Free (Ads)',
+        bgColor: 'bg-purple-500/20',
+        textColor: 'text-purple-500',
+        icon: 'play-circle' as const,
+        iconColor: '#a855f7',
+      };
     default:
       return null;
   }
@@ -28,7 +55,10 @@ interface StreamingSectionProps {
   loadingDetails: boolean;
 }
 
-export default function StreamingSection({ providers, loadingDetails }: StreamingSectionProps) {
+export default function StreamingSection({
+  providers,
+  loadingDetails,
+}: StreamingSectionProps) {
   const colorScheme = useColorScheme();
   const isDark = colorScheme === 'dark';
   const { t } = useLanguage();
@@ -75,7 +105,9 @@ export default function StreamingSection({ providers, loadingDetails }: Streamin
                   accessibilityLabel={`${provider.provider_name}${badge ? `, ${badge.label}` : ''}`}
                 >
                   <Image
-                    source={{ uri: `https://image.tmdb.org/t/p/w92${provider.logo_path}` }}
+                    source={{
+                      uri: `https://image.tmdb.org/t/p/w92${provider.logo_path}`,
+                    }}
                     className='h-[34px] w-[34px] rounded-md bg-dark-surface p-1 dark:bg-light-surface'
                     resizeMode='contain'
                     accessibilityLabel={`${provider.provider_name} logo`}
@@ -84,9 +116,22 @@ export default function StreamingSection({ providers, loadingDetails }: Streamin
                     {provider.provider_name}
                   </Text>
                   {badge && (
-                    <View className={cn('flex-row items-center gap-1 rounded-full px-2.5 py-1', badge.bgColor)}>
-                      <Ionicons name={badge.icon} size={12} color={badge.iconColor} />
-                      <Text className={cn('text-xs font-medium', badge.textColor)}>{badge.label}</Text>
+                    <View
+                      className={cn(
+                        'flex-row items-center gap-1 rounded-full px-2.5 py-1',
+                        badge.bgColor
+                      )}
+                    >
+                      <Ionicons
+                        name={badge.icon}
+                        size={12}
+                        color={badge.iconColor}
+                      />
+                      <Text
+                        className={cn('text-xs font-medium', badge.textColor)}
+                      >
+                        {badge.label}
+                      </Text>
                     </View>
                   )}
                 </View>

@@ -13,7 +13,10 @@ import {
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useLanguage } from '@/contexts/LanguageContext';
-import { useFavoriteActors, useFavoriteActorToggle } from '@/hooks/useFavoriteActors';
+import {
+  useFavoriteActors,
+  useFavoriteActorToggle,
+} from '@/hooks/useFavoriteActors';
 import {
   getCardShadow,
   getSquircle,
@@ -92,7 +95,13 @@ export default function FavoriteActorsListScreen() {
               resizeMode='cover'
             />
           ) : (
-            <View style={[styles.avatar, styles.avatarPlaceholder, { backgroundColor: isDark ? '#2a2a2a' : '#e5e5e5' }]}>
+            <View
+              style={[
+                styles.avatar,
+                styles.avatarPlaceholder,
+                { backgroundColor: isDark ? '#2a2a2a' : '#e5e5e5' },
+              ]}
+            >
               <Ionicons
                 name='person-outline'
                 size={24}
@@ -103,10 +112,7 @@ export default function FavoriteActorsListScreen() {
         </View>
         <View style={styles.cardContent}>
           <Text
-            style={[
-              typography.headline,
-              { color: isDark ? '#fff' : '#000' },
-            ]}
+            style={[typography.headline, { color: isDark ? '#fff' : '#000' }]}
             numberOfLines={2}
           >
             {item.name}
@@ -142,7 +148,10 @@ export default function FavoriteActorsListScreen() {
 
   return (
     <SafeAreaView
-      style={[styles.container, { backgroundColor: getSystemBackground(isDark) }]}
+      style={[
+        styles.container,
+        { backgroundColor: getSystemBackground(isDark) },
+      ]}
       edges={['top']}
     >
       {/* Header */}

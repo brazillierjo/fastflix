@@ -12,7 +12,8 @@ interface FavoriteActor {
 export function useFavoriteActors() {
   const { profile, isLoading } = useTasteProfile();
   return {
-    favoriteActors: ((profile as any)?.favorite_actors ?? []) as FavoriteActor[],
+    favoriteActors: ((profile as any)?.favorite_actors ??
+      []) as FavoriteActor[],
     isLoading,
   };
 }
@@ -20,7 +21,9 @@ export function useFavoriteActors() {
 export function useIsFavoriteActor(personId: number) {
   const { favoriteActors, isLoading } = useFavoriteActors();
   return {
-    isFavorite: favoriteActors.some((a: FavoriteActor) => a.tmdb_id === personId),
+    isFavorite: favoriteActors.some(
+      (a: FavoriteActor) => a.tmdb_id === personId
+    ),
     isLoading,
   };
 }
@@ -39,7 +42,7 @@ export function useFavoriteActorToggle() {
       if (!response.success) throw new Error('Failed to favorite actor');
       return response.data;
     },
-    onMutate: async (newActor) => {
+    onMutate: async newActor => {
       await queryClient.cancelQueries({ queryKey: TASTE_PROFILE_KEY });
       const previous = queryClient.getQueryData(TASTE_PROFILE_KEY);
       queryClient.setQueryData(TASTE_PROFILE_KEY, (old: any) => {
@@ -67,7 +70,7 @@ export function useFavoriteActorToggle() {
       if (!response.success) throw new Error('Failed to unfavorite actor');
       return response.data;
     },
-    onMutate: async (tmdbId) => {
+    onMutate: async tmdbId => {
       await queryClient.cancelQueries({ queryKey: TASTE_PROFILE_KEY });
       const previous = queryClient.getQueryData(TASTE_PROFILE_KEY);
       queryClient.setQueryData(TASTE_PROFILE_KEY, (old: any) => {

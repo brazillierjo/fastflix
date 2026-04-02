@@ -1,13 +1,7 @@
 import { Ionicons } from '@expo/vector-icons';
 import { LinearGradient } from 'expo-linear-gradient';
 import React, { useState } from 'react';
-import {
-  Image,
-  StyleSheet,
-  Text,
-  TouchableOpacity,
-  View,
-} from 'react-native';
+import { Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useLanguage } from '@/contexts/LanguageContext';
 import type {
@@ -78,7 +72,7 @@ export default function SwipeCard({
 
   const genres = (item.genre_ids || [])
     .slice(0, 2)
-    .map((id) => GENRE_MAP[id])
+    .map(id => GENRE_MAP[id])
     .filter(Boolean);
 
   const displayProviders = (providers || []).slice(0, 4);
@@ -91,7 +85,7 @@ export default function SwipeCard({
           <Image
             source={{ uri: backdropUri || posterUri || '' }}
             style={StyleSheet.absoluteFill}
-            resizeMode="cover"
+            resizeMode='cover'
           />
         )}
         {/* Top gradient — fades image into black behind status bar */}
@@ -99,14 +93,14 @@ export default function SwipeCard({
           colors={['#000', 'rgba(0,0,0,0.7)', 'transparent']}
           locations={[0, 0.5, 1]}
           style={[styles.topGradient, { height: insets.top + 60 }]}
-          pointerEvents="none"
+          pointerEvents='none'
         />
         {/* Bottom fade into black */}
         <LinearGradient
           colors={['transparent', 'rgba(0,0,0,0.7)', '#000']}
           locations={[0.3, 0.7, 1]}
           style={styles.posterFade}
-          pointerEvents="none"
+          pointerEvents='none'
         />
       </View>
 
@@ -116,7 +110,7 @@ export default function SwipeCard({
           styles.infoContainer,
           bottomInset > 0 && { paddingBottom: 24 + bottomInset },
         ]}
-        pointerEvents="box-none"
+        pointerEvents='box-none'
       >
         {/* Title */}
         <Text style={styles.title} numberOfLines={2}>
@@ -133,7 +127,7 @@ export default function SwipeCard({
           ) : null}
           {item.vote_average > 0 && (
             <>
-              <Ionicons name="star" size={11} color="#fbbf24" />
+              <Ionicons name='star' size={11} color='#fbbf24' />
               <Text style={styles.ratingText}>
                 {' '}
                 {item.vote_average.toFixed(1)}
@@ -159,7 +153,7 @@ export default function SwipeCard({
             </Text>
           </View>
           {displayProviders.length > 0 &&
-            displayProviders.map((p) => (
+            displayProviders.map(p => (
               <Image
                 key={p.provider_id}
                 source={{ uri: `${TMDB_IMAGE_BASE}/w92${p.logo_path}` }}
@@ -176,7 +170,7 @@ export default function SwipeCard({
         {/* AI Reason chip */}
         {item.reason ? (
           <View style={styles.reasonChip}>
-            <Ionicons name="sparkles" size={12} color="#fbbf24" />
+            <Ionicons name='sparkles' size={12} color='#fbbf24' />
             <Text style={styles.reasonText} numberOfLines={2}>
               {item.reason}
             </Text>

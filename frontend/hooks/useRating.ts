@@ -52,7 +52,13 @@ export function useTasteProfile() {
           favorite_actors: profile.favorite_actors ?? [],
         };
       }
-      return { favorite_genres: [], disliked_genres: [], favorite_decades: [], rated_movies: [], favorite_actors: [] };
+      return {
+        favorite_genres: [],
+        disliked_genres: [],
+        favorite_decades: [],
+        rated_movies: [],
+        favorite_actors: [],
+      };
     },
     enabled: isAuthenticated,
     staleTime: 1000 * 60 * 5,
@@ -65,14 +71,18 @@ export function useTasteProfile() {
     const missingPosters = data.rated_movies.some(m => !m.poster_path);
     if (missingPosters) {
       hasBackfilled.current = true;
-      backendAPIService.backfillPosters().then((res) => {
+      backendAPIService.backfillPosters().then(res => {
         if (res.success && res.data) {
           if (res.data.updated > 0) {
             queryClient.invalidateQueries({ queryKey: TASTE_PROFILE_KEY });
           }
           // If some posters are still missing, allow retry next time data changes
-          const stillMissing = data.rated_movies.length - (res.data.total - res.data.updated);
-          if (res.data.updated < data.rated_movies.filter(m => !m.poster_path).length) {
+          const stillMissing =
+            data.rated_movies.length - (res.data.total - res.data.updated);
+          if (
+            res.data.updated <
+            data.rated_movies.filter(m => !m.poster_path).length
+          ) {
             hasBackfilled.current = false;
           }
         }
@@ -110,15 +120,20 @@ export function useRateMovie() {
       }
       return response.data;
     },
-    onMutate: async (newRating) => {
+    onMutate: async newRating => {
       await queryClient.cancelQueries({ queryKey: TASTE_PROFILE_KEY });
       const previous = queryClient.getQueryData(TASTE_PROFILE_KEY);
       queryClient.setQueryData(TASTE_PROFILE_KEY, (old: any) => {
         if (!old) return old;
-        const existing = old.rated_movies?.findIndex((m: RatedMovie) => m.tmdb_id === newRating.tmdb_id);
+        const existing = old.rated_movies?.findIndex(
+          (m: RatedMovie) => m.tmdb_id === newRating.tmdb_id
+        );
         const updatedMovies = [...(old.rated_movies || [])];
         if (existing >= 0) {
-          updatedMovies[existing] = { ...updatedMovies[existing], ...newRating };
+          updatedMovies[existing] = {
+            ...updatedMovies[existing],
+            ...newRating,
+          };
         } else {
           updatedMovies.push(newRating);
         }
@@ -127,7 +142,8 @@ export function useRateMovie() {
       return { previous };
     },
     onError: (_err, _vars, context) => {
-      if (context?.previous) queryClient.setQueryData(TASTE_PROFILE_KEY, context.previous);
+      if (context?.previous)
+        queryClient.setQueryData(TASTE_PROFILE_KEY, context.previous);
     },
     onSettled: () => {
       queryClient.invalidateQueries({ queryKey: TASTE_PROFILE_KEY });
@@ -157,20 +173,23 @@ export function useDeleteRating() {
       }
       return response.data;
     },
-    onMutate: async (tmdbId) => {
+    onMutate: async tmdbId => {
       await queryClient.cancelQueries({ queryKey: TASTE_PROFILE_KEY });
       const previous = queryClient.getQueryData(TASTE_PROFILE_KEY);
       queryClient.setQueryData(TASTE_PROFILE_KEY, (old: any) => {
         if (!old) return old;
         return {
           ...old,
-          rated_movies: (old.rated_movies || []).filter((m: RatedMovie) => m.tmdb_id !== tmdbId),
+          rated_movies: (old.rated_movies || []).filter(
+            (m: RatedMovie) => m.tmdb_id !== tmdbId
+          ),
         };
       });
       return { previous };
     },
     onError: (_err, _vars, context) => {
-      if (context?.previous) queryClient.setQueryData(TASTE_PROFILE_KEY, context.previous);
+      if (context?.previous)
+        queryClient.setQueryData(TASTE_PROFILE_KEY, context.previous);
     },
     onSettled: () => {
       queryClient.invalidateQueries({ queryKey: TASTE_PROFILE_KEY });
@@ -192,7 +211,7 @@ export function useDeleteRating() {
 export function useMovieRating(tmdbId: number) {
   const { ratedMovies, isLoading } = useTasteProfile();
 
-  const entry = ratedMovies.find((m) => m.tmdb_id === tmdbId);
+  const entry = ratedMovies.find(m => m.tmdb_id === tmdbId);
 
   return {
     rating: entry?.rating ?? -1, // -1 = not watched, 0 = watched no rating, 1-5 = rated

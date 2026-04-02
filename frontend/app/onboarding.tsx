@@ -22,7 +22,11 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { cn } from '@/utils/cn';
 import { getNetflixGlow, getSquircle } from '@/utils/designHelpers';
-import { trackOnboardingStart, trackOnboardingComplete, trackOnboardingSkip } from '@/services/analytics';
+import {
+  trackOnboardingStart,
+  trackOnboardingComplete,
+  trackOnboardingSkip,
+} from '@/services/analytics';
 
 const { width: SCREEN_WIDTH } = Dimensions.get('window');
 const ONBOARDING_KEY = '@fastflix/onboarding_complete';
@@ -79,7 +83,9 @@ export default function OnboardingScreen() {
   const flatListRef = useRef<FlatList>(null);
   const [activeIndex, setActiveIndex] = useState(0);
 
-  useEffect(() => { trackOnboardingStart(); }, []);
+  useEffect(() => {
+    trackOnboardingStart();
+  }, []);
 
   const completeOnboarding = useCallback(async () => {
     trackOnboardingComplete();
@@ -116,14 +122,23 @@ export default function OnboardingScreen() {
     viewAreaCoveragePercentThreshold: 50,
   }).current;
 
-  const renderSlide = ({ item, index }: { item: OnboardingSlide; index: number }) => (
-    <View style={{ width: SCREEN_WIDTH }} className="flex-1 items-center justify-center px-8">
+  const renderSlide = ({
+    item,
+    index,
+  }: {
+    item: OnboardingSlide;
+    index: number;
+  }) => (
+    <View
+      style={{ width: SCREEN_WIDTH }}
+      className='flex-1 items-center justify-center px-8'
+    >
       {/* Icon with glow animation */}
       <MotiView
         from={{ opacity: 0, scale: 0.5 }}
         animate={{ opacity: 1, scale: 1 }}
         transition={{ type: 'timing', duration: 700, delay: 100 }}
-        className="mb-10 items-center justify-center"
+        className='mb-10 items-center justify-center'
       >
         {/* Glow ring behind icon */}
         <MotiView
@@ -160,7 +175,10 @@ export default function OnboardingScreen() {
         >
           {index === 2 ? (
             // Screen 3: Platform grid
-            <View className="flex-row flex-wrap items-center justify-center" style={{ width: 80 }}>
+            <View
+              className='flex-row flex-wrap items-center justify-center'
+              style={{ width: 80 }}
+            >
               {PLATFORMS.map((platform, i) => (
                 <MotiView
                   key={platform.name}
@@ -183,12 +201,12 @@ export default function OnboardingScreen() {
                     },
                   ]}
                 >
-                  <Ionicons name="checkmark" size={12} color="#fff" />
+                  <Ionicons name='checkmark' size={12} color='#fff' />
                 </MotiView>
               ))}
             </View>
           ) : (
-            <Ionicons name={item.icon} size={56} color="#E50914" />
+            <Ionicons name={item.icon} size={56} color='#E50914' />
           )}
         </View>
       </MotiView>
@@ -198,7 +216,7 @@ export default function OnboardingScreen() {
         from={{ opacity: 0, translateY: 20 }}
         animate={{ opacity: 1, translateY: 0 }}
         transition={{ type: 'timing', duration: 600, delay: 300 }}
-        className="mb-4"
+        className='mb-4'
       >
         <Text
           className={cn(
@@ -215,7 +233,7 @@ export default function OnboardingScreen() {
         from={{ opacity: 0, translateY: 20 }}
         animate={{ opacity: 1, translateY: 0 }}
         transition={{ type: 'timing', duration: 600, delay: 450 }}
-        className="max-w-[320px]"
+        className='max-w-[320px]'
       >
         <Text
           className={cn(
@@ -234,13 +252,13 @@ export default function OnboardingScreen() {
       className={cn('flex-1 bg-light-background dark:bg-dark-background')}
     >
       {/* Skip button */}
-      <View className="absolute right-6 top-14 z-10">
+      <View className='absolute right-6 top-14 z-10'>
         <TouchableOpacity
           onPress={completeOnboarding}
-          className="px-4 py-2"
+          className='px-4 py-2'
           activeOpacity={0.7}
         >
-          <Text className="text-base font-medium text-light-text/50 dark:text-dark-text/50">
+          <Text className='text-base font-medium text-light-text/50 dark:text-dark-text/50'>
             {t('onboarding.skip')}
           </Text>
         </TouchableOpacity>
@@ -266,9 +284,9 @@ export default function OnboardingScreen() {
       />
 
       {/* Bottom section: dots + button */}
-      <View className="items-center pb-10">
+      <View className='items-center pb-10'>
         {/* Dot indicators */}
-        <View className="mb-8 flex-row items-center justify-center gap-2">
+        <View className='mb-8 flex-row items-center justify-center gap-2'>
           {SLIDES.map((_, index) => (
             <MotiView
               key={index}
@@ -305,7 +323,7 @@ export default function OnboardingScreen() {
             },
           ]}
         >
-          <Text className="text-center text-lg font-bold text-white">
+          <Text className='text-center text-lg font-bold text-white'>
             {activeIndex === SLIDES.length - 1
               ? t('onboarding.getStarted')
               : t('onboarding.next')}
@@ -315,10 +333,10 @@ export default function OnboardingScreen() {
         {/* Already have an account */}
         <TouchableOpacity
           onPress={goToLogin}
-          className="mt-4 px-4 py-2"
+          className='mt-4 px-4 py-2'
           activeOpacity={0.7}
         >
-          <Text className="text-center text-sm font-medium text-light-text/50 dark:text-dark-text/50">
+          <Text className='text-center text-sm font-medium text-light-text/50 dark:text-dark-text/50'>
             {t('onboarding.alreadyHaveAccount')}
           </Text>
         </TouchableOpacity>

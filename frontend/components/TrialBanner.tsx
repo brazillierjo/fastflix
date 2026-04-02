@@ -82,19 +82,25 @@ export default function TrialBanner({ onSubscribe }: TrialBannerProps) {
   const remaining = 7 - trialDay;
 
   if (trialDay <= 2) {
-    message = (t('trial.banner.day1') || 'Welcome! Day {{day}} of your free trial').replace('{{day}}', String(trialDay));
+    message = (
+      t('trial.banner.day1') || 'Welcome! Day {{day}} of your free trial'
+    ).replace('{{day}}', String(trialDay));
     iconName = 'sparkles';
     bgColor = isDark ? 'rgba(16, 185, 129, 0.15)' : 'rgba(16, 185, 129, 0.1)';
     textColor = isDark ? '#6EE7B7' : '#065F46';
     iconColor = '#10B981';
   } else if (trialDay <= 4) {
-    message = (t('trial.banner.day3') || "Day {{day}} - You're exploring great content!").replace('{{day}}', String(trialDay));
+    message = (
+      t('trial.banner.day3') || "Day {{day}} - You're exploring great content!"
+    ).replace('{{day}}', String(trialDay));
     iconName = 'heart';
     bgColor = isDark ? 'rgba(16, 185, 129, 0.15)' : 'rgba(16, 185, 129, 0.1)';
     textColor = isDark ? '#6EE7B7' : '#065F46';
     iconColor = '#10B981';
   } else if (trialDay === 5) {
-    message = (t('trial.banner.day5') || 'Only {{remaining}} days left in your trial').replace('{{remaining}}', String(remaining));
+    message = (
+      t('trial.banner.day5') || 'Only {{remaining}} days left in your trial'
+    ).replace('{{remaining}}', String(remaining));
     iconName = 'time';
     bgColor = isDark ? 'rgba(245, 158, 11, 0.15)' : 'rgba(245, 158, 11, 0.1)';
     textColor = isDark ? '#FCD34D' : '#92400E';

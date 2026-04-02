@@ -62,21 +62,25 @@ export default function NewReleasesSection() {
       if (response.success && response.data) {
         return response.data as NewReleasesData;
       }
-      return { movies: [], tvShows: [], providers: {}, dateRange: { from: '', to: '' } };
+      return {
+        movies: [],
+        tvShows: [],
+        providers: {},
+        dateRange: { from: '', to: '' },
+      };
     },
     enabled: isAuthenticated,
     staleTime: 1000 * 60 * 60, // 1 hour
   });
 
-  const items = activeTab === 'movies' ? (data?.movies ?? []) : (data?.tvShows ?? []);
+  const items =
+    activeTab === 'movies' ? (data?.movies ?? []) : (data?.tvShows ?? []);
   const providers = data?.providers ?? {};
 
   if (!isAuthenticated || (items.length === 0 && !isLoading)) return null;
 
   return (
-    <View
-      className='mt-8'
-    >
+    <View className='mt-8'>
       {/* Header */}
       <View className='flex-row items-center justify-between px-6'>
         <View>
@@ -129,14 +133,16 @@ export default function NewReleasesSection() {
         <ScrollView
           horizontal
           showsHorizontalScrollIndicator={false}
-          contentContainerStyle={{ paddingHorizontal: 24, gap: 12, paddingTop: 12 }}
+          contentContainerStyle={{
+            paddingHorizontal: 24,
+            gap: 12,
+            paddingTop: 12,
+          }}
         >
           {items.map((item, _i) => {
             const itemProviders = providers[item.tmdb_id] || [];
             return (
-              <View
-                key={item.tmdb_id}
-              >
+              <View key={item.tmdb_id}>
                 <TouchableOpacity
                   onPress={() =>
                     router.push({
@@ -163,7 +169,9 @@ export default function NewReleasesSection() {
                   >
                     {item.poster_path ? (
                       <Image
-                        source={{ uri: `${TMDB_IMAGE_BASE}/w342${item.poster_path}` }}
+                        source={{
+                          uri: `${TMDB_IMAGE_BASE}/w342${item.poster_path}`,
+                        }}
                         className='h-full w-full'
                         resizeMode='cover'
                       />
@@ -188,10 +196,12 @@ export default function NewReleasesSection() {
                     <Text className='mt-0.5 text-xs text-light-muted dark:text-dark-muted'>
                       {(() => {
                         try {
-                          return new Date(`${item.release_date}T00:00:00`).toLocaleDateString(
-                            language || 'fr',
-                            { day: 'numeric', month: 'short' }
-                          );
+                          return new Date(
+                            `${item.release_date}T00:00:00`
+                          ).toLocaleDateString(language || 'fr', {
+                            day: 'numeric',
+                            month: 'short',
+                          });
                         } catch {
                           return item.release_date;
                         }
@@ -204,7 +214,9 @@ export default function NewReleasesSection() {
                       {itemProviders.slice(0, 3).map((p, pi) => (
                         <Image
                           key={pi}
-                          source={{ uri: `${TMDB_IMAGE_BASE}/w45${p.logo_path}` }}
+                          source={{
+                            uri: `${TMDB_IMAGE_BASE}/w45${p.logo_path}`,
+                          }}
                           style={{ width: 16, height: 16, borderRadius: 4 }}
                         />
                       ))}

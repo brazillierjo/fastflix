@@ -72,7 +72,9 @@ export default function ProfileScreen() {
   const [showFiltersModal, setShowFiltersModal] = useState(false);
   const [showAuthGate, setShowAuthGate] = useState(false);
 
-  useEffect(() => { trackScreenView('profile'); }, []);
+  useEffect(() => {
+    trackScreenView('profile');
+  }, []);
 
   const languages = AVAILABLE_LANGUAGES;
   const currentLanguage = languages.find(lang => lang.code === language);
@@ -151,7 +153,10 @@ export default function ProfileScreen() {
         { text: t('common.cancel'), style: 'cancel' },
         ...languages.map(lang => ({
           text: `${lang.flag} ${lang.name}`,
-          onPress: () => { trackLanguageChange(lang.code); setLanguage(lang.code); },
+          onPress: () => {
+            trackLanguageChange(lang.code);
+            setLanguage(lang.code);
+          },
         })),
       ]);
     }
@@ -185,7 +190,12 @@ export default function ProfileScreen() {
         <MotiView
           from={{ opacity: 0, translateY: 20 }}
           animate={{ opacity: 1, translateY: 0 }}
-          transition={{ type: 'spring', damping: 20, stiffness: 150, delay: 60 }}
+          transition={{
+            type: 'spring',
+            damping: 20,
+            stiffness: 150,
+            delay: 60,
+          }}
           className='mb-6 px-4'
         >
           <View className='overflow-hidden rounded-xl'>
@@ -220,7 +230,12 @@ export default function ProfileScreen() {
           <MotiView
             from={{ opacity: 0, translateY: 20 }}
             animate={{ opacity: 1, translateY: 0 }}
-            transition={{ type: 'spring', damping: 20, stiffness: 150, delay: 90 }}
+            transition={{
+              type: 'spring',
+              damping: 20,
+              stiffness: 150,
+              delay: 90,
+            }}
             className='mb-6 px-4'
           >
             <View className='overflow-hidden rounded-xl'>
@@ -266,7 +281,12 @@ export default function ProfileScreen() {
           <MotiView
             from={{ opacity: 0, translateY: 20 }}
             animate={{ opacity: 1, translateY: 0 }}
-            transition={{ type: 'spring', damping: 20, stiffness: 150, delay: 90 }}
+            transition={{
+              type: 'spring',
+              damping: 20,
+              stiffness: 150,
+              delay: 90,
+            }}
             className='mb-6 px-4'
           >
             <View className='overflow-hidden rounded-xl'>
@@ -286,7 +306,12 @@ export default function ProfileScreen() {
         <MotiView
           from={{ opacity: 0, translateY: 20 }}
           animate={{ opacity: 1, translateY: 0 }}
-          transition={{ type: 'spring', damping: 20, stiffness: 150, delay: 110 }}
+          transition={{
+            type: 'spring',
+            damping: 20,
+            stiffness: 150,
+            delay: 110,
+          }}
           className='mb-6 px-4'
         >
           <Text
@@ -326,7 +351,12 @@ export default function ProfileScreen() {
         <MotiView
           from={{ opacity: 0, translateY: 20 }}
           animate={{ opacity: 1, translateY: 0 }}
-          transition={{ type: 'spring', damping: 20, stiffness: 150, delay: 130 }}
+          transition={{
+            type: 'spring',
+            damping: 20,
+            stiffness: 150,
+            delay: 130,
+          }}
           className='mb-6 px-4'
         >
           <Text
@@ -355,7 +385,12 @@ export default function ProfileScreen() {
         <MotiView
           from={{ opacity: 0, translateY: 20 }}
           animate={{ opacity: 1, translateY: 0 }}
-          transition={{ type: 'spring', damping: 20, stiffness: 150, delay: 150 }}
+          transition={{
+            type: 'spring',
+            damping: 20,
+            stiffness: 150,
+            delay: 150,
+          }}
           className='mb-6 px-4'
         >
           <Text
@@ -390,7 +425,12 @@ export default function ProfileScreen() {
         <MotiView
           from={{ opacity: 0, translateY: 20 }}
           animate={{ opacity: 1, translateY: 0 }}
-          transition={{ type: 'spring', damping: 20, stiffness: 150, delay: 170 }}
+          transition={{
+            type: 'spring',
+            damping: 20,
+            stiffness: 150,
+            delay: 170,
+          }}
           className='mb-6 px-4'
         >
           <View className='overflow-hidden rounded-xl'>
@@ -433,10 +473,7 @@ export default function ProfileScreen() {
         onClose={() => setShowFiltersModal(false)}
         saveAsDefault
       />
-      <AuthGate
-        visible={showAuthGate}
-        onClose={() => setShowAuthGate(false)}
-      />
+      <AuthGate visible={showAuthGate} onClose={() => setShowAuthGate(false)} />
     </SafeAreaView>
   );
 }

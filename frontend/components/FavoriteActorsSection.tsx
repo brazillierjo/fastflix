@@ -7,11 +7,11 @@
 import { Ionicons } from '@expo/vector-icons';
 import { useAuth } from '@/contexts/AuthContext';
 import { useLanguage } from '@/contexts/LanguageContext';
-import { useFavoriteActors, useFavoriteActorToggle } from '@/hooks/useFavoriteActors';
 import {
-  getSquircle,
-  typography,
-} from '@/utils/designHelpers';
+  useFavoriteActors,
+  useFavoriteActorToggle,
+} from '@/hooks/useFavoriteActors';
+import { getSquircle, typography } from '@/utils/designHelpers';
 import { Skeleton } from '@/components/Skeleton';
 import { useRouter } from 'expo-router';
 import React from 'react';
@@ -74,7 +74,11 @@ export default function FavoriteActorsSection() {
             style={[getSquircle(14)]}
             className='flex-row items-center gap-3 border border-dashed border-light-border bg-light-surface/50 px-4 py-4 dark:border-dark-border dark:bg-dark-surface/50'
           >
-            <Ionicons name='heart-outline' size={24} color={isDark ? '#525252' : '#a3a3a3'} />
+            <Ionicons
+              name='heart-outline'
+              size={24}
+              color={isDark ? '#525252' : '#a3a3a3'}
+            />
             <Text className='flex-1 text-sm text-light-muted dark:text-dark-muted'>
               {t('favoriteActors.emptyHome')}
             </Text>
@@ -88,10 +92,15 @@ export default function FavoriteActorsSection() {
           showsHorizontalScrollIndicator={false}
           contentContainerStyle={{ paddingHorizontal: 24, gap: 12 }}
         >
-          {[1, 2, 3, 4].map((i) => (
+          {[1, 2, 3, 4].map(i => (
             <View key={i} style={{ alignItems: 'center', width: 100 }}>
               <Skeleton width={100} height={100} borderRadius={50} />
-              <Skeleton width={70} height={12} borderRadius={6} style={{ marginTop: 8 }} />
+              <Skeleton
+                width={70}
+                height={12}
+                borderRadius={6}
+                style={{ marginTop: 8 }}
+              />
             </View>
           ))}
         </ScrollView>
@@ -142,12 +151,20 @@ export default function FavoriteActorsSection() {
                 >
                   {item.profile_path ? (
                     <Image
-                      source={{ uri: `${TMDB_IMAGE_BASE}/w185${item.profile_path}` }}
+                      source={{
+                        uri: `${TMDB_IMAGE_BASE}/w185${item.profile_path}`,
+                      }}
                       style={{ width: 100, height: 100 }}
                       resizeMode='cover'
                     />
                   ) : (
-                    <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
+                    <View
+                      style={{
+                        flex: 1,
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                      }}
+                    >
                       <Ionicons
                         name='person-outline'
                         size={28}
@@ -172,7 +189,11 @@ export default function FavoriteActorsSection() {
             <TouchableOpacity
               onPress={() => router.push('/favorite-actors-list' as never)}
               activeOpacity={0.7}
-              style={{ width: 100, alignItems: 'center', justifyContent: 'center' }}
+              style={{
+                width: 100,
+                alignItems: 'center',
+                justifyContent: 'center',
+              }}
             >
               <View
                 style={{
@@ -182,12 +203,18 @@ export default function FavoriteActorsSection() {
                   borderWidth: 1,
                   borderStyle: 'dashed',
                   borderColor: isDark ? '#333' : '#d4d4d4',
-                  backgroundColor: isDark ? 'rgba(30,30,30,0.5)' : 'rgba(245,245,245,0.5)',
+                  backgroundColor: isDark
+                    ? 'rgba(30,30,30,0.5)'
+                    : 'rgba(245,245,245,0.5)',
                   alignItems: 'center',
                   justifyContent: 'center',
                 }}
               >
-                <Ionicons name='chevron-forward-circle-outline' size={28} color={isDark ? '#525252' : '#a3a3a3'} />
+                <Ionicons
+                  name='chevron-forward-circle-outline'
+                  size={28}
+                  color={isDark ? '#525252' : '#a3a3a3'}
+                />
                 <Text className='mt-1 text-xs font-medium text-light-muted dark:text-dark-muted'>
                   {t('common.seeMore')}
                 </Text>

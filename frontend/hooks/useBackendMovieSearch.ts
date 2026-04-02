@@ -74,15 +74,33 @@ export interface DetailedInfo {
   tagline?: string;
   budget?: number;
   revenue?: number;
-  production_companies?: Array<{ id: number; name: string; logo_path: string | null }>;
+  production_companies?: Array<{
+    id: number;
+    name: string;
+    logo_path: string | null;
+  }>;
   original_language?: string;
   original_title?: string;
   imdb_id?: string;
-  belongs_to_collection?: { id: number; name: string; poster_path: string | null } | null;
+  belongs_to_collection?: {
+    id: number;
+    name: string;
+    poster_path: string | null;
+  } | null;
   created_by?: Array<{ id: number; name: string; profile_path: string | null }>;
   networks?: Array<{ id: number; name: string; logo_path: string | null }>;
-  last_episode_to_air?: { episode_number: number; season_number: number; name: string; air_date: string } | null;
-  next_episode_to_air?: { episode_number: number; season_number: number; name: string; air_date: string } | null;
+  last_episode_to_air?: {
+    episode_number: number;
+    season_number: number;
+    name: string;
+    air_date: string;
+  } | null;
+  next_episode_to_air?: {
+    episode_number: number;
+    season_number: number;
+    name: string;
+    air_date: string;
+  } | null;
 }
 
 interface SearchResult {
@@ -177,8 +195,12 @@ const searchMoviesWithBackend = async (
       Object.entries(data.credits).forEach(([id, creditsData]) => {
         const numId = Number(id);
         // Handle both old format (Cast[]) and new format ({ cast, crew })
-        const castArray = Array.isArray(creditsData) ? creditsData : creditsData.cast || [];
-        const crewArray = Array.isArray(creditsData) ? [] : creditsData.crew || [];
+        const castArray = Array.isArray(creditsData)
+          ? creditsData
+          : creditsData.cast || [];
+        const crewArray = Array.isArray(creditsData)
+          ? []
+          : creditsData.crew || [];
         credits[numId] = castArray.map((c: BackendCast) => ({
           id: c.id,
           name: c.name,

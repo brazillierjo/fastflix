@@ -101,7 +101,9 @@ switch (command) {
   case 'major':
     try {
       console.log(`🔄 Bumping ${command} version...`);
-      execSync(`npm version ${command} --no-git-tag-version`, { stdio: 'inherit' });
+      execSync(`npm version ${command} --no-git-tag-version`, {
+        stdio: 'inherit',
+      });
       const newPkg = require('../package.json');
       syncAppJson(newPkg.version);
       console.log('✅ Version updated successfully!');
@@ -119,7 +121,9 @@ switch (command) {
         process.exit(1);
       }
       console.log(`🔄 Setting version to ${targetVersion}...`);
-      execSync(`npm version ${targetVersion} --no-git-tag-version`, { stdio: 'inherit' });
+      execSync(`npm version ${targetVersion} --no-git-tag-version`, {
+        stdio: 'inherit',
+      });
       syncAppJson(targetVersion);
       console.log('✅ Version set successfully!');
     } catch (error) {

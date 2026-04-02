@@ -60,22 +60,38 @@ export default function PlanCard({
           style={
             badgeVariant === 'filled'
               ? { backgroundColor: greenPrimary }
-              : { backgroundColor: isDark ? '#1F2937' : '#F3F4F6', borderWidth: 1, borderColor: greenPrimary }
+              : {
+                  backgroundColor: isDark ? '#1F2937' : '#F3F4F6',
+                  borderWidth: 1,
+                  borderColor: greenPrimary,
+                }
           }
         >
           {badgeVariant === 'filled' && (
-            <Ionicons name='trophy' size={12} color='white' style={{ marginRight: 4 }} />
+            <Ionicons
+              name='trophy'
+              size={12}
+              color='white'
+              style={{ marginRight: 4 }}
+            />
           )}
           <Text
             className='text-xs font-bold'
-            style={{ color: badgeVariant === 'filled' ? 'white' : greenPrimary }}
+            style={{
+              color: badgeVariant === 'filled' ? 'white' : greenPrimary,
+            }}
           >
             {badgeLabel}
           </Text>
         </View>
       )}
 
-      <View className={cn('flex-row items-center justify-between', badgeLabel && 'mt-2')}>
+      <View
+        className={cn(
+          'flex-row items-center justify-between',
+          badgeLabel && 'mt-2'
+        )}
+      >
         <View className='flex-1'>
           <Text className='text-base font-semibold text-light-text dark:text-dark-text'>
             {title}
@@ -88,8 +104,14 @@ export default function PlanCard({
           {(savingsPercent || perUnitLabel) && (
             <View className='flex-row items-center gap-2'>
               {savingsPercent ? (
-                <View className='rounded-full px-2 py-0.5' style={{ backgroundColor: greenBg }}>
-                  <Text className='text-xs font-semibold' style={{ color: greenDark }}>
+                <View
+                  className='rounded-full px-2 py-0.5'
+                  style={{ backgroundColor: greenBg }}
+                >
+                  <Text
+                    className='text-xs font-semibold'
+                    style={{ color: greenDark }}
+                  >
                     -{savingsPercent}%
                   </Text>
                 </View>

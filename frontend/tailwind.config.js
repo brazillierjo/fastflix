@@ -95,45 +95,45 @@ module.exports = {
         // Light theme tokens (iOS-aligned)
         light: {
           background: '#F2F2F7', // iOS systemGroupedBackground
-          surface: '#FFFFFF',    // iOS secondarySystemGroupedBackground
-          card: '#FFFFFF',       // White cards on gray background (iOS Settings style)
+          surface: '#FFFFFF', // iOS secondarySystemGroupedBackground
+          card: '#FFFFFF', // White cards on gray background (iOS Settings style)
           cardHover: '#F2F2F7',
-          border: '#D1D1D6',    // iOS separator (gray4) — visible contrast
+          border: '#D1D1D6', // iOS separator (gray4) — visible contrast
           borderSubtle: '#E5E5EA', // iOS gray5
           input: '#FFFFFF',
           inputBorder: '#D1D1D6',
-          primary: '#1C1C1E',   // iOS label
+          primary: '#1C1C1E', // iOS label
           secondary: '#3C3C43', // iOS secondaryLabel
-          muted: '#8E8E93',     // iOS systemGray
-          accent: '#E50914',    // Netflix red
+          muted: '#8E8E93', // iOS systemGray
+          accent: '#E50914', // Netflix red
           accentHover: '#c70000',
           accentLight: '#ffe0de',
-          text: '#1C1C1E',      // iOS label
+          text: '#1C1C1E', // iOS label
           textSecondary: '#3C3C43', // iOS secondaryLabel
-          textMuted: '#8E8E93',    // iOS systemGray
+          textMuted: '#8E8E93', // iOS systemGray
           textInverse: '#ffffff',
           glassBg: 'rgba(255, 255, 255, 0.7)',
           glassBorder: 'rgba(60, 60, 67, 0.12)', // iOS separator opacity
         },
         // Dark theme tokens (iOS-aligned)
         dark: {
-          background: '#000000',  // iOS systemBackground (pure black for OLED)
-          surface: '#1C1C1E',     // iOS secondarySystemBackground
-          card: '#1C1C1E',        // iOS secondarySystemGroupedBackground
-          cardHover: '#2C2C2E',   // iOS tertiarySystemBackground
-          border: '#38383A',      // iOS separator dark
+          background: '#000000', // iOS systemBackground (pure black for OLED)
+          surface: '#1C1C1E', // iOS secondarySystemBackground
+          card: '#1C1C1E', // iOS secondarySystemGroupedBackground
+          cardHover: '#2C2C2E', // iOS tertiarySystemBackground
+          border: '#38383A', // iOS separator dark
           borderSubtle: '#2C2C2E',
           input: '#1C1C1E',
           inputBorder: '#38383A',
           primary: '#ffffff',
-          secondary: '#EBEBF5',   // iOS secondaryLabel dark (99% opacity)
-          muted: '#8E8E93',       // iOS systemGray
-          accent: '#E50914',      // Netflix red
+          secondary: '#EBEBF5', // iOS secondaryLabel dark (99% opacity)
+          muted: '#8E8E93', // iOS systemGray
+          accent: '#E50914', // Netflix red
           accentHover: '#ff6b66',
           accentLight: '#5c0000',
           text: '#ffffff',
           textSecondary: '#EBEBF5', // iOS secondaryLabel dark
-          textMuted: '#8E8E93',     // iOS systemGray
+          textMuted: '#8E8E93', // iOS systemGray
           textInverse: '#1C1C1E',
           glassBg: 'rgba(28, 28, 30, 0.7)',
           glassBorder: 'rgba(255, 255, 255, 0.15)',

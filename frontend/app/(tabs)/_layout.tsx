@@ -43,66 +43,65 @@ function CustomTabBar({ state, descriptors, navigation }: BottomTabBarProps) {
             },
           ]}
         >
-            {state.routes
-              .filter(route =>
-                ['for-you', 'home', 'search', 'profile'].includes(route.name)
-              )
-              .map(route => {
-                const { options } = descriptors[route.key];
-                const label = options.title;
-                const isFocused =
-                  state.routes[state.index].name === route.name;
+          {state.routes
+            .filter(route =>
+              ['for-you', 'home', 'search', 'profile'].includes(route.name)
+            )
+            .map(route => {
+              const { options } = descriptors[route.key];
+              const label = options.title;
+              const isFocused = state.routes[state.index].name === route.name;
 
-                const onPress = () => {
-                  const event = navigation.emit({
-                    type: 'tabPress',
-                    target: route.key,
-                    canPreventDefault: true,
-                  });
+              const onPress = () => {
+                const event = navigation.emit({
+                  type: 'tabPress',
+                  target: route.key,
+                  canPreventDefault: true,
+                });
 
-                  if (!isFocused && !event.defaultPrevented) {
-                    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
-                    navigation.navigate(route.name);
+                if (!isFocused && !event.defaultPrevented) {
+                  Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+                  navigation.navigate(route.name);
+                }
+                // Always emit tabPress so screens can listen (e.g. scroll to top)
+              };
+
+              return (
+                <TouchableOpacity
+                  key={route.key}
+                  onPress={onPress}
+                  style={styles.tabButton}
+                  activeOpacity={0.6}
+                  accessibilityLabel={
+                    typeof label === 'string' ? label : undefined
                   }
-                  // Always emit tabPress so screens can listen (e.g. scroll to top)
-                };
-
-                return (
-                  <TouchableOpacity
-                    key={route.key}
-                    onPress={onPress}
-                    style={styles.tabButton}
-                    activeOpacity={0.6}
-                    accessibilityLabel={typeof label === 'string' ? label : undefined}
-                    accessibilityRole='tab'
-                    accessibilityState={{ selected: isFocused }}
-                  >
-                    <View style={styles.tabContent}>
-                      <View style={styles.tabIcon}>
-                        {options.tabBarIcon?.({
-                          color: isFocused
-                            ? '#E50914'
-                            : '#8e8e93',
-                          focused: isFocused,
-                          size: 22,
-                        })}
-                      </View>
-                      <Text
-                        style={[
-                          styles.tabLabel,
-                          {
-                            color: isFocused ? '#E50914' : '#8e8e93',
-                            fontWeight: isFocused ? '600' : '400',
-                          },
-                        ]}
-                      >
-                        {label}
-                      </Text>
+                  accessibilityRole='tab'
+                  accessibilityState={{ selected: isFocused }}
+                >
+                  <View style={styles.tabContent}>
+                    <View style={styles.tabIcon}>
+                      {options.tabBarIcon?.({
+                        color: isFocused ? '#E50914' : '#8e8e93',
+                        focused: isFocused,
+                        size: 22,
+                      })}
                     </View>
-                  </TouchableOpacity>
-                );
-              })}
-          </View>
+                    <Text
+                      style={[
+                        styles.tabLabel,
+                        {
+                          color: isFocused ? '#E50914' : '#8e8e93',
+                          fontWeight: isFocused ? '600' : '400',
+                        },
+                      ]}
+                    >
+                      {label}
+                    </Text>
+                  </View>
+                </TouchableOpacity>
+              );
+            })}
+        </View>
       </View>
     </View>
   );
@@ -113,72 +112,66 @@ export default function TabsLayout() {
 
   return (
     <>
-    <OfflineBanner />
-    <Tabs
-      tabBar={props => <CustomTabBar {...props} />}
-      screenOptions={{ headerShown: false }}
-    >
-      <Tabs.Screen
-        name='index'
-        options={{ href: null }}
-      />
-      <Tabs.Screen
-        name='for-you'
-        options={{
-          title: t('tabs.forYou'),
-          tabBarIcon: ({ color, focused }) => (
-            <Ionicons
-              name={focused ? 'sparkles' : 'sparkles-outline'}
-              size={24}
-              color={color}
-            />
-          ),
-        }}
-      />
-      <Tabs.Screen
-        name='home'
-        options={{
-          title: t('tabs.explore'),
-          tabBarIcon: ({ color, focused }) => (
-            <Ionicons
-              name={focused ? 'compass' : 'compass-outline'}
-              size={24}
-              color={color}
-            />
-          ),
-        }}
-      />
-      <Tabs.Screen
-        name='search'
-        options={{
-          title: t('tabs.search'),
-          tabBarIcon: ({ color, focused }) => (
-            <Ionicons
-              name={focused ? 'search' : 'search-outline'}
-              size={24}
-              color={color}
-            />
-          ),
-        }}
-      />
-      <Tabs.Screen
-        name='watchlist'
-        options={{ href: null }}
-      />
-      <Tabs.Screen
-        name='profile'
-        options={{
-          title: t('tabs.profile'),
-          tabBarIcon: ({ color, focused }) => (
-            <Ionicons
-              name={focused ? 'person' : 'person-outline'}
-              size={24}
-              color={color}
-            />
-          ),
-        }}
-      />
-    </Tabs>
+      <OfflineBanner />
+      <Tabs
+        tabBar={props => <CustomTabBar {...props} />}
+        screenOptions={{ headerShown: false }}
+      >
+        <Tabs.Screen name='index' options={{ href: null }} />
+        <Tabs.Screen
+          name='for-you'
+          options={{
+            title: t('tabs.forYou'),
+            tabBarIcon: ({ color, focused }) => (
+              <Ionicons
+                name={focused ? 'sparkles' : 'sparkles-outline'}
+                size={24}
+                color={color}
+              />
+            ),
+          }}
+        />
+        <Tabs.Screen
+          name='home'
+          options={{
+            title: t('tabs.explore'),
+            tabBarIcon: ({ color, focused }) => (
+              <Ionicons
+                name={focused ? 'compass' : 'compass-outline'}
+                size={24}
+                color={color}
+              />
+            ),
+          }}
+        />
+        <Tabs.Screen
+          name='search'
+          options={{
+            title: t('tabs.search'),
+            tabBarIcon: ({ color, focused }) => (
+              <Ionicons
+                name={focused ? 'search' : 'search-outline'}
+                size={24}
+                color={color}
+              />
+            ),
+          }}
+        />
+        <Tabs.Screen name='watchlist' options={{ href: null }} />
+        <Tabs.Screen
+          name='profile'
+          options={{
+            title: t('tabs.profile'),
+            tabBarIcon: ({ color, focused }) => (
+              <Ionicons
+                name={focused ? 'person' : 'person-outline'}
+                size={24}
+                color={color}
+              />
+            ),
+          }}
+        />
+      </Tabs>
     </>
   );
 }

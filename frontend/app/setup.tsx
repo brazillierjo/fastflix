@@ -53,22 +53,71 @@ interface Genre {
 }
 
 // API URL for fetching providers
-const API_URL = process.env.EXPO_PUBLIC_API_URL || 'https://fastflix-api.vercel.app';
+const API_URL =
+  process.env.EXPO_PUBLIC_API_URL || 'https://fastflix-api.vercel.app';
 
 // Fallback platforms if API is unavailable (TMDB provider IDs + logo paths)
 const FALLBACK_PLATFORMS: Platform[] = [
-  { provider_id: 8, provider_name: 'Netflix', logo_path: '/pbpMk2JmcoNnQwB5JGpXAbmLg4a.jpg' },
-  { provider_id: 119, provider_name: 'Amazon Prime Video', logo_path: '/emthp39XA2YScoYL1p0sdbAH2WA.jpg' },
-  { provider_id: 337, provider_name: 'Disney Plus', logo_path: '/97yvRBw1GzX7fXprcF80er19ot.jpg' },
-  { provider_id: 350, provider_name: 'Apple TV Plus', logo_path: '/6uhKBfmtzFqOcLousHwZuzcrScK.jpg' },
-  { provider_id: 531, provider_name: 'Paramount Plus', logo_path: '/xbhHHa1YgtpwhC8lb1NQ3ACVcLd.jpg' },
-  { provider_id: 283, provider_name: 'Crunchyroll', logo_path: '/8Gt1iClBlzTeQs8WQm8UrCoIxnQ.jpg' },
-  { provider_id: 15, provider_name: 'Hulu', logo_path: '/zxrVdFjIjLqkfnwyghnfywTn3Lh.jpg' },
-  { provider_id: 1899, provider_name: 'Max', logo_path: '/6Q3KKEFIL8hkBDpOjGcfTzOIKAA.jpg' },
-  { provider_id: 386, provider_name: 'Peacock', logo_path: '/8VCV78prwd9QzZnEBqy0mCEpDup.jpg' },
-  { provider_id: 11, provider_name: 'MUBI', logo_path: '/bVR4Z1LCHY7gidXAJF5pMa4QrDS.jpg' },
-  { provider_id: 381, provider_name: 'Canal Plus', logo_path: '/2OrPVj0YMnIsd4X9mABKPULDp8U.jpg' },
-  { provider_id: 56, provider_name: 'OCS', logo_path: '/pM3POKuRCCxdfZMlrnXCCEhk0vv.jpg' },
+  {
+    provider_id: 8,
+    provider_name: 'Netflix',
+    logo_path: '/pbpMk2JmcoNnQwB5JGpXAbmLg4a.jpg',
+  },
+  {
+    provider_id: 119,
+    provider_name: 'Amazon Prime Video',
+    logo_path: '/emthp39XA2YScoYL1p0sdbAH2WA.jpg',
+  },
+  {
+    provider_id: 337,
+    provider_name: 'Disney Plus',
+    logo_path: '/97yvRBw1GzX7fXprcF80er19ot.jpg',
+  },
+  {
+    provider_id: 350,
+    provider_name: 'Apple TV Plus',
+    logo_path: '/6uhKBfmtzFqOcLousHwZuzcrScK.jpg',
+  },
+  {
+    provider_id: 531,
+    provider_name: 'Paramount Plus',
+    logo_path: '/xbhHHa1YgtpwhC8lb1NQ3ACVcLd.jpg',
+  },
+  {
+    provider_id: 283,
+    provider_name: 'Crunchyroll',
+    logo_path: '/8Gt1iClBlzTeQs8WQm8UrCoIxnQ.jpg',
+  },
+  {
+    provider_id: 15,
+    provider_name: 'Hulu',
+    logo_path: '/zxrVdFjIjLqkfnwyghnfywTn3Lh.jpg',
+  },
+  {
+    provider_id: 1899,
+    provider_name: 'Max',
+    logo_path: '/6Q3KKEFIL8hkBDpOjGcfTzOIKAA.jpg',
+  },
+  {
+    provider_id: 386,
+    provider_name: 'Peacock',
+    logo_path: '/8VCV78prwd9QzZnEBqy0mCEpDup.jpg',
+  },
+  {
+    provider_id: 11,
+    provider_name: 'MUBI',
+    logo_path: '/bVR4Z1LCHY7gidXAJF5pMa4QrDS.jpg',
+  },
+  {
+    provider_id: 381,
+    provider_name: 'Canal Plus',
+    logo_path: '/2OrPVj0YMnIsd4X9mABKPULDp8U.jpg',
+  },
+  {
+    provider_id: 56,
+    provider_name: 'OCS',
+    logo_path: '/pM3POKuRCCxdfZMlrnXCCEhk0vv.jpg',
+  },
 ];
 
 const GENRES: Genre[] = [
@@ -146,27 +195,19 @@ export default function SetupScreen() {
     setSelectedCountry(code);
   }, []);
 
-  const togglePlatform = useCallback(
-    (name: string) => {
-      Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
-      setSelectedPlatforms(prev =>
-        prev.includes(name) ? prev.filter(p => p !== name) : [...prev, name]
-      );
-    },
-    []
-  );
+  const togglePlatform = useCallback((name: string) => {
+    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+    setSelectedPlatforms(prev =>
+      prev.includes(name) ? prev.filter(p => p !== name) : [...prev, name]
+    );
+  }, []);
 
-  const toggleGenre = useCallback(
-    (key: string) => {
-      Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
-      setSelectedGenres(prev =>
-        prev.includes(key)
-          ? prev.filter(g => g !== key)
-          : [...prev, key]
-      );
-    },
-    []
-  );
+  const toggleGenre = useCallback((key: string) => {
+    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+    setSelectedGenres(prev =>
+      prev.includes(key) ? prev.filter(g => g !== key) : [...prev, key]
+    );
+  }, []);
 
   const handleNext = useCallback(() => {
     setStep(prev => prev + 1);
@@ -190,17 +231,33 @@ export default function SetupScreen() {
 
     // If already authenticated (returning user via "Se connecter"), go straight to home
     router.replace(isAuthenticated ? '/home' : '/auth');
-  }, [selectedPlatforms, selectedGenres, selectedCountry, router, isAuthenticated]);
+  }, [
+    selectedPlatforms,
+    selectedGenres,
+    selectedCountry,
+    router,
+    isAuthenticated,
+  ]);
 
   const canProceedStep1 = selectedCountry !== '';
   const canProceedStep2 = selectedPlatforms.length >= 1;
   const canProceedStep3 = selectedGenres.length >= 3;
 
   const canProceed =
-    step === 1 ? canProceedStep1 : step === 2 ? canProceedStep2 : canProceedStep3;
+    step === 1
+      ? canProceedStep1
+      : step === 2
+        ? canProceedStep2
+        : canProceedStep3;
 
   const renderCountryItem = useCallback(
-    ({ item, index }: { item: (typeof AVAILABLE_COUNTRIES)[number]; index: number }) => {
+    ({
+      item,
+      index,
+    }: {
+      item: (typeof AVAILABLE_COUNTRIES)[number];
+      index: number;
+    }) => {
       const isSelected = selectedCountry === item.code;
       return (
         <MotiView
@@ -255,7 +312,7 @@ export default function SetupScreen() {
                 animate={{ opacity: 1, scale: 1 }}
                 transition={{ type: 'timing', duration: 200 }}
               >
-                <Ionicons name="checkmark-circle" size={24} color="#E50914" />
+                <Ionicons name='checkmark-circle' size={24} color='#E50914' />
               </MotiView>
             )}
           </TouchableOpacity>
@@ -274,14 +331,14 @@ export default function SetupScreen() {
         from={{ opacity: 0, translateY: -10 }}
         animate={{ opacity: 1, translateY: 0 }}
         transition={{ type: 'timing', duration: 400 }}
-        className="items-center pb-2 pt-4"
+        className='items-center pb-2 pt-4'
       >
-        <Text className="text-sm font-medium text-light-text/50 dark:text-dark-text/50">
+        <Text className='text-sm font-medium text-light-text/50 dark:text-dark-text/50'>
           {t('setup.step')
             .replace('{{current}}', String(step))
             .replace('{{total}}', '3')}
         </Text>
-        <View className="mt-3 flex-row items-center justify-center gap-2">
+        <View className='mt-3 flex-row items-center justify-center gap-2'>
           <View
             style={[
               {
@@ -328,15 +385,15 @@ export default function SetupScreen() {
       {/* Step content */}
       {step === 1 ? (
         <MotiView
-          key="step1-country"
+          key='step1-country'
           from={{ opacity: 0, translateX: -30 }}
           animate={{ opacity: 1, translateX: 0 }}
           exit={{ opacity: 0, translateX: -30 }}
           transition={{ type: 'timing', duration: 400 }}
-          className="flex-1"
+          className='flex-1'
         >
           {/* Title */}
-          <View className="px-6 pb-4 pt-6">
+          <View className='px-6 pb-4 pt-6'>
             <MotiView
               from={{ opacity: 0, translateY: 15 }}
               animate={{ opacity: 1, translateY: 0 }}
@@ -348,7 +405,9 @@ export default function SetupScreen() {
                   'text-light-text dark:text-dark-text'
                 )}
               >
-                {t('setup.country.title') === 'setup.country.title' ? 'Where are you?' : t('setup.country.title')}
+                {t('setup.country.title') === 'setup.country.title'
+                  ? 'Where are you?'
+                  : t('setup.country.title')}
               </Text>
             </MotiView>
             <MotiView
@@ -362,13 +421,15 @@ export default function SetupScreen() {
                   'text-light-text/60 dark:text-dark-text/60'
                 )}
               >
-                {t('setup.country.subtitle') === 'setup.country.subtitle' ? 'This helps us show streaming availability in your region' : t('setup.country.subtitle')}
+                {t('setup.country.subtitle') === 'setup.country.subtitle'
+                  ? 'This helps us show streaming availability in your region'
+                  : t('setup.country.subtitle')}
               </Text>
             </MotiView>
           </View>
 
           {/* Search input */}
-          <View className="px-6 pb-3">
+          <View className='px-6 pb-3'>
             <View
               style={[
                 getSquircle(12),
@@ -387,15 +448,21 @@ export default function SetupScreen() {
               ]}
             >
               <Ionicons
-                name="search"
+                name='search'
                 size={18}
                 color={isDark ? 'rgba(255,255,255,0.4)' : 'rgba(0,0,0,0.35)'}
               />
               <TextInput
                 value={countrySearch}
                 onChangeText={setCountrySearch}
-                placeholder={t('setup.country.search') === 'setup.country.search' ? 'Search countries...' : t('setup.country.search')}
-                placeholderTextColor={isDark ? 'rgba(255,255,255,0.35)' : 'rgba(0,0,0,0.35)'}
+                placeholder={
+                  t('setup.country.search') === 'setup.country.search'
+                    ? 'Search countries...'
+                    : t('setup.country.search')
+                }
+                placeholderTextColor={
+                  isDark ? 'rgba(255,255,255,0.35)' : 'rgba(0,0,0,0.35)'
+                }
                 style={{
                   flex: 1,
                   paddingVertical: 12,
@@ -404,14 +471,16 @@ export default function SetupScreen() {
                   color: isDark ? '#fff' : '#000',
                 }}
                 autoCorrect={false}
-                autoCapitalize="none"
+                autoCapitalize='none'
               />
               {countrySearch.length > 0 && (
                 <TouchableOpacity onPress={() => setCountrySearch('')}>
                   <Ionicons
-                    name="close-circle"
+                    name='close-circle'
                     size={18}
-                    color={isDark ? 'rgba(255,255,255,0.4)' : 'rgba(0,0,0,0.35)'}
+                    color={
+                      isDark ? 'rgba(255,255,255,0.4)' : 'rgba(0,0,0,0.35)'
+                    }
                   />
                 </TouchableOpacity>
               )}
@@ -423,34 +492,34 @@ export default function SetupScreen() {
             data={filteredCountries}
             keyExtractor={item => item.code}
             renderItem={renderCountryItem}
-            className="flex-1 px-6"
+            className='flex-1 px-6'
             contentContainerStyle={{ paddingBottom: 120 }}
             showsVerticalScrollIndicator={false}
-            keyboardShouldPersistTaps="handled"
+            keyboardShouldPersistTaps='handled'
           />
         </MotiView>
       ) : step === 2 ? (
         <MotiView
-          key="step2-platforms"
+          key='step2-platforms'
           from={{ opacity: 0, translateX: 30 }}
           animate={{ opacity: 1, translateX: 0 }}
           exit={{ opacity: 0, translateX: -30 }}
           transition={{ type: 'timing', duration: 400 }}
-          className="flex-1"
+          className='flex-1'
         >
           {/* Back button + Title */}
-          <View className="px-6 pb-4 pt-6">
+          <View className='px-6 pb-4 pt-6'>
             <TouchableOpacity
               onPress={handleBack}
-              className="mb-4 flex-row items-center"
+              className='mb-4 flex-row items-center'
               activeOpacity={0.7}
             >
               <Ionicons
-                name="arrow-back"
+                name='arrow-back'
                 size={22}
                 color={isDark ? '#fff' : '#000'}
               />
-              <Text className="ml-1 text-base text-light-text dark:text-dark-text">
+              <Text className='ml-1 text-base text-light-text dark:text-dark-text'>
                 {t('setup.back')}
               </Text>
             </TouchableOpacity>
@@ -487,21 +556,27 @@ export default function SetupScreen() {
 
           {/* Platform grid */}
           <ScrollView
-            className="flex-1 px-6"
+            className='flex-1 px-6'
             contentContainerStyle={{ paddingBottom: 120 }}
             showsVerticalScrollIndicator={false}
           >
-            <View
-              className="flex-row flex-wrap"
-              style={{ gap: GRID_GAP }}
-            >
+            <View className='flex-row flex-wrap' style={{ gap: GRID_GAP }}>
               {loadingPlatforms ? (
-                <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center', paddingVertical: 40 }}>
-                  <ActivityIndicator size="large" color="#E50914" />
+                <View
+                  style={{
+                    flex: 1,
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    paddingVertical: 40,
+                  }}
+                >
+                  <ActivityIndicator size='large' color='#E50914' />
                 </View>
               ) : null}
               {platforms.map((platform, index) => {
-                const isSelected = selectedPlatforms.includes(platform.provider_name);
+                const isSelected = selectedPlatforms.includes(
+                  platform.provider_name
+                );
                 return (
                   <MotiView
                     key={platform.provider_id}
@@ -537,9 +612,11 @@ export default function SetupScreen() {
                       ]}
                     >
                       <Image
-                        source={{ uri: `https://image.tmdb.org/t/p/w92${platform.logo_path}` }}
+                        source={{
+                          uri: `https://image.tmdb.org/t/p/w92${platform.logo_path}`,
+                        }}
                         style={{ width: 48, height: 48, borderRadius: 10 }}
-                        resizeMode="cover"
+                        resizeMode='cover'
                       />
                       {isSelected && (
                         <MotiView
@@ -558,11 +635,7 @@ export default function SetupScreen() {
                             justifyContent: 'center',
                           }}
                         >
-                          <Ionicons
-                            name="checkmark"
-                            size={14}
-                            color="#fff"
-                          />
+                          <Ionicons name='checkmark' size={14} color='#fff' />
                         </MotiView>
                       )}
                       <Text
@@ -583,26 +656,26 @@ export default function SetupScreen() {
         </MotiView>
       ) : (
         <MotiView
-          key="step3-genres"
+          key='step3-genres'
           from={{ opacity: 0, translateX: 30 }}
           animate={{ opacity: 1, translateX: 0 }}
           exit={{ opacity: 0, translateX: 30 }}
           transition={{ type: 'timing', duration: 400 }}
-          className="flex-1"
+          className='flex-1'
         >
           {/* Back button + Title */}
-          <View className="px-6 pb-4 pt-6">
+          <View className='px-6 pb-4 pt-6'>
             <TouchableOpacity
               onPress={handleBack}
-              className="mb-4 flex-row items-center"
+              className='mb-4 flex-row items-center'
               activeOpacity={0.7}
             >
               <Ionicons
-                name="arrow-back"
+                name='arrow-back'
                 size={22}
                 color={isDark ? '#fff' : '#000'}
               />
-              <Text className="ml-1 text-base text-light-text dark:text-dark-text">
+              <Text className='ml-1 text-base text-light-text dark:text-dark-text'>
                 {t('setup.back')}
               </Text>
             </TouchableOpacity>
@@ -639,14 +712,11 @@ export default function SetupScreen() {
 
           {/* Genre grid */}
           <ScrollView
-            className="flex-1 px-6"
+            className='flex-1 px-6'
             contentContainerStyle={{ paddingBottom: 120 }}
             showsVerticalScrollIndicator={false}
           >
-            <View
-              className="flex-row flex-wrap"
-              style={{ gap: GRID_GAP }}
-            >
+            <View className='flex-row flex-wrap' style={{ gap: GRID_GAP }}>
               {GENRES.map((genre, index) => {
                 const isSelected = selectedGenres.includes(genre.key);
                 return (
@@ -717,16 +787,14 @@ export default function SetupScreen() {
       )}
 
       {/* Bottom button */}
-      <View className="absolute bottom-0 left-0 right-0 items-center bg-light-background pb-10 pt-4 dark:bg-dark-background">
+      <View className='absolute bottom-0 left-0 right-0 items-center bg-light-background pb-10 pt-4 dark:bg-dark-background'>
         <TouchableOpacity
           onPress={step === 3 ? handleComplete : handleNext}
           disabled={!canProceed}
           activeOpacity={0.8}
           style={[
             getSquircle(16),
-            canProceed
-              ? getNetflixGlow(isDark)
-              : {},
+            canProceed ? getNetflixGlow(isDark) : {},
             {
               backgroundColor: canProceed
                 ? '#E50914'
@@ -747,9 +815,7 @@ export default function SetupScreen() {
                 : 'text-light-text/30 dark:text-dark-text/30'
             )}
           >
-            {step === 3
-              ? t('setup.continue')
-              : t('onboarding.next')}
+            {step === 3 ? t('setup.continue') : t('onboarding.next')}
           </Text>
         </TouchableOpacity>
       </View>

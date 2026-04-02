@@ -14,15 +14,17 @@ import { useSubscription } from '@/contexts/RevenueCatContext';
 import { useHomeData } from '@/hooks/useHomeData';
 import { useQueryClient } from '@tanstack/react-query';
 import { useFocusEffect, useNavigation, useRouter } from 'expo-router';
-import {
-  getCardShadow,
-  getSquircle,
-  typography,
-} from '@/utils/designHelpers';
+import { getCardShadow, getSquircle, typography } from '@/utils/designHelpers';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import * as Haptics from 'expo-haptics';
 import { MotiView } from 'moti';
-import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import React, {
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from 'react';
 import {
   Image,
   RefreshControl,
@@ -34,7 +36,13 @@ import {
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Skeleton } from '@/components/Skeleton';
-import { trackScreenView, trackDailyPickView, trackTrendingClick, trackPullToRefresh, trackSubscriptionModalOpen } from '@/services/analytics';
+import {
+  trackScreenView,
+  trackDailyPickView,
+  trackTrendingClick,
+  trackPullToRefresh,
+  trackSubscriptionModalOpen,
+} from '@/services/analytics';
 
 const SETUP_GENRES_KEY = '@fastflix/setup_genres';
 const SETUP_PLATFORMS_KEY = '@fastflix/setup_platforms';
@@ -51,7 +59,9 @@ export default function HomeScreen() {
 
   // Track first mount so MotiView animations don't replay on theme change
   const hasAnimated = useRef(false);
-  useEffect(() => { hasAnimated.current = true; }, []);
+  useEffect(() => {
+    hasAnimated.current = true;
+  }, []);
 
   const queryClient = useQueryClient();
 
@@ -83,7 +93,9 @@ export default function HomeScreen() {
   const navigation = useNavigation();
 
   // Track screen view
-  useEffect(() => { trackScreenView('home'); }, []);
+  useEffect(() => {
+    trackScreenView('home');
+  }, []);
 
   // Scroll to top when home tab is tapped while already focused
   useEffect(() => {
@@ -205,7 +217,8 @@ export default function HomeScreen() {
     }
     const filtered = trending.filter(
       (item: { genre_ids?: number[] }) =>
-        item.genre_ids && item.genre_ids.some((g: number) => setupGenres.includes(g))
+        item.genre_ids &&
+        item.genre_ids.some((g: number) => setupGenres.includes(g))
     );
     return filtered.length > 0 ? filtered : trending.slice(0, 6);
   }, [isAuthenticated, setupGenres, trending]);
@@ -234,14 +247,24 @@ export default function HomeScreen() {
       <SafeAreaView className='flex-1 bg-light-background dark:bg-dark-background'>
         <View className='px-6 pt-8'>
           <Skeleton width='60%' height={28} borderRadius={8} />
-          <Skeleton width='40%' height={14} borderRadius={6} style={{ marginTop: 8 }} />
+          <Skeleton
+            width='40%'
+            height={14}
+            borderRadius={6}
+            style={{ marginTop: 8 }}
+          />
         </View>
         <View className='mt-8 px-6'>
           <Skeleton width='100%' height={52} borderRadius={16} />
         </View>
         <View className='mt-8 px-6'>
           <Skeleton width='50%' height={18} borderRadius={6} />
-          <Skeleton width='100%' height={200} borderRadius={16} style={{ marginTop: 12 }} />
+          <Skeleton
+            width='100%'
+            height={200}
+            borderRadius={16}
+            style={{ marginTop: 12 }}
+          />
         </View>
         <View className='mt-8 px-6'>
           <Skeleton width='60%' height={18} borderRadius={6} />
@@ -265,14 +288,16 @@ export default function HomeScreen() {
   const _quotaText = quota
     ? hasUnlimitedAccess
       ? t('home.quotaUnlimited') || 'Unlimited searches'
-      : (t('home.quotaRemaining') || '{{count}} searches remaining today').replace(
-          '{{count}}',
-          String(quota.remaining ?? 0)
-        )
+      : (
+          t('home.quotaRemaining') || '{{count}} searches remaining today'
+        ).replace('{{count}}', String(quota.remaining ?? 0))
     : null;
 
   const showUpgradePrompt =
-    !hasUnlimitedAccess && quota && typeof quota.remaining === 'number' && quota.remaining <= 2;
+    !hasUnlimitedAccess &&
+    quota &&
+    typeof quota.remaining === 'number' &&
+    quota.remaining <= 2;
 
   return (
     <SafeAreaView className='flex-1 bg-light-background dark:bg-dark-background'>
@@ -292,7 +317,6 @@ export default function HomeScreen() {
       >
         {/* Header */}
         <View className='flex-row items-start justify-between px-6 pt-8'>
-
           {/* Left: Greeting + Date */}
           <View className='flex-1'>
             <Text
@@ -318,7 +342,9 @@ export default function HomeScreen() {
               }
             }}
             activeOpacity={hasUnlimitedAccess ? 1 : 0.7}
-            accessibilityLabel={hasUnlimitedAccess ? 'FastFlix Pro' : 'Upgrade to Pro'}
+            accessibilityLabel={
+              hasUnlimitedAccess ? 'FastFlix Pro' : 'Upgrade to Pro'
+            }
             accessibilityRole='button'
           >
             <View
@@ -327,7 +353,11 @@ export default function HomeScreen() {
                 height: 46,
                 borderRadius: 13,
                 borderWidth: 2,
-                borderColor: hasUnlimitedAccess ? '#D4AF37' : isDark ? '#333' : '#ddd',
+                borderColor: hasUnlimitedAccess
+                  ? '#D4AF37'
+                  : isDark
+                    ? '#333'
+                    : '#ddd',
                 padding: 1,
               }}
             >
@@ -343,7 +373,11 @@ export default function HomeScreen() {
                 fontWeight: '700',
                 textAlign: 'center',
                 marginTop: 3,
-                color: hasUnlimitedAccess ? '#D4AF37' : isDark ? '#666' : '#999',
+                color: hasUnlimitedAccess
+                  ? '#D4AF37'
+                  : isDark
+                    ? '#666'
+                    : '#999',
                 letterSpacing: 0.3,
               }}
             >
@@ -409,21 +443,28 @@ export default function HomeScreen() {
             <View className='px-10 py-4'>
               <Text className='text-center text-base font-semibold leading-6 text-white'>
                 {ctaText}
-                {ctaText.length < ctaFullText.length
-                  ? <Text style={{ opacity: 0.6 }}>|</Text>
-                  : '\u00A0🍿'}
+                {ctaText.length < ctaFullText.length ? (
+                  <Text style={{ opacity: 0.6 }}>|</Text>
+                ) : (
+                  '\u00A0🍿'
+                )}
               </Text>
             </View>
           </TouchableOpacity>
         </View>
 
-
-
         {/* Daily Pick Card */}
         <MotiView
-          from={hasAnimated.current ? undefined : { opacity: 0, translateY: 12 }}
+          from={
+            hasAnimated.current ? undefined : { opacity: 0, translateY: 12 }
+          }
           animate={{ opacity: 1, translateY: 0 }}
-          transition={{ type: 'spring', damping: 18, stiffness: 180, delay: 50 }}
+          transition={{
+            type: 'spring',
+            damping: 18,
+            stiffness: 180,
+            delay: 50,
+          }}
           className='mt-8 px-6'
         >
           <Text
@@ -531,101 +572,116 @@ export default function HomeScreen() {
           >
             {trending.length > 0
               ? trending.map((item, i) => (
-                    <TouchableOpacity
-                      key={item.tmdb_id || item.id || i}
-                      accessibilityLabel={`#${i + 1} ${item.title}`}
-                      accessibilityRole='button'
-                      onPress={() => {
-                        Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
-                        trackTrendingClick(item.tmdb_id || item.id);
-                        router.push({
-                          pathname: '/movie-detail' as never,
-                          params: {
-                            tmdbId: String(item.tmdb_id || item.id),
-                            mediaType: item.media_type || 'movie',
-                            title: item.title || '',
-                            posterPath: item.poster_path || '',
-                            voteAverage: String(item.vote_average || 0),
-                            overview: item.overview || '',
-                            providersJson: JSON.stringify(item.providers || []),
-                            creditsJson: JSON.stringify([]),
-                            detailedInfoJson: JSON.stringify({}),
-                          },
-                        });
-                      }}
-                      activeOpacity={0.7}
-                      style={{ width: 130 }}
-                    >
-                      {/* Poster with ranking badge */}
-                      <View style={{ position: 'relative' }}>
-                        <View
-                          style={[getSquircle(12), getCardShadow(isDark)]}
-                          className='h-[195px] overflow-hidden border border-light-border bg-light-surface dark:border-dark-border dark:bg-dark-surface'
-                        >
-                          {item.poster_path ? (
-                            <Image
-                              source={{
-                                uri: `${TMDB_IMAGE_BASE}/w342${item.poster_path}`,
-                              }}
-                              className='h-full w-full'
-                              resizeMode='cover'
+                  <TouchableOpacity
+                    key={item.tmdb_id || item.id || i}
+                    accessibilityLabel={`#${i + 1} ${item.title}`}
+                    accessibilityRole='button'
+                    onPress={() => {
+                      Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+                      trackTrendingClick(item.tmdb_id || item.id);
+                      router.push({
+                        pathname: '/movie-detail' as never,
+                        params: {
+                          tmdbId: String(item.tmdb_id || item.id),
+                          mediaType: item.media_type || 'movie',
+                          title: item.title || '',
+                          posterPath: item.poster_path || '',
+                          voteAverage: String(item.vote_average || 0),
+                          overview: item.overview || '',
+                          providersJson: JSON.stringify(item.providers || []),
+                          creditsJson: JSON.stringify([]),
+                          detailedInfoJson: JSON.stringify({}),
+                        },
+                      });
+                    }}
+                    activeOpacity={0.7}
+                    style={{ width: 130 }}
+                  >
+                    {/* Poster with ranking badge */}
+                    <View style={{ position: 'relative' }}>
+                      <View
+                        style={[getSquircle(12), getCardShadow(isDark)]}
+                        className='h-[195px] overflow-hidden border border-light-border bg-light-surface dark:border-dark-border dark:bg-dark-surface'
+                      >
+                        {item.poster_path ? (
+                          <Image
+                            source={{
+                              uri: `${TMDB_IMAGE_BASE}/w342${item.poster_path}`,
+                            }}
+                            className='h-full w-full'
+                            resizeMode='cover'
+                          />
+                        ) : (
+                          <View className='flex-1 items-center justify-center'>
+                            <Ionicons
+                              name='image-outline'
+                              size={28}
+                              color={isDark ? '#404040' : '#d4d4d4'}
                             />
-                          ) : (
-                            <View className='flex-1 items-center justify-center'>
-                              <Ionicons
-                                name='image-outline'
-                                size={28}
-                                color={isDark ? '#404040' : '#d4d4d4'}
-                              />
-                            </View>
-                          )}
-                        </View>
-                        {/* Ranking badge */}
-                        <View
+                          </View>
+                        )}
+                      </View>
+                      {/* Ranking badge */}
+                      <View
+                        style={{
+                          position: 'absolute',
+                          bottom: -6,
+                          left: -6,
+                          width: 28,
+                          height: 28,
+                          borderRadius: 14,
+                          backgroundColor: '#E50914',
+                          alignItems: 'center',
+                          justifyContent: 'center',
+                          shadowColor: '#000',
+                          shadowOffset: { width: 0, height: 2 },
+                          shadowOpacity: 0.3,
+                          shadowRadius: 3,
+                          elevation: 4,
+                        }}
+                      >
+                        <Text
                           style={{
-                            position: 'absolute',
-                            bottom: -6,
-                            left: -6,
-                            width: 28,
-                            height: 28,
-                            borderRadius: 14,
-                            backgroundColor: '#E50914',
-                            alignItems: 'center',
-                            justifyContent: 'center',
-                            shadowColor: '#000',
-                            shadowOffset: { width: 0, height: 2 },
-                            shadowOpacity: 0.3,
-                            shadowRadius: 3,
-                            elevation: 4,
+                            color: '#fff',
+                            fontSize: 13,
+                            fontWeight: '800',
                           }}
                         >
-                          <Text style={{ color: '#fff', fontSize: 13, fontWeight: '800' }}>
-                            {i + 1}
-                          </Text>
-                        </View>
+                          {i + 1}
+                        </Text>
                       </View>
-                      <Text
-                        className='mt-2.5 text-xs font-medium text-light-text dark:text-dark-text'
-                        numberOfLines={1}
-                      >
-                        {item.title}
-                      </Text>
-                      {item.providers?.length > 0 && (
-                        <View className='mt-1 flex-row gap-1'>
-                          {item.providers.slice(0, 3).map((p: { logo_path?: string }, pi: number) => (
+                    </View>
+                    <Text
+                      className='mt-2.5 text-xs font-medium text-light-text dark:text-dark-text'
+                      numberOfLines={1}
+                    >
+                      {item.title}
+                    </Text>
+                    {item.providers?.length > 0 && (
+                      <View className='mt-1 flex-row gap-1'>
+                        {item.providers
+                          .slice(0, 3)
+                          .map((p: { logo_path?: string }, pi: number) => (
                             <Image
                               key={pi}
-                              source={{ uri: `${TMDB_IMAGE_BASE}/w45${p.logo_path}` }}
+                              source={{
+                                uri: `${TMDB_IMAGE_BASE}/w45${p.logo_path}`,
+                              }}
                               style={{ width: 16, height: 16, borderRadius: 4 }}
                             />
                           ))}
-                        </View>
-                      )}
-                    </TouchableOpacity>
+                      </View>
+                    )}
+                  </TouchableOpacity>
                 ))
               : isHomeLoading
                 ? [1, 2, 3, 4].map(i => (
-                    <Skeleton key={i} width={130} height={195} borderRadius={12} />
+                    <Skeleton
+                      key={i}
+                      width={130}
+                      height={195}
+                      borderRadius={12}
+                    />
                   ))
                 : [1, 2, 3, 4].map(i => (
                     <View
@@ -644,58 +700,101 @@ export default function HomeScreen() {
         </View>
 
         {/* Quick Search */}
-        <View onLayout={(e) => { quickSearchY.current = e.nativeEvent.layout.y; }}>
+        <View
+          onLayout={e => {
+            quickSearchY.current = e.nativeEvent.layout.y;
+          }}
+        >
           <MotiView
-            from={hasAnimated.current ? undefined : { opacity: 0, translateY: 12 }}
+            from={
+              hasAnimated.current ? undefined : { opacity: 0, translateY: 12 }
+            }
             animate={{ opacity: 1, translateY: 0 }}
-            transition={{ type: 'spring', damping: 18, stiffness: 180, delay: 80 }}
+            transition={{
+              type: 'spring',
+              damping: 18,
+              stiffness: 180,
+              delay: 80,
+            }}
           >
-            <QuickSearch onFocusInput={() => {
-              setTimeout(() => {
-                scrollViewRef.current?.scrollTo({ y: quickSearchY.current - 10, animated: true });
-              }, 150);
-            }} />
+            <QuickSearch
+              onFocusInput={() => {
+                setTimeout(() => {
+                  scrollViewRef.current?.scrollTo({
+                    y: quickSearchY.current - 10,
+                    animated: true,
+                  });
+                }, 150);
+              }}
+            />
           </MotiView>
         </View>
 
         {/* New Releases This Week */}
         <MotiView
-          from={hasAnimated.current ? undefined : { opacity: 0, translateY: 12 }}
+          from={
+            hasAnimated.current ? undefined : { opacity: 0, translateY: 12 }
+          }
           animate={{ opacity: 1, translateY: 0 }}
-          transition={{ type: 'spring', damping: 18, stiffness: 180, delay: 120 }}
+          transition={{
+            type: 'spring',
+            damping: 18,
+            stiffness: 180,
+            delay: 120,
+          }}
         >
           <NewReleasesSection />
         </MotiView>
 
         {/* My Watchlist */}
         <MotiView
-          from={hasAnimated.current ? undefined : { opacity: 0, translateY: 12 }}
+          from={
+            hasAnimated.current ? undefined : { opacity: 0, translateY: 12 }
+          }
           animate={{ opacity: 1, translateY: 0 }}
-          transition={{ type: 'spring', damping: 18, stiffness: 180, delay: 200 }}
+          transition={{
+            type: 'spring',
+            damping: 18,
+            stiffness: 180,
+            delay: 200,
+          }}
         >
           <WatchlistSection />
         </MotiView>
 
         {/* My Ratings (Déjà vus) */}
         <MotiView
-          from={hasAnimated.current ? undefined : { opacity: 0, translateY: 12 }}
+          from={
+            hasAnimated.current ? undefined : { opacity: 0, translateY: 12 }
+          }
           animate={{ opacity: 1, translateY: 0 }}
-          transition={{ type: 'spring', damping: 18, stiffness: 180, delay: 240 }}
+          transition={{
+            type: 'spring',
+            damping: 18,
+            stiffness: 180,
+            delay: 240,
+          }}
         >
           <MyRatingsSection />
         </MotiView>
 
         {/* My Favorite Actors */}
         <MotiView
-          from={hasAnimated.current ? undefined : { opacity: 0, translateY: 12 }}
+          from={
+            hasAnimated.current ? undefined : { opacity: 0, translateY: 12 }
+          }
           animate={{ opacity: 1, translateY: 0 }}
-          transition={{ type: 'spring', damping: 18, stiffness: 180, delay: 280 }}
+          transition={{
+            type: 'spring',
+            damping: 18,
+            stiffness: 180,
+            delay: 280,
+          }}
         >
           <FavoriteActorsSection />
         </MotiView>
 
         {/* Recent Searches moved to Search screen */}
-
       </ScrollView>
 
       {/* Trial Ending Modal */}
@@ -711,7 +810,6 @@ export default function HomeScreen() {
         visible={showSubscriptionModal}
         onClose={() => setShowSubscriptionModal(false)}
       />
-
     </SafeAreaView>
   );
 }

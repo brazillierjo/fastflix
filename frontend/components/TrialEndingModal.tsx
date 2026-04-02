@@ -3,7 +3,13 @@ import { useLanguage } from '@/contexts/LanguageContext';
 import { getSquircle, getButtonBorderRadius } from '@/utils/designHelpers';
 import { MotiView } from 'moti';
 import React from 'react';
-import { Modal, Text, TouchableOpacity, useColorScheme, View } from 'react-native';
+import {
+  Modal,
+  Text,
+  TouchableOpacity,
+  useColorScheme,
+  View,
+} from 'react-native';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 
 interface TrialEndingModalProps {
@@ -49,8 +55,7 @@ export default function TrialEndingModal({
   const features = [
     {
       icon: 'sparkles' as const,
-      label:
-        t('trial.endingModal.feature1') || 'Unlimited AI recommendations',
+      label: t('trial.endingModal.feature1') || 'Unlimited AI recommendations',
     },
     {
       icon: 'bookmark' as const,
@@ -67,84 +72,84 @@ export default function TrialEndingModal({
   return (
     <Modal visible={visible} transparent animationType='fade'>
       <GestureHandlerRootView style={{ flex: 1 }}>
-      <View className='flex-1 items-center justify-center bg-black/50 px-6'>
-        <MotiView
-          from={{ opacity: 0, scale: 0.9 }}
-          animate={{ opacity: 1, scale: 1 }}
-          transition={{ type: 'spring', damping: 20 }}
-          style={getSquircle(20)}
-          className='w-full max-w-sm bg-light-background p-6 dark:bg-dark-surface'
-        >
-          {/* Icon */}
-          <View className='mb-4 items-center'>
-            <View
-              className='h-16 w-16 items-center justify-center rounded-full'
-              style={{ backgroundColor: iconBg }}
-            >
-              <Ionicons name={iconName} size={32} color={iconColor} />
-            </View>
-          </View>
-
-          {/* Title */}
-          <Text className='mb-2 text-center text-xl font-bold text-light-text dark:text-dark-text'>
-            {title}
-          </Text>
-
-          {/* Subtitle */}
-          <Text className='mb-4 text-center text-sm text-light-muted dark:text-dark-muted'>
-            {t('trial.endingModal.subtitle') || "Don't lose access to:"}
-          </Text>
-
-          {/* Features list */}
-          <View className='mb-6'>
-            {features.map((feature, index) => (
-              <View key={index} className='mb-2 flex-row items-center'>
-                <Ionicons
-                  name={feature.icon}
-                  size={18}
-                  color={greenPrimary}
-                />
-                <Text className='ml-3 flex-1 text-sm text-light-text dark:text-dark-text'>
-                  {feature.label}
-                </Text>
-              </View>
-            ))}
-          </View>
-
-          {/* Primary CTA */}
-          <TouchableOpacity
-            onPress={() => {
-              onClose();
-              onSubscribe();
-            }}
-            style={[
-              getButtonBorderRadius(),
-              {
-                backgroundColor: greenPrimary,
-                shadowColor: greenPrimary,
-                shadowOffset: { width: 0, height: 4 },
-                shadowOpacity: 0.3,
-                shadowRadius: 8,
-                elevation: 8,
-              },
-            ]}
-            className='mb-3 py-3.5'
+        <View className='flex-1 items-center justify-center bg-black/50 px-6'>
+          <MotiView
+            from={{ opacity: 0, scale: 0.9 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ type: 'spring', damping: 20 }}
+            style={getSquircle(20)}
+            className='w-full max-w-sm bg-light-background p-6 dark:bg-dark-surface'
           >
-            <Text className='text-center text-base font-bold text-white'>
-              {t('trial.banner.subscribe') || 'Subscribe Now'}
-            </Text>
-          </TouchableOpacity>
+            {/* Icon */}
+            <View className='mb-4 items-center'>
+              <View
+                className='h-16 w-16 items-center justify-center rounded-full'
+                style={{ backgroundColor: iconBg }}
+              >
+                <Ionicons name={iconName} size={32} color={iconColor} />
+              </View>
+            </View>
 
-          {/* Secondary button */}
-          <TouchableOpacity onPress={onClose} className='py-2'>
-            <Text className='text-center text-sm text-light-muted dark:text-dark-muted'>
-              {isDay7
-                ? t('trial.endingModal.understand') || 'I understand'
-                : t('trial.endingModal.remindLater') || 'Remind me later'}
+            {/* Title */}
+            <Text className='mb-2 text-center text-xl font-bold text-light-text dark:text-dark-text'>
+              {title}
             </Text>
-          </TouchableOpacity>
-        </MotiView>
-      </View>
+
+            {/* Subtitle */}
+            <Text className='mb-4 text-center text-sm text-light-muted dark:text-dark-muted'>
+              {t('trial.endingModal.subtitle') || "Don't lose access to:"}
+            </Text>
+
+            {/* Features list */}
+            <View className='mb-6'>
+              {features.map((feature, index) => (
+                <View key={index} className='mb-2 flex-row items-center'>
+                  <Ionicons
+                    name={feature.icon}
+                    size={18}
+                    color={greenPrimary}
+                  />
+                  <Text className='ml-3 flex-1 text-sm text-light-text dark:text-dark-text'>
+                    {feature.label}
+                  </Text>
+                </View>
+              ))}
+            </View>
+
+            {/* Primary CTA */}
+            <TouchableOpacity
+              onPress={() => {
+                onClose();
+                onSubscribe();
+              }}
+              style={[
+                getButtonBorderRadius(),
+                {
+                  backgroundColor: greenPrimary,
+                  shadowColor: greenPrimary,
+                  shadowOffset: { width: 0, height: 4 },
+                  shadowOpacity: 0.3,
+                  shadowRadius: 8,
+                  elevation: 8,
+                },
+              ]}
+              className='mb-3 py-3.5'
+            >
+              <Text className='text-center text-base font-bold text-white'>
+                {t('trial.banner.subscribe') || 'Subscribe Now'}
+              </Text>
+            </TouchableOpacity>
+
+            {/* Secondary button */}
+            <TouchableOpacity onPress={onClose} className='py-2'>
+              <Text className='text-center text-sm text-light-muted dark:text-dark-muted'>
+                {isDay7
+                  ? t('trial.endingModal.understand') || 'I understand'
+                  : t('trial.endingModal.remindLater') || 'Remind me later'}
+              </Text>
+            </TouchableOpacity>
+          </MotiView>
+        </View>
       </GestureHandlerRootView>
     </Modal>
   );

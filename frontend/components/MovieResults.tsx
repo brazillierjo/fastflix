@@ -79,7 +79,10 @@ interface MovieResultsProps {
   geminiResponse: string;
   conversationHistory?: ConversationMessage[];
   onGoBack: () => void;
-  onRefine?: (query: string, conversationHistory: ConversationMessage[]) => void;
+  onRefine?: (
+    query: string,
+    conversationHistory: ConversationMessage[]
+  ) => void;
   isRefining?: boolean;
 }
 
@@ -102,7 +105,7 @@ export default function MovieResults({
   const { setSwipeData } = useSwipeData();
   const { items: watchlistItems } = useWatchlist();
   const watchlistIds = useMemo(
-    () => new Set((watchlistItems || []).map((w) => w.tmdb_id)),
+    () => new Set((watchlistItems || []).map(w => w.tmdb_id)),
     [watchlistItems]
   );
 
@@ -142,7 +145,7 @@ export default function MovieResults({
   };
 
   const handleSwipeMode = useCallback(() => {
-    const items = movies.map((m) => ({
+    const items = movies.map(m => ({
       tmdb_id: m.id,
       title: m.title || m.name || '',
       media_type: (m.media_type === 'tv' ? 'tv' : 'movie') as 'movie' | 'tv',
@@ -159,16 +162,27 @@ export default function MovieResults({
       first_air_date: m.first_air_date,
     }));
 
-    const creditsMap: Record<number, { id: number; name: string; character: string; profile_path: string | null }[]> = {};
-    const crewMap: Record<number, { id: number; name: string; job: string; profile_path: string | null }[]> = {};
-    movies.forEach((m) => {
-      creditsMap[m.id] = (credits[m.id] || []).map((c) => ({
+    const creditsMap: Record<
+      number,
+      {
+        id: number;
+        name: string;
+        character: string;
+        profile_path: string | null;
+      }[]
+    > = {};
+    const crewMap: Record<
+      number,
+      { id: number; name: string; job: string; profile_path: string | null }[]
+    > = {};
+    movies.forEach(m => {
+      creditsMap[m.id] = (credits[m.id] || []).map(c => ({
         id: c.id,
         name: c.name,
         character: c.character,
         profile_path: c.profile_path || null,
       }));
-      crewMap[m.id] = (crew[m.id] || []).map((c) => ({
+      crewMap[m.id] = (crew[m.id] || []).map(c => ({
         id: c.id,
         name: c.name,
         job: c.job,
@@ -178,14 +192,34 @@ export default function MovieResults({
 
     setSwipeData({
       items,
-      providers: streamingProviders as Record<number, { provider_id: number; provider_name: string; logo_path: string; display_priority: number; availability_type: 'flatrate' | 'rent' | 'buy' | 'ads' }[]>,
+      providers: streamingProviders as Record<
+        number,
+        {
+          provider_id: number;
+          provider_name: string;
+          logo_path: string;
+          display_priority: number;
+          availability_type: 'flatrate' | 'rent' | 'buy' | 'ads';
+        }[]
+      >,
       credits: creditsMap,
       crew: crewMap,
-      detailedInfo: detailedInfo as Record<number, import('@/services/backend-api.service').DetailedInfo>,
+      detailedInfo: detailedInfo as Record<
+        number,
+        import('@/services/backend-api.service').DetailedInfo
+      >,
       source: 'search',
     });
     router.push('/swipe-discovery?source=search' as never);
-  }, [movies, streamingProviders, credits, crew, detailedInfo, setSwipeData, router]);
+  }, [
+    movies,
+    streamingProviders,
+    credits,
+    crew,
+    detailedInfo,
+    setSwipeData,
+    router,
+  ]);
 
   return (
     <MotiView
@@ -335,11 +369,7 @@ export default function MovieResults({
                                 style={getSmallBorderRadius()}
                                 className='absolute right-3 top-3 flex-row items-center gap-1 bg-netflix-500 px-3 py-1.5'
                               >
-                                <Ionicons
-                                  name='star'
-                                  size={14}
-                                  color='#fff'
-                                />
+                                <Ionicons name='star' size={14} color='#fff' />
                                 <Text className='text-sm font-bold text-white'>
                                   {movie.vote_average.toFixed(1)}
                                 </Text>
@@ -348,7 +378,11 @@ export default function MovieResults({
                             {/* Watchlist badge */}
                             {watchlistIds.has(movie.id) && (
                               <View className='absolute left-2 top-2 rounded-full bg-white/90 p-1 dark:bg-black/80'>
-                                <Ionicons name='bookmark' size={14} color='#E50914' />
+                                <Ionicons
+                                  name='bookmark'
+                                  size={14}
+                                  color='#E50914'
+                                />
                               </View>
                             )}
                           </>
@@ -358,7 +392,10 @@ export default function MovieResults({
                       {/* RIGHT: Content */}
                       <View className='flex-1 p-4'>
                         <View className='mb-1 flex-row items-center gap-2'>
-                          <Text className='flex-1 text-xl font-semibold text-light-text dark:text-dark-text' numberOfLines={1}>
+                          <Text
+                            className='flex-1 text-xl font-semibold text-light-text dark:text-dark-text'
+                            numberOfLines={1}
+                          >
                             {movie.title || movie.name}
                           </Text>
                           {movie.matchScore != null && movie.matchScore > 0 && (
@@ -436,12 +473,19 @@ export default function MovieResults({
                     {/* AI reason — full width bottom with border-top */}
                     {movie.reason && (
                       <View className='flex-row items-start gap-1.5 border-t border-light-border px-4 py-2.5 dark:border-dark-border'>
-                        <Ionicons name='sparkles' size={12} color='#E50914' style={{ marginTop: 1 }} />
+                        <Ionicons
+                          name='sparkles'
+                          size={12}
+                          color='#E50914'
+                          style={{ marginTop: 1 }}
+                        />
                         <Text className='flex-1 text-xs italic leading-4 text-light-textSecondary dark:text-dark-textSecondary'>
                           <Text className='font-semibold not-italic text-light-text dark:text-dark-text'>
-                            {movie.media_type === 'tv' ? t('forYou.whyThisShow') : t('forYou.whyThisMovie')}
-                          </Text>
-                          {' '}{movie.reason}
+                            {movie.media_type === 'tv'
+                              ? t('forYou.whyThisShow')
+                              : t('forYou.whyThisMovie')}
+                          </Text>{' '}
+                          {movie.reason}
                         </Text>
                       </View>
                     )}
@@ -460,7 +504,9 @@ export default function MovieResults({
             <TextInput
               value={refineQuery}
               onChangeText={setRefineQuery}
-              placeholder={t('movies.refineResults') || 'Refine your results...'}
+              placeholder={
+                t('movies.refineResults') || 'Refine your results...'
+              }
               placeholderTextColor={isDark ? '#a3a3a3' : '#737373'}
               editable={!isRefining}
               onSubmitEditing={handleRefine}

@@ -17,7 +17,10 @@ interface EpisodesSectionProps {
   lastEpisode: Episode | null;
 }
 
-export default function EpisodesSection({ nextEpisode, lastEpisode }: EpisodesSectionProps) {
+export default function EpisodesSection({
+  nextEpisode,
+  lastEpisode,
+}: EpisodesSectionProps) {
   const colorScheme = useColorScheme();
   const isDark = colorScheme === 'dark';
   const { t, language: langCode } = useLanguage();
@@ -28,7 +31,9 @@ export default function EpisodesSection({ nextEpisode, lastEpisode }: EpisodesSe
     try {
       const date = new Date(`${dateStr}T00:00:00`);
       return date.toLocaleDateString(langCode || 'en', {
-        year: 'numeric', month: 'long', day: 'numeric',
+        year: 'numeric',
+        month: 'long',
+        day: 'numeric',
       });
     } catch {
       return dateStr;
@@ -45,15 +50,23 @@ export default function EpisodesSection({ nextEpisode, lastEpisode }: EpisodesSe
         <Text className='mb-2 text-lg font-semibold text-light-text dark:text-dark-text'>
           {t('movieDetail.episodes') || 'Episodes'}
         </Text>
-        <View style={[getSquircle(14), getCardShadow(isDark)]} className='bg-light-card p-3 dark:bg-dark-card'>
+        <View
+          style={[getSquircle(14), getCardShadow(isDark)]}
+          className='bg-light-card p-3 dark:bg-dark-card'
+        >
           {nextEpisode && (
             <View className='mb-2 flex-row items-center gap-2'>
               <View className='rounded-full bg-green-500/15 p-1'>
-                <Ionicons name='arrow-forward-circle' size={16} color='#22c55e' />
+                <Ionicons
+                  name='arrow-forward-circle'
+                  size={16}
+                  color='#22c55e'
+                />
               </View>
               <View className='flex-1'>
                 <Text className='text-sm font-medium text-light-text dark:text-dark-text'>
-                  {t('movieDetail.nextEpisode') || 'Next'}: S{nextEpisode.season_number}E{nextEpisode.episode_number}
+                  {t('movieDetail.nextEpisode') || 'Next'}: S
+                  {nextEpisode.season_number}E{nextEpisode.episode_number}
                 </Text>
                 <Text className='text-xs text-light-textMuted dark:text-dark-textMuted'>
                   {nextEpisode.name} - {formatDate(nextEpisode.air_date)}
@@ -68,7 +81,8 @@ export default function EpisodesSection({ nextEpisode, lastEpisode }: EpisodesSe
               </View>
               <View className='flex-1'>
                 <Text className='text-sm font-medium text-light-text dark:text-dark-text'>
-                  {t('movieDetail.lastEpisode') || 'Latest'}: S{lastEpisode.season_number}E{lastEpisode.episode_number}
+                  {t('movieDetail.lastEpisode') || 'Latest'}: S
+                  {lastEpisode.season_number}E{lastEpisode.episode_number}
                 </Text>
                 <Text className='text-xs text-light-textMuted dark:text-dark-textMuted'>
                   {lastEpisode.name} - {formatDate(lastEpisode.air_date)}

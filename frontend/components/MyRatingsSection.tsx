@@ -8,11 +8,7 @@ import { Ionicons } from '@expo/vector-icons';
 import { useAuth } from '@/contexts/AuthContext';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { useTasteProfile, useDeleteRating } from '@/hooks/useRating';
-import {
-  getCardShadow,
-  getSquircle,
-  typography,
-} from '@/utils/designHelpers';
+import { getCardShadow, getSquircle, typography } from '@/utils/designHelpers';
 import { Skeleton } from '@/components/Skeleton';
 import { useRouter } from 'expo-router';
 import React from 'react';
@@ -33,7 +29,7 @@ function StarDisplay({ rating, size = 10 }: { rating: number; size?: number }) {
   if (rating <= 0) return null;
   return (
     <View className='flex-row gap-0.5'>
-      {[1, 2, 3, 4, 5].map((star) => (
+      {[1, 2, 3, 4, 5].map(star => (
         <Ionicons
           key={star}
           name={star <= rating ? 'star' : 'star-outline'}
@@ -93,7 +89,11 @@ export default function MyRatingsSection() {
             style={[getSquircle(14)]}
             className='flex-row items-center gap-3 border border-dashed border-light-border bg-light-surface/50 px-4 py-4 dark:border-dark-border dark:bg-dark-surface/50'
           >
-            <Ionicons name='eye-outline' size={24} color={isDark ? '#525252' : '#a3a3a3'} />
+            <Ionicons
+              name='eye-outline'
+              size={24}
+              color={isDark ? '#525252' : '#a3a3a3'}
+            />
             <Text className='flex-1 text-sm text-light-muted dark:text-dark-muted'>
               {t('ratings.emptyHome')}
             </Text>
@@ -107,7 +107,7 @@ export default function MyRatingsSection() {
           showsHorizontalScrollIndicator={false}
           contentContainerStyle={{ paddingHorizontal: 24, gap: 12 }}
         >
-          {[1, 2, 3, 4].map((i) => (
+          {[1, 2, 3, 4].map(i => (
             <Skeleton key={i} width={130} height={195} borderRadius={12} />
           ))}
         </ScrollView>
@@ -159,7 +159,9 @@ export default function MyRatingsSection() {
                 >
                   {item.poster_path ? (
                     <Image
-                      source={{ uri: `${TMDB_IMAGE_BASE}/w342${item.poster_path}` }}
+                      source={{
+                        uri: `${TMDB_IMAGE_BASE}/w342${item.poster_path}`,
+                      }}
                       className='h-full w-full'
                       resizeMode='cover'
                     />
@@ -205,7 +207,11 @@ export default function MyRatingsSection() {
                 style={[getSquircle(12)]}
                 className='h-[195px] w-full items-center justify-center border border-dashed border-light-border bg-light-surface/50 dark:border-dark-border dark:bg-dark-surface/50'
               >
-                <Ionicons name='chevron-forward-circle-outline' size={32} color={isDark ? '#525252' : '#a3a3a3'} />
+                <Ionicons
+                  name='chevron-forward-circle-outline'
+                  size={32}
+                  color={isDark ? '#525252' : '#a3a3a3'}
+                />
                 <Text className='mt-2 text-xs font-medium text-light-muted dark:text-dark-muted'>
                   {t('common.seeMore')}
                 </Text>

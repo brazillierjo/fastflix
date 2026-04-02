@@ -56,18 +56,14 @@ export default function WatchedListScreen() {
 
   const handleLongPress = useCallback(
     (item: RatedMovie) => {
-      Alert.alert(
-        t('ratings.removeTitle'),
-        t('ratings.removeMessage'),
-        [
-          { text: t('common.cancel'), style: 'cancel' },
-          {
-            text: t('common.remove'),
-            style: 'destructive',
-            onPress: () => deleteRating(item.tmdb_id),
-          },
-        ]
-      );
+      Alert.alert(t('ratings.removeTitle'), t('ratings.removeMessage'), [
+        { text: t('common.cancel'), style: 'cancel' },
+        {
+          text: t('common.remove'),
+          style: 'destructive',
+          onPress: () => deleteRating(item.tmdb_id),
+        },
+      ]);
     },
     [t, deleteRating]
   );
@@ -77,7 +73,7 @@ export default function WatchedListScreen() {
       if (rating === 0) {
         return (
           <View style={styles.watchedBadge}>
-            <Ionicons name="checkmark-circle" size={16} color="#34C759" />
+            <Ionicons name='checkmark-circle' size={16} color='#34C759' />
             <Text style={[styles.watchedText, { color: '#34C759' }]}>
               {t('movieDetail.watchedConfirm')}
             </Text>
@@ -86,12 +82,12 @@ export default function WatchedListScreen() {
       }
       return (
         <View style={styles.starsRow}>
-          {[1, 2, 3, 4, 5].map((star) => (
+          {[1, 2, 3, 4, 5].map(star => (
             <Ionicons
               key={star}
               name={star <= rating ? 'star' : 'star-outline'}
               size={14}
-              color={star <= rating ? '#FFD700' : (isDark ? '#555' : '#ccc')}
+              color={star <= rating ? '#FFD700' : isDark ? '#555' : '#ccc'}
             />
           ))}
         </View>
@@ -120,24 +116,19 @@ export default function WatchedListScreen() {
               : undefined
           }
           style={[styles.poster, { borderRadius: 8 }]}
-          resizeMode="cover"
+          resizeMode='cover'
         />
         <View style={styles.cardContent}>
           <Text
-            style={[
-              typography.headline,
-              { color: isDark ? '#fff' : '#000' },
-            ]}
+            style={[typography.headline, { color: isDark ? '#fff' : '#000' }]}
             numberOfLines={2}
           >
             {item.title}
           </Text>
-          <View style={styles.ratingContainer}>
-            {renderStars(item.rating)}
-          </View>
+          <View style={styles.ratingContainer}>{renderStars(item.rating)}</View>
         </View>
         <Ionicons
-          name="chevron-forward"
+          name='chevron-forward'
           size={18}
           color={isDark ? '#555' : '#ccc'}
           style={styles.chevron}
@@ -154,7 +145,10 @@ export default function WatchedListScreen() {
 
   return (
     <SafeAreaView
-      style={[styles.container, { backgroundColor: getSystemBackground(isDark) }]}
+      style={[
+        styles.container,
+        { backgroundColor: getSystemBackground(isDark) },
+      ]}
       edges={['top']}
     >
       {/* Header */}
@@ -165,7 +159,7 @@ export default function WatchedListScreen() {
           hitSlop={{ top: 12, bottom: 12, left: 12, right: 12 }}
         >
           <Ionicons
-            name="chevron-back"
+            name='chevron-back'
             size={28}
             color={isDark ? '#fff' : '#000'}
           />
@@ -193,7 +187,7 @@ export default function WatchedListScreen() {
           !isLoading ? (
             <View style={styles.emptyContainer}>
               <Ionicons
-                name="eye-outline"
+                name='eye-outline'
                 size={48}
                 color={isDark ? '#555' : '#ccc'}
               />

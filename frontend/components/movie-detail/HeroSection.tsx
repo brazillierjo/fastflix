@@ -83,8 +83,16 @@ export default function HeroSection({
         animate={{ opacity: 1 }}
         transition={{ type: 'timing', duration: 400 }}
       >
-        <View style={{ width: SCREEN_WIDTH, height: HERO_HEIGHT, overflow: 'hidden' }}>
-          <Animated.View style={[{ width: '100%', height: '120%' }, heroImageStyle]}>
+        <View
+          style={{
+            width: SCREEN_WIDTH,
+            height: HERO_HEIGHT,
+            overflow: 'hidden',
+          }}
+        >
+          <Animated.View
+            style={[{ width: '100%', height: '120%' }, heroImageStyle]}
+          >
             {posterPath ? (
               <Image
                 source={{ uri: `https://image.tmdb.org/t/p/w780${posterPath}` }}
@@ -109,23 +117,40 @@ export default function HeroSection({
               bgColor,
             ]}
             locations={[0, 0.4, 0.75, 1]}
-            style={{ position: 'absolute', left: 0, right: 0, bottom: 0, height: '70%' }}
+            style={{
+              position: 'absolute',
+              left: 0,
+              right: 0,
+              bottom: 0,
+              height: '70%',
+            }}
           />
           <View className='absolute bottom-4 left-4 right-4'>
             <Text
               className='mb-1 text-2xl font-bold text-white'
-              style={{ textShadowColor: 'rgba(0,0,0,0.6)', textShadowOffset: { width: 0, height: 1 }, textShadowRadius: 4 }}
+              style={{
+                textShadowColor: 'rgba(0,0,0,0.6)',
+                textShadowOffset: { width: 0, height: 1 },
+                textShadowRadius: 4,
+              }}
               accessibilityRole='header'
             >
               {title}
             </Text>
             <View className='flex-row items-center gap-2'>
               {voteAverage > 0 && (
-                <View className='flex-row items-center gap-1' accessibilityLabel={`Rating ${voteAverage.toFixed(1)} out of 10`}>
+                <View
+                  className='flex-row items-center gap-1'
+                  accessibilityLabel={`Rating ${voteAverage.toFixed(1)} out of 10`}
+                >
                   <Ionicons name='star' size={16} color='#E50914' />
                   <Text
                     className='text-base font-semibold text-white'
-                    style={{ textShadowColor: 'rgba(0,0,0,0.6)', textShadowOffset: { width: 0, height: 1 }, textShadowRadius: 3 }}
+                    style={{
+                      textShadowColor: 'rgba(0,0,0,0.6)',
+                      textShadowOffset: { width: 0, height: 1 },
+                      textShadowRadius: 3,
+                    }}
                   >
                     {voteAverage.toFixed(1)}
                   </Text>
@@ -134,7 +159,11 @@ export default function HeroSection({
               {releaseYear && (
                 <Text
                   className='text-sm font-medium text-white'
-                  style={{ textShadowColor: 'rgba(0,0,0,0.8)', textShadowOffset: { width: 0, height: 1 }, textShadowRadius: 4 }}
+                  style={{
+                    textShadowColor: 'rgba(0,0,0,0.8)',
+                    textShadowOffset: { width: 0, height: 1 },
+                    textShadowRadius: 4,
+                  }}
                 >
                   {releaseYear}
                 </Text>
@@ -151,24 +180,45 @@ export default function HeroSection({
 
       {/* Back button */}
       <Animated.View
-        style={[{ position: 'absolute', top: insetsTop + 8, left: 16, zIndex: 10 }, backButtonStyle]}
+        style={[
+          { position: 'absolute', top: insetsTop + 8, left: 16, zIndex: 10 },
+          backButtonStyle,
+        ]}
       >
         <TouchableOpacity
           onPress={onBack}
           accessibilityLabel='Go back'
           accessibilityRole='button'
           hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
-          style={{ width: 36, height: 36, borderRadius: 18, overflow: 'hidden' }}
+          style={{
+            width: 36,
+            height: 36,
+            borderRadius: 18,
+            overflow: 'hidden',
+          }}
         >
           <BlurView
             intensity={Platform.OS === 'ios' ? 60 : 40}
             tint='dark'
-            style={{ width: 36, height: 36, alignItems: 'center', justifyContent: 'center', borderRadius: 18, overflow: 'hidden' }}
+            style={{
+              width: 36,
+              height: 36,
+              alignItems: 'center',
+              justifyContent: 'center',
+              borderRadius: 18,
+              overflow: 'hidden',
+            }}
           >
             <View
               style={{
-                ...Platform.select({ ios: {}, android: { backgroundColor: 'rgba(0,0,0,0.5)' } }),
-                width: 36, height: 36, alignItems: 'center', justifyContent: 'center',
+                ...Platform.select({
+                  ios: {},
+                  android: { backgroundColor: 'rgba(0,0,0,0.5)' },
+                }),
+                width: 36,
+                height: 36,
+                alignItems: 'center',
+                justifyContent: 'center',
               }}
             >
               <Ionicons name='chevron-back' size={22} color='#fff' />
@@ -180,7 +230,15 @@ export default function HeroSection({
       {/* Header overlay on scroll */}
       <Animated.View
         style={[
-          { position: 'absolute', top: 0, left: 0, right: 0, height: insetsTop + 52, backgroundColor: bgColor, zIndex: 5 },
+          {
+            position: 'absolute',
+            top: 0,
+            left: 0,
+            right: 0,
+            height: insetsTop + 52,
+            backgroundColor: bgColor,
+            zIndex: 5,
+          },
           headerOverlayStyle,
         ]}
         pointerEvents='none'

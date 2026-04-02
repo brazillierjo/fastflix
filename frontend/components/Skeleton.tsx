@@ -81,11 +81,11 @@ export function SkeletonCard({ style }: SkeletonCardProps) {
         style,
       ]}
     >
-      <Skeleton width="100%" height={180} borderRadius={0} />
+      <Skeleton width='100%' height={180} borderRadius={0} />
       <View style={styles.cardTextArea}>
-        <Skeleton width="75%" height={16} borderRadius={6} />
+        <Skeleton width='75%' height={16} borderRadius={6} />
         <Skeleton
-          width="50%"
+          width='50%'
           height={12}
           borderRadius={4}
           style={{ marginTop: 8 }}
@@ -120,15 +120,15 @@ export function SkeletonRow({ style }: SkeletonRowProps) {
     >
       <Skeleton width={60} height={90} borderRadius={8} />
       <View style={styles.rowTextArea}>
-        <Skeleton width="70%" height={16} borderRadius={6} />
+        <Skeleton width='70%' height={16} borderRadius={6} />
         <Skeleton
-          width="40%"
+          width='40%'
           height={12}
           borderRadius={4}
           style={{ marginTop: 8 }}
         />
         <Skeleton
-          width="55%"
+          width='55%'
           height={12}
           borderRadius={4}
           style={{ marginTop: 6 }}

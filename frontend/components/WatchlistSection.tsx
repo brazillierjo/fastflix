@@ -7,11 +7,7 @@ import { Ionicons } from '@expo/vector-icons';
 import { useAuth } from '@/contexts/AuthContext';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { useWatchlist } from '@/hooks/useWatchlist';
-import {
-  getCardShadow,
-  getSquircle,
-  typography,
-} from '@/utils/designHelpers';
+import { getCardShadow, getSquircle, typography } from '@/utils/designHelpers';
 import { Skeleton } from '@/components/Skeleton';
 import { useRouter } from 'expo-router';
 import React from 'react';
@@ -43,9 +39,7 @@ export default function WatchlistSection() {
   const hasMore = items.length > MAX_ITEMS;
 
   return (
-    <View
-      className='mt-8'
-    >
+    <View className='mt-8'>
       <View className='mb-3 flex-row items-center justify-between px-6'>
         <View className='flex-row items-center gap-2'>
           <Ionicons name='bookmark' size={18} color='#E50914' />
@@ -75,7 +69,11 @@ export default function WatchlistSection() {
             style={[getSquircle(14)]}
             className='flex-row items-center gap-3 border border-dashed border-light-border bg-light-surface/50 px-4 py-4 dark:border-dark-border dark:bg-dark-surface/50'
           >
-            <Ionicons name='bookmark-outline' size={24} color={isDark ? '#525252' : '#a3a3a3'} />
+            <Ionicons
+              name='bookmark-outline'
+              size={24}
+              color={isDark ? '#525252' : '#a3a3a3'}
+            />
             <Text className='flex-1 text-sm text-light-muted dark:text-dark-muted'>
               {t('watchlist.emptyHome')}
             </Text>
@@ -89,7 +87,7 @@ export default function WatchlistSection() {
           showsHorizontalScrollIndicator={false}
           contentContainerStyle={{ paddingHorizontal: 24, gap: 12 }}
         >
-          {[1, 2, 3, 4].map((i) => (
+          {[1, 2, 3, 4].map(i => (
             <Skeleton key={i} width={130} height={195} borderRadius={12} />
           ))}
         </ScrollView>
@@ -100,9 +98,7 @@ export default function WatchlistSection() {
           contentContainerStyle={{ paddingHorizontal: 24, gap: 12 }}
         >
           {displayItems.map((item, _i) => (
-            <View
-              key={item.id}
-            >
+            <View key={item.id}>
               <TouchableOpacity
                 onPress={() =>
                   router.push({
@@ -198,7 +194,11 @@ export default function WatchlistSection() {
                 style={[getSquircle(12)]}
                 className='h-[195px] w-full items-center justify-center border border-dashed border-light-border bg-light-surface/50 dark:border-dark-border dark:bg-dark-surface/50'
               >
-                <Ionicons name='chevron-forward-circle-outline' size={32} color={isDark ? '#525252' : '#a3a3a3'} />
+                <Ionicons
+                  name='chevron-forward-circle-outline'
+                  size={32}
+                  color={isDark ? '#525252' : '#a3a3a3'}
+                />
                 <Text className='mt-2 text-xs font-medium text-light-muted dark:text-dark-muted'>
                   {t('common.seeMore')}
                 </Text>

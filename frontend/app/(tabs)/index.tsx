@@ -27,7 +27,8 @@ export default function IndexScreen() {
   }, [isAuthenticated]);
 
   // Hide splash screen once all routing decisions are resolved
-  const isReady = !isLoading && onboardingComplete !== null && setupComplete !== null;
+  const isReady =
+    !isLoading && onboardingComplete !== null && setupComplete !== null;
   useEffect(() => {
     if (isReady) {
       SplashScreen.hideAsync();

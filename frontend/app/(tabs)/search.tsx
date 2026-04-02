@@ -1,7 +1,9 @@
 import AuthGate from '@/components/AuthGate';
 import LoadingState from '@/components/LoadingState';
 import MovieResults from '@/components/MovieResults';
-import NotificationPrompt, { incrementSearchCount } from '@/components/NotificationPrompt';
+import NotificationPrompt, {
+  incrementSearchCount,
+} from '@/components/NotificationPrompt';
 import SearchForm from '@/components/SearchForm';
 import SubscriptionModal from '@/components/SubscriptionModal';
 import { useAuth } from '@/contexts/AuthContext';
@@ -26,7 +28,12 @@ import {
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { trackScreenView, trackSearch, trackSearchRefine, trackSubscriptionModalOpen } from '@/services/analytics';
+import {
+  trackScreenView,
+  trackSearch,
+  trackSearchRefine,
+  trackSubscriptionModalOpen,
+} from '@/services/analytics';
 
 export default function SearchScreen() {
   const params = useLocalSearchParams<{ query?: string; ts?: string }>();
@@ -65,7 +72,9 @@ export default function SearchScreen() {
   useSubscription();
 
   // Track screen view
-  useEffect(() => { trackScreenView('search'); }, []);
+  useEffect(() => {
+    trackScreenView('search');
+  }, []);
 
   // Clean up timers on unmount
   useEffect(() => {
@@ -84,7 +93,6 @@ export default function SearchScreen() {
       goBackToHome();
     }
   }, [params.query, params.ts, setQuery, goBackToHome]);
-
 
   const handleSearch = async () => {
     handleSearchStart();
@@ -133,7 +141,10 @@ export default function SearchScreen() {
                 },
                 {
                   text: t('subscription.required.subscribe') || 'Subscribe',
-                  onPress: () => { trackSubscriptionModalOpen(); setShowSubscriptionModal(true); },
+                  onPress: () => {
+                    trackSubscriptionModalOpen();
+                    setShowSubscriptionModal(true);
+                  },
                 },
               ]
             );
@@ -157,7 +168,10 @@ export default function SearchScreen() {
     }
   };
 
-  const handleRefine = (refineQuery: string, history: ConversationMessage[]) => {
+  const handleRefine = (
+    refineQuery: string,
+    history: ConversationMessage[]
+  ) => {
     setIsRefining(true);
 
     movieSearchMutation.mutate(
@@ -195,7 +209,10 @@ export default function SearchScreen() {
     <SafeAreaView
       className={cn('flex-1 bg-light-background dark:bg-dark-background')}
     >
-      <StatusBar barStyle={isDark ? 'light-content' : 'dark-content'} backgroundColor={isDark ? '#000000' : '#ffffff'} />
+      <StatusBar
+        barStyle={isDark ? 'light-content' : 'dark-content'}
+        backgroundColor={isDark ? '#000000' : '#ffffff'}
+      />
 
       {/* History icon — top right, aligned with title */}
       {!showResults && !movieSearchMutation.isPending && isAuthenticated && (
@@ -206,7 +223,11 @@ export default function SearchScreen() {
             accessibilityLabel='Search history'
             accessibilityRole='button'
           >
-            <Ionicons name='time-outline' size={24} color={isDark ? '#8E8E93' : '#8E8E93'} />
+            <Ionicons
+              name='time-outline'
+              size={24}
+              color={isDark ? '#8E8E93' : '#8E8E93'}
+            />
           </TouchableOpacity>
         </View>
       )}
@@ -220,18 +241,25 @@ export default function SearchScreen() {
             <LoadingState isSearching={isSearching} />
           ) : movieSearchMutation.isError ? (
             <View className='flex-1 items-center justify-center px-6'>
-              <Ionicons name='cloud-offline-outline' size={48} color={isDark ? '#6b7280' : '#9ca3af'} />
+              <Ionicons
+                name='cloud-offline-outline'
+                size={48}
+                color={isDark ? '#6b7280' : '#9ca3af'}
+              />
               <Text className='mt-4 text-center text-lg font-semibold text-light-text dark:text-dark-text'>
-                {t('search.errorTitle') || 'Oups, \u00e7a n\'a pas march\u00e9'}
+                {t('search.errorTitle') || "Oups, \u00e7a n'a pas march\u00e9"}
               </Text>
               <Text className='mt-2 text-center text-sm text-light-muted dark:text-dark-muted'>
-                {t('search.errorMessage') || 'V\u00e9rifiez votre connexion et r\u00e9essayez.'}
+                {t('search.errorMessage') ||
+                  'V\u00e9rifiez votre connexion et r\u00e9essayez.'}
               </Text>
               <TouchableOpacity
                 className='mt-6 rounded-xl bg-netflix-500 px-6 py-3'
                 onPress={() => movieSearchMutation.reset()}
               >
-                <Text className='font-semibold text-white'>{t('common.retry') || 'R\u00e9essayer'}</Text>
+                <Text className='font-semibold text-white'>
+                  {t('common.retry') || 'R\u00e9essayer'}
+                </Text>
               </TouchableOpacity>
             </View>
           ) : showResults && movies.length > 0 ? (
@@ -241,7 +269,9 @@ export default function SearchScreen() {
               credits={credits}
               crew={crew}
               detailedInfo={detailedInfo}
-              geminiResponse={isFallback ? t('errors.aiFallbackMessage') : geminiResponse}
+              geminiResponse={
+                isFallback ? t('errors.aiFallbackMessage') : geminiResponse
+              }
               conversationHistory={conversationHistory}
               onGoBack={goBackToHome}
               onRefine={handleRefine}
@@ -267,10 +297,7 @@ export default function SearchScreen() {
       />
 
       {/* Auth Gate for guest users */}
-      <AuthGate
-        visible={showAuthGate}
-        onClose={() => setShowAuthGate(false)}
-      />
+      <AuthGate visible={showAuthGate} onClose={() => setShowAuthGate(false)} />
 
       {/* Notification permission prompt (after 3rd search) */}
       <NotificationPrompt searchCount={localSearchCount} />

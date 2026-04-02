@@ -60,7 +60,10 @@ export default function QuickSearch({ onFocusInput }: QuickSearchProps) {
     setIsSearching(true);
     debounceRef.current = setTimeout(async () => {
       try {
-        const res = await backendAPIService.searchTMDB(query.trim(), tmdbLanguage);
+        const res = await backendAPIService.searchTMDB(
+          query.trim(),
+          tmdbLanguage
+        );
         if (res.success && res.data?.results) {
           setResults(res.data.results);
         } else {
@@ -125,7 +128,8 @@ export default function QuickSearch({ onFocusInput }: QuickSearchProps) {
   };
 
   const getMediaLabel = (item: TMDBQuickSearchResult): string => {
-    if (item.media_type === 'person') return item.known_for_department || 'Actor';
+    if (item.media_type === 'person')
+      return item.known_for_department || 'Actor';
     if (item.media_type === 'tv') return t('movies.tvShow') || 'TV Show';
     return t('movies.movie') || 'Movie';
   };
@@ -140,7 +144,8 @@ export default function QuickSearch({ onFocusInput }: QuickSearchProps) {
     return null;
   };
 
-  const showDropdown = (results.length > 0 || isSearching) && query.trim().length >= MIN_CHARS;
+  const showDropdown =
+    (results.length > 0 || isSearching) && query.trim().length >= MIN_CHARS;
 
   return (
     <View className='mt-8 px-6'>
@@ -166,19 +171,32 @@ export default function QuickSearch({ onFocusInput }: QuickSearchProps) {
           value={query}
           onChangeText={setQuery}
           onFocus={onFocusInput}
-          placeholder={t('home.quickSearchPlaceholder') || 'Movie, series, actor...'}
+          placeholder={
+            t('home.quickSearchPlaceholder') || 'Movie, series, actor...'
+          }
           placeholderTextColor={isDark ? '#525252' : '#a3a3a3'}
           className='ml-2 flex-1 text-base text-light-text dark:text-dark-text'
           returnKeyType='search'
           autoCorrect={false}
         />
         {query.length > 0 && (
-          <TouchableOpacity onPress={clearSearch} hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}>
-            <Ionicons name='close-circle' size={18} color={isDark ? '#525252' : '#a3a3a3'} />
+          <TouchableOpacity
+            onPress={clearSearch}
+            hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}
+          >
+            <Ionicons
+              name='close-circle'
+              size={18}
+              color={isDark ? '#525252' : '#a3a3a3'}
+            />
           </TouchableOpacity>
         )}
         {isSearching && (
-          <ActivityIndicator size='small' color='#E50914' style={{ marginLeft: 8 }} />
+          <ActivityIndicator
+            size='small'
+            color='#E50914'
+            style={{ marginLeft: 8 }}
+          />
         )}
       </View>
 
@@ -236,17 +254,23 @@ export default function QuickSearch({ onFocusInput }: QuickSearchProps) {
                     <Text className='text-xs text-light-muted dark:text-dark-muted'>
                       {getMediaLabel(item)}
                     </Text>
-                    {item.vote_average != null && item.vote_average > 0 && item.media_type !== 'person' && (
-                      <View className='flex-row items-center gap-0.5'>
-                        <Ionicons name='star' size={10} color='#fbbf24' />
-                        <Text className='text-xs text-light-muted dark:text-dark-muted'>
-                          {item.vote_average.toFixed(1)}
-                        </Text>
-                      </View>
-                    )}
+                    {item.vote_average != null &&
+                      item.vote_average > 0 &&
+                      item.media_type !== 'person' && (
+                        <View className='flex-row items-center gap-0.5'>
+                          <Ionicons name='star' size={10} color='#fbbf24' />
+                          <Text className='text-xs text-light-muted dark:text-dark-muted'>
+                            {item.vote_average.toFixed(1)}
+                          </Text>
+                        </View>
+                      )}
                     {(item.release_date || item.first_air_date) && (
                       <Text className='text-xs text-light-muted dark:text-dark-muted'>
-                        {(item.release_date || item.first_air_date || '').substring(0, 4)}
+                        {(
+                          item.release_date ||
+                          item.first_air_date ||
+                          ''
+                        ).substring(0, 4)}
                       </Text>
                     )}
                   </View>

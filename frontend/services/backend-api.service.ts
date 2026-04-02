@@ -93,16 +93,34 @@ export interface DetailedInfo {
   // Movie-specific enriched fields
   budget?: number;
   revenue?: number;
-  production_companies?: Array<{ id: number; name: string; logo_path: string | null }>;
+  production_companies?: Array<{
+    id: number;
+    name: string;
+    logo_path: string | null;
+  }>;
   original_language?: string;
   original_title?: string;
   imdb_id?: string;
-  belongs_to_collection?: { id: number; name: string; poster_path: string | null } | null;
+  belongs_to_collection?: {
+    id: number;
+    name: string;
+    poster_path: string | null;
+  } | null;
   // TV-specific enriched fields
   created_by?: Array<{ id: number; name: string; profile_path: string | null }>;
   networks?: Array<{ id: number; name: string; logo_path: string | null }>;
-  last_episode_to_air?: { episode_number: number; season_number: number; name: string; air_date: string } | null;
-  next_episode_to_air?: { episode_number: number; season_number: number; name: string; air_date: string } | null;
+  last_episode_to_air?: {
+    episode_number: number;
+    season_number: number;
+    name: string;
+    air_date: string;
+  } | null;
+  next_episode_to_air?: {
+    episode_number: number;
+    season_number: number;
+    name: string;
+    air_date: string;
+  } | null;
 }
 
 export interface ConversationMessage {
@@ -519,10 +537,7 @@ class BackendAPIService {
   /**
    * Get home screen data (daily pick, trending, recent searches, quota)
    */
-  async getHomeData(params?: {
-    language?: string;
-    country?: string;
-  }): Promise<
+  async getHomeData(params?: { language?: string; country?: string }): Promise<
     APIResponse<{
       dailyPick: any;
       trending: any[];
@@ -576,16 +591,15 @@ class BackendAPIService {
     if (params?.language) qs.set('language', params.language);
     if (params?.country) qs.set('country', params.country);
     const query = qs.toString() ? `?${qs.toString()}` : '';
-    return await this.makeRequest(`/api/new-releases${query}`, { method: 'GET' });
+    return await this.makeRequest(`/api/new-releases${query}`, {
+      method: 'GET',
+    });
   }
 
   /**
    * Get similar content for a given TMDB item
    */
-  async getSimilar(
-    tmdbId: number,
-    type: string
-  ): Promise<APIResponse<any[]>> {
+  async getSimilar(tmdbId: number, type: string): Promise<APIResponse<any[]>> {
     return await this.makeRequest(`/api/similar/${tmdbId}?type=${type}`, {
       method: 'GET',
     });
@@ -622,10 +636,7 @@ class BackendAPIService {
   /**
    * Get personalized "For You" recommendations based on taste profile
    */
-  async getForYou(params?: {
-    language?: string;
-    country?: string;
-  }): Promise<
+  async getForYou(params?: { language?: string; country?: string }): Promise<
     APIResponse<{
       recommendations: MovieResult[];
       streamingProviders: { [key: number]: StreamingProvider[] };
@@ -728,14 +739,18 @@ class BackendAPIService {
     });
   }
 
-  async deleteRating(tmdbId: number): Promise<APIResponse<{ profile: unknown }>> {
+  async deleteRating(
+    tmdbId: number
+  ): Promise<APIResponse<{ profile: unknown }>> {
     return await this.makeRequest('/api/user/taste-profile/rate', {
       method: 'DELETE',
       body: JSON.stringify({ tmdb_id: tmdbId }),
     });
   }
 
-  async backfillPosters(): Promise<APIResponse<{ updated: number; total: number }>> {
+  async backfillPosters(): Promise<
+    APIResponse<{ updated: number; total: number }>
+  > {
     return await this.makeRequest('/api/user/taste-profile/backfill-posters', {
       method: 'POST',
     });
@@ -753,7 +768,9 @@ class BackendAPIService {
     });
   }
 
-  async unfavoriteActor(tmdbId: number): Promise<APIResponse<{ profile: unknown }>> {
+  async unfavoriteActor(
+    tmdbId: number
+  ): Promise<APIResponse<{ profile: unknown }>> {
     return await this.makeRequest('/api/user/taste-profile/favorite-actors', {
       method: 'DELETE',
       body: JSON.stringify({ tmdb_id: tmdbId }),
@@ -812,7 +829,14 @@ class BackendAPIService {
   }): Promise<
     APIResponse<{
       sourceTitle: string | null;
-      items: { tmdb_id: number; title: string; poster_path: string | null; vote_average: number; media_type: 'movie' | 'tv'; providers?: { provider_name: string; logo_path: string }[] }[];
+      items: {
+        tmdb_id: number;
+        title: string;
+        poster_path: string | null;
+        vote_average: number;
+        media_type: 'movie' | 'tv';
+        providers?: { provider_name: string; logo_path: string }[];
+      }[];
     }>
   > {
     const qs = new URLSearchParams();

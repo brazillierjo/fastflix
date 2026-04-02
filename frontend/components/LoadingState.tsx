@@ -35,13 +35,7 @@ const LOADING_STEPS = [
   { icon: 'checkmark-circle' as const, key: 'finalizing' },
 ];
 
-const FUN_FACTS = [
-  'funFact1',
-  'funFact2',
-  'funFact3',
-  'funFact4',
-  'funFact5',
-];
+const FUN_FACTS = ['funFact1', 'funFact2', 'funFact3', 'funFact4', 'funFact5'];
 
 function SearchLoadingScreen() {
   const { t } = useLanguage();
@@ -177,8 +171,12 @@ function SearchLoadingScreen() {
                   fontSize: 14,
                   fontWeight: isActive ? '600' : '400',
                   color: isActive
-                    ? isDark ? '#fff' : '#000'
-                    : isDark ? '#666' : '#999',
+                    ? isDark
+                      ? '#fff'
+                      : '#000'
+                    : isDark
+                      ? '#666'
+                      : '#999',
                 }}
               >
                 {t(`loading.${step.key}`) || step.key}
@@ -195,10 +193,15 @@ function SearchLoadingScreen() {
         animate={{ opacity: 1, translateY: 0 }}
         transition={{ type: 'timing', duration: 400 }}
         className='mb-4 rounded-xl px-4 py-3'
-        style={{ backgroundColor: isDark ? 'rgba(255,255,255,0.05)' : 'rgba(0,0,0,0.03)' }}
+        style={{
+          backgroundColor: isDark
+            ? 'rgba(255,255,255,0.05)'
+            : 'rgba(0,0,0,0.03)',
+        }}
       >
         <Text className='text-center text-xs leading-4 text-light-muted dark:text-dark-muted'>
-          {t(`loading.${FUN_FACTS[currentFact]}`) || 'Finding the perfect picks for you...'}
+          {t(`loading.${FUN_FACTS[currentFact]}`) ||
+            'Finding the perfect picks for you...'}
         </Text>
       </MotiView>
 
@@ -239,7 +242,12 @@ function HomeSkeleton({ message }: { message: string }) {
     >
       <View style={{ paddingHorizontal: 24, paddingTop: 56 }}>
         <Skeleton width='60%' height={28} borderRadius={8} />
-        <Skeleton width='40%' height={14} borderRadius={6} style={{ marginTop: 8 }} />
+        <Skeleton
+          width='40%'
+          height={14}
+          borderRadius={6}
+          style={{ marginTop: 8 }}
+        />
       </View>
       <View style={{ paddingHorizontal: 24, marginTop: 24 }}>
         <Skeleton width='100%' height={52} borderRadius={16} />
@@ -247,7 +255,14 @@ function HomeSkeleton({ message }: { message: string }) {
       <View style={{ paddingHorizontal: 24, marginTop: 28 }}>
         <Skeleton width='35%' height={18} borderRadius={6} />
       </View>
-      <View style={{ flexDirection: 'row', paddingHorizontal: 24, marginTop: 12, gap: 12 }}>
+      <View
+        style={{
+          flexDirection: 'row',
+          paddingHorizontal: 24,
+          marginTop: 12,
+          gap: 12,
+        }}
+      >
         {[0, 1, 2, 3].map(i => (
           <MotiView
             key={i}

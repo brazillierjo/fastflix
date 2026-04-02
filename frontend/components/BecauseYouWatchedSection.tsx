@@ -14,11 +14,7 @@ import {
 import { useAuth } from '@/contexts/AuthContext';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { backendAPIService } from '@/services/backend-api.service';
-import {
-  getCardShadow,
-  getSquircle,
-  typography,
-} from '@/utils/designHelpers';
+import { getCardShadow, getSquircle, typography } from '@/utils/designHelpers';
 import { trackBecauseYouWatchedClick } from '@/services/analytics';
 
 const TMDB_IMAGE_BASE = 'https://image.tmdb.org/t/p';
@@ -61,10 +57,10 @@ export default function BecauseYouWatchedSection() {
   if (!data || !data.sourceTitle || data.items.length === 0) return null;
 
   return (
-    <View className="mt-8">
+    <View className='mt-8'>
       <Text
         style={typography.title3}
-        className="mb-3 px-6 text-light-text dark:text-dark-text"
+        className='mb-3 px-6 text-light-text dark:text-dark-text'
       >
         {t('home.becauseYouWatched').replace('{{title}}', data.sourceTitle)}
       </Text>
@@ -100,18 +96,18 @@ export default function BecauseYouWatchedSection() {
           >
             <View
               style={[getSquircle(12), getCardShadow(isDark)]}
-              className="h-[195px] overflow-hidden border border-light-border bg-light-surface dark:border-dark-border dark:bg-dark-surface"
+              className='h-[195px] overflow-hidden border border-light-border bg-light-surface dark:border-dark-border dark:bg-dark-surface'
             >
               {item.poster_path ? (
                 <Image
                   source={{ uri: `${TMDB_IMAGE_BASE}/w342${item.poster_path}` }}
-                  className="h-full w-full"
-                  resizeMode="cover"
+                  className='h-full w-full'
+                  resizeMode='cover'
                 />
               ) : (
-                <View className="h-full w-full items-center justify-center">
+                <View className='h-full w-full items-center justify-center'>
                   <Ionicons
-                    name="film-outline"
+                    name='film-outline'
                     size={32}
                     color={isDark ? '#555' : '#ccc'}
                   />
@@ -119,24 +115,24 @@ export default function BecauseYouWatchedSection() {
               )}
             </View>
             <Text
-              className="mt-1.5 text-xs font-medium text-light-text dark:text-dark-text"
+              className='mt-1.5 text-xs font-medium text-light-text dark:text-dark-text'
               numberOfLines={2}
             >
               {item.title}
             </Text>
-            <View className="mt-0.5 flex-row items-center gap-1">
+            <View className='mt-0.5 flex-row items-center gap-1'>
               {item.vote_average > 0 && (
                 <>
-                  <Ionicons name="star" size={10} color="#fbbf24" />
-                  <Text className="text-xs text-light-muted dark:text-dark-muted">
+                  <Ionicons name='star' size={10} color='#fbbf24' />
+                  <Text className='text-xs text-light-muted dark:text-dark-muted'>
                     {item.vote_average.toFixed(1)}
                   </Text>
                 </>
               )}
             </View>
             {item.providers && item.providers.length > 0 && (
-              <View className="mt-1 flex-row gap-1">
-                {item.providers.slice(0, 3).map((p) => (
+              <View className='mt-1 flex-row gap-1'>
+                {item.providers.slice(0, 3).map(p => (
                   <Image
                     key={p.logo_path}
                     source={{ uri: `${TMDB_IMAGE_BASE}/w92${p.logo_path}` }}

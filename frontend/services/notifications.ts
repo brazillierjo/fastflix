@@ -4,7 +4,8 @@ import { Platform } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const PUSH_TOKEN_KEY = '@fastflix/push_token';
-const NOTIFICATION_PERMISSION_ASKED_KEY = '@fastflix/notification_permission_asked';
+const NOTIFICATION_PERMISSION_ASKED_KEY =
+  '@fastflix/notification_permission_asked';
 
 // Configure notification handler
 Notifications.setNotificationHandler({

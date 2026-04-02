@@ -18,7 +18,11 @@ import Animated, {
   withSpring,
   runOnJS,
 } from 'react-native-reanimated';
-import { SPRING_TAP, PRESS_SCALE_BUTTON, PRESS_SCALE_CARD } from '@/utils/animations';
+import {
+  SPRING_TAP,
+  PRESS_SCALE_BUTTON,
+  PRESS_SCALE_CARD,
+} from '@/utils/animations';
 
 interface PressableScaleProps {
   onPress: () => void;

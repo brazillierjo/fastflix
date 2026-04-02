@@ -3,7 +3,11 @@
  * Uses physics-based springs (not linear/timing) for natural motion.
  */
 
-import { WithSpringConfig, WithTimingConfig, Easing } from 'react-native-reanimated';
+import {
+  WithSpringConfig,
+  WithTimingConfig,
+  Easing,
+} from 'react-native-reanimated';
 
 // ============================================================================
 // Spring presets (physics-based, 60/120fps on UI thread)

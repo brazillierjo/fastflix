@@ -27,9 +27,7 @@
         "tinted": "./assets/appstore-tinted.png"
       },
       "infoPlist": {
-        "LSApplicationQueriesSchemes": [
-          "mailto"
-        ]
+        "LSApplicationQueriesSchemes": ["mailto"]
       }
     },
     "android": {

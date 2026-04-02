@@ -38,17 +38,12 @@ export default function UserStatsWidget() {
   const memberDate = new Date(stats.memberSince);
   const monthsDiff = Math.max(
     1,
-    Math.round(
-      (Date.now() - memberDate.getTime()) / (1000 * 60 * 60 * 24 * 30)
-    )
+    Math.round((Date.now() - memberDate.getTime()) / (1000 * 60 * 60 * 24 * 30))
   );
   const memberLabel =
     monthsDiff < 2
       ? t('home.stats.newMember')
-      : t('home.stats.memberSince').replace(
-          '{{months}}',
-          String(monthsDiff)
-        );
+      : t('home.stats.memberSince').replace('{{months}}', String(monthsDiff));
 
   const items = [
     {
@@ -66,36 +61,36 @@ export default function UserStatsWidget() {
       value: stats.watchedCount,
       label: t('home.stats.watched'),
     },
-  ].filter((item) => item.value > 0);
+  ].filter(item => item.value > 0);
 
   return (
-    <View className="mb-2 px-6">
+    <View className='mb-2 px-6'>
       <View
         style={getSquircle(14)}
-        className="flex-row items-center justify-around border border-light-border bg-light-surface px-4 py-3 dark:border-dark-border dark:bg-dark-surface"
+        className='flex-row items-center justify-around border border-light-border bg-light-surface px-4 py-3 dark:border-dark-border dark:bg-dark-surface'
       >
         {items.map((item, i) => (
-          <View key={i} className="items-center">
+          <View key={i} className='items-center'>
             <Ionicons
               name={item.icon}
               size={16}
               color={isDark ? 'rgba(255,255,255,0.4)' : 'rgba(0,0,0,0.3)'}
             />
-            <Text className="mt-0.5 text-lg font-bold text-light-text dark:text-dark-text">
+            <Text className='mt-0.5 text-lg font-bold text-light-text dark:text-dark-text'>
               {item.value}
             </Text>
-            <Text className="text-[10px] text-light-muted dark:text-dark-muted">
+            <Text className='text-[10px] text-light-muted dark:text-dark-muted'>
               {item.label}
             </Text>
           </View>
         ))}
-        <View className="items-center">
+        <View className='items-center'>
           <Ionicons
-            name="calendar-outline"
+            name='calendar-outline'
             size={16}
             color={isDark ? 'rgba(255,255,255,0.4)' : 'rgba(0,0,0,0.3)'}
           />
-          <Text className="mt-0.5 text-xs font-medium text-light-muted dark:text-dark-muted">
+          <Text className='mt-0.5 text-xs font-medium text-light-muted dark:text-dark-muted'>
             {memberLabel}
           </Text>
         </View>

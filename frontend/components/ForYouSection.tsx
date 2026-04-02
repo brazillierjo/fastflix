@@ -7,15 +7,15 @@ import { Ionicons } from '@expo/vector-icons';
 import { useAuth } from '@/contexts/AuthContext';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { useSubscription } from '@/contexts/RevenueCatContext';
-import {
-  getCardShadow,
-  getSquircle,
-  typography,
-} from '@/utils/designHelpers';
+import { getCardShadow, getSquircle, typography } from '@/utils/designHelpers';
 import { useWatchlist } from '@/hooks/useWatchlist';
 import { MotiView } from 'moti';
 import { useQuery } from '@tanstack/react-query';
-import { backendAPIService, MovieResult, StreamingProvider } from '@/services/backend-api.service';
+import {
+  backendAPIService,
+  MovieResult,
+  StreamingProvider,
+} from '@/services/backend-api.service';
 import { useRouter } from 'expo-router';
 import React, { useMemo, useState } from 'react';
 import {
@@ -39,7 +39,13 @@ interface ForYouData {
 /**
  * AI loading animation with pulsing sparkle and status text
  */
-function ForYouAILoading({ isDark, t }: { isDark: boolean; t: (key: string) => string }) {
+function ForYouAILoading({
+  isDark,
+  t,
+}: {
+  isDark: boolean;
+  t: (key: string) => string;
+}) {
   return (
     <View
       style={[getSquircle(16), getCardShadow(isDark)]}
@@ -88,17 +94,16 @@ export default function ForYouSection() {
   const [activeTab, setActiveTab] = useState<'movie' | 'tv'>('movie');
   const { items: watchlistItems } = useWatchlist();
   const watchlistIds = useMemo(
-    () => new Set((watchlistItems || []).map((w) => w.tmdb_id)),
+    () => new Set((watchlistItems || []).map(w => w.tmdb_id)),
     [watchlistItems]
   );
 
-  const tmdbLanguage = language?.includes('-') ? language : `${language || 'en'}-${(country || 'US').toUpperCase()}`;
+  const tmdbLanguage = language?.includes('-')
+    ? language
+    : `${language || 'en'}-${(country || 'US').toUpperCase()}`;
   const tmdbCountry = (country || 'US').toUpperCase();
 
-  const {
-    data,
-    isLoading,
-  } = useQuery<ForYouData>({
+  const { data, isLoading } = useQuery<ForYouData>({
     queryKey: [FOR_YOU_QUERY_KEY, tmdbLanguage, tmdbCountry],
     queryFn: async (): Promise<ForYouData> => {
       const response = await backendAPIService.getForYou({
@@ -118,10 +123,14 @@ export default function ForYouSection() {
   const allRecommendations = data?.recommendations ?? [];
   const streamingProviders = data?.streamingProviders ?? {};
   const hasProfile = data?.hasProfile ?? false;
-  const filteredByTab = allRecommendations.filter(r => r.media_type === activeTab);
+  const filteredByTab = allRecommendations.filter(
+    r => r.media_type === activeTab
+  );
   // Show filtered results if available, otherwise show all to avoid empty state
   const recommendations = hasProfile
-    ? (filteredByTab.length > 0 ? filteredByTab : allRecommendations)
+    ? filteredByTab.length > 0
+      ? filteredByTab
+      : allRecommendations
     : [];
 
   const navigateToDetail = (item: MovieResult) => {
@@ -144,9 +153,7 @@ export default function ForYouSection() {
   };
 
   return (
-    <View
-      className='mt-8 px-6'
-    >
+    <View className='mt-8 px-6'>
       <Text
         style={typography.title3}
         className='mb-1 text-light-text dark:text-dark-text'
@@ -161,20 +168,30 @@ export default function ForYouSection() {
       {isAuthenticated && hasUnlimitedAccess && (
         <View className='mb-3 flex-row gap-2'>
           <TouchableOpacity
-            onPress={() => { setActiveTab('movie'); setExpanded(false); }}
+            onPress={() => {
+              setActiveTab('movie');
+              setExpanded(false);
+            }}
             style={getSquircle(10)}
             className={`px-4 py-1.5 ${activeTab === 'movie' ? 'bg-netflix-500' : isDark ? 'bg-white/10' : 'bg-black/5'}`}
           >
-            <Text className={`text-sm font-medium ${activeTab === 'movie' ? 'text-white' : 'text-light-text dark:text-dark-text'}`}>
+            <Text
+              className={`text-sm font-medium ${activeTab === 'movie' ? 'text-white' : 'text-light-text dark:text-dark-text'}`}
+            >
               {t('filters.moviesOnly') || 'Movies'}
             </Text>
           </TouchableOpacity>
           <TouchableOpacity
-            onPress={() => { setActiveTab('tv'); setExpanded(false); }}
+            onPress={() => {
+              setActiveTab('tv');
+              setExpanded(false);
+            }}
             style={getSquircle(10)}
             className={`px-4 py-1.5 ${activeTab === 'tv' ? 'bg-netflix-500' : isDark ? 'bg-white/10' : 'bg-black/5'}`}
           >
-            <Text className={`text-sm font-medium ${activeTab === 'tv' ? 'text-white' : 'text-light-text dark:text-dark-text'}`}>
+            <Text
+              className={`text-sm font-medium ${activeTab === 'tv' ? 'text-white' : 'text-light-text dark:text-dark-text'}`}
+            >
               {t('filters.tvShowsOnly') || 'TV Shows'}
             </Text>
           </TouchableOpacity>
@@ -189,7 +206,7 @@ export default function ForYouSection() {
         >
           <View className='mb-3 overflow-hidden opacity-40'>
             <View className='flex-row gap-2'>
-              {[1, 2, 3].map((i) => (
+              {[1, 2, 3].map(i => (
                 <View
                   key={i}
                   style={getSquircle(8)}
@@ -204,7 +221,9 @@ export default function ForYouSection() {
             color={isDark ? '#a3a3a3' : '#737373'}
           />
           <Text className='mt-2 text-center text-sm font-medium text-light-text dark:text-dark-text'>
-            {isAuthenticated ? t('forYou.premiumPrompt') : t('forYou.signInPrompt')}
+            {isAuthenticated
+              ? t('forYou.premiumPrompt')
+              : t('forYou.signInPrompt')}
           </Text>
         </View>
       )}
@@ -215,189 +234,203 @@ export default function ForYouSection() {
       )}
 
       {/* Empty state with actionable CTA */}
-      {isAuthenticated && hasUnlimitedAccess && !isLoading && recommendations.length === 0 && (
-        <View
-          style={[getSquircle(16), getCardShadow(isDark)]}
-          className='items-center justify-center border border-light-border bg-light-surface px-6 py-8 dark:border-dark-border dark:bg-dark-surface'
-        >
-          <Ionicons
-            name='heart-outline'
-            size={32}
-            color={isDark ? '#525252' : '#a3a3a3'}
-          />
-          <Text className='mt-3 text-center text-sm text-light-muted dark:text-dark-muted'>
-            {t('forYou.empty')}
-          </Text>
-          <TouchableOpacity
-            onPress={() => router.push('/search' as never)}
-            style={getSquircle(10)}
-            className='mt-4 bg-netflix-500 px-5 py-2.5'
+      {isAuthenticated &&
+        hasUnlimitedAccess &&
+        !isLoading &&
+        recommendations.length === 0 && (
+          <View
+            style={[getSquircle(16), getCardShadow(isDark)]}
+            className='items-center justify-center border border-light-border bg-light-surface px-6 py-8 dark:border-dark-border dark:bg-dark-surface'
           >
-            <Text className='text-sm font-semibold text-white'>
-              {t('forYou.discover') || 'Discover movies'}
+            <Ionicons
+              name='heart-outline'
+              size={32}
+              color={isDark ? '#525252' : '#a3a3a3'}
+            />
+            <Text className='mt-3 text-center text-sm text-light-muted dark:text-dark-muted'>
+              {t('forYou.empty')}
             </Text>
-          </TouchableOpacity>
-        </View>
-      )}
+            <TouchableOpacity
+              onPress={() => router.push('/search' as never)}
+              style={getSquircle(10)}
+              className='mt-4 bg-netflix-500 px-5 py-2.5'
+            >
+              <Text className='text-sm font-semibold text-white'>
+                {t('forYou.discover') || 'Discover movies'}
+              </Text>
+            </TouchableOpacity>
+          </View>
+        )}
 
       {/* Recommendations list */}
-      {isAuthenticated && hasUnlimitedAccess && !isLoading && recommendations.length > 0 && (
-        <View className='gap-3'>
-          {recommendations.slice(0, expanded ? 15 : 3).map((item, _i) => (
-            <View
-              key={item.tmdb_id}
-            >
-              <TouchableOpacity
-                onPress={() => navigateToDetail(item)}
-                activeOpacity={0.7}
-                style={[getSquircle(12), getCardShadow(isDark)]}
-                className='overflow-hidden border border-light-border bg-light-surface dark:border-dark-border dark:bg-dark-surface'
-              >
-                <View className='flex-row p-3'>
-                  {/* Poster */}
-                  <View className='relative'>
-                    {item.poster_path ? (
-                      <View style={getSquircle(8)} className='h-28 w-20 overflow-hidden'>
-                        <Image
-                          source={{
-                            uri: `${TMDB_IMAGE_BASE}/w185${item.poster_path}`,
-                          }}
-                          className='h-full w-full'
-                          resizeMode='cover'
-                        />
-                      </View>
-                    ) : (
-                      <View
-                        style={getSquircle(8)}
-                        className='h-28 w-20 items-center justify-center bg-light-border dark:bg-dark-border'
-                      >
-                        <Ionicons
-                          name='image-outline'
-                          size={24}
-                          color={isDark ? '#404040' : '#d4d4d4'}
-                        />
-                      </View>
-                    )}
-                    {watchlistIds.has(item.tmdb_id) && (
-                      <View className='absolute -right-1 -top-1 rounded-full bg-white p-0.5 dark:bg-black'>
-                        <Ionicons name='bookmark' size={14} color='#E50914' />
-                      </View>
-                    )}
-                  </View>
-
-                  {/* Content */}
-                  <View className='ml-3 flex-1 justify-center'>
-                    <Text
-                      className='text-base font-bold text-light-text dark:text-dark-text'
-                      numberOfLines={1}
-                    >
-                      {item.title}
-                    </Text>
-
-                    {/* Rating + Media type + Match score */}
-                    <View className='mt-1 flex-row items-center gap-2'>
-                      {item.vote_average > 0 && (
-                        <View className='flex-row items-center gap-1'>
-                          <Ionicons name='star' size={12} color='#fbbf24' />
-                          <Text className='text-xs font-medium text-light-textSecondary dark:text-dark-textSecondary'>
-                            {item.vote_average.toFixed(1)}
-                          </Text>
+      {isAuthenticated &&
+        hasUnlimitedAccess &&
+        !isLoading &&
+        recommendations.length > 0 && (
+          <View className='gap-3'>
+            {recommendations.slice(0, expanded ? 15 : 3).map((item, _i) => (
+              <View key={item.tmdb_id}>
+                <TouchableOpacity
+                  onPress={() => navigateToDetail(item)}
+                  activeOpacity={0.7}
+                  style={[getSquircle(12), getCardShadow(isDark)]}
+                  className='overflow-hidden border border-light-border bg-light-surface dark:border-dark-border dark:bg-dark-surface'
+                >
+                  <View className='flex-row p-3'>
+                    {/* Poster */}
+                    <View className='relative'>
+                      {item.poster_path ? (
+                        <View
+                          style={getSquircle(8)}
+                          className='h-28 w-20 overflow-hidden'
+                        >
+                          <Image
+                            source={{
+                              uri: `${TMDB_IMAGE_BASE}/w185${item.poster_path}`,
+                            }}
+                            className='h-full w-full'
+                            resizeMode='cover'
+                          />
+                        </View>
+                      ) : (
+                        <View
+                          style={getSquircle(8)}
+                          className='h-28 w-20 items-center justify-center bg-light-border dark:bg-dark-border'
+                        >
+                          <Ionicons
+                            name='image-outline'
+                            size={24}
+                            color={isDark ? '#404040' : '#d4d4d4'}
+                          />
                         </View>
                       )}
-                      <View
-                        style={getSquircle(4)}
-                        className='bg-netflix-500/15 px-1.5 py-0.5'
-                      >
-                        <Text className='text-[11px] font-semibold uppercase text-netflix-500'>
-                          {item.media_type === 'tv' ? 'TV' : 'Film'}
-                        </Text>
-                      </View>
-                      {item.matchScore != null && item.matchScore > 0 && (
-                        <View
-                          style={getSquircle(4)}
-                          className={`px-1.5 py-0.5 ${
-                            item.matchScore >= 80
-                              ? 'bg-green-500/15'
-                              : item.matchScore >= 50
-                                ? 'bg-orange-500/15'
-                                : 'bg-neutral-500/15'
-                          }`}
-                        >
-                          <Text
-                            className={`text-[11px] font-bold ${
-                              item.matchScore >= 80
-                                ? 'text-green-600'
-                                : item.matchScore >= 50
-                                  ? 'text-orange-500'
-                                  : 'text-neutral-500'
-                            }`}
-                          >
-                            {item.matchScore}%
-                          </Text>
+                      {watchlistIds.has(item.tmdb_id) && (
+                        <View className='absolute -right-1 -top-1 rounded-full bg-white p-0.5 dark:bg-black'>
+                          <Ionicons name='bookmark' size={14} color='#E50914' />
                         </View>
                       )}
                     </View>
 
-                    {/* Overview */}
-                    {item.overview ? (
+                    {/* Content */}
+                    <View className='ml-3 flex-1 justify-center'>
                       <Text
-                        className='mt-1 text-xs leading-4 text-light-text dark:text-dark-text'
-                        numberOfLines={2}
+                        className='text-base font-bold text-light-text dark:text-dark-text'
+                        numberOfLines={1}
                       >
-                        {item.overview}
+                        {item.title}
                       </Text>
-                    ) : null}
+
+                      {/* Rating + Media type + Match score */}
+                      <View className='mt-1 flex-row items-center gap-2'>
+                        {item.vote_average > 0 && (
+                          <View className='flex-row items-center gap-1'>
+                            <Ionicons name='star' size={12} color='#fbbf24' />
+                            <Text className='text-xs font-medium text-light-textSecondary dark:text-dark-textSecondary'>
+                              {item.vote_average.toFixed(1)}
+                            </Text>
+                          </View>
+                        )}
+                        <View
+                          style={getSquircle(4)}
+                          className='bg-netflix-500/15 px-1.5 py-0.5'
+                        >
+                          <Text className='text-[11px] font-semibold uppercase text-netflix-500'>
+                            {item.media_type === 'tv' ? 'TV' : 'Film'}
+                          </Text>
+                        </View>
+                        {item.matchScore != null && item.matchScore > 0 && (
+                          <View
+                            style={getSquircle(4)}
+                            className={`px-1.5 py-0.5 ${
+                              item.matchScore >= 80
+                                ? 'bg-green-500/15'
+                                : item.matchScore >= 50
+                                  ? 'bg-orange-500/15'
+                                  : 'bg-neutral-500/15'
+                            }`}
+                          >
+                            <Text
+                              className={`text-[11px] font-bold ${
+                                item.matchScore >= 80
+                                  ? 'text-green-600'
+                                  : item.matchScore >= 50
+                                    ? 'text-orange-500'
+                                    : 'text-neutral-500'
+                              }`}
+                            >
+                              {item.matchScore}%
+                            </Text>
+                          </View>
+                        )}
+                      </View>
+
+                      {/* Overview */}
+                      {item.overview ? (
+                        <Text
+                          className='mt-1 text-xs leading-4 text-light-text dark:text-dark-text'
+                          numberOfLines={2}
+                        >
+                          {item.overview}
+                        </Text>
+                      ) : null}
+                    </View>
+
+                    {/* Chevron */}
+                    <View className='justify-center pl-1'>
+                      <Ionicons
+                        name='chevron-forward'
+                        size={16}
+                        color={isDark ? '#525252' : '#a3a3a3'}
+                      />
+                    </View>
                   </View>
 
-                  {/* Chevron */}
-                  <View className='justify-center pl-1'>
-                    <Ionicons
-                      name='chevron-forward'
-                      size={16}
-                      color={isDark ? '#525252' : '#a3a3a3'}
-                    />
-                  </View>
-                </View>
-
-                {/* AI reason — full width bottom with border-top */}
-                {item.reason && (
-                  <View className='flex-row items-start gap-1.5 border-t border-light-border px-3 py-2 dark:border-dark-border'>
-                    <Ionicons name='sparkles' size={11} color='#E50914' style={{ marginTop: 1 }} />
-                    <Text className='flex-1 text-[11px] italic leading-4 text-light-textSecondary dark:text-dark-textSecondary'>
-                      <Text className='font-semibold not-italic text-light-text dark:text-dark-text'>
-                        {item.media_type === 'tv' ? t('forYou.whyThisShow') : t('forYou.whyThisMovie')}
+                  {/* AI reason — full width bottom with border-top */}
+                  {item.reason && (
+                    <View className='flex-row items-start gap-1.5 border-t border-light-border px-3 py-2 dark:border-dark-border'>
+                      <Ionicons
+                        name='sparkles'
+                        size={11}
+                        color='#E50914'
+                        style={{ marginTop: 1 }}
+                      />
+                      <Text className='flex-1 text-[11px] italic leading-4 text-light-textSecondary dark:text-dark-textSecondary'>
+                        <Text className='font-semibold not-italic text-light-text dark:text-dark-text'>
+                          {item.media_type === 'tv'
+                            ? t('forYou.whyThisShow')
+                            : t('forYou.whyThisMovie')}
+                        </Text>{' '}
+                        {item.reason}
                       </Text>
-                      {' '}{item.reason}
-                    </Text>
-                  </View>
-                )}
-              </TouchableOpacity>
-            </View>
-          ))}
+                    </View>
+                  )}
+                </TouchableOpacity>
+              </View>
+            ))}
 
-          {/* Show more / Show less button */}
-          {recommendations.length > 3 && (
-            <View>
-              <TouchableOpacity
-                onPress={() => setExpanded(!expanded)}
-                activeOpacity={0.7}
-                className='mt-2 flex-row items-center justify-center gap-1 py-3'
-              >
-                <Text className='text-sm font-semibold text-netflix-500'>
-                  {expanded
-                    ? t('movies.seeLess') || 'See less'
-                    : t('movies.seeMore') || 'See more'}
-                </Text>
-                <Ionicons
-                  name={expanded ? 'chevron-up' : 'chevron-down'}
-                  size={16}
-                  color='#E50914'
-                />
-              </TouchableOpacity>
-            </View>
-          )}
-        </View>
-      )}
+            {/* Show more / Show less button */}
+            {recommendations.length > 3 && (
+              <View>
+                <TouchableOpacity
+                  onPress={() => setExpanded(!expanded)}
+                  activeOpacity={0.7}
+                  className='mt-2 flex-row items-center justify-center gap-1 py-3'
+                >
+                  <Text className='text-sm font-semibold text-netflix-500'>
+                    {expanded
+                      ? t('movies.seeLess') || 'See less'
+                      : t('movies.seeMore') || 'See more'}
+                  </Text>
+                  <Ionicons
+                    name={expanded ? 'chevron-up' : 'chevron-down'}
+                    size={16}
+                    color='#E50914'
+                  />
+                </TouchableOpacity>
+              </View>
+            )}
+          </View>
+        )}
     </View>
   );
 }

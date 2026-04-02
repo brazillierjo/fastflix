@@ -34,16 +34,12 @@ export function useHomeData() {
   const { language, country } = useLanguage();
 
   // Map language code to TMDB language format
-  const tmdbLanguage = language?.includes('-') ? language : `${language || 'en'}-${(country || 'US').toUpperCase()}`;
+  const tmdbLanguage = language?.includes('-')
+    ? language
+    : `${language || 'en'}-${(country || 'US').toUpperCase()}`;
   const tmdbCountry = (country || 'US').toUpperCase();
 
-  const {
-    data,
-    isLoading,
-    error,
-    refetch,
-    isRefetching,
-  } = useQuery<HomeData>({
+  const { data, isLoading, error, refetch, isRefetching } = useQuery<HomeData>({
     queryKey: [HOME_DATA_QUERY_KEY, isAuthenticated, tmdbLanguage, tmdbCountry],
     queryFn: async (): Promise<HomeData> => {
       if (isAuthenticated) {
@@ -69,7 +65,12 @@ export function useHomeData() {
           quota: null,
         };
       } catch {
-        return { dailyPick: null, trending: [], recentSearches: [], quota: null };
+        return {
+          dailyPick: null,
+          trending: [],
+          recentSearches: [],
+          quota: null,
+        };
       }
     },
     staleTime: 1000 * 60 * 5,

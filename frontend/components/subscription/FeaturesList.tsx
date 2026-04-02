@@ -14,7 +14,11 @@ interface FeaturesListProps {
   greenBg: string;
 }
 
-export default function FeaturesList({ features, greenPrimary, greenBg }: FeaturesListProps) {
+export default function FeaturesList({
+  features,
+  greenPrimary,
+  greenBg,
+}: FeaturesListProps) {
   return (
     <MotiView
       from={{ opacity: 0, translateY: 20 }}
@@ -27,7 +31,11 @@ export default function FeaturesList({ features, greenPrimary, greenBg }: Featur
           key={index}
           from={{ opacity: 0, translateX: -20 }}
           animate={{ opacity: 1, translateX: 0 }}
-          transition={{ type: 'timing', duration: 400, delay: 450 + index * 80 }}
+          transition={{
+            type: 'timing',
+            duration: 400,
+            delay: 450 + index * 80,
+          }}
           className='mb-3 flex-row items-center'
           accessibilityLabel={feature.label}
         >

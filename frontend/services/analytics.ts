@@ -52,7 +52,11 @@ export function trackQuickSearch(category: string) {
 // Movie / TV Show Events
 // ============================================================================
 
-export function trackMovieView(tmdbId: number, mediaType: 'movie' | 'tv', title: string) {
+export function trackMovieView(
+  tmdbId: number,
+  mediaType: 'movie' | 'tv',
+  title: string
+) {
   trackEvent('movie_view', { tmdb_id: tmdbId, media_type: mediaType, title });
 }
 
@@ -61,10 +65,16 @@ export function trackMovieShare(tmdbId: number, mediaType: 'movie' | 'tv') {
 }
 
 export function trackSimilarMovieClick(fromTmdbId: number, toTmdbId: number) {
-  trackEvent('similar_movie_click', { from_tmdb_id: fromTmdbId, to_tmdb_id: toTmdbId });
+  trackEvent('similar_movie_click', {
+    from_tmdb_id: fromTmdbId,
+    to_tmdb_id: toTmdbId,
+  });
 }
 
-export function trackExternalLinkOpen(platform: 'imdb' | 'tmdb', tmdbId: number) {
+export function trackExternalLinkOpen(
+  platform: 'imdb' | 'tmdb',
+  tmdbId: number
+) {
   trackEvent('external_link_open', { platform, tmdb_id: tmdbId });
 }
 
@@ -76,7 +86,10 @@ export function trackWatchlistAdd(tmdbId: number, mediaType: 'movie' | 'tv') {
   trackEvent('watchlist_add', { tmdb_id: tmdbId, media_type: mediaType });
 }
 
-export function trackWatchlistRemove(tmdbId: number, mediaType: 'movie' | 'tv') {
+export function trackWatchlistRemove(
+  tmdbId: number,
+  mediaType: 'movie' | 'tv'
+) {
   trackEvent('watchlist_remove', { tmdb_id: tmdbId, media_type: mediaType });
 }
 
@@ -192,7 +205,11 @@ export function trackAppOpen() {
 // Swipe Discovery Events
 // ============================================================================
 
-export function trackSwipeView(tmdbId: number, position: number, source: string) {
+export function trackSwipeView(
+  tmdbId: number,
+  position: number,
+  source: string
+) {
   trackEvent('swipe_view', { tmdb_id: tmdbId, position, source });
 }
 
@@ -220,12 +237,24 @@ export function trackSwipeWatched(tmdbId: number) {
   trackEvent('swipe_watched', { tmdb_id: tmdbId });
 }
 
-export function trackSwipeSession(durationSeconds: number, itemsViewed: number) {
-  trackEvent('swipe_session', { duration_seconds: durationSeconds, items_viewed: itemsViewed });
+export function trackSwipeSession(
+  durationSeconds: number,
+  itemsViewed: number
+) {
+  trackEvent('swipe_session', {
+    duration_seconds: durationSeconds,
+    items_viewed: itemsViewed,
+  });
 }
 
-export function trackBecauseYouWatchedClick(tmdbId: number, sourceTitle: string) {
-  trackEvent('because_you_watched_click', { tmdb_id: tmdbId, source_title: sourceTitle });
+export function trackBecauseYouWatchedClick(
+  tmdbId: number,
+  sourceTitle: string
+) {
+  trackEvent('because_you_watched_click', {
+    tmdb_id: tmdbId,
+    source_title: sourceTitle,
+  });
 }
 
 export function trackFeedPageLoad(page: number, itemCount: number) {

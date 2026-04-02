@@ -35,7 +35,8 @@ export default function AccountModal({ visible, onClose }: AccountModalProps) {
   const handleDeleteAccount = () => {
     Alert.alert(
       t('profile.deleteAccountTitle') || 'Delete Account',
-      t('profile.deleteAccountMessage') || 'Are you sure you want to delete your account? This action cannot be undone.',
+      t('profile.deleteAccountMessage') ||
+        'Are you sure you want to delete your account? This action cannot be undone.',
       [
         { text: t('common.cancel'), style: 'cancel' },
         {
@@ -60,113 +61,113 @@ export default function AccountModal({ visible, onClose }: AccountModalProps) {
       onRequestClose={onClose}
     >
       <GestureHandlerRootView style={{ flex: 1 }}>
-      <SafeAreaView className='flex-1 bg-light-background dark:bg-dark-background'>
-        {/* Header */}
-        <View className='flex-row items-center justify-between border-b border-light-border px-4 py-3 dark:border-dark-border'>
-          <View className='w-20' />
-          <Text className='text-lg font-semibold text-light-text dark:text-dark-text'>
-            {t('profile.account') || 'Account'}
-          </Text>
-          <TouchableOpacity
-            onPress={onClose}
-            className='min-w-[80px] items-center justify-center rounded-full bg-netflix-500 px-4 py-2'
-            hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}
-          >
-            <Text className='text-base font-semibold text-white'>
-              {t('common.done') || 'Done'}
+        <SafeAreaView className='flex-1 bg-light-background dark:bg-dark-background'>
+          {/* Header */}
+          <View className='flex-row items-center justify-between border-b border-light-border px-4 py-3 dark:border-dark-border'>
+            <View className='w-20' />
+            <Text className='text-lg font-semibold text-light-text dark:text-dark-text'>
+              {t('profile.account') || 'Account'}
             </Text>
-          </TouchableOpacity>
-        </View>
-
-        {/* Content */}
-        <View className='flex-1 px-4 pt-6'>
-          {/* User Avatar */}
-          <View className='mb-8 items-center'>
-            <View className='mb-3 h-20 w-20 items-center justify-center rounded-full bg-netflix-500'>
-              <Text className='text-3xl font-bold text-white'>
-                {user.name?.charAt(0).toUpperCase() ||
-                  user.email?.charAt(0).toUpperCase() ||
-                  '?'}
+            <TouchableOpacity
+              onPress={onClose}
+              className='min-w-[80px] items-center justify-center rounded-full bg-netflix-500 px-4 py-2'
+              hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}
+            >
+              <Text className='text-base font-semibold text-white'>
+                {t('common.done') || 'Done'}
               </Text>
-            </View>
-            {user.name && (
-              <Text className='text-xl font-semibold text-light-text dark:text-dark-text'>
-                {user.name}
-              </Text>
-            )}
+            </TouchableOpacity>
           </View>
 
-          {/* Account Info */}
-          <View className='overflow-hidden rounded-xl bg-light-card dark:bg-dark-card'>
-            {/* Email */}
-            <View className='flex-row items-center px-4 py-3'>
-              <View className='mr-3 h-8 w-8 items-center justify-center rounded-lg bg-light-background dark:bg-dark-background'>
-                <Ionicons
-                  name='mail'
-                  size={18}
-                  color={isDark ? '#ffffff' : '#0f172a'}
-                />
+          {/* Content */}
+          <View className='flex-1 px-4 pt-6'>
+            {/* User Avatar */}
+            <View className='mb-8 items-center'>
+              <View className='mb-3 h-20 w-20 items-center justify-center rounded-full bg-netflix-500'>
+                <Text className='text-3xl font-bold text-white'>
+                  {user.name?.charAt(0).toUpperCase() ||
+                    user.email?.charAt(0).toUpperCase() ||
+                    '?'}
+                </Text>
               </View>
-              <View className='flex-1'>
-                <Text className='text-sm text-light-muted dark:text-dark-muted'>
-                  {t('profile.email') || 'Email'}
+              {user.name && (
+                <Text className='text-xl font-semibold text-light-text dark:text-dark-text'>
+                  {user.name}
                 </Text>
-                <Text
-                  className='text-base text-light-text dark:text-dark-text'
-                  numberOfLines={1}
-                >
-                  {user.email}
-                </Text>
+              )}
+            </View>
+
+            {/* Account Info */}
+            <View className='overflow-hidden rounded-xl bg-light-card dark:bg-dark-card'>
+              {/* Email */}
+              <View className='flex-row items-center px-4 py-3'>
+                <View className='mr-3 h-8 w-8 items-center justify-center rounded-lg bg-light-background dark:bg-dark-background'>
+                  <Ionicons
+                    name='mail'
+                    size={18}
+                    color={isDark ? '#ffffff' : '#0f172a'}
+                  />
+                </View>
+                <View className='flex-1'>
+                  <Text className='text-sm text-light-muted dark:text-dark-muted'>
+                    {t('profile.email') || 'Email'}
+                  </Text>
+                  <Text
+                    className='text-base text-light-text dark:text-dark-text'
+                    numberOfLines={1}
+                  >
+                    {user.email}
+                  </Text>
+                </View>
+              </View>
+
+              <View className='ml-16 h-px bg-light-border dark:bg-dark-border' />
+
+              {/* Sign-in Method */}
+              <View className='flex-row items-center px-4 py-3'>
+                <View className='mr-3 h-8 w-8 items-center justify-center rounded-lg bg-light-background dark:bg-dark-background'>
+                  <Ionicons
+                    name={
+                      user.auth_provider === 'apple'
+                        ? 'logo-apple'
+                        : 'logo-google'
+                    }
+                    size={18}
+                    color={isDark ? '#ffffff' : '#0f172a'}
+                  />
+                </View>
+                <View className='flex-1'>
+                  <Text className='text-sm text-light-muted dark:text-dark-muted'>
+                    {t('profile.signInMethod') || 'Sign-in Method'}
+                  </Text>
+                  <Text className='text-base text-light-text dark:text-dark-text'>
+                    {user.auth_provider === 'apple' ? 'Apple' : 'Google'}
+                  </Text>
+                </View>
               </View>
             </View>
 
-            <View className='ml-16 h-px bg-light-border dark:bg-dark-border' />
+            {/* Sign Out Button */}
+            <TouchableOpacity
+              onPress={handleSignOut}
+              className='mt-8 rounded-xl bg-light-card px-4 py-3 dark:bg-dark-card'
+            >
+              <Text className='text-center text-base font-medium text-red-500'>
+                {t('profile.signOut') || 'Sign Out'}
+              </Text>
+            </TouchableOpacity>
 
-            {/* Sign-in Method */}
-            <View className='flex-row items-center px-4 py-3'>
-              <View className='mr-3 h-8 w-8 items-center justify-center rounded-lg bg-light-background dark:bg-dark-background'>
-                <Ionicons
-                  name={
-                    user.auth_provider === 'apple'
-                      ? 'logo-apple'
-                      : 'logo-google'
-                  }
-                  size={18}
-                  color={isDark ? '#ffffff' : '#0f172a'}
-                />
-              </View>
-              <View className='flex-1'>
-                <Text className='text-sm text-light-muted dark:text-dark-muted'>
-                  {t('profile.signInMethod') || 'Sign-in Method'}
-                </Text>
-                <Text className='text-base text-light-text dark:text-dark-text'>
-                  {user.auth_provider === 'apple' ? 'Apple' : 'Google'}
-                </Text>
-              </View>
-            </View>
+            {/* Delete Account Button */}
+            <TouchableOpacity
+              onPress={handleDeleteAccount}
+              className='mt-4 rounded-xl px-4 py-3'
+            >
+              <Text className='text-center text-sm font-medium text-light-muted dark:text-dark-muted'>
+                {t('profile.deleteAccount') || 'Delete my account'}
+              </Text>
+            </TouchableOpacity>
           </View>
-
-          {/* Sign Out Button */}
-          <TouchableOpacity
-            onPress={handleSignOut}
-            className='mt-8 rounded-xl bg-light-card px-4 py-3 dark:bg-dark-card'
-          >
-            <Text className='text-center text-base font-medium text-red-500'>
-              {t('profile.signOut') || 'Sign Out'}
-            </Text>
-          </TouchableOpacity>
-
-          {/* Delete Account Button */}
-          <TouchableOpacity
-            onPress={handleDeleteAccount}
-            className='mt-4 rounded-xl px-4 py-3'
-          >
-            <Text className='text-center text-sm font-medium text-light-muted dark:text-dark-muted'>
-              {t('profile.deleteAccount') || 'Delete my account'}
-            </Text>
-          </TouchableOpacity>
-        </View>
-      </SafeAreaView>
+        </SafeAreaView>
       </GestureHandlerRootView>
     </Modal>
   );

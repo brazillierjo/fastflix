@@ -45,13 +45,16 @@ export default function AddToWatchlistButton({
   const [showCheckmark, setShowCheckmark] = useState(false);
   const checkmarkShownRef = useRef(false);
 
-  const { inWatchlist, isToggling, toggleAsync } =
-    useWatchlistToggle(tmdbId, mediaType, {
+  const { inWatchlist, isToggling, toggleAsync } = useWatchlistToggle(
+    tmdbId,
+    mediaType,
+    {
       title,
       posterPath,
       providers,
       country,
-    });
+    }
+  );
 
   const handlePress = async () => {
     // If not authenticated, show auth gate instead
@@ -93,10 +96,7 @@ export default function AddToWatchlistButton({
   const { iconSize, padding } = sizeConfig[size];
 
   const authGateModal = (
-    <AuthGate
-      visible={showAuthGate}
-      onClose={() => setShowAuthGate(false)}
-    />
+    <AuthGate visible={showAuthGate} onClose={() => setShowAuthGate(false)} />
   );
 
   if (variant === 'icon') {
@@ -108,7 +108,11 @@ export default function AddToWatchlistButton({
             disabled={isToggling}
             hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
             style={{ padding }}
-            accessibilityLabel={inWatchlist ? `Remove ${title} from watchlist` : `Add ${title} to watchlist`}
+            accessibilityLabel={
+              inWatchlist
+                ? `Remove ${title} from watchlist`
+                : `Add ${title} to watchlist`
+            }
             accessibilityRole='button'
           >
             <MotiView
@@ -148,7 +152,11 @@ export default function AddToWatchlistButton({
         <TouchableOpacity
           onPress={handlePress}
           disabled={isToggling}
-          accessibilityLabel={inWatchlist ? `Remove ${title} from watchlist` : `Add ${title} to watchlist`}
+          accessibilityLabel={
+            inWatchlist
+              ? `Remove ${title} from watchlist`
+              : `Add ${title} to watchlist`
+          }
           accessibilityRole='button'
           className={`flex-row items-center justify-center gap-2 rounded-xl border-2 px-4 py-3 ${
             inWatchlist

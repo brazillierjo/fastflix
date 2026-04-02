@@ -78,13 +78,19 @@ export default function SearchHistoryScreen() {
         <FlatList
           data={searches}
           keyExtractor={(_, i) => String(i)}
-          contentContainerStyle={{ paddingHorizontal: 16, paddingTop: 12, paddingBottom: 100 }}
+          contentContainerStyle={{
+            paddingHorizontal: 16,
+            paddingTop: 12,
+            paddingBottom: 100,
+          }}
           renderItem={({ item: query, index }) => (
             <View
               className={`flex-row items-center bg-light-card dark:bg-dark-card ${
                 index === 0 ? 'rounded-t-xl' : ''
               } ${
-                index === searches.length - 1 ? 'rounded-b-xl' : 'border-b border-light-borderSubtle dark:border-dark-borderSubtle'
+                index === searches.length - 1
+                  ? 'rounded-b-xl'
+                  : 'border-b border-light-borderSubtle dark:border-dark-borderSubtle'
               }`}
             >
               <View className='flex-1 flex-row items-center px-4 py-3.5'>
@@ -109,9 +115,17 @@ export default function SearchHistoryScreen() {
                 accessibilityRole='button'
               >
                 <Ionicons
-                  name={copiedIndex === index ? 'checkmark-circle' : 'copy-outline'}
+                  name={
+                    copiedIndex === index ? 'checkmark-circle' : 'copy-outline'
+                  }
                   size={20}
-                  color={copiedIndex === index ? '#22c55e' : (isDark ? '#8E8E93' : '#8E8E93')}
+                  color={
+                    copiedIndex === index
+                      ? '#22c55e'
+                      : isDark
+                        ? '#8E8E93'
+                        : '#8E8E93'
+                  }
                 />
               </TouchableOpacity>
             </View>

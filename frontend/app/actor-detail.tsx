@@ -37,13 +37,13 @@ import Animated, {
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useAuth } from '@/contexts/AuthContext';
 import { useLanguage } from '@/contexts/LanguageContext';
-import { useIsFavoriteActor, useFavoriteActorToggle } from '@/hooks/useFavoriteActors';
+import {
+  useIsFavoriteActor,
+  useFavoriteActorToggle,
+} from '@/hooks/useFavoriteActors';
 import { backendAPIService } from '@/services/backend-api.service';
 import { Skeleton } from '@/components/Skeleton';
-import {
-  getCardShadow,
-  getSquircle,
-} from '@/utils/designHelpers';
+import { getCardShadow, getSquircle } from '@/utils/designHelpers';
 
 const HERO_HEIGHT = 350;
 const { width: SCREEN_WIDTH } = Dimensions.get('window');
@@ -124,7 +124,7 @@ export default function ActorDetailScreen() {
       setLoading(true);
       backendAPIService
         .getPersonDetails(personId, tmdbLanguage)
-        .then((res) => {
+        .then(res => {
           if (res.success && res.data) {
             setPerson(res.data);
           }
@@ -141,7 +141,7 @@ export default function ActorDetailScreen() {
   // Scroll-driven animations
   const scrollY = useSharedValue(0);
   const scrollHandler = useAnimatedScrollHandler({
-    onScroll: (event) => {
+    onScroll: event => {
       scrollY.value = event.contentOffset.y;
     },
   });
@@ -178,11 +178,11 @@ export default function ActorDetailScreen() {
   const filmography: FilmographyItem[] = React.useMemo(() => {
     if (!person) return [];
     // Merge movie and TV credits into a single list
-    const movies: FilmographyItem[] = (person.movie_credits || []).map((m) => ({
+    const movies: FilmographyItem[] = (person.movie_credits || []).map(m => ({
       ...m,
       media_type: 'movie' as const,
     }));
-    const tvShows: FilmographyItem[] = (person.tv_credits || []).map((t) => ({
+    const tvShows: FilmographyItem[] = (person.tv_credits || []).map(t => ({
       ...t,
       title: t.name || t.title,
       media_type: 'tv' as const,
@@ -190,7 +190,7 @@ export default function ActorDetailScreen() {
     const all = [...movies, ...tvShows];
     const seen = new Set<number>();
     return all
-      .filter((item) => {
+      .filter(item => {
         if (!item.id || seen.has(item.id)) return false;
         seen.add(item.id);
         return true;
@@ -221,7 +221,7 @@ export default function ActorDetailScreen() {
       truncated.lastIndexOf('. '),
       truncated.lastIndexOf('! '),
       truncated.lastIndexOf('? '),
-      truncated.lastIndexOf('.\n'),
+      truncated.lastIndexOf('.\n')
     );
     if (lastSentenceEnd > BIO_TRUNCATE_LENGTH * 0.5) {
       return truncated.slice(0, lastSentenceEnd + 1);
@@ -294,8 +294,16 @@ export default function ActorDetailScreen() {
           animate={{ opacity: 1 }}
           transition={{ type: 'timing', duration: 400 }}
         >
-          <View style={{ width: SCREEN_WIDTH, height: HERO_HEIGHT, overflow: 'hidden' }}>
-            <Animated.View style={[{ width: '100%', height: '120%' }, heroImageStyle]}>
+          <View
+            style={{
+              width: SCREEN_WIDTH,
+              height: HERO_HEIGHT,
+              overflow: 'hidden',
+            }}
+          >
+            <Animated.View
+              style={[{ width: '100%', height: '120%' }, heroImageStyle]}
+            >
               {profileImageUri ? (
                 <Image
                   source={{ uri: profileImageUri }}
@@ -355,7 +363,11 @@ export default function ActorDetailScreen() {
                 <Text
                   className='mt-1 text-xs text-white/70'
                   numberOfLines={1}
-                  style={{ textShadowColor: 'rgba(0,0,0,0.6)', textShadowOffset: { width: 0, height: 1 }, textShadowRadius: 3 }}
+                  style={{
+                    textShadowColor: 'rgba(0,0,0,0.6)',
+                    textShadowOffset: { width: 0, height: 1 },
+                    textShadowRadius: 3,
+                  }}
                 >
                   {person.also_known_as.slice(0, 3).join(' · ')}
                 </Text>
@@ -444,9 +456,24 @@ export default function ActorDetailScreen() {
             >
               <View className='mb-6'>
                 <Skeleton width={120} height={20} borderRadius={6} />
-                <Skeleton width='100%' height={14} borderRadius={4} style={{ marginTop: 12 }} />
-                <Skeleton width='100%' height={14} borderRadius={4} style={{ marginTop: 6 }} />
-                <Skeleton width='70%' height={14} borderRadius={4} style={{ marginTop: 6 }} />
+                <Skeleton
+                  width='100%'
+                  height={14}
+                  borderRadius={4}
+                  style={{ marginTop: 12 }}
+                />
+                <Skeleton
+                  width='100%'
+                  height={14}
+                  borderRadius={4}
+                  style={{ marginTop: 6 }}
+                />
+                <Skeleton
+                  width='70%'
+                  height={14}
+                  borderRadius={4}
+                  style={{ marginTop: 6 }}
+                />
               </View>
             </MotiView>
           ) : biography ? (
@@ -468,7 +495,7 @@ export default function ActorDetailScreen() {
                     onPress={() => setBioExpanded(!bioExpanded)}
                     className='mt-2'
                   >
-                    <Text className='text-sm font-semibold text-brand'>
+                    <Text className='text-brand text-sm font-semibold'>
                       {bioExpanded
                         ? t('actorDetail.readLess') || 'Read less'
                         : t('actorDetail.readMore') || 'Read more'}
@@ -488,11 +515,23 @@ export default function ActorDetailScreen() {
             >
               <View className='mb-6'>
                 <Skeleton width={100} height={20} borderRadius={6} />
-                <Skeleton width='60%' height={14} borderRadius={4} style={{ marginTop: 12 }} />
-                <Skeleton width='80%' height={14} borderRadius={4} style={{ marginTop: 6 }} />
+                <Skeleton
+                  width='60%'
+                  height={14}
+                  borderRadius={4}
+                  style={{ marginTop: 12 }}
+                />
+                <Skeleton
+                  width='80%'
+                  height={14}
+                  borderRadius={4}
+                  style={{ marginTop: 6 }}
+                />
               </View>
             </MotiView>
-          ) : (person?.birthday || person?.place_of_birth || filmography.length > 0) ? (
+          ) : person?.birthday ||
+            person?.place_of_birth ||
+            filmography.length > 0 ? (
             <MotiView
               from={{ opacity: 0, translateY: 15 }}
               animate={{ opacity: 1, translateY: 0 }}
@@ -552,9 +591,16 @@ export default function ActorDetailScreen() {
                         color={isDark ? '#a3a3a3' : '#737373'}
                       />
                       <Text className='text-sm text-light-textSecondary dark:text-dark-textSecondary'>
-                        {filmography.filter(f => f.media_type === 'movie').length} {t('actorDetail.movies') || 'movies'}
+                        {
+                          filmography.filter(f => f.media_type === 'movie')
+                            .length
+                        }{' '}
+                        {t('actorDetail.movies') || 'movies'}
                         {' · '}
-                        {filmography.filter(f => f.media_type === 'tv').length} {t('actorDetail.tvShows') || 'TV shows'}
+                        {
+                          filmography.filter(f => f.media_type === 'tv').length
+                        }{' '}
+                        {t('actorDetail.tvShows') || 'TV shows'}
                       </Text>
                     </View>
                   )}
@@ -577,14 +623,16 @@ export default function ActorDetailScreen() {
                 style={[getSquircle(14)]}
                 className={`mb-4 flex-row items-center justify-center gap-2 px-4 py-3 ${
                   isFavorite
-                    ? 'bg-red-500/15 border border-red-500/30'
+                    ? 'border border-red-500/30 bg-red-500/15'
                     : 'border border-light-border bg-light-surface dark:border-dark-border dark:bg-dark-surface'
                 }`}
               >
                 <Ionicons
                   name={isFavorite ? 'heart' : 'heart-outline'}
                   size={20}
-                  color={isFavorite ? '#ef4444' : isDark ? '#a3a3a3' : '#737373'}
+                  color={
+                    isFavorite ? '#ef4444' : isDark ? '#a3a3a3' : '#737373'
+                  }
                 />
                 <Text
                   className={`text-sm font-medium ${
@@ -594,7 +642,8 @@ export default function ActorDetailScreen() {
                   }`}
                 >
                   {isFavorite
-                    ? t('actorDetail.removeFromFavorites') || 'Remove from favorites'
+                    ? t('actorDetail.removeFromFavorites') ||
+                      'Remove from favorites'
                     : t('actorDetail.addToFavorites') || 'Add to favorites'}
                 </Text>
               </TouchableOpacity>
@@ -609,7 +658,9 @@ export default function ActorDetailScreen() {
               transition={{ type: 'timing', duration: 400, delay: 175 }}
             >
               <TouchableOpacity
-                onPress={() => Linking.openURL(`https://www.imdb.com/name/${person.imdb_id}`)}
+                onPress={() =>
+                  Linking.openURL(`https://www.imdb.com/name/${person.imdb_id}`)
+                }
                 style={getSquircle(14)}
                 className='mb-6 flex-row items-center justify-center gap-2 border-2 border-[#f5c518] bg-[#f5c518]/10 py-3'
               >
@@ -637,8 +688,13 @@ export default function ActorDetailScreen() {
                   showsHorizontalScrollIndicator={false}
                   contentContainerStyle={{ gap: 12 }}
                 >
-                  {[1, 2, 3, 4].map((i) => (
-                    <Skeleton key={i} width={120} height={180} borderRadius={12} />
+                  {[1, 2, 3, 4].map(i => (
+                    <Skeleton
+                      key={i}
+                      width={120}
+                      height={180}
+                      borderRadius={12}
+                    />
                   ))}
                 </ScrollView>
               ) : filmography.length > 0 ? (

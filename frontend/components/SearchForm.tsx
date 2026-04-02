@@ -73,8 +73,12 @@ export default function SearchForm({
 
   // Animated placeholder typewriter (cycles through examples)
   const [animatedPlaceholder, setAnimatedPlaceholder] = useState('');
-  const placeholderTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
-  const placeholderIntervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
+  const placeholderTimerRef = useRef<ReturnType<typeof setTimeout> | null>(
+    null
+  );
+  const placeholderIntervalRef = useRef<ReturnType<typeof setInterval> | null>(
+    null
+  );
   const placeholderPhaseRef = useRef<'typing' | 'pause' | 'erasing'>('typing');
   const placeholderTextRef = useRef('');
   const placeholderTargetRef = useRef('');
@@ -101,12 +105,16 @@ export default function SearchForm({
       if (phase === 'typing') {
         if (placeholderIdxRef.current < target.length) {
           placeholderIdxRef.current++;
-          placeholderTextRef.current = target.slice(0, placeholderIdxRef.current);
+          placeholderTextRef.current = target.slice(
+            0,
+            placeholderIdxRef.current
+          );
           setAnimatedPlaceholder(placeholderTextRef.current);
         } else {
           // Done typing — pause
           placeholderPhaseRef.current = 'pause';
-          if (placeholderIntervalRef.current) clearInterval(placeholderIntervalRef.current);
+          if (placeholderIntervalRef.current)
+            clearInterval(placeholderIntervalRef.current);
           placeholderTimerRef.current = setTimeout(() => {
             if (cancelled) return;
             placeholderPhaseRef.current = 'erasing';
@@ -116,11 +124,15 @@ export default function SearchForm({
       } else if (phase === 'erasing') {
         if (placeholderIdxRef.current > 0) {
           placeholderIdxRef.current--;
-          placeholderTextRef.current = target.slice(0, placeholderIdxRef.current);
+          placeholderTextRef.current = target.slice(
+            0,
+            placeholderIdxRef.current
+          );
           setAnimatedPlaceholder(placeholderTextRef.current);
         } else {
           // Done erasing — pick new text and start typing
-          if (placeholderIntervalRef.current) clearInterval(placeholderIntervalRef.current);
+          if (placeholderIntervalRef.current)
+            clearInterval(placeholderIntervalRef.current);
           placeholderTimerRef.current = setTimeout(() => {
             if (cancelled) return;
             placeholderTargetRef.current = getRandomPlaceholder();
@@ -140,8 +152,10 @@ export default function SearchForm({
 
     return () => {
       cancelled = true;
-      if (placeholderTimerRef.current) clearTimeout(placeholderTimerRef.current);
-      if (placeholderIntervalRef.current) clearInterval(placeholderIntervalRef.current);
+      if (placeholderTimerRef.current)
+        clearTimeout(placeholderTimerRef.current);
+      if (placeholderIntervalRef.current)
+        clearInterval(placeholderIntervalRef.current);
     };
   }, [query, isTyping, getRandomPlaceholder]);
 
@@ -336,16 +350,18 @@ export default function SearchForm({
       <ScrollView
         ref={scrollViewRef}
         className='flex-1 bg-light-background dark:bg-dark-background'
-        contentContainerStyle={{ flexGrow: 1, justifyContent: 'center', paddingBottom: 80 }}
+        contentContainerStyle={{
+          flexGrow: 1,
+          justifyContent: 'center',
+          paddingBottom: 80,
+        }}
         keyboardShouldPersistTaps='handled'
         showsVerticalScrollIndicator={false}
         {...panResponder.panHandlers}
       >
         <View className='px-6'>
           {/* Welcome Section */}
-          <View
-            className='mb-8'
-          >
+          <View className='mb-8'>
             <Text className='mb-3 text-3xl font-bold text-light-text dark:text-dark-text'>
               {t('welcome.title')}
             </Text>
@@ -358,9 +374,7 @@ export default function SearchForm({
           </View>
 
           {/* Search Input */}
-          <View
-            className='mb-5'
-          >
+          <View className='mb-5'>
             {/* Action Buttons Row */}
             <View className='mb-3 flex-row items-center justify-between'>
               {/* "No idea" Magic Button */}
@@ -536,10 +550,7 @@ export default function SearchForm({
               </Text>
             </TouchableOpacity>
           </View>
-
         </View>
-
-
       </ScrollView>
 
       {/* Filters Bottom Sheet */}

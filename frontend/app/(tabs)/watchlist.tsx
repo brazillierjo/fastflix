@@ -14,7 +14,13 @@ import { cn } from '@/utils/cn';
 import { getButtonBorderRadius, getSquircle } from '@/utils/designHelpers';
 import * as Sentry from '@sentry/react-native';
 import { MotiView } from 'moti';
-import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import React, {
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from 'react';
 import {
   ActivityIndicator,
   FlatList,
@@ -26,7 +32,12 @@ import {
   View,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { trackScreenView, trackWatchlistShare, trackWatchlistRefresh, trackPullToRefresh } from '@/services/analytics';
+import {
+  trackScreenView,
+  trackWatchlistShare,
+  trackWatchlistRefresh,
+  trackPullToRefresh,
+} from '@/services/analytics';
 
 type FilterType = 'all' | 'movie' | 'tv';
 type ViewMode = 'toWatch' | 'watched' | 'all';
@@ -43,10 +54,14 @@ export default function WatchlistScreen() {
   const [viewMode, setViewMode] = useState<ViewMode>('toWatch');
   const [removingItemId, setRemovingItemId] = useState<string | null>(null);
   const [showAuthGate, setShowAuthGate] = useState(false);
-  const [dismissedChanges, setDismissedChanges] = useState<Set<string>>(new Set());
+  const [dismissedChanges, setDismissedChanges] = useState<Set<string>>(
+    new Set()
+  );
   const flatListRef = useRef<FlatList>(null);
 
-  useEffect(() => { trackScreenView('watchlist'); }, []);
+  useEffect(() => {
+    trackScreenView('watchlist');
+  }, []);
 
   const { changes: availabilityChanges, isChecking: isCheckingAvailability } =
     useAvailabilityCheck();
@@ -76,7 +91,7 @@ export default function WatchlistScreen() {
     const map: Record<string, string[]> = {};
     for (const change of availabilityChanges) {
       if (change.newProviders.length > 0) {
-        map[change.watchlistId] = change.newProviders.map((p) => p.name);
+        map[change.watchlistId] = change.newProviders.map(p => p.name);
       }
     }
     return map;
@@ -85,27 +100,30 @@ export default function WatchlistScreen() {
   // Visible (non-dismissed) availability changes with new providers
   const visibleChanges = useMemo(() => {
     return availabilityChanges.filter(
-      (c) => c.newProviders.length > 0 && !dismissedChanges.has(c.watchlistId)
+      c => c.newProviders.length > 0 && !dismissedChanges.has(c.watchlistId)
     );
   }, [availabilityChanges, dismissedChanges]);
 
   const dismissChange = useCallback((watchlistId: string) => {
-    setDismissedChanges((prev) => new Set(prev).add(watchlistId));
+    setDismissedChanges(prev => new Set(prev).add(watchlistId));
   }, []);
 
-  const handleRemove = useCallback(async (itemId: string) => {
-    setRemovingItemId(itemId);
-    try {
-      await removeFromWatchlistAsync(itemId);
-    } catch (error) {
-      Sentry.captureException(error, {
-        tags: { context: 'watchlist-remove' },
-        extra: { itemId },
-      });
-    } finally {
-      setRemovingItemId(null);
-    }
-  }, [removeFromWatchlistAsync]);
+  const handleRemove = useCallback(
+    async (itemId: string) => {
+      setRemovingItemId(itemId);
+      try {
+        await removeFromWatchlistAsync(itemId);
+      } catch (error) {
+        Sentry.captureException(error, {
+          tags: { context: 'watchlist-remove' },
+          extra: { itemId },
+        });
+      } finally {
+        setRemovingItemId(null);
+      }
+    },
+    [removeFromWatchlistAsync]
+  );
 
   const handleRefresh = useCallback(() => {
     trackWatchlistRefresh();
@@ -123,7 +141,8 @@ export default function WatchlistScreen() {
     if (toWatchItems.length === 0) return;
 
     const title = t('watchlist.shareTitle') || 'My FastFlix Watchlist';
-    const footer = t('watchlist.shareFooter') || 'Discover what to watch with FastFlix!';
+    const footer =
+      t('watchlist.shareFooter') || 'Discover what to watch with FastFlix!';
 
     const itemLines = toWatchItems
       .map((item, index) => `${index + 1}. ${item.title}`)
@@ -341,7 +360,12 @@ export default function WatchlistScreen() {
         <MotiView
           from={{ opacity: 0, scale: 0.95 }}
           animate={{ opacity: 1, scale: 1 }}
-          transition={{ type: 'spring', damping: 18, stiffness: 180, delay: 80 }}
+          transition={{
+            type: 'spring',
+            damping: 18,
+            stiffness: 180,
+            delay: 80,
+          }}
           className='flex-1 items-center justify-center px-8'
         >
           <Ionicons
@@ -375,17 +399,22 @@ export default function WatchlistScreen() {
           ListHeaderComponent={
             <>
               {/* Availability change banners */}
-              {visibleChanges.map((change) => (
+              {visibleChanges.map(change => (
                 <MotiView
                   key={`change-${change.watchlistId}`}
                   from={{ opacity: 0, translateX: -50 }}
                   animate={{ opacity: 1, translateX: 0 }}
                   transition={{ type: 'spring', damping: 18, stiffness: 180 }}
-                  className='mb-3 flex-row items-center rounded-xl bg-green-500/10 border border-green-500/30 px-3 py-2.5'
+                  className='mb-3 flex-row items-center rounded-xl border border-green-500/30 bg-green-500/10 px-3 py-2.5'
                 >
                   <Text className='mr-2 text-base'>🎉</Text>
-                  <Text className='flex-1 text-sm font-medium text-green-700 dark:text-green-400' numberOfLines={2}>
-                    {(t('availability.newProvider') || 'Now on {{provider}}!').replace(
+                  <Text
+                    className='flex-1 text-sm font-medium text-green-700 dark:text-green-400'
+                    numberOfLines={2}
+                  >
+                    {(
+                      t('availability.newProvider') || 'Now on {{provider}}!'
+                    ).replace(
                       '{{provider}}',
                       change.newProviders[0]?.name || ''
                     )}{' '}
@@ -414,7 +443,8 @@ export default function WatchlistScreen() {
                 >
                   <ActivityIndicator size='small' color='#a3a3a3' />
                   <Text className='text-xs text-light-muted dark:text-dark-muted'>
-                    {t('availability.checkingProviders') || 'Checking availability...'}
+                    {t('availability.checkingProviders') ||
+                      'Checking availability...'}
                   </Text>
                 </MotiView>
               )}

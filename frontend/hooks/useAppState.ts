@@ -18,7 +18,10 @@
  */
 
 import { useState } from 'react';
-import { StreamingProvider, ConversationMessage } from '../services/backend-api.service';
+import {
+  StreamingProvider,
+  ConversationMessage,
+} from '../services/backend-api.service';
 import { Cast, CrewMember, DetailedInfo, Movie } from './useBackendMovieSearch';
 
 interface AppState {
@@ -54,7 +57,9 @@ export const useAppState = () => {
   }>({});
   const [geminiResponse, setGeminiResponse] = useState('');
   const [isFallback, setIsFallback] = useState(false);
-  const [conversationHistory, setConversationHistory] = useState<ConversationMessage[]>([]);
+  const [conversationHistory, setConversationHistory] = useState<
+    ConversationMessage[]
+  >([]);
   const [showWelcome, setShowWelcome] = useState(true);
   const [showResults, setShowResults] = useState(false);
 
