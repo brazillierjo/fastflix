@@ -85,7 +85,7 @@ export default function SwipeCard({
 
   return (
     <View style={styles.container}>
-      {/* Poster — top 55% of the screen with fade to black */}
+      {/* Poster — top 75% of the screen with fade to black */}
       <View style={styles.posterArea}>
         {(backdropUri || posterUri) && (
           <Image
@@ -212,7 +212,7 @@ const styles = StyleSheet.create({
   },
 
   posterArea: {
-    height: '55%',
+    height: '75%',
     overflow: 'hidden',
   },
   topGradient: {
