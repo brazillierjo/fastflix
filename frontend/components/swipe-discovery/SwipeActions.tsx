@@ -43,9 +43,16 @@ export default function SwipeActions({
   const router = useRouter();
   const { isAuthenticated } = useAuth();
 
-  const [feedbackState, setFeedbackState] = useState<
-    'like' | 'dislike' | null
-  >(null);
+  // Derive initial feedback state from saved rating in taste profile
+  const { rating: savedRating, isWatched } = useMovieRating(item.tmdb_id);
+  const savedFeedback =
+    savedRating === 5 ? 'like' : savedRating === 1 ? 'dislike' : null;
+  const [feedbackOverride, setFeedbackOverride] = useState<
+    'like' | 'dislike' | null | undefined
+  >(undefined);
+  // Use override if user interacted this session, otherwise use saved
+  const feedbackState =
+    feedbackOverride !== undefined ? feedbackOverride : savedFeedback;
   const [toastMessage, setToastMessage] = useState<string | null>(null);
   const [toastKey, setToastKey] = useState(0);
 
@@ -63,7 +70,6 @@ export default function SwipeActions({
     country,
   });
 
-  const { isWatched } = useMovieRating(item.tmdb_id);
   const { rateMovie, isRating } = useRateMovie();
   const { deleteRating, isDeleting } = useDeleteRating();
 
@@ -77,10 +83,10 @@ export default function SwipeActions({
     if (!isAuthenticated) return;
     Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
     if (feedbackState === 'like') {
-      setFeedbackState(null);
+      setFeedbackOverride(null);
       backendAPIService.deleteRating(item.tmdb_id).catch(() => {});
     } else {
-      setFeedbackState('like');
+      setFeedbackOverride('like');
       trackSwipeLike(item.tmdb_id);
       showToast(t('swipeDiscovery.tasteUpdated'));
       backendAPIService
@@ -99,10 +105,10 @@ export default function SwipeActions({
     if (!isAuthenticated) return;
     Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
     if (feedbackState === 'dislike') {
-      setFeedbackState(null);
+      setFeedbackOverride(null);
       backendAPIService.deleteRating(item.tmdb_id).catch(() => {});
     } else {
-      setFeedbackState('dislike');
+      setFeedbackOverride('dislike');
       trackSwipeDislike(item.tmdb_id);
       showToast(t('swipeDiscovery.tasteUpdated'));
       backendAPIService
