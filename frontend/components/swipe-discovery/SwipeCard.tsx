@@ -86,7 +86,7 @@ export default function SwipeCard({
   return (
     <View style={styles.container}>
       {/* Poster — top 55% of the screen with fade to black */}
-      <View style={[styles.posterArea, { marginTop: insets.top }]}>
+      <View style={styles.posterArea}>
         {(backdropUri || posterUri) && (
           <Image
             source={{ uri: backdropUri || posterUri || '' }}
@@ -94,11 +94,11 @@ export default function SwipeCard({
             resizeMode="cover"
           />
         )}
-        {/* Top gradient — status bar / Dynamic Island */}
+        {/* Top gradient — fades image into black behind status bar */}
         <LinearGradient
-          colors={['rgba(0,0,0,0.5)', 'rgba(0,0,0,0.15)', 'transparent']}
-          locations={[0, 0.6, 1]}
-          style={styles.topGradient}
+          colors={['#000', 'rgba(0,0,0,0.7)', 'transparent']}
+          locations={[0, 0.5, 1]}
+          style={[styles.topGradient, { height: insets.top + 60 }]}
           pointerEvents="none"
         />
         {/* Bottom fade into black */}
@@ -220,7 +220,6 @@ const styles = StyleSheet.create({
     top: 0,
     left: 0,
     right: 0,
-    height: 80,
     zIndex: 1,
   },
   posterFade: {
