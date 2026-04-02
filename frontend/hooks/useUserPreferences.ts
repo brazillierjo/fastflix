@@ -61,6 +61,10 @@ export function useUserPreferences() {
     },
     onSuccess: updatedPreferences => {
       queryClient.setQueryData(PREFERENCES_QUERY_KEY, updatedPreferences);
+      // Invalidate all content queries so they re-fetch with new filters
+      queryClient.invalidateQueries({ queryKey: ['homeData'] });
+      queryClient.invalidateQueries({ queryKey: ['forYou'] });
+      queryClient.invalidateQueries({ queryKey: ['becauseYouWatched'] });
     },
   });
 

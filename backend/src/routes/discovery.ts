@@ -817,7 +817,10 @@ app.get("/because-you-watched", authMiddleware, rateLimitMiddleware("standard"),
     const language = c.req.query("language") || "fr-FR";
     const country = c.req.query("country") || "FR";
 
-    const [tasteProfile] = await Promise.all([db.getUserTasteProfile(userId)]);
+    const [tasteProfile, preferences] = await Promise.all([
+      db.getUserTasteProfile(userId),
+      db.getUserPreferences(userId),
+    ]);
 
     // Need at least one rated movie
     const ratedMovies = tasteProfile.rated_movies.filter((m) => m.rating >= 3);
@@ -835,8 +838,8 @@ app.get("/because-you-watched", authMiddleware, rateLimitMiddleware("standard"),
     const watchedIds = getWatchedTmdbIds(tasteProfile);
     const filtered = similar.filter((item) => !watchedIds.has(item.tmdb_id));
 
-    // Map to TrendingItem format
-    const items = filtered.slice(0, 10).map((item) => ({
+    // Map to items with tmdb_id for provider fetching
+    const candidates = filtered.slice(0, 20).map((item) => ({
       tmdb_id: item.tmdb_id,
       title: item.title,
       poster_path: item.poster_path,
@@ -845,8 +848,8 @@ app.get("/because-you-watched", authMiddleware, rateLimitMiddleware("standard"),
     }));
 
     // Fetch providers
-    const providersMap = await tmdb.getBatchWatchProviders(
-      items.map((i) => ({
+    const rawProvidersMap = await tmdb.getBatchWatchProviders(
+      candidates.map((i) => ({
         ...i,
         overview: "",
         backdrop_path: null,
@@ -857,12 +860,47 @@ app.get("/because-you-watched", authMiddleware, rateLimitMiddleware("standard"),
       country
     );
 
-    const itemsWithProviders = items.map((item) => ({
+    // Filter providers by user preferences
+    const allowFlatrate = preferences.includeFlatrate;
+    const allowRent = preferences.includeRent;
+    const allowBuy = preferences.includeBuy;
+    const hasAvailabilityFilter = allowFlatrate || allowRent || allowBuy;
+    const userPlatforms = preferences.platforms.length > 0 ? new Set(preferences.platforms) : null;
+    const hasFilters = hasAvailabilityFilter || userPlatforms !== null;
+
+    const filteredProvidersMap: { [key: number]: StreamingProvider[] } = {};
+    for (const [idStr, itemProviders] of Object.entries(rawProvidersMap)) {
+      let result = itemProviders;
+      if (hasAvailabilityFilter) {
+        result = result.filter((p) => {
+          if (p.availability_type === "flatrate" && allowFlatrate) return true;
+          if (p.availability_type === "rent" && allowRent) return true;
+          if (p.availability_type === "buy" && allowBuy) return true;
+          if (p.availability_type === "ads" && allowFlatrate) return true;
+          return false;
+        });
+      }
+      if (userPlatforms) {
+        result = result.filter((p) => userPlatforms.has(p.provider_id));
+      }
+      if (result.length > 0) {
+        filteredProvidersMap[Number(idStr)] = result;
+      }
+    }
+
+    // Only keep items that have matching providers (if user has filters)
+    const finalItems = hasFilters
+      ? candidates.filter((item) => filteredProvidersMap[item.tmdb_id]?.length > 0)
+      : candidates;
+
+    const itemsWithProviders = finalItems.slice(0, 10).map((item) => ({
       ...item,
-      providers: (providersMap[item.tmdb_id] || []).map((p) => ({
-        provider_name: p.provider_name,
-        logo_path: p.logo_path,
-      })),
+      providers: (filteredProvidersMap[item.tmdb_id] || rawProvidersMap[item.tmdb_id] || []).map(
+        (p) => ({
+          provider_name: p.provider_name,
+          logo_path: p.logo_path,
+        })
+      ),
     }));
 
     c.header("Cache-Control", "private, max-age=3600");
