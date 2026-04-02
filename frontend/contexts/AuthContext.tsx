@@ -85,26 +85,27 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     try {
       setIsLoading(true);
       const storedUser = await authService.getCurrentUser();
-      setUser(storedUser);
 
-      // If user is already logged in, link to RevenueCat
       if (storedUser) {
         await linkUserToRevenueCat(storedUser.id);
 
-        // Refresh user data from backend in background
-        // This ensures we have the latest user info
-        authService
-          .refreshUserData()
-          .then(freshUser => {
-            if (freshUser) {
-              setUser(freshUser);
-            }
-          })
-          .catch(error => {
-            // Don't throw - just log the error
-            // If refresh fails (e.g., 401), the 401 handler will clear the token
-            console.warn('Failed to refresh user data:', error);
-          });
+        // Validate token with backend before making app available
+        const freshUser = await authService.refreshUserData();
+        if (freshUser) {
+          setUser(freshUser);
+        } else {
+          // Check if token was cleared (401) vs network error
+          const tokenStillExists = await authService.getAuthToken();
+          if (tokenStillExists) {
+            // Network error — keep stored user, app works offline
+            setUser(storedUser);
+          } else {
+            // Token invalidated — user needs to re-login
+            setUser(null);
+          }
+        }
+      } else {
+        setUser(null);
       }
     } catch (error) {
       console.error('Error loading user:', error);
