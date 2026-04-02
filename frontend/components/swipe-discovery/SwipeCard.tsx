@@ -8,6 +8,7 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useLanguage } from '@/contexts/LanguageContext';
 import type {
   MovieResult,
@@ -58,6 +59,7 @@ export default function SwipeCard({
   bottomInset = 0,
 }: SwipeCardProps) {
   const { t } = useLanguage();
+  const insets = useSafeAreaInsets();
   const [synopsisExpanded, setSynopsisExpanded] = useState(false);
 
   const posterUri = item.poster_path
@@ -84,7 +86,7 @@ export default function SwipeCard({
   return (
     <View style={styles.container}>
       {/* Poster — top 55% of the screen with fade to black */}
-      <View style={styles.posterArea}>
+      <View style={[styles.posterArea, { marginTop: insets.top }]}>
         {(backdropUri || posterUri) && (
           <Image
             source={{ uri: backdropUri || posterUri || '' }}
