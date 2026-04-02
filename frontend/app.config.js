@@ -68,7 +68,7 @@ export default {
       policy: 'appVersion',
     },
     extra: {
-      API_URL: process.env.EXPO_PUBLIC_API_URL,
+      API_URL: process.env.EXPO_PUBLIC_API_URL || 'https://fastflix.miotutor.app',
       EXPO_PUBLIC_REVENUECAT_IOS_API_KEY:
         process.env.EXPO_PUBLIC_REVENUECAT_IOS_API_KEY,
       EXPO_PUBLIC_REVENUECAT_ANDROID_API_KEY:
