@@ -16,8 +16,7 @@
 7. [Justifier le prix — Free vs Premium](#7-justifier-le-prix)
 8. [Features addictives — Rétention](#8-features-addictives)
 9. [UI/UX Optimisations](#9-uiux-optimisations)
-10. [Mode humeur](#10-mode-humeur)
-11. [Notifications de sorties](#11-notifications-de-sorties)
+10. [Notifications de sorties](#11-notifications-de-sorties)
 12. [Swipe Discovery (mode TikTok)](#12-swipe-discovery-mode-tiktok) ✅
 
 ---
@@ -472,41 +471,6 @@ Limites actuelles Free :
 
 ---
 
-## 10. Mode humeur
-
-> **Objectif** : engagement émotionnel ultra puissant
-
-**Statut** : N'EXISTE PAS
-**Catégorie** : Free (limité) / Premium (illimité)
-**Priorité** : Haute
-
-### 10.1 — Écran "Mode humeur"
-
-- [ ] **Frontend — Nouveau composant `MoodSelector.tsx`**
-  - Grille de moods avec emojis et labels :
-    | Emoji | Label FR | Label EN | Query Gemini |
-    |-------|----------|----------|--------------|
-    | 😴 | Fatigué | Tired | "Film léger et réconfortant, pas prise de tête" |
-    | 😂 | Envie de rire | Want to laugh | "Comédie hilarante, feel good" |
-    | 🤯 | Film marquant | Mind-blowing | "Film qui marque, twist ou visuellement époustouflant" |
-    | 😢 | Envie de pleurer | Want to cry | "Film émouvant, drame qui fait pleurer" |
-    | 😰 | Stressé | Stressed | "Film d'évasion, aventure ou fantaisie" |
-    | 🥰 | Romantique | Romantic | "Film romantique ou comédie romantique" |
-    | 🔥 | Adrénaline | Adrenaline | "Action intense, thriller haletant" |
-    | 👨‍👩‍👧‍👦 | En famille | Family | "Film familial, tout public, animation" |
-  - Chaque mood card : `60x60`, emoji centré, label dessous
-  - Animation : pulsation au tap, haptic feedback
-
-- [ ] **Frontend — Intégration dans SearchForm ou Home**
-  - Option A : Section sur la Home (entre le CTA et le Daily Pick)
-  - Option B : Sous l'input de recherche dans SearchForm
-  - **Recommandation** : Option A sur la Home — plus visible et réduit la friction
-  - Au tap sur un mood : naviguer vers `/(tabs)/search` avec le query pré-rempli
-
-- [ ] **Traductions** : Ajouter toutes les clés mood dans chaque langue
-
----
-
 ## 11. Notifications de sorties
 
 > **Objectif** : "être notifié quand un film sort"
@@ -601,7 +565,6 @@ backend/
 
 ### Phase 1 — Quick Wins
 - [x] 6.2 — Trending renommé "Tendances pour vous" (authentifié) / "Tendances" (guest)
-- [x] 10.1 + 3.1 — Mode humeur : 8 mood chips sur Explorer (😂🔥🥰🤯😢😴👨‍👩‍👧‍👦😰), tap → recherche IA pré-remplie
 - [x] 5.2 — Badge "Inclus" (vert, flatrate) / "Location" (jaune, rent/buy) sur SwipeCard
 - [x] 7.1 — Tableau comparatif Free vs Pro dans SubscriptionModal (6 features, check/cross)
 - [x] Audit premium — All gates verified: swipe 5/session, like/dislike/watchlist/watched disabled for guests, trending public pour guests
