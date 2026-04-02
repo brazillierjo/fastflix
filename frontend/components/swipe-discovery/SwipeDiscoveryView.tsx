@@ -3,18 +3,12 @@ import { LinearGradient } from 'expo-linear-gradient';
 import PagerView from 'react-native-pager-view';
 import React, { useCallback, useRef, useState } from 'react';
 import {
-  Animated,
-  Dimensions,
   StyleSheet,
-  Image,
   Text,
   TouchableOpacity,
   View,
 } from 'react-native';
-import { Gesture, GestureDetector } from 'react-native-gesture-handler';
 import { useRouter } from 'expo-router';
-import * as Haptics from 'expo-haptics';
-import { trackSwipeToDetail } from '@/services/analytics';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { useSubscription } from '@/contexts/RevenueCatContext';
 import SubscriptionModal from '@/components/SubscriptionModal';
@@ -30,218 +24,6 @@ import type {
 } from '@/services/backend-api.service';
 
 const FREE_SWIPE_LIMIT = 5;
-const SWIPE_LEFT_THRESHOLD = 70;
-const { width: SCREEN_W } = Dimensions.get('window');
-
-const TMDB_IMG = 'https://image.tmdb.org/t/p';
-const HERO_H = 300;
-
-interface SwipeLeftItem {
-  title: string;
-  poster_path: string | null;
-  vote_average: number;
-  media_type: 'movie' | 'tv';
-  overview: string;
-  release_date?: string;
-  first_air_date?: string;
-}
-
-/**
- * Swipe left to reveal a movie-detail preview behind, then navigate.
- * Uses react-native-gesture-handler to coordinate with PagerView's native gestures.
- */
-function SwipeLeftDetector({
-  children,
-  onSwipeLeft,
-  item,
-}: {
-  children: React.ReactNode;
-  onSwipeLeft: () => void;
-  item: SwipeLeftItem;
-}) {
-  const pan = useRef(new Animated.Value(0)).current;
-  const navigated = useRef(false);
-
-  const gesture = Gesture.Pan()
-    // Only activate on clearly horizontal moves — let PagerView handle vertical
-    .activeOffsetX([-15, 15])
-    .failOffsetY([-20, 20])
-    .onUpdate((e) => {
-      if (e.translationX < 0) pan.setValue(e.translationX);
-    })
-    .onEnd((e) => {
-      if (
-        !navigated.current &&
-        (e.translationX < -SWIPE_LEFT_THRESHOLD ||
-          (e.translationX < -40 && e.velocityX < -300))
-      ) {
-        navigated.current = true;
-        Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
-        Animated.timing(pan, {
-          toValue: -SCREEN_W,
-          duration: 200,
-          useNativeDriver: true,
-        }).start(() => {
-          onSwipeLeft();
-          setTimeout(() => {
-            pan.setValue(0);
-            navigated.current = false;
-          }, 400);
-        });
-      } else {
-        Animated.spring(pan, {
-          toValue: 0,
-          useNativeDriver: true,
-          tension: 80,
-          friction: 10,
-        }).start();
-      }
-    })
-    .onFinalize(() => {
-      // Safety reset if gesture is cancelled
-      if (!navigated.current) {
-        Animated.spring(pan, { toValue: 0, useNativeDriver: true }).start();
-      }
-    });
-
-  const posterUri = item.poster_path
-    ? `${TMDB_IMG}/w780${item.poster_path}`
-    : null;
-  const year = item.release_date
-    ? item.release_date.substring(0, 4)
-    : item.first_air_date
-      ? item.first_air_date.substring(0, 4)
-      : '';
-
-  return (
-    <GestureDetector gesture={gesture}>
-      <View style={{ flex: 1 }}>
-        {/* Detail preview behind — mimics movie-detail hero */}
-        <View style={peekStyles.container} pointerEvents="none">
-          {/* Hero image */}
-          {posterUri && (
-            <Image
-              source={{ uri: posterUri }}
-              style={peekStyles.heroImage}
-              resizeMode="cover"
-            />
-          )}
-          <LinearGradient
-            colors={[
-              'rgba(0,0,0,0)',
-              'rgba(0,0,0,0.4)',
-              'rgba(0,0,0,0.9)',
-              '#000',
-            ]}
-            locations={[0, 0.4, 0.75, 1]}
-            style={peekStyles.heroGradient}
-          />
-          {/* Title + meta over the hero */}
-          <View style={peekStyles.heroInfo}>
-            <Text style={peekStyles.heroTitle} numberOfLines={2}>
-              {item.title}
-            </Text>
-            <View style={peekStyles.heroMeta}>
-              {item.vote_average > 0 && (
-                <>
-                  <Ionicons name="star" size={14} color="#E50914" />
-                  <Text style={peekStyles.heroRating}>
-                    {item.vote_average.toFixed(1)}
-                  </Text>
-                </>
-              )}
-              {year ? <Text style={peekStyles.heroYear}>{year}</Text> : null}
-              <View style={peekStyles.heroBadge}>
-                <Text style={peekStyles.heroBadgeText}>
-                  {item.media_type === 'tv' ? 'TV' : 'Film'}
-                </Text>
-              </View>
-            </View>
-          </View>
-          {/* Synopsis preview below hero */}
-          <View style={peekStyles.synopsisArea}>
-            <Text style={peekStyles.synopsisText} numberOfLines={4}>
-              {item.overview}
-            </Text>
-          </View>
-        </View>
-
-        {/* Card that slides left */}
-        <Animated.View style={{ flex: 1, transform: [{ translateX: pan }] }}>
-          {children}
-        </Animated.View>
-      </View>
-    </GestureDetector>
-  );
-}
-
-const peekStyles = StyleSheet.create({
-  container: {
-    ...StyleSheet.absoluteFillObject,
-    backgroundColor: '#000',
-  },
-  heroImage: {
-    width: '100%',
-    height: HERO_H,
-  },
-  heroGradient: {
-    position: 'absolute',
-    top: 0,
-    left: 0,
-    right: 0,
-    height: HERO_H,
-  },
-  heroInfo: {
-    position: 'absolute',
-    top: HERO_H - 70,
-    left: 16,
-    right: 16,
-  },
-  heroTitle: {
-    color: '#fff',
-    fontSize: 24,
-    fontWeight: '700',
-    marginBottom: 6,
-    textShadowColor: 'rgba(0,0,0,0.6)',
-    textShadowOffset: { width: 0, height: 1 },
-    textShadowRadius: 4,
-  },
-  heroMeta: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 8,
-  },
-  heroRating: {
-    color: '#fff',
-    fontSize: 15,
-    fontWeight: '600',
-  },
-  heroYear: {
-    color: 'rgba(255,255,255,0.8)',
-    fontSize: 14,
-    fontWeight: '500',
-  },
-  heroBadge: {
-    backgroundColor: 'rgba(0,0,0,0.4)',
-    paddingHorizontal: 8,
-    paddingVertical: 2,
-    borderRadius: 10,
-  },
-  heroBadgeText: {
-    color: '#fff',
-    fontSize: 12,
-    fontWeight: '600',
-  },
-  synopsisArea: {
-    paddingHorizontal: 16,
-    paddingTop: 16,
-  },
-  synopsisText: {
-    color: 'rgba(255,255,255,0.6)',
-    fontSize: 14,
-    lineHeight: 20,
-  },
-});
 
 interface SwipeDiscoveryViewProps {
   items: MovieResult[];
@@ -294,35 +76,6 @@ export default function SwipeDiscoveryView({
     ? items.slice(0, FREE_SWIPE_LIMIT)
     : items;
 
-  const navigateToDetail = useCallback(
-    (item: MovieResult) => {
-      const itemProviders = providers[item.tmdb_id] || [];
-      const itemCredits = credits[item.tmdb_id] || [];
-      const itemCrew = crew[item.tmdb_id] || [];
-      const itemDetailedInfo =
-        detailedInfo[item.tmdb_id] || ({} as DetailedInfo);
-      const mediaType = item.media_type === 'tv' ? 'tv' : 'movie';
-
-      trackSwipeToDetail(item.tmdb_id);
-      router.push({
-        pathname: '/movie-detail' as never,
-        params: {
-          tmdbId: String(item.tmdb_id),
-          mediaType,
-          title: item.title,
-          posterPath: item.poster_path || '',
-          voteAverage: String(item.vote_average || 0),
-          overview: item.overview || '',
-          providersJson: JSON.stringify(itemProviders),
-          creditsJson: JSON.stringify(itemCredits),
-          crewJson: JSON.stringify(itemCrew),
-          detailedInfoJson: JSON.stringify(itemDetailedInfo),
-        },
-      });
-    },
-    [providers, credits, crew, detailedInfo, router]
-  );
-
   // Build pages array — PagerView crashes on null/false children
   const pages: React.ReactElement[] = displayItems.map((item, idx) => {
     const itemProviders = providers[item.tmdb_id] || [];
@@ -336,10 +89,7 @@ export default function SwipeDiscoveryView({
         style={styles.page}
         collapsable={false}
       >
-        <SwipeLeftDetector
-          onSwipeLeft={() => navigateToDetail(item)}
-          item={item}
-        >
+        <View style={{ flex: 1 }}>
           <SwipeCard
             item={item}
             providers={itemProviders}
@@ -352,7 +102,7 @@ export default function SwipeDiscoveryView({
             crew={itemCrew}
             detailedInfo={itemDetailedInfo}
           />
-        </SwipeLeftDetector>
+        </View>
       </View>
     );
   });
