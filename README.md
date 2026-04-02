@@ -6,9 +6,10 @@ AI-powered movie and TV show recommendation app with subscription management.
 
 ```
 fastflix/
-├── frontend/    # React Native mobile app (Expo)
-├── backend/     # Next.js API (Vercel)
-└── website/     # Marketing website (Next.js)
+├── frontend/      # React Native mobile app (Expo SDK 54)
+├── backend/       # Hono API (Node.js) — deployed on VPS via Docker
+├── website/       # Marketing website (Next.js) — deployed on Vercel
+└── backend-next/  # Legacy Next.js API (Vercel) — replaced by backend/, kept for reference
 ```
 
 ## Quick Start
@@ -16,88 +17,80 @@ fastflix/
 ### Installation
 
 ```bash
-# Install all dependencies
 npm run install:all
 ```
 
 ### Development
 
 ```bash
-# Run frontend (mobile app)
-npm run dev:frontend
-
-# Run backend (API)
-npm run dev:backend
-
-# Run website (marketing site)
-npm run dev:website
+npm run dev:frontend    # Expo dev server (mobile app)
+npm run dev:backend     # Hono API server (port 3002)
+npm run dev:website     # Marketing site (Turbopack)
 ```
 
 ## Architecture
 
 ### Frontend → Backend Flow
 
-1. **User authenticates** with Apple Sign In
-2. **Backend** issues JWT token (30-day expiration)
-3. **User searches** for movies/TV shows
-4. **Frontend** sends authenticated request with JWT + query
-5. **Backend** validates JWT and checks Pro subscription status
-6. **Backend** processes with AI (Google Gemini) + TMDB enrichment
-7. **Backend** returns results (respecting subscription limits)
+1. **User authenticates** with Apple Sign In or Google Sign In (login is mandatory)
+2. **Backend** validates token with Apple/Google servers, issues JWT (30-day expiration)
+3. **User opens For You tab** → frontend calls `/api/feed`
+4. **Backend** determines user tier:
+   - **Premium + taste profile**: Gemini AI recommendations → TMDB enrichment → streaming providers
+   - **Free / no profile / AI failure**: TMDB trending → streaming providers
+5. **Backend** always returns complete data (items + providers) — never returns 500
 
 ### Authentication & Subscription Flow
 
 ```
-User Sign In (Apple)
+User Sign In (Apple / Google)
        ↓
 Backend validates & creates user
        ↓
 JWT token issued (30 days)
        ↓
-User purchases Pro → RevenueCat
+User purchases subscription → RevenueCat
        ↓ webhook (with userId)
 Backend Database (Turso)
-       ↓ validates on each search
-Backend allows unlimited access
+       ↓ validates on each request
+Backend allows premium access
 ```
+
+On 401, the frontend only clears the token if it matches the currently stored token (prevents cascade from concurrent requests).
 
 ## Tech Stack
 
-- **Frontend**: React Native, Expo, TypeScript, React Query
-- **Backend**: Next.js 16, TypeScript, Turso (SQLite), Zod
-- **Website**: Next.js 15, TypeScript, TailwindCSS
+- **Frontend**: React Native, Expo SDK 54, TypeScript, React Query
+- **Backend**: Hono, Node.js 20, TypeScript, Turso (SQLite), Zod
+- **Website**: Next.js, TypeScript, TailwindCSS
 - **AI**: Google Gemini 2.0 Flash
 - **Data**: TMDB API
 - **Subscriptions**: RevenueCat
-- **Infrastructure**: Vercel (backend), Turso (database)
+- **Analytics**: Aptabase (privacy-first)
+- **Monitoring**: Sentry (frontend + backend)
+- **Infrastructure**: VPS (Hostinger, Docker + Caddy), Turso (database), Vercel (website)
 
 ## Key Features
 
-- ✅ AI-powered movie/TV recommendations
-- ✅ Apple Sign In authentication (Google Sign In ready)
-- ✅ JWT-based secure authentication (30-day tokens)
-- ✅ RevenueCat integration for subscription management
-- ✅ Real-time webhook sync for subscription status
-- ✅ Automatic token refresh and session management
-- ✅ Rate limiting and anti-abuse protection
-- ✅ Unlimited searches for Pro subscribers
-
-## Documentation
-
-- [Frontend README](./frontend/README.md) - Mobile app documentation
-- [Backend README](./backend/README.md) - API documentation
-- [Website README](./website/README.md) - Marketing site documentation
-- [Development Guide](./frontend/DEVELOPMENT.md) - Development workflow (French)
-
-## Environment Variables
-
-Each project requires its own `.env` file. See individual README files for details.
+- AI-powered movie/TV recommendations (For You feed)
+- Swipe discovery (TikTok-style vertical card browsing)
+- Apple Sign In + Google Sign In authentication
+- JWT-based secure authentication (30-day tokens)
+- RevenueCat subscription management (webhooks + frontend SDK)
+- Watchlist with streaming provider tracking
+- Taste profile (ratings, favorite genres, favorite actors)
+- Rate limiting and anti-abuse protection
+- OTA updates via expo-updates
 
 ## Deployment
 
-- **Backend**: Deployed on Vercel at `https://fastflix-api.vercel.app`
-- **Website**: Deployed on Vercel
-- **Frontend**: iOS App Store / Google Play Store
+- **Backend**: Auto-deploy via GitHub Actions → Docker Hub → VPS (`fastflix.miotutor.app`)
+- **Website**: Auto-deploy on Vercel
+- **Frontend**: EAS Build for native builds, expo-updates for OTA
+
+## Documentation
+
+- [CLAUDE.md](./CLAUDE.md) - Full technical documentation (architecture, commands, env vars, deployment)
 
 ## License
 
