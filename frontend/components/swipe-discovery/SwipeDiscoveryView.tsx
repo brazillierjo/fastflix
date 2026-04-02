@@ -316,7 +316,7 @@ export default function SwipeDiscoveryView({
   );
 
   // Build pages array — PagerView crashes on null/false children
-  const pages: React.ReactElement[] = displayItems.map((item) => {
+  const pages: React.ReactElement[] = displayItems.map((item, idx) => {
     const itemProviders = providers[item.tmdb_id] || [];
     const itemCredits = credits[item.tmdb_id] || [];
     const itemCrew = crew[item.tmdb_id] || [];
@@ -324,7 +324,7 @@ export default function SwipeDiscoveryView({
 
     return (
       <View
-        key={`card-${item.tmdb_id}`}
+        key={`card-${item.tmdb_id}-${idx}`}
         style={styles.page}
         collapsable={false}
       >

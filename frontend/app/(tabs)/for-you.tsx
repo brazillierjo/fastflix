@@ -81,7 +81,12 @@ export default function ForYouScreen() {
               setItems(newItems);
               setProviders(res.data.providers || {});
             } else {
-              setItems((prev) => [...prev, ...newItems]);
+              // Deduplicate by tmdb_id
+              setItems((prev) => {
+                const existingIds = new Set(prev.map((i) => i.tmdb_id));
+                const unique = newItems.filter((i) => !existingIds.has(i.tmdb_id));
+                return [...prev, ...unique];
+              });
               setProviders((prev) => ({ ...prev, ...(res.data.providers || {}) }));
             }
             setHasMore(res.data.hasMore);

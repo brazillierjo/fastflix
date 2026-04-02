@@ -92,6 +92,14 @@ export default function SwipeCard({
         />
       )}
 
+      {/* Top gradient — protects Dynamic Island area */}
+      <LinearGradient
+        colors={['rgba(0,0,0,0.6)', 'rgba(0,0,0,0.2)', 'transparent']}
+        locations={[0, 0.5, 1]}
+        style={styles.topGradient}
+        pointerEvents="none"
+      />
+
       {/* Gradient overlay — strong at bottom for text readability */}
       <LinearGradient
         colors={[
@@ -208,6 +216,15 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#000',
+  },
+
+  topGradient: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    height: 100,
+    zIndex: 1,
   },
 
   // ── Info panel ──────────────────────────────────────
