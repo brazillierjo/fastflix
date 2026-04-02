@@ -153,12 +153,11 @@ export default function MovieDetailScreen() {
   const tmdbLanguage = langCode?.includes('-') ? langCode : `${langCode || 'en'}-${(country || 'US').toUpperCase()}`;
   const tmdbCountry = (country || 'US').toUpperCase();
 
-  // Auto-fetch full details
-  const needsDetails = !overview || !detailedInfo?.genres?.length || cast.length === 0;
+  // Auto-fetch full details — always fetch to ensure complete data
   const hasFetchedDetails = React.useRef(false);
 
   useEffect(() => {
-    if (tmdbId > 0 && needsDetails && !hasFetchedDetails.current) {
+    if (tmdbId > 0 && !hasFetchedDetails.current) {
       hasFetchedDetails.current = true;
       setLoadingDetails(true);
       backendAPIService
@@ -182,7 +181,7 @@ export default function MovieDetailScreen() {
         .finally(() => { setLoadingDetails(false); });
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [tmdbId, mediaType, needsDetails, tmdbLanguage, tmdbCountry]);
+  }, [tmdbId, mediaType, tmdbLanguage, tmdbCountry]);
 
   // Fetch similar movies
   useEffect(() => {
