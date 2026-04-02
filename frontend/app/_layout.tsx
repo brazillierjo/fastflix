@@ -107,7 +107,6 @@ export default Sentry.wrap(function RootLayout() {
                   name='movie-detail'
                   options={{
                     gestureEnabled: true,
-                    fullScreenGestureEnabled: true,
                     animation: 'slide_from_right',
                   }}
                 />
@@ -115,7 +114,6 @@ export default Sentry.wrap(function RootLayout() {
                   name='actor-detail'
                   options={{
                     gestureEnabled: true,
-                    fullScreenGestureEnabled: true,
                     animation: 'slide_from_right',
                   }}
                 />
