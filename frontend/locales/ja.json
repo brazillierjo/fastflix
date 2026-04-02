@@ -431,6 +431,14 @@
     "dailyPickLoading": "今日のおすすめを検索中...",
     "trending": "あなたのプラットフォームで人気",
     "trendingForYou": "あなたへのトレンド",
+    "becauseYouWatched": "{{title}}を観たあなたに",
+    "stats": {
+      "searches": "検索",
+      "watchlist": "リスト",
+      "watched": "視聴済",
+      "newMember": "新規",
+      "memberSince": "{{months}}ヶ月"
+    },
     "trendingLoading": "トレンド読み込み中...",
     "recentSearches": "最近の検索",
     "continueExploring": "探索を続ける",

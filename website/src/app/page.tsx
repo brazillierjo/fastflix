@@ -40,6 +40,11 @@ export default function Home() {
       description: t('platformFilteringDesc'),
     },
     {
+      icon: Smartphone,
+      title: t('swipeDiscovery'),
+      description: t('swipeDiscoveryDesc'),
+    },
+    {
       icon: Sparkles,
       title: t('forYou'),
       description: t('forYouDesc'),

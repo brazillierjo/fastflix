@@ -43,9 +43,12 @@ export const translations = {
     platformFiltering: 'Your Platforms, Your Content',
     platformFilteringDesc:
       "Only see what's available on your streaming services \u2014 Netflix, Disney+, Prime, and 200+ more. Filter by subscription, rent, or buy.",
+    swipeDiscovery: 'Swipe Discovery',
+    swipeDiscoveryDesc:
+      'Discover movies TikTok-style. Swipe through personalized recommendations, like or pass, and build your taste profile with every interaction.',
     forYou: 'For You \u2014 AI Picks',
     forYouDesc:
-      'A personalized feed of recommendations that evolves with your taste. Powered by Google Gemini AI, not generic algorithms.',
+      'Your personal feed of recommendations that evolves with your taste. The first tab you see when you open the app \u2014 powered by Gemini AI.',
     dailyPick: 'Daily Pick & Trending',
     dailyPickDesc:
       'Every day, a hand-picked recommendation just for you. Plus trending content on your platforms, sorted by what you love.',
@@ -316,9 +319,12 @@ export const translations = {
     platformFiltering: 'Vos plateformes, votre contenu',
     platformFilteringDesc:
       "Ne voyez que ce qui est disponible sur vos services de streaming \u2014 Netflix, Disney+, Prime et 200+ autres. Filtrez par abonnement, location ou achat.",
+    swipeDiscovery: 'D\u00e9couverte en swipe',
+    swipeDiscoveryDesc:
+      'D\u00e9couvrez des films style TikTok. Swipez parmi des recommandations personnalis\u00e9es, likez ou passez, et affinez votre profil \u00e0 chaque interaction.',
     forYou: 'Pour vous \u2014 S\u00e9lection IA',
     forYouDesc:
-      'Un fil personnalis\u00e9 de recommandations qui \u00e9volue avec vos go\u00fbts. Propuls\u00e9 par Google Gemini AI, pas des algorithmes g\u00e9n\u00e9riques.',
+      'Votre fil personnel de recommandations qui \u00e9volue avec vos go\u00fbts. Le premier onglet \u00e0 l\u2019ouverture de l\u2019app \u2014 propuls\u00e9 par Gemini AI.',
     dailyPick: 'S\u00e9lection du jour & Tendances',
     dailyPickDesc:
       'Chaque jour, une recommandation choisie sp\u00e9cialement pour vous. Plus les tendances sur vos plateformes, tri\u00e9es selon vos go\u00fbts.',
@@ -592,9 +598,12 @@ export const translations = {
     platformFiltering: 'Le tue piattaforme, i tuoi contenuti',
     platformFilteringDesc:
       'Vedi solo ci\u00f2 che \u00e8 disponibile sui tuoi servizi di streaming \u2014 Netflix, Disney+, Prime e oltre 200 altri. Filtra per abbonamento, noleggio o acquisto.',
+    swipeDiscovery: 'Scoperta in swipe',
+    swipeDiscoveryDesc:
+      'Scopri film in stile TikTok. Scorri tra raccomandazioni personalizzate, metti like o passa, e affina il tuo profilo ad ogni interazione.',
     forYou: 'Per te \u2014 Selezione IA',
     forYouDesc:
-      'Un feed personalizzato di raccomandazioni che si evolve con i tuoi gusti. Alimentato da Google Gemini AI, non algoritmi generici.',
+      'Il tuo feed personale di raccomandazioni che si evolve con i tuoi gusti. La prima scheda all\u2019apertura dell\u2019app \u2014 alimentato da Gemini AI.',
     dailyPick: 'Selezione del giorno & Tendenze',
     dailyPickDesc:
       'Ogni giorno, una raccomandazione scelta appositamente per te. Pi\u00f9 i contenuti di tendenza sulle tue piattaforme, ordinati per i tuoi gusti.',
@@ -867,9 +876,12 @@ export const translations = {
     platformFiltering: '\u3042\u306a\u305f\u306e\u30d7\u30e9\u30c3\u30c8\u30d5\u30a9\u30fc\u30e0\u3001\u3042\u306a\u305f\u306e\u30b3\u30f3\u30c6\u30f3\u30c4',
     platformFilteringDesc:
       '\u5229\u7528\u53ef\u80fd\u306a\u30b9\u30c8\u30ea\u30fc\u30df\u30f3\u30b0\u30b5\u30fc\u30d3\u30b9\u306e\u30b3\u30f3\u30c6\u30f3\u30c4\u306e\u307f\u8868\u793a \u2014 Netflix\u3001Disney+\u3001Prime\u3001\u305d\u306e\u4ed6200\u4ee5\u4e0a\u3002\u30b5\u30d6\u30b9\u30af\u30ea\u30d7\u30b7\u30e7\u30f3\u3001\u30ec\u30f3\u30bf\u30eb\u3001\u8cfc\u5165\u3067\u30d5\u30a3\u30eb\u30bf\u30ea\u30f3\u30b0\u3002',
+    swipeDiscovery: '\u30b9\u30ef\u30a4\u30d7\u3067\u767a\u898b',
+    swipeDiscoveryDesc:
+      'TikTok\u30b9\u30bf\u30a4\u30eb\u3067\u6620\u753b\u3092\u767a\u898b\u3002\u30d1\u30fc\u30bd\u30ca\u30e9\u30a4\u30ba\u3055\u308c\u305f\u304a\u3059\u3059\u3081\u3092\u30b9\u30ef\u30a4\u30d7\u3057\u3066\u3001\u597d\u307f\u30d7\u30ed\u30d5\u30a3\u30fc\u30eb\u3092\u69cb\u7bc9\u3002',
     forYou: '\u3042\u306a\u305f\u3078 \u2014 AI\u30bb\u30ec\u30af\u30b7\u30e7\u30f3',
     forYouDesc:
-      '\u3042\u306a\u305f\u306e\u597d\u307f\u306b\u5408\u308f\u305b\u3066\u9032\u5316\u3059\u308b\u30d1\u30fc\u30bd\u30ca\u30e9\u30a4\u30ba\u3055\u308c\u305f\u30ec\u30b3\u30e1\u30f3\u30c7\u30fc\u30b7\u30e7\u30f3\u30d5\u30a3\u30fc\u30c9\u3002Google Gemini AI\u642d\u8f09\u3001\u4e00\u822c\u7684\u306a\u30a2\u30eb\u30b4\u30ea\u30ba\u30e0\u3067\u306f\u3042\u308a\u307e\u305b\u3093\u3002',
+      '\u3042\u306a\u305f\u306e\u597d\u307f\u306b\u5408\u308f\u305b\u3066\u9032\u5316\u3059\u308b\u30d1\u30fc\u30bd\u30ca\u30e9\u30a4\u30ba\u30d5\u30a3\u30fc\u30c9\u3002\u30a2\u30d7\u30ea\u3092\u958b\u304f\u3068\u6700\u521d\u306b\u8868\u793a \u2014 Gemini AI\u642d\u8f09\u3002',
     dailyPick: '\u6bce\u65e5\u306e\u30bb\u30ec\u30af\u30b7\u30e7\u30f3 & \u30c8\u30ec\u30f3\u30c9',
     dailyPickDesc:
       '\u6bce\u65e5\u3001\u3042\u306a\u305f\u306e\u305f\u3081\u3060\u3051\u306b\u9078\u3070\u308c\u305f\u30ec\u30b3\u30e1\u30f3\u30c7\u30fc\u30b7\u30e7\u30f3\u3002\u3055\u3089\u306b\u3001\u3042\u306a\u305f\u306e\u30d7\u30e9\u30c3\u30c8\u30d5\u30a9\u30fc\u30e0\u306e\u30c8\u30ec\u30f3\u30c9\u30b3\u30f3\u30c6\u30f3\u30c4\u3092\u597d\u307f\u9806\u306b\u4e26\u3079\u66ff\u3048\u3002',
@@ -1139,9 +1151,12 @@ export const translations = {
     platformFiltering: 'Tus plataformas, tu contenido',
     platformFilteringDesc:
       'Solo ve lo que est\u00e1 disponible en tus servicios de streaming \u2014 Netflix, Disney+, Prime y m\u00e1s de 200. Filtra por suscripci\u00f3n, alquiler o compra.',
+    swipeDiscovery: 'Descubrimiento en swipe',
+    swipeDiscoveryDesc:
+      'Descubre pel\u00edculas al estilo TikTok. Desliza entre recomendaciones personalizadas y construye tu perfil de gustos.',
     forYou: 'Para ti \u2014 Selecci\u00f3n IA',
     forYouDesc:
-      'Un feed personalizado de recomendaciones que evoluciona con tus gustos. Impulsado por Google Gemini AI, no algoritmos gen\u00e9ricos.',
+      'Tu feed personal de recomendaciones que evoluciona con tus gustos. La primera pesta\u00f1a al abrir la app \u2014 impulsado por Gemini AI.',
     dailyPick: 'Selecci\u00f3n diaria & Tendencias',
     dailyPickDesc:
       'Cada d\u00eda, una recomendaci\u00f3n elegida especialmente para ti. Adem\u00e1s, contenido en tendencia en tus plataformas, ordenado por lo que te gusta.',
@@ -1414,9 +1429,12 @@ export const translations = {
     platformFiltering: 'Deine Plattformen, deine Inhalte',
     platformFilteringDesc:
       'Sieh nur, was auf deinen Streaming-Diensten verf\u00fcgbar ist \u2014 Netflix, Disney+, Prime und \u00fcber 200 weitere. Filtere nach Abo, Leihe oder Kauf.',
+    swipeDiscovery: 'Swipe-Entdeckung',
+    swipeDiscoveryDesc:
+      'Entdecke Filme im TikTok-Stil. Swipe durch personalisierte Empfehlungen und baue dein Geschmacksprofil mit jeder Interaktion auf.',
     forYou: 'F\u00fcr dich \u2014 KI-Auswahl',
     forYouDesc:
-      'Ein personalisierter Feed mit Empfehlungen, der sich mit deinem Geschmack weiterentwickelt. Angetrieben von Google Gemini AI, nicht generischen Algorithmen.',
+      'Dein pers\u00f6nlicher Empfehlungs-Feed, der sich mit deinem Geschmack weiterentwickelt. Der erste Tab beim \u00d6ffnen der App \u2014 angetrieben von Gemini AI.',
     dailyPick: 'Tagesauswahl & Trends',
     dailyPickDesc:
       'Jeden Tag eine handverlesene Empfehlung nur f\u00fcr dich. Plus Trending-Inhalte auf deinen Plattformen, sortiert nach deinem Geschmack.',

@@ -553,35 +553,32 @@ backend/
 
 ### Ce qui reste à faire
 
-- [ ] **Feed infini paginé** — `GET /api/feed?page=1&size=5` dans `backend/src/routes/feed.ts`, hook `useSwipeFeed` avec `useInfiniteQuery`, prefetch page N+1 quand on atteint item N-2
 - [ ] **Parallax poster** — `onPageScroll` de PagerView + `Animated.event` pour léger parallax vertical
-- [ ] **Auto-play trailer** (Phase 3) — Si TMDB fournit un trailer YouTube, l'afficher en background après 3s, mute par défaut
+- [ ] **Auto-play trailer** — Si TMDB fournit un trailer YouTube, l'afficher en background après 3s, mute par défaut
 
 ---
 
 ## Résumé des priorités
 
-> L'onglet "Pour vous" (Swipe Discovery TikTok-like) est implémenté. Il consolide les features 4.1 (like/dislike), 4.2 (déjà vu), 4.3 (toast goûts), 5.1 (providers), 2.1/2.2 (raison IA + match %), 2.3 (genres).
+> v3.2 : Swipe Discovery, onglet Pour vous, feed infini, Explorer enrichi (Because You Watched, Stats), site web mis à jour.
 
-### Phase 1 — Quick Wins
-- [x] 6.2 — Trending renommé "Tendances pour vous" (authentifié) / "Tendances" (guest)
-- [x] 7.1 — Tableau comparatif Free vs Pro dans SubscriptionModal (6 features, check/cross)
-- [x] Audit premium — All gates verified: swipe 5/session, like/dislike/watchlist/watched disabled for guests, trending public pour guests
-- [ ] 3.2 — Bouton "Surprends-moi"
+### Phase 1 — Quick Wins ✅
+- [x] 6.2 — Trending renommé "Tendances pour vous"
+- [x] 7.1 — Tableau comparatif Free vs Pro dans SubscriptionModal
+- [x] Audit premium — tous les gates vérifiés
 
-### Phase 2 — Feed infini + Rétention
-- [ ] Feed infini paginé via `/api/feed` (recos IA pour premium, trending pour free)
+### Phase 2 — Feed infini + Explorer enrichi ✅
+- [x] Feed infini paginé `GET /api/feed` (IA pour premium, trending paginé pour free)
+- [x] 6.1 — "Parce que tu as regardé X" (endpoint + carousel Explorer)
+- [x] 7.2 — Widget stats personnelles sur Explorer
+- [x] Site web mis à jour (feature Swipe Discovery, 6 langues)
+
+### À faire plus tard
 - [ ] 8.1 — Push notifications (disponibilité watchlist)
 - [ ] 8.2 — Notifications "nouveau film pour toi"
 - [ ] 11.1 — Notifier à la sortie
-- [ ] 6.1 — "Parce que tu as regardé X"
-- [ ] 7.2 — Widget "Temps gagné"
-
-### Phase 3 — Différenciation
-- [ ] Auto-play trailer en background sur le swipe
+- [ ] Auto-play trailer en background
 - [ ] 8.3 — Match entre amis
-- [ ] 8.4 — Mode soirée (écran dédié)
-- [ ] 3.3 — Historique: re-lancer une recherche + effacer
-
-### Phase finale — Mise à jour du site web
-- [ ] **Mettre à jour le site web FastFlix** pour refléter toutes les nouvelles features (screenshots, descriptions, pricing, changelog)
+- [ ] 8.4 — Mode soirée
+- [ ] 3.3 — Historique: re-lancer une recherche
+- [ ] 3.2 — Bouton "Surprends-moi"

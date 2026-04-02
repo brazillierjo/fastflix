@@ -431,6 +431,14 @@
     "dailyPickLoading": "Cerco la tua raccomandazione del giorno...",
     "trending": "Tendenze sulle tue piattaforme",
     "trendingForYou": "Tendenze per te",
+    "becauseYouWatched": "Perché hai visto {{title}}",
+    "stats": {
+      "searches": "Ricerche",
+      "watchlist": "Lista",
+      "watched": "Visti",
+      "newMember": "Nuovo",
+      "memberSince": "{{months}} mesi"
+    },
     "trendingLoading": "Caricamento tendenze...",
     "recentSearches": "Ricerche recenti",
     "continueExploring": "Continua a esplorare",

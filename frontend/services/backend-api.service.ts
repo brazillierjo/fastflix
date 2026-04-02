@@ -808,6 +808,24 @@ class BackendAPIService {
     });
   }
 
+  async getBecauseYouWatched(params?: {
+    language?: string;
+    country?: string;
+  }): Promise<
+    APIResponse<{
+      sourceTitle: string | null;
+      items: { tmdb_id: number; title: string; poster_path: string | null; vote_average: number; media_type: 'movie' | 'tv'; providers?: { provider_name: string; logo_path: string }[] }[];
+    }>
+  > {
+    const qs = new URLSearchParams();
+    if (params?.language) qs.set('language', params.language);
+    if (params?.country) qs.set('country', params.country);
+    const query = qs.toString() ? `?${qs.toString()}` : '';
+    return await this.makeRequest(`/api/because-you-watched${query}`, {
+      method: 'GET',
+    });
+  }
+
   /**
    * Get trending for non-authenticated users (public endpoint)
    */
@@ -827,6 +845,31 @@ class BackendAPIService {
   // ==========================================================================
   // Swipe Discovery Methods
   // ==========================================================================
+
+  async getFeed(params: {
+    page?: number;
+    size?: number;
+    language?: string;
+    country?: string;
+    exclude?: number[];
+  }): Promise<
+    APIResponse<{
+      items: MovieResult[];
+      providers: { [key: number]: StreamingProvider[] };
+      hasMore: boolean;
+      page: number;
+    }>
+  > {
+    const qs = new URLSearchParams();
+    if (params.page) qs.set('page', String(params.page));
+    if (params.size) qs.set('size', String(params.size));
+    if (params.language) qs.set('language', params.language);
+    if (params.country) qs.set('country', params.country);
+    if (params.exclude && params.exclude.length > 0)
+      qs.set('exclude', params.exclude.join(','));
+    const query = qs.toString() ? `?${qs.toString()}` : '';
+    return await this.makeRequest(`/api/feed${query}`, { method: 'GET' });
+  }
 
   async submitSwipeFeedback(params: {
     tmdb_id: number;

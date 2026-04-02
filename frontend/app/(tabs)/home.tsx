@@ -1,4 +1,6 @@
 import { Ionicons } from '@expo/vector-icons';
+import BecauseYouWatchedSection from '@/components/BecauseYouWatchedSection';
+import UserStatsWidget from '@/components/UserStatsWidget';
 import QuickSearch from '@/components/QuickSearch';
 import FavoriteActorsSection from '@/components/FavoriteActorsSection';
 import MyRatingsSection from '@/components/MyRatingsSection';
@@ -375,6 +377,9 @@ export default function HomeScreen() {
           </View>
         )}
 
+        {/* Stats Widget */}
+        {isAuthenticated && <UserStatsWidget />}
+
         {/* AI Search CTA */}
         <View className='mt-6 px-6'>
           <TouchableOpacity
@@ -511,6 +516,9 @@ export default function HomeScreen() {
             </View>
           )}
         </MotiView>
+
+        {/* Because You Watched */}
+        {isAuthenticated && <BecauseYouWatchedSection />}
 
         {/* Trending Section */}
         <View className='mt-8'>

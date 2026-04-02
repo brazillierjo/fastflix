@@ -30,7 +30,7 @@ const TAB_BAR_HEIGHT = Platform.OS === 'ios' ? 80 : 60;
 export default function ForYouScreen() {
   const { t, language } = useLanguage();
   const { isAuthenticated } = useAuth();
-  const { hasUnlimitedAccess } = useSubscription();
+  const { hasUnlimitedAccess: _hasUnlimitedAccess } = useSubscription();
   const router = useRouter();
   const insets = useSafeAreaInsets();
 
@@ -39,8 +39,11 @@ export default function ForYouScreen() {
     Record<number, StreamingProvider[]>
   >({});
   const [isLoading, setIsLoading] = useState(true);
+  const [hasMore, setHasMore] = useState(true);
   const [error, setError] = useState(false);
 
+  const pageRef = useRef(1);
+  const isFetchingRef = useRef(false);
   const sessionStart = useRef(Date.now());
   const maxPageViewed = useRef(0);
 
@@ -57,75 +60,80 @@ export default function ForYouScreen() {
               ? 'ja-JP'
               : 'en-US';
 
-  const fetchFeed = useCallback(async () => {
-    setIsLoading(true);
-    setError(false);
+  const fetchPage = useCallback(
+    async (page: number, existingItems: MovieResult[]) => {
+      if (isFetchingRef.current) return;
+      isFetchingRef.current = true;
 
-    try {
-      // Premium: AI-powered personalized recommendations
-      if (isAuthenticated && hasUnlimitedAccess) {
-        const res = await backendAPIService.getForYou({
-          language: tmdbLanguage,
-        });
-        if (
-          res.success &&
-          res.data &&
-          res.data.recommendations &&
-          res.data.recommendations.length > 0
-        ) {
-          setItems(res.data.recommendations);
-          setProviders(res.data.streamingProviders || {});
-          setIsLoading(false);
-          return;
+      try {
+        if (isAuthenticated) {
+          // Authenticated: use paginated feed endpoint
+          const exclude = existingItems.map((i) => i.tmdb_id);
+          const res = await backendAPIService.getFeed({
+            page,
+            size: 10,
+            language: tmdbLanguage,
+            exclude: page > 1 ? exclude : undefined,
+          });
+          if (res.success && res.data) {
+            const newItems = res.data.items || [];
+            if (page === 1) {
+              setItems(newItems);
+              setProviders(res.data.providers || {});
+            } else {
+              setItems((prev) => [...prev, ...newItems]);
+              setProviders((prev) => ({ ...prev, ...(res.data.providers || {}) }));
+            }
+            setHasMore(res.data.hasMore);
+            pageRef.current = page;
+          }
+        } else {
+          // Guest: public trending
+          const res = await backendAPIService.getTrendingPublic({
+            language: tmdbLanguage,
+          });
+          if (res.success && res.data) {
+            const rawItems = (
+              (res.data as { items?: unknown[] }).items || []
+            ) as {
+              tmdb_id: number;
+              title: string;
+              media_type?: 'movie' | 'tv';
+              poster_path?: string | null;
+              vote_average?: number;
+              genre_ids?: number[];
+            }[];
+            setItems(
+              rawItems.map((item) => ({
+                tmdb_id: item.tmdb_id,
+                title: item.title,
+                media_type: item.media_type || 'movie',
+                overview: '',
+                poster_path: item.poster_path || null,
+                backdrop_path: null,
+                vote_average: item.vote_average || 0,
+                vote_count: 0,
+                genre_ids: item.genre_ids || [],
+                popularity: 0,
+              }))
+            );
+            setHasMore(false);
+          }
         }
+      } catch {
+        if (page === 1) setError(true);
+      } finally {
+        setIsLoading(false);
+        isFetchingRef.current = false;
       }
-
-      // Free/guest: trending feed (use authenticated endpoint if logged in, public otherwise)
-      const res = isAuthenticated
-        ? await backendAPIService.getTrending({ language: tmdbLanguage })
-        : await backendAPIService.getTrendingPublic({ language: tmdbLanguage });
-      if (res.success && res.data) {
-        interface TrendingRaw {
-          tmdb_id: number;
-          title: string;
-          media_type?: 'movie' | 'tv';
-          poster_path?: string | null;
-          vote_average?: number;
-          genre_ids?: number[];
-        }
-        // Authenticated returns array, public returns { items: [...] }
-        const rawItems = Array.isArray(res.data)
-          ? (res.data as TrendingRaw[])
-          : ((res.data as { items?: TrendingRaw[] }).items || []);
-        const trendingItems: MovieResult[] = rawItems.map((item) => ({
-            tmdb_id: item.tmdb_id,
-            title: item.title,
-            media_type: item.media_type || 'movie',
-            overview: '',
-            poster_path: item.poster_path || null,
-            backdrop_path: null,
-            vote_average: item.vote_average || 0,
-            vote_count: 0,
-            genre_ids: item.genre_ids || [],
-            popularity: 0,
-          })
-        );
-        setItems(trendingItems);
-        setProviders({});
-      } else {
-        setError(true);
-      }
-    } catch {
-      setError(true);
-    } finally {
-      setIsLoading(false);
-    }
-  }, [isAuthenticated, hasUnlimitedAccess, tmdbLanguage]);
+    },
+    [isAuthenticated, tmdbLanguage]
+  );
 
   useEffect(() => {
     trackScreenView('for_you');
-    fetchFeed();
-  }, [fetchFeed]);
+    fetchPage(1, []);
+  }, [fetchPage]);
 
   // Session tracking on unmount
   useEffect(() => {
@@ -146,11 +154,14 @@ export default function ForYouScreen() {
       if (items[index]) {
         trackSwipeView(items[index].tmdb_id, index, 'forYou');
       }
+      // Prefetch next page when approaching the end
+      if (hasMore && index >= items.length - 3) {
+        fetchPage(pageRef.current + 1, items);
+      }
     },
-    [items]
+    [items, hasMore, fetchPage]
   );
 
-  // Loading state
   if (isLoading) {
     return (
       <View style={styles.centerContainer}>
@@ -161,21 +172,20 @@ export default function ForYouScreen() {
         >
           <Ionicons name="sparkles" size={40} color="#E50914" />
         </MotiView>
-        <Text style={styles.loadingText}>
-          {t('swipeDiscovery.loading')}
-        </Text>
+        <Text style={styles.loadingText}>{t('swipeDiscovery.loading')}</Text>
       </View>
     );
   }
 
-  // Error / empty state
   if (error || items.length === 0) {
     return (
       <View style={styles.centerContainer}>
-        <Ionicons name="film-outline" size={48} color="rgba(255,255,255,0.3)" />
-        <Text style={styles.emptyText}>
-          {t('swipeDiscovery.emptyFeed')}
-        </Text>
+        <Ionicons
+          name="film-outline"
+          size={48}
+          color="rgba(255,255,255,0.3)"
+        />
+        <Text style={styles.emptyText}>{t('swipeDiscovery.emptyFeed')}</Text>
       </View>
     );
   }
@@ -188,7 +198,7 @@ export default function ForYouScreen() {
         credits={{}}
         crew={{}}
         detailedInfo={{}}
-        hasMore={false}
+        hasMore={hasMore}
         onPageChanged={handlePageChanged}
         hideHeader
         bottomInset={TAB_BAR_HEIGHT}

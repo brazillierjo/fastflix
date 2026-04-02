@@ -808,6 +808,75 @@ app.get("/for-you", authMiddleware, rateLimitMiddleware("ai"), async (c) => {
 });
 
 /**
+ * GET /because-you-watched
+ * Returns similar titles based on the user's most recently rated movie
+ */
+app.get("/because-you-watched", authMiddleware, rateLimitMiddleware("standard"), async (c) => {
+  try {
+    const userId = getUserId(c);
+    const language = c.req.query("language") || "fr-FR";
+    const country = c.req.query("country") || "FR";
+
+    const [tasteProfile] = await Promise.all([db.getUserTasteProfile(userId)]);
+
+    // Need at least one rated movie
+    const ratedMovies = tasteProfile.rated_movies.filter((m) => m.rating >= 3);
+    if (ratedMovies.length === 0) {
+      return c.json({ success: true, data: { sourceTitle: null, items: [] } });
+    }
+
+    // Pick the most recently rated (last in array)
+    const source = ratedMovies[ratedMovies.length - 1];
+
+    // Get similar from TMDB
+    const similar = await tmdb.getSimilar(source.tmdb_id, source.media_type || "movie", language);
+
+    // Exclude already watched
+    const watchedIds = getWatchedTmdbIds(tasteProfile);
+    const filtered = similar.filter((item) => !watchedIds.has(item.tmdb_id));
+
+    // Map to TrendingItem format
+    const items = filtered.slice(0, 10).map((item) => ({
+      tmdb_id: item.tmdb_id,
+      title: item.title,
+      poster_path: item.poster_path,
+      vote_average: item.vote_average,
+      media_type: (source.media_type || "movie") as "movie" | "tv",
+    }));
+
+    // Fetch providers
+    const providersMap = await tmdb.getBatchWatchProviders(
+      items.map((i) => ({
+        ...i,
+        overview: "",
+        backdrop_path: null,
+        vote_count: 0,
+        genre_ids: [],
+        popularity: 0,
+      })),
+      country
+    );
+
+    const itemsWithProviders = items.map((item) => ({
+      ...item,
+      providers: (providersMap[item.tmdb_id] || []).map((p) => ({
+        provider_name: p.provider_name,
+        logo_path: p.logo_path,
+      })),
+    }));
+
+    c.header("Cache-Control", "private, max-age=3600");
+    return c.json({
+      success: true,
+      data: { sourceTitle: source.title, items: itemsWithProviders },
+    });
+  } catch (error) {
+    console.error("❌ /api/because-you-watched:", error);
+    return c.json({ error: "Failed to load recommendations" }, 500);
+  }
+});
+
+/**
  * Analyze watchlist to extract implicit genre preferences
  */
 function analyzeWatchlistGenres(
