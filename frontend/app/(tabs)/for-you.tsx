@@ -29,7 +29,7 @@ const TAB_BAR_HEIGHT = Platform.OS === 'ios' ? 80 : 60;
 
 export default function ForYouScreen() {
   const { t, language } = useLanguage();
-  const { isAuthenticated } = useAuth();
+  const { isAuthenticated, isLoading: isAuthLoading } = useAuth();
   const router = useRouter();
   const insets = useSafeAreaInsets();
 
@@ -63,100 +63,30 @@ export default function ForYouScreen() {
     async (page: number, existingItems: MovieResult[]) => {
       if (isFetchingRef.current) return;
       isFetchingRef.current = true;
-
       try {
-        if (isAuthenticated) {
-          // Authenticated: use paginated feed endpoint
-          const exclude = existingItems.map((i) => i.tmdb_id);
-          const res = await backendAPIService.getFeed({
-            page,
-            size: 10,
-            language: tmdbLanguage,
-            exclude: page > 1 ? exclude : undefined,
-          });
-          if (res.success && res.data && (res.data.items?.length ?? 0) > 0) {
-            const newItems = res.data.items;
-            if (page === 1) {
-              setItems(newItems);
-              setProviders(res.data.providers || {});
-            } else {
-              // Deduplicate by tmdb_id
-              setItems((prev) => {
-                const existingIds = new Set(prev.map((i) => i.tmdb_id));
-                const unique = newItems.filter((i) => !existingIds.has(i.tmdb_id));
-                return [...prev, ...unique];
-              });
-              setProviders((prev) => ({ ...prev, ...(res.data.providers || {}) }));
-            }
-            setHasMore(res.data.hasMore);
-            pageRef.current = page;
-            trackFeedPageLoad(page, newItems.length);
-          } else if (page === 1) {
-            // Feed returned empty or failed — fallback to trending
-            const trendingRes = await backendAPIService.getTrending({
-              language: tmdbLanguage,
+        const exclude = existingItems.map((i) => i.tmdb_id);
+        const res = await backendAPIService.getFeed({
+          page,
+          size: 10,
+          language: tmdbLanguage,
+          exclude: page > 1 ? exclude : undefined,
+        });
+        if (res.success && res.data && (res.data.items?.length ?? 0) > 0) {
+          const newItems = res.data.items;
+          if (page === 1) {
+            setItems(newItems);
+            setProviders(res.data.providers || {});
+          } else {
+            setItems((prev) => {
+              const existingIds = new Set(prev.map((i) => i.tmdb_id));
+              const unique = newItems.filter((i) => !existingIds.has(i.tmdb_id));
+              return [...prev, ...unique];
             });
-            if (trendingRes.success && trendingRes.data) {
-              const trendingData = trendingRes.data as { items?: unknown[] } | unknown[];
-              const rawItems = (
-                Array.isArray(trendingData)
-                  ? trendingData
-                  : (trendingData as { items?: unknown[] }).items || []
-              ) as {
-                tmdb_id: number; title: string; media_type?: 'movie' | 'tv';
-                poster_path?: string | null; vote_average?: number; genre_ids?: number[];
-                overview?: string; backdrop_path?: string | null;
-                release_date?: string; first_air_date?: string;
-              }[];
-              setItems(rawItems.map((item) => ({
-                tmdb_id: item.tmdb_id, title: item.title,
-                media_type: item.media_type || 'movie', overview: item.overview || '',
-                poster_path: item.poster_path || null, backdrop_path: item.backdrop_path || null,
-                vote_average: item.vote_average || 0, vote_count: 0,
-                genre_ids: item.genre_ids || [], popularity: 0,
-                release_date: item.release_date, first_air_date: item.first_air_date,
-              })));
-              setHasMore(false);
-            }
+            setProviders((prev) => ({ ...prev, ...(res.data.providers || {}) }));
           }
-        } else {
-          // Guest: public trending
-          const res = await backendAPIService.getTrendingPublic({
-            language: tmdbLanguage,
-          });
-          if (res.success && res.data) {
-            const rawItems = (
-              (res.data as { items?: unknown[] }).items || []
-            ) as {
-              tmdb_id: number;
-              title: string;
-              media_type?: 'movie' | 'tv';
-              poster_path?: string | null;
-              vote_average?: number;
-              genre_ids?: number[];
-              overview?: string;
-              backdrop_path?: string | null;
-              release_date?: string;
-              first_air_date?: string;
-            }[];
-            setItems(
-              rawItems.map((item) => ({
-                tmdb_id: item.tmdb_id,
-                title: item.title,
-                media_type: item.media_type || 'movie',
-                overview: item.overview || '',
-                poster_path: item.poster_path || null,
-                backdrop_path: item.backdrop_path || null,
-                vote_average: item.vote_average || 0,
-                vote_count: 0,
-                genre_ids: item.genre_ids || [],
-                popularity: 0,
-                release_date: item.release_date,
-                first_air_date: item.first_air_date,
-              }))
-            );
-            setHasMore(false);
-          }
+          setHasMore(res.data.hasMore);
+          pageRef.current = page;
+          trackFeedPageLoad(page, newItems.length);
         }
       } catch {
         if (page === 1) setError(true);
@@ -165,13 +95,14 @@ export default function ForYouScreen() {
         isFetchingRef.current = false;
       }
     },
-    [isAuthenticated, tmdbLanguage]
+    [tmdbLanguage]
   );
 
   useEffect(() => {
+    if (isAuthLoading || !isAuthenticated) return;
     trackScreenView('for_you');
     fetchPage(1, []);
-  }, [fetchPage]);
+  }, [isAuthLoading, isAuthenticated, fetchPage]);
 
   // Session tracking on unmount
   useEffect(() => {
@@ -200,7 +131,7 @@ export default function ForYouScreen() {
     [items, hasMore, fetchPage]
   );
 
-  if (isLoading) {
+  if (isLoading || isAuthLoading) {
     return (
       <View style={styles.centerContainer}>
         <MotiView
