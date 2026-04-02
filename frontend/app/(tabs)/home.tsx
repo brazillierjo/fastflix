@@ -416,7 +416,45 @@ export default function HomeScreen() {
           </TouchableOpacity>
         </View>
 
-
+        {/* Mood Chips */}
+        <View className='mt-5 px-6'>
+          <Text
+            style={typography.caption1}
+            className='mb-2 text-light-textSecondary dark:text-dark-textSecondary'
+          >
+            {t('home.moodTitle')}
+          </Text>
+          <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={{ gap: 8 }}>
+            {[
+              { emoji: '😂', key: 'laugh' },
+              { emoji: '🔥', key: 'adrenaline' },
+              { emoji: '🥰', key: 'romantic' },
+              { emoji: '🤯', key: 'mindblowing' },
+              { emoji: '😢', key: 'cry' },
+              { emoji: '😴', key: 'tired' },
+              { emoji: '👨‍👩‍👧‍👦', key: 'family' },
+              { emoji: '😰', key: 'escape' },
+            ].map((mood) => (
+              <TouchableOpacity
+                key={mood.key}
+                onPress={() => {
+                  Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+                  router.push({
+                    pathname: '/search' as never,
+                    params: { query: t(`home.moods.${mood.key}Query`), ts: String(Date.now()) },
+                  });
+                }}
+                activeOpacity={0.7}
+                style={[getSquircle(12), { paddingHorizontal: 14, paddingVertical: 8, backgroundColor: isDark ? 'rgba(255,255,255,0.08)' : 'rgba(0,0,0,0.05)' }]}
+              >
+                <Text style={{ fontSize: 20 }}>{mood.emoji}</Text>
+                <Text className='mt-0.5 text-xs font-medium text-light-text dark:text-dark-text'>
+                  {t(`home.moods.${mood.key}`)}
+                </Text>
+              </TouchableOpacity>
+            ))}
+          </ScrollView>
+        </View>
 
         {/* Daily Pick Card */}
         <MotiView
@@ -518,7 +556,7 @@ export default function HomeScreen() {
             style={typography.title3}
             className='mb-3 px-6 text-light-text dark:text-dark-text'
           >
-            {t('home.trending')}
+            {isAuthenticated ? t('home.trendingForYou') : t('home.trending')}
           </Text>
           <ScrollView
             horizontal

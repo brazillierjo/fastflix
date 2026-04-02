@@ -808,6 +808,22 @@ class BackendAPIService {
     });
   }
 
+  /**
+   * Get trending for non-authenticated users (public endpoint)
+   */
+  async getTrendingPublic(params?: {
+    language?: string;
+    country?: string;
+  }): Promise<APIResponse<{ items: unknown[] }>> {
+    const qs = new URLSearchParams();
+    if (params?.language) qs.set('language', params.language);
+    if (params?.country) qs.set('country', params.country);
+    const query = qs.toString() ? `?${qs.toString()}` : '';
+    return await this.makeRequest(`/api/trending/public${query}`, {
+      method: 'GET',
+    });
+  }
+
   // ==========================================================================
   // Swipe Discovery Methods
   // ==========================================================================

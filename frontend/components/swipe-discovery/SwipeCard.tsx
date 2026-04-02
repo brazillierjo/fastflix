@@ -78,6 +78,14 @@ export default function SwipeCard({
     .filter(Boolean);
 
   const displayProviders = (providers || []).slice(0, 4);
+  const hasFlatrate = (providers || []).some(
+    (p) => p.availability_type === 'flatrate'
+  );
+  const hasRentOrBuy =
+    !hasFlatrate &&
+    (providers || []).some(
+      (p) => p.availability_type === 'rent' || p.availability_type === 'buy'
+    );
 
   return (
     <View style={styles.container}>
@@ -163,6 +171,16 @@ export default function SwipeCard({
                 style={styles.providerLogo}
               />
             ))}
+          {hasFlatrate && (
+            <View style={styles.availBadge}>
+              <Text style={styles.availText}>Inclus</Text>
+            </View>
+          )}
+          {hasRentOrBuy && (
+            <View style={styles.rentBadge}>
+              <Text style={styles.rentText}>Location</Text>
+            </View>
+          )}
           {item.matchScore != null && item.matchScore > 0 && (
             <View style={styles.matchBadge}>
               <Text style={styles.matchText}>{item.matchScore}%</Text>
@@ -321,6 +339,34 @@ const styles = StyleSheet.create({
     fontWeight: '600',
     marginTop: 3,
     marginBottom: 4,
+  },
+
+  // ── Availability badges ──────────────────────────────
+  availBadge: {
+    backgroundColor: 'rgba(52,211,153,0.15)',
+    borderWidth: 0.5,
+    borderColor: 'rgba(52,211,153,0.3)',
+    paddingHorizontal: 7,
+    paddingVertical: 2,
+    borderRadius: 6,
+  },
+  availText: {
+    color: '#34d399',
+    fontSize: 10,
+    fontWeight: '700',
+  },
+  rentBadge: {
+    backgroundColor: 'rgba(251,191,36,0.15)',
+    borderWidth: 0.5,
+    borderColor: 'rgba(251,191,36,0.3)',
+    paddingHorizontal: 7,
+    paddingVertical: 2,
+    borderRadius: 6,
+  },
+  rentText: {
+    color: '#fbbf24',
+    fontSize: 10,
+    fontWeight: '700',
   },
 
   // ── Match badge ─────────────────────────────────────

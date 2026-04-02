@@ -300,6 +300,48 @@ export default function SubscriptionModal({
             {/* Features */}
             <FeaturesList features={features} greenPrimary={greenPrimary} greenBg={greenBg} />
 
+            {/* Free vs Pro comparison */}
+            <MotiView
+              from={{ opacity: 0, translateY: 15 }}
+              animate={{ opacity: 1, translateY: 0 }}
+              transition={{ type: 'timing', duration: 500, delay: 700 }}
+              className='mx-6 mb-6'
+            >
+              <Text className='mb-3 text-center text-sm font-bold uppercase tracking-wider text-light-muted dark:text-dark-muted'>
+                {t('subscription.comparison.title') || 'Free vs Pro'}
+              </Text>
+              {[
+                { label: t('subscription.comparison.aiSearch') || 'AI Search', free: '3/week', pro: true },
+                { label: t('subscription.comparison.swipeDiscovery') || 'Swipe Discovery', free: '5/session', pro: true },
+                { label: t('subscription.comparison.watchlist') || 'Watchlist', free: '5/day', pro: true },
+                { label: t('subscription.comparison.forYou') || 'For You recommendations', free: false, pro: true },
+                { label: t('subscription.comparison.history') || 'Search history', free: false, pro: true },
+                { label: t('subscription.comparison.refine') || 'Refine results', free: false, pro: true },
+              ].map((row, i) => (
+                <View
+                  key={i}
+                  className='flex-row items-center border-b py-2.5'
+                  style={{ borderBottomColor: isDark ? 'rgba(255,255,255,0.06)' : 'rgba(0,0,0,0.06)' }}
+                >
+                  <Text className='flex-1 text-sm text-light-text dark:text-dark-text'>{row.label}</Text>
+                  <View className='w-16 items-center'>
+                    {row.free === false ? (
+                      <Ionicons name='close' size={16} color={isDark ? 'rgba(255,255,255,0.25)' : 'rgba(0,0,0,0.2)'} />
+                    ) : (
+                      <Text className='text-xs font-medium text-light-muted dark:text-dark-muted'>{row.free}</Text>
+                    )}
+                  </View>
+                  <View className='w-16 items-center'>
+                    <Ionicons name='checkmark-circle' size={18} color={greenPrimary} />
+                  </View>
+                </View>
+              ))}
+              <View className='mt-1 flex-row items-center justify-end'>
+                <Text className='mr-3 text-xs font-semibold text-light-muted dark:text-dark-muted'>Free</Text>
+                <Text className='text-xs font-bold' style={{ color: greenPrimary }}>Pro</Text>
+              </View>
+            </MotiView>
+
             {/* Social Proof */}
             <MotiView
               from={{ opacity: 0, translateY: 15 }}

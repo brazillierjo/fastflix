@@ -80,10 +80,10 @@ export default function ForYouScreen() {
         }
       }
 
-      // Free/guest: trending feed
-      const res = await backendAPIService.getTrending({
-        language: tmdbLanguage,
-      });
+      // Free/guest: trending feed (use authenticated endpoint if logged in, public otherwise)
+      const res = isAuthenticated
+        ? await backendAPIService.getTrending({ language: tmdbLanguage })
+        : await backendAPIService.getTrendingPublic({ language: tmdbLanguage });
       if (res.success && res.data) {
         interface TrendingRaw {
           tmdb_id: number;
@@ -93,9 +93,11 @@ export default function ForYouScreen() {
           vote_average?: number;
           genre_ids?: number[];
         }
-        const trendingItems: MovieResult[] = (
-          res.data as TrendingRaw[]
-        ).map((item) => ({
+        // Authenticated returns array, public returns { items: [...] }
+        const rawItems = Array.isArray(res.data)
+          ? (res.data as TrendingRaw[])
+          : ((res.data as { items?: TrendingRaw[] }).items || []);
+        const trendingItems: MovieResult[] = rawItems.map((item) => ({
             tmdb_id: item.tmdb_id,
             title: item.title,
             media_type: item.media_type || 'movie',

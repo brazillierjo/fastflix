@@ -226,32 +226,6 @@
 - [x] **Implémenté sur SwipeCard** — Logos providers (max 4) affichés à côté du badge type. Données déjà disponibles dans les props.
 - [ ] **Ajouter les logos providers dans MovieResults** (vue liste des résultats de recherche)
 
-### 5.2 — "Disponible en ce moment" label
-
-**Statut** : N'EXISTE PAS
-**Catégorie** : Free
-**Priorité** : Moyenne
-
-- [ ] **Frontend — Badge "Disponible" vs "Location/Achat"**
-  - Fichiers : `MovieResults.tsx`, `ForYouSection.tsx`
-  - Si le film a des providers `flatrate` → badge vert "Inclus dans votre abo"
-  - Si seulement `rent/buy` → badge jaune "Location / Achat"
-  - Si aucun provider → badge gris "Non disponible dans votre région"
-
-### 5.3 — "Quitte la plateforme dans X jours"
-
-**Statut** : N'EXISTE PAS
-**Catégorie** : Premium
-**Priorité** : Basse (TMDB ne fournit pas cette info nativement)
-
-- [ ] **Recherche** : Vérifier si l'API JustWatch ou TMDB expose les dates d'expiration
-  - TMDB ne fournit PAS les dates d'expiration des licences
-  - JustWatch (via TMDB) ne fournit que la disponibilité actuelle
-  - **Option A** : Scraper JustWatch pour les dates (risqué, TOS)
-  - **Option B** : Ajouter un monitoring : sauvegarder l'état des providers et détecter les changements (le système `useAvailabilityCheck` fait DÉJÀ ça pour la watchlist)
-  - **Option C** : Intégrer une API tierce (ex: Streaming Availability API)
-  - **Décision** : Reporter cette feature car aucune API fiable ne fournit cette donnée
-
 ---
 
 ## 6. Home intelligente
@@ -626,12 +600,12 @@ backend/
 > L'onglet "Pour vous" (Swipe Discovery TikTok-like) est implémenté. Il consolide les features 4.1 (like/dislike), 4.2 (déjà vu), 4.3 (toast goûts), 5.1 (providers), 2.1/2.2 (raison IA + match %), 2.3 (genres).
 
 ### Phase 1 — Quick Wins
-- [ ] 3.1 — Suggestions cliquables sur SearchForm
-- [ ] 5.2 — Badge "Disponible" / "Location/Achat"
-- [ ] 10.1 — Mode humeur (grille sur Explorer)
-- [ ] 6.2 — Renommer Trending → "Tendances pour toi"
+- [x] 6.2 — Trending renommé "Tendances pour vous" (authentifié) / "Tendances" (guest)
+- [x] 10.1 + 3.1 — Mode humeur : 8 mood chips sur Explorer (😂🔥🥰🤯😢😴👨‍👩‍👧‍👦😰), tap → recherche IA pré-remplie
+- [x] 5.2 — Badge "Inclus" (vert, flatrate) / "Location" (jaune, rent/buy) sur SwipeCard
+- [x] 7.1 — Tableau comparatif Free vs Pro dans SubscriptionModal (6 features, check/cross)
+- [x] Audit premium — All gates verified: swipe 5/session, like/dislike/watchlist/watched disabled for guests, trending public pour guests
 - [ ] 3.2 — Bouton "Surprends-moi"
-- [ ] 7.1 — Tableau comparatif Free vs Premium
 
 ### Phase 2 — Feed infini + Rétention
 - [ ] Feed infini paginé via `/api/feed` (recos IA pour premium, trending pour free)

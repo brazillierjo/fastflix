@@ -74,6 +74,7 @@ export default function SwipeActions({
   }, []);
 
   const handleLike = useCallback(() => {
+    if (!isAuthenticated) return;
     Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
     if (feedbackState === 'like') {
       setFeedbackState(null);
@@ -92,9 +93,10 @@ export default function SwipeActions({
         })
         .catch(() => {});
     }
-  }, [item, mediaType, feedbackState, t, showToast]);
+  }, [item, mediaType, feedbackState, isAuthenticated, t, showToast]);
 
   const handleDislike = useCallback(() => {
+    if (!isAuthenticated) return;
     Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
     if (feedbackState === 'dislike') {
       setFeedbackState(null);
@@ -113,7 +115,7 @@ export default function SwipeActions({
         })
         .catch(() => {});
     }
-  }, [item, mediaType, feedbackState, t, showToast]);
+  }, [item, mediaType, feedbackState, isAuthenticated, t, showToast]);
 
   const handleWatchlist = useCallback(() => {
     if (!isAuthenticated) return;
@@ -207,6 +209,7 @@ export default function SwipeActions({
         onPress: handleLike,
         label: t('swipeDiscovery.like'),
         isActive: feedbackState === 'like',
+        disabled: !isAuthenticated,
       },
       {
         icon: 'close-circle-outline',
@@ -216,6 +219,7 @@ export default function SwipeActions({
         onPress: handleDislike,
         label: t('swipeDiscovery.dislike'),
         isActive: feedbackState === 'dislike',
+        disabled: !isAuthenticated,
       },
       {
         icon: 'eye-outline',
