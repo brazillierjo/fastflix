@@ -93,13 +93,13 @@ export default function SwipeCard({
       {/* Gradient overlay — strong at bottom for text readability */}
       <LinearGradient
         colors={[
-          'rgba(0,0,0,0.1)',
-          'rgba(0,0,0,0.15)',
-          'rgba(0,0,0,0.65)',
-          'rgba(0,0,0,0.92)',
+          'rgba(0,0,0,0)',
+          'rgba(0,0,0,0.05)',
+          'rgba(0,0,0,0.55)',
+          'rgba(0,0,0,0.9)',
           'rgba(0,0,0,0.98)',
         ]}
-        locations={[0, 0.3, 0.55, 0.75, 1]}
+        locations={[0, 0.35, 0.58, 0.78, 1]}
         style={[
           StyleSheet.absoluteFill,
           bottomInset > 0 && { paddingBottom: bottomInset },
@@ -188,11 +188,11 @@ export default function SwipeCard({
           >
             <Text
               style={styles.synopsis}
-              numberOfLines={synopsisExpanded ? 6 : 2}
+              numberOfLines={synopsisExpanded ? 10 : 4}
             >
               {item.overview}
             </Text>
-            {!synopsisExpanded && item.overview.length > 80 && (
+            {!synopsisExpanded && item.overview.length > 120 && (
               <Text style={styles.seeMore}>voir plus</Text>
             )}
           </TouchableOpacity>
