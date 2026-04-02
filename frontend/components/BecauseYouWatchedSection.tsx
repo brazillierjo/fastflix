@@ -121,12 +121,25 @@ export default function BecauseYouWatchedSection() {
             >
               {item.title}
             </Text>
-            {item.vote_average > 0 && (
-              <View className="mt-0.5 flex-row items-center gap-1">
-                <Ionicons name="star" size={10} color="#fbbf24" />
-                <Text className="text-xs text-light-muted dark:text-dark-muted">
-                  {item.vote_average.toFixed(1)}
-                </Text>
+            <View className="mt-0.5 flex-row items-center gap-1">
+              {item.vote_average > 0 && (
+                <>
+                  <Ionicons name="star" size={10} color="#fbbf24" />
+                  <Text className="text-xs text-light-muted dark:text-dark-muted">
+                    {item.vote_average.toFixed(1)}
+                  </Text>
+                </>
+              )}
+            </View>
+            {item.providers && item.providers.length > 0 && (
+              <View className="mt-1 flex-row gap-1">
+                {item.providers.slice(0, 3).map((p, pi) => (
+                  <Image
+                    key={pi}
+                    source={{ uri: `${TMDB_IMAGE_BASE}/w92${p.logo_path}` }}
+                    style={{ width: 20, height: 20, borderRadius: 4 }}
+                  />
+                ))}
               </View>
             )}
           </TouchableOpacity>

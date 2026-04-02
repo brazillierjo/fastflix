@@ -815,12 +815,14 @@ app.get("/because-you-watched", authMiddleware, rateLimitMiddleware("standard"),
   try {
     const userId = getUserId(c);
     const language = c.req.query("language") || "fr-FR";
-    const country = c.req.query("country") || "FR";
 
     const [tasteProfile, preferences] = await Promise.all([
       db.getUserTasteProfile(userId),
       db.getUserPreferences(userId),
     ]);
+
+    // Use the user's preference country for provider lookup
+    const country = preferences.country || c.req.query("country") || "FR";
 
     // Need at least one rated movie
     const ratedMovies = tasteProfile.rated_movies.filter((m) => m.rating >= 3);
