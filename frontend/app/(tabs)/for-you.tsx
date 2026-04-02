@@ -67,7 +67,7 @@ export default function ForYouScreen() {
       if (!res.success) {
         setFeed({
           status: 'error',
-          message: res.error?.message || 'API error',
+          message: `${res.error?.message || 'API error'}`,
         });
         return;
       }
@@ -89,7 +89,7 @@ export default function ForYouScreen() {
     } catch (err) {
       setFeed({
         status: 'error',
-        message: err instanceof Error ? err.message : 'Network error',
+        message: `${err instanceof Error ? err.message : 'Network error'}`,
       });
     } finally {
       isFetchingRef.current = false;

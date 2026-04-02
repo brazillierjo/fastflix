@@ -54,7 +54,7 @@ interface Genre {
 
 // API URL for fetching providers
 const API_URL =
-  process.env.EXPO_PUBLIC_API_URL || 'https://fastflix-api.vercel.app';
+  process.env.EXPO_PUBLIC_API_URL || 'https://fastflix.miotutor.app';
 
 // Fallback platforms if API is unavailable (TMDB provider IDs + logo paths)
 const FALLBACK_PLATFORMS: Platform[] = [

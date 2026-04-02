@@ -13,9 +13,9 @@ import Constants from 'expo-constants';
 
 const HOME_DATA_QUERY_KEY = ['homeData'];
 const API_URL =
-  Constants.expoConfig?.extra?.EXPO_PUBLIC_API_URL ||
+  Constants.expoConfig?.extra?.API_URL ||
   process.env.EXPO_PUBLIC_API_URL ||
-  'https://fastflix-api.vercel.app';
+  'https://fastflix.miotutor.app';
 
 interface HomeData {
   dailyPick: any;
