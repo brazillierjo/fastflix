@@ -8,6 +8,7 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
+import { useLanguage } from '@/contexts/LanguageContext';
 import type {
   MovieResult,
   StreamingProvider,
@@ -56,6 +57,7 @@ export default function SwipeCard({
   providers,
   bottomInset = 0,
 }: SwipeCardProps) {
+  const { t } = useLanguage();
   const [synopsisExpanded, setSynopsisExpanded] = useState(false);
 
   const posterUri = item.poster_path
@@ -193,7 +195,7 @@ export default function SwipeCard({
               {item.overview}
             </Text>
             {!synopsisExpanded && item.overview.length > 120 && (
-              <Text style={styles.seeMore}>voir plus</Text>
+              <Text style={styles.seeMore}>{t('swipeDiscovery.seeMore')}</Text>
             )}
           </TouchableOpacity>
         ) : null}

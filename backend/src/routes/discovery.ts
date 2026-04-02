@@ -594,7 +594,7 @@ app.get("/for-you", authMiddleware, rateLimitMiddleware("ai"), async (c) => {
     const country = c.req.query("country") || "FR";
 
     // Check cache first (valid for 7 days)
-    const cached = await db.getForYouCache(userId, 7);
+    const cached = await db.getForYouCache(userId, 7, language);
     if (cached) {
       c.header("Cache-Control", "private, max-age=1800");
       return c.json({

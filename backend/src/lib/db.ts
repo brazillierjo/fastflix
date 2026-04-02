@@ -1433,7 +1433,8 @@ class DatabaseService {
    */
   async getForYouCache(
     userId: string,
-    maxAgeDays: number = 7
+    maxAgeDays: number = 7,
+    language?: string
   ): Promise<{
     recommendations: MovieResult[];
     streamingProviders: { [key: number]: StreamingProvider[] };
@@ -1443,13 +1444,19 @@ class DatabaseService {
     try {
       await this.ensureForYouCacheTable();
 
-      const result = await this.client!.execute({
-        sql: `SELECT recommendations_json, providers_json, updated_at
+      const sql = language
+        ? `SELECT recommendations_json, providers_json, updated_at
+              FROM for_you_cache
+              WHERE user_id = ? AND language = ?
+              AND datetime(updated_at, '+' || ? || ' days') > datetime('now')`
+        : `SELECT recommendations_json, providers_json, updated_at
               FROM for_you_cache
               WHERE user_id = ?
-              AND datetime(updated_at, '+' || ? || ' days') > datetime('now')`,
-        args: [userId, maxAgeDays],
-      });
+              AND datetime(updated_at, '+' || ? || ' days') > datetime('now')`;
+
+      const args = language ? [userId, language, maxAgeDays] : [userId, maxAgeDays];
+
+      const result = await this.client!.execute({ sql, args });
 
       if (result.rows.length === 0) return null;
 
