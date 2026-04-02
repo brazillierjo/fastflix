@@ -28,7 +28,7 @@ const app = new Hono();
  * Paginated feed for swipe discovery.
  * Premium: AI-powered recs. Free: paginated trending.
  */
-app.get("/", authMiddleware, rateLimitMiddleware("ai"), async (c) => {
+app.get("/", authMiddleware, rateLimitMiddleware("standard"), async (c) => {
   try {
     const userId = getUserId(c);
     const page = parseInt(c.req.query("page") || "1", 10);
