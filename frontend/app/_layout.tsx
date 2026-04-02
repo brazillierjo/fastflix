@@ -7,6 +7,7 @@ import { StatusBar } from 'expo-status-bar';
 import * as Updates from 'expo-updates';
 import React, { useEffect } from 'react';
 import 'react-native-reanimated';
+import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { ErrorBoundary } from '@/components/ErrorBoundary';
 import { AuthProvider } from '@/contexts/AuthContext';
 import { SwipeDataProvider } from '@/contexts/SwipeDataContext';
@@ -76,6 +77,7 @@ export default Sentry.wrap(function RootLayout() {
   }, []);
 
   return (
+    <GestureHandlerRootView style={{ flex: 1 }}>
     <ErrorBoundary>
       <AptabaseProvider appKey='A-EU-9072861721'>
       <QueryProvider>
@@ -151,5 +153,6 @@ export default Sentry.wrap(function RootLayout() {
       </QueryProvider>
       </AptabaseProvider>
     </ErrorBoundary>
+    </GestureHandlerRootView>
   );
 });
