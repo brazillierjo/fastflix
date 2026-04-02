@@ -25,6 +25,9 @@ function CustomTabBar({ state, descriptors, navigation }: BottomTabBarProps) {
     return null;
   }
 
+  // Force dark tab bar on "Pour vous" tab (always dark screen)
+  const tabDark = isDark || currentRouteName === 'for-you';
+
   return (
     <View style={styles.tabBarWrapper}>
       <View style={styles.tabBarContainer}>
@@ -32,9 +35,9 @@ function CustomTabBar({ state, descriptors, navigation }: BottomTabBarProps) {
           style={[
             styles.tabBarContent,
             {
-              backgroundColor: isDark ? '#000000' : '#ffffff',
+              backgroundColor: tabDark ? '#000000' : '#ffffff',
               borderTopWidth: StyleSheet.hairlineWidth,
-              borderTopColor: isDark
+              borderTopColor: tabDark
                 ? 'rgba(255, 255, 255, 0.15)'
                 : 'rgba(0, 0, 0, 0.1)',
             },
@@ -42,7 +45,7 @@ function CustomTabBar({ state, descriptors, navigation }: BottomTabBarProps) {
         >
             {state.routes
               .filter(route =>
-                ['home', 'search', 'profile'].includes(route.name)
+                ['for-you', 'home', 'search', 'profile'].includes(route.name)
               )
               .map(route => {
                 const { options } = descriptors[route.key];
@@ -120,12 +123,25 @@ export default function TabsLayout() {
         options={{ href: null }}
       />
       <Tabs.Screen
-        name='home'
+        name='for-you'
         options={{
-          title: t('tabs.home'),
+          title: t('tabs.forYou'),
           tabBarIcon: ({ color, focused }) => (
             <Ionicons
-              name={focused ? 'home' : 'home-outline'}
+              name={focused ? 'sparkles' : 'sparkles-outline'}
+              size={24}
+              color={color}
+            />
+          ),
+        }}
+      />
+      <Tabs.Screen
+        name='home'
+        options={{
+          title: t('tabs.explore'),
+          tabBarIcon: ({ color, focused }) => (
+            <Ionicons
+              name={focused ? 'compass' : 'compass-outline'}
               size={24}
               color={color}
             />

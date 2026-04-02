@@ -359,6 +359,8 @@
   },
   "tabs": {
     "home": "ホーム",
+    "forYou": "おすすめ",
+    "explore": "探索",
     "search": "検索",
     "watchlist": "ウォッチリスト",
     "movies": "映画",
@@ -580,6 +582,9 @@
     "addedToWatchlist": "リストに追加しました",
     "removedFromWatchlist": "リストから削除しました",
     "markedWatched": "視聴済みにしました",
-    "exploreBySwipe": "スワイプで探索"
+    "unmarkedWatched": "視聴済みから削除しました",
+    "exploreBySwipe": "スワイプで探索",
+    "loading": "読み込み中...",
+    "emptyFeed": "今は表示するものがありません。後で戻ってきてください！"
   }
 }

@@ -267,7 +267,7 @@ Provide four distinct outputs:
 
 1. RECOMMENDATIONS: Up to ${maxRecommendations} ${contentTypeText} matching the request (be generous and inventive). Include exact titles, franchise variations, spiritual successors, and thematically similar works. List only titles separated by commas.
 
-2. REASONS: For each recommendation (in the SAME order), provide a short personalized reason (max 15 words) explaining why this user would love it, based on their profile. Reference specific movies they liked, genres they prefer, or themes that connect. Separate each reason with " ||| ". If no user profile is available, give a generic but engaging reason for each title.
+2. REASONS: For each recommendation (in the SAME order), provide a very short personalized reason (STRICTLY max 10 words, ideally 6-8 words) explaining why this user would love it. Be direct and punchy — go straight to the point. Example: "Dark humor et anti-héros comme Deadpool" or "Même tension que Breaking Bad". Separate each reason with " ||| ". If no user profile is available, give a generic but catchy reason.
 
 3. DETECTED_PLATFORMS: Extract any specific streaming platforms mentioned in the user's request (e.g., "Netflix", "Disney+", "Amazon Prime", "HBO", "Hulu", "Apple TV"). If no specific platform is mentioned, leave this empty. List only platform names separated by commas.
 

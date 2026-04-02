@@ -19,25 +19,27 @@ export default function SwipeHeader({
   const router = useRouter();
 
   return (
-    <View style={[styles.container, { paddingTop: insets.top + 8 }]}>
+    <View style={[styles.container, { paddingTop: insets.top + 4 }]}>
       <TouchableOpacity
         onPress={() => router.back()}
         style={styles.button}
         hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
       >
-        <Ionicons name='chevron-back' size={24} color='#fff' />
+        <Ionicons name="chevron-back" size={28} color="#fff" />
       </TouchableOpacity>
 
-      <Text style={styles.counter}>
-        {currentIndex + 1} / {totalItems}
-      </Text>
+      <View style={styles.counterBadge}>
+        <Text style={styles.counter}>
+          {currentIndex + 1} / {totalItems}
+        </Text>
+      </View>
 
       <TouchableOpacity
         onPress={onClose}
         style={styles.button}
         hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
       >
-        <Ionicons name='close' size={24} color='#fff' />
+        <Ionicons name="close" size={28} color="#fff" />
       </TouchableOpacity>
     </View>
   );
@@ -54,16 +56,25 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'space-between',
     paddingHorizontal: 16,
-    paddingBottom: 12,
-    backgroundColor: 'rgba(0,0,0,0.3)',
+    paddingBottom: 8,
   },
   button: {
-    width: 40,
-    height: 40,
+    width: 44,
+    height: 44,
     alignItems: 'center',
     justifyContent: 'center',
-    borderRadius: 20,
-    backgroundColor: 'rgba(255,255,255,0.1)',
+    // Text shadow effect via elevated shadow
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.6,
+    shadowRadius: 4,
+    elevation: 4,
+  },
+  counterBadge: {
+    backgroundColor: 'rgba(0,0,0,0.35)',
+    paddingHorizontal: 14,
+    paddingVertical: 5,
+    borderRadius: 14,
   },
   counter: {
     color: '#fff',

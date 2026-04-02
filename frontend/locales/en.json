@@ -387,6 +387,8 @@
   },
   "tabs": {
     "home": "Home",
+    "forYou": "For You",
+    "explore": "Explore",
     "search": "Search",
     "watchlist": "Watchlist",
     "movies": "Movies",
@@ -580,6 +582,9 @@
     "addedToWatchlist": "Added to watchlist",
     "removedFromWatchlist": "Removed from watchlist",
     "markedWatched": "Marked as watched",
-    "exploreBySwipe": "Explore by swiping"
+    "unmarkedWatched": "Removed from watched",
+    "exploreBySwipe": "Explore by swiping",
+    "loading": "Loading...",
+    "emptyFeed": "Nothing to show right now. Come back later!"
   }
 }

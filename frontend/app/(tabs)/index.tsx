@@ -52,5 +52,5 @@ export default function IndexScreen() {
     return <Redirect href='/auth' />;
   }
 
-  return <Redirect href={'/home' as never} />;
+  return <Redirect href={'/for-you' as never} />;
 }

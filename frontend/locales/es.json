@@ -359,6 +359,8 @@
   },
   "tabs": {
     "home": "Inicio",
+    "forYou": "Para ti",
+    "explore": "Explorar",
     "search": "Buscar",
     "watchlist": "Mi lista",
     "movies": "Peliculas",
@@ -580,6 +582,9 @@
     "addedToWatchlist": "Añadido a la lista",
     "removedFromWatchlist": "Eliminado de la lista",
     "markedWatched": "Marcada como vista",
-    "exploreBySwipe": "Explora deslizando"
+    "unmarkedWatched": "Retirada de vistas",
+    "exploreBySwipe": "Explora deslizando",
+    "loading": "Cargando...",
+    "emptyFeed": "Nada que mostrar por ahora. ¡Vuelve más tarde!"
   }
 }
