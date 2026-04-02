@@ -565,7 +565,6 @@ backend/
 
 ### Phase 1 — Quick Wins
 - [x] 6.2 — Trending renommé "Tendances pour vous" (authentifié) / "Tendances" (guest)
-- [x] 5.2 — Badge "Inclus" (vert, flatrate) / "Location" (jaune, rent/buy) sur SwipeCard
 - [x] 7.1 — Tableau comparatif Free vs Pro dans SubscriptionModal (6 features, check/cross)
 - [x] Audit premium — All gates verified: swipe 5/session, like/dislike/watchlist/watched disabled for guests, trending public pour guests
 - [ ] 3.2 — Bouton "Surprends-moi"
