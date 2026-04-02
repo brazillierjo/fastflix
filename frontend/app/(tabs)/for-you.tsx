@@ -28,20 +28,23 @@ import { getLanguageForTMDB } from '@/constants/languages';
 
 const TAB_BAR_HEIGHT = Platform.OS === 'ios' ? 80 : 60;
 
+type FeedState =
+  | { status: 'loading' }
+  | { status: 'error'; message: string }
+  | {
+      status: 'ready';
+      items: MovieResult[];
+      providers: Record<number, StreamingProvider[]>;
+      hasMore: boolean;
+    };
+
 export default function ForYouScreen() {
   const { t, language } = useLanguage();
   const { isAuthenticated, isLoading: isAuthLoading } = useAuth();
   const router = useRouter();
   const insets = useSafeAreaInsets();
 
-  const [items, setItems] = useState<MovieResult[]>([]);
-  const [providers, setProviders] = useState<
-    Record<number, StreamingProvider[]>
-  >({});
-  const [isLoading, setIsLoading] = useState(true);
-  const [hasMore, setHasMore] = useState(true);
-  const [error, setError] = useState(false);
-
+  const [feed, setFeed] = useState<FeedState>({ status: 'loading' });
   const pageRef = useRef(1);
   const isFetchingRef = useRef(false);
   const sessionStart = useRef(Date.now());
@@ -49,81 +52,126 @@ export default function ForYouScreen() {
 
   const tmdbLanguage = getLanguageForTMDB(language);
 
-  const fetchPage = useCallback(
-    async (page: number, existingItems: MovieResult[]) => {
-      if (isFetchingRef.current) return;
-      isFetchingRef.current = true;
-      try {
-        const exclude = existingItems.map(i => i.tmdb_id);
-        const res = await backendAPIService.getFeed({
-          page,
-          size: 10,
-          language: tmdbLanguage,
-          exclude: page > 1 ? exclude : undefined,
-        });
-        if (res.success && res.data && (res.data.items?.length ?? 0) > 0) {
-          const newItems = res.data.items;
-          if (page === 1) {
-            setItems(newItems);
-            setProviders(res.data.providers || {});
-          } else {
-            setItems(prev => {
-              const existingIds = new Set(prev.map(i => i.tmdb_id));
-              const unique = newItems.filter(i => !existingIds.has(i.tmdb_id));
-              return [...prev, ...unique];
-            });
-            setProviders(prev => ({ ...prev, ...(res.data.providers || {}) }));
-          }
-          setHasMore(res.data.hasMore);
-          pageRef.current = page;
-          trackFeedPageLoad(page, newItems.length);
-        }
-      } catch {
-        if (page === 1) setError(true);
-      } finally {
-        setIsLoading(false);
-        isFetchingRef.current = false;
-      }
-    },
-    [tmdbLanguage]
-  );
+  const fetchFeed = useCallback(async () => {
+    if (isFetchingRef.current) return;
+    isFetchingRef.current = true;
+    setFeed({ status: 'loading' });
 
+    try {
+      const res = await backendAPIService.getFeed({
+        page: 1,
+        size: 10,
+        language: tmdbLanguage,
+      });
+
+      if (!res.success) {
+        setFeed({
+          status: 'error',
+          message: res.error?.message || 'API error',
+        });
+        return;
+      }
+
+      const items = res.data?.items || [];
+      if (items.length === 0) {
+        setFeed({ status: 'error', message: 'No items returned' });
+        return;
+      }
+
+      setFeed({
+        status: 'ready',
+        items,
+        providers: res.data?.providers || {},
+        hasMore: res.data?.hasMore ?? false,
+      });
+      pageRef.current = 1;
+      trackFeedPageLoad(1, items.length);
+    } catch (err) {
+      setFeed({
+        status: 'error',
+        message: err instanceof Error ? err.message : 'Network error',
+      });
+    } finally {
+      isFetchingRef.current = false;
+    }
+  }, [tmdbLanguage]);
+
+  const fetchNextPage = useCallback(async () => {
+    if (feed.status !== 'ready' || isFetchingRef.current || !feed.hasMore)
+      return;
+    isFetchingRef.current = true;
+
+    const nextPage = pageRef.current + 1;
+    try {
+      const res = await backendAPIService.getFeed({
+        page: nextPage,
+        size: 10,
+        language: tmdbLanguage,
+        exclude: feed.items.map((i) => i.tmdb_id),
+      });
+
+      if (res.success && res.data?.items?.length) {
+        const existingIds = new Set(feed.items.map((i) => i.tmdb_id));
+        const newItems = res.data.items.filter(
+          (i) => !existingIds.has(i.tmdb_id)
+        );
+
+        setFeed((prev) => {
+          if (prev.status !== 'ready') return prev;
+          return {
+            ...prev,
+            items: [...prev.items, ...newItems],
+            providers: { ...prev.providers, ...(res.data?.providers || {}) },
+            hasMore: res.data?.hasMore ?? false,
+          };
+        });
+        pageRef.current = nextPage;
+        trackFeedPageLoad(nextPage, newItems.length);
+      }
+    } catch {
+      // Pagination failure is silent — don't break existing feed
+    } finally {
+      isFetchingRef.current = false;
+    }
+  }, [feed, tmdbLanguage]);
+
+  // Fetch when auth is ready
   useEffect(() => {
     if (isAuthLoading || !isAuthenticated) return;
     trackScreenView('for_you');
-    fetchPage(1, []);
-  }, [isAuthLoading, isAuthenticated, fetchPage]);
+    fetchFeed();
+  }, [isAuthLoading, isAuthenticated, fetchFeed]);
 
-  // Session tracking on unmount
+  // Session tracking
   useEffect(() => {
-    const startTime = sessionStart.current;
+    const start = sessionStart.current;
     return () => {
-      const durationSeconds = Math.round((Date.now() - startTime) / 1000);
+      const seconds = Math.round((Date.now() - start) / 1000);
       if (maxPageViewed.current > 0) {
-        trackSwipeSession(durationSeconds, maxPageViewed.current + 1);
+        trackSwipeSession(seconds, maxPageViewed.current + 1);
       }
     };
   }, []);
 
   const handlePageChanged = useCallback(
     (index: number) => {
-      if (index > maxPageViewed.current) {
-        maxPageViewed.current = index;
-      }
-      if (items[index]) {
-        trackSwipeView(items[index].tmdb_id, index, 'forYou');
-      }
-      // Prefetch next page when approaching the end
-      if (hasMore && index >= items.length - 3) {
-        fetchPage(pageRef.current + 1, items);
+      if (index > maxPageViewed.current) maxPageViewed.current = index;
+      if (feed.status === 'ready') {
+        if (feed.items[index]) {
+          trackSwipeView(feed.items[index].tmdb_id, index, 'forYou');
+        }
+        if (feed.hasMore && index >= feed.items.length - 3) {
+          fetchNextPage();
+        }
       }
     },
-    [items, hasMore, fetchPage]
+    [feed, fetchNextPage]
   );
 
-  if (isLoading || isAuthLoading) {
+  // ── Loading ──
+  if (feed.status === 'loading' || isAuthLoading) {
     return (
-      <View style={styles.centerContainer}>
+      <View style={styles.center}>
         <MotiView
           from={{ scale: 0.8, opacity: 0.4 }}
           animate={{ scale: 1.2, opacity: 1 }}
@@ -136,24 +184,40 @@ export default function ForYouScreen() {
     );
   }
 
-  if (error || items.length === 0) {
+  // ── Error — show what failed + retry ──
+  if (feed.status === 'error') {
     return (
-      <View style={styles.centerContainer}>
-        <Ionicons name='film-outline' size={48} color='rgba(255,255,255,0.3)' />
+      <View style={styles.center}>
+        <Ionicons
+          name='alert-circle-outline'
+          size={48}
+          color='rgba(255,255,255,0.3)'
+        />
         <Text style={styles.emptyText}>{t('swipeDiscovery.emptyFeed')}</Text>
+        <Text style={styles.errorDetail}>{feed.message}</Text>
+        <TouchableOpacity
+          style={styles.retryButton}
+          onPress={fetchFeed}
+          activeOpacity={0.7}
+        >
+          <Text style={styles.retryText}>
+            {t('common.retry') || 'Réessayer'}
+          </Text>
+        </TouchableOpacity>
       </View>
     );
   }
 
+  // ── Feed ──
   return (
     <View style={styles.container}>
       <SwipeDiscoveryView
-        items={items}
-        providers={providers}
+        items={feed.items}
+        providers={feed.providers}
         credits={{}}
         crew={{}}
         detailedInfo={{}}
-        hasMore={hasMore}
+        hasMore={feed.hasMore}
         onPageChanged={handlePageChanged}
         hideHeader
         bottomInset={TAB_BAR_HEIGHT}
@@ -164,21 +228,20 @@ export default function ForYouScreen() {
         activeOpacity={0.6}
         hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
       >
-        <Ionicons
-          name='search'
-          size={24}
-          color='#fff'
-          style={styles.iconShadow}
-        />
+        <Ionicons name='search' size={24} color='#fff' style={styles.iconShadow} />
       </TouchableOpacity>
     </View>
   );
 }
 
 const styles = StyleSheet.create({
-  container: {
+  container: { flex: 1, backgroundColor: '#000' },
+  center: {
     flex: 1,
     backgroundColor: '#000',
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: 16,
   },
   searchButton: {
     position: 'absolute',
@@ -188,13 +251,6 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     zIndex: 10,
-  },
-  centerContainer: {
-    flex: 1,
-    backgroundColor: '#000',
-    alignItems: 'center',
-    justifyContent: 'center',
-    gap: 16,
   },
   loadingText: {
     color: 'rgba(255,255,255,0.6)',
@@ -209,6 +265,22 @@ const styles = StyleSheet.create({
     paddingHorizontal: 40,
     lineHeight: 22,
   },
+  errorDetail: {
+    color: 'rgba(255,255,255,0.3)',
+    fontSize: 12,
+    textAlign: 'center',
+    paddingHorizontal: 40,
+    fontFamily: Platform.OS === 'ios' ? 'Menlo' : 'monospace',
+  },
+  retryButton: {
+    borderWidth: 1,
+    borderColor: 'rgba(255,255,255,0.3)',
+    paddingHorizontal: 24,
+    paddingVertical: 10,
+    borderRadius: 20,
+    marginTop: 8,
+  },
+  retryText: { color: '#fff', fontSize: 14, fontWeight: '600' },
   iconShadow: {
     textShadowColor: 'rgba(0,0,0,0.7)',
     textShadowOffset: { width: 0, height: 1 },
