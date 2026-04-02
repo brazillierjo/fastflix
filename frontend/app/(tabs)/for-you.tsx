@@ -97,7 +97,12 @@ export default function ForYouScreen() {
               language: tmdbLanguage,
             });
             if (trendingRes.success && trendingRes.data) {
-              const rawItems = (Array.isArray(trendingRes.data) ? trendingRes.data : []) as {
+              const trendingData = trendingRes.data as { items?: unknown[] } | unknown[];
+              const rawItems = (
+                Array.isArray(trendingData)
+                  ? trendingData
+                  : (trendingData as { items?: unknown[] }).items || []
+              ) as {
                 tmdb_id: number; title: string; media_type?: 'movie' | 'tv';
                 poster_path?: string | null; vote_average?: number; genre_ids?: number[];
                 overview?: string; backdrop_path?: string | null;

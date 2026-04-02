@@ -110,16 +110,22 @@ app.get("/", authMiddleware, rateLimitMiddleware("standard"), async (c) => {
         mediaType: item.media_type,
       }));
 
-      const aiResult = await gemini.generateRecommendationsWithResponse(
-        syntheticQuery,
-        contentTypes,
-        language,
-        undefined,
-        size + 5, // request extra to compensate for filtered out items
-        userContext,
-        undefined,
-        recentTitles.length > 0 ? recentTitles : undefined
-      );
+      let aiResult;
+      try {
+        aiResult = await gemini.generateRecommendationsWithResponse(
+          syntheticQuery,
+          contentTypes,
+          language,
+          undefined,
+          size + 5, // request extra to compensate for filtered out items
+          userContext,
+          undefined,
+          recentTitles.length > 0 ? recentTitles : undefined
+        );
+      } catch (aiError) {
+        console.error("⚠️ /api/feed: Gemini failed, falling back to trending:", aiError);
+        return serveTrending(c, language, country, page, size);
+      }
 
       if (aiResult.isFallback || aiResult.recommendations.length === 0) {
         return serveTrending(c, language, country, page, size);
@@ -136,12 +142,21 @@ app.get("/", authMiddleware, rateLimitMiddleware("standard"), async (c) => {
       // Enrich with TMDB
       const includeMovies = contentTypes.includes("movies");
       const includeTvShows = contentTypes.includes("TV shows");
-      const enriched = await tmdb.enrichRecommendations(
-        aiResult.recommendations,
-        includeMovies,
-        includeTvShows,
-        language
-      );
+      let enriched;
+      try {
+        enriched = await tmdb.enrichRecommendations(
+          aiResult.recommendations,
+          includeMovies,
+          includeTvShows,
+          language
+        );
+      } catch (enrichError) {
+        console.error(
+          "⚠️ /api/feed: TMDB enrichment failed, falling back to trending:",
+          enrichError
+        );
+        return serveTrending(c, language, country, page, size);
+      }
 
       // Attach reasons
       for (const item of enriched) {
