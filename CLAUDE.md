@@ -88,7 +88,8 @@ backend/src/
     ├── auth.ts              # POST /api/auth/apple, /google, GET /me
     ├── search.ts            # POST /api/search (AI-powered)
     ├── search-history.ts    # GET /api/search/history
-    ├── discovery.ts         # GET /api/home, /daily-pick, /trending, /for-you, /new-releases
+    ├── discovery.ts         # GET /api/home, /daily-pick, /trending, /trending/public, /new-releases, /for-you
+    ├── feed.ts              # GET /api/feed (For You tab), POST /api/feed/feedback
     ├── details.ts           # GET /api/details, /similar/:id, /person/:id, /tmdb-search
     ├── watchlist.ts         # CRUD /api/watchlist + check + refresh-providers
     ├── user.ts              # /api/user/preferences, taste-profile, stats, delete
@@ -98,13 +99,21 @@ backend/src/
     └── notifications.ts     # POST /api/notifications/register
 ```
 
+### For You Feed (`/api/feed`)
+- **Single endpoint** handles all cases with internal fallbacks — never returns 500
+- **Premium + taste profile**: Gemini AI recommendations → TMDB enrichment → providers → matchScore/reason
+- **Free / no profile / AI failure**: TMDB trending → providers
+- Frontend makes one call (`getFeed`), no client-side fallbacks
+- Feed fetch waits for auth to be ready (`isAuthLoading` guard) to avoid race conditions
+
 ### Authentication Flow
-1. User authenticates via Apple Sign In or Google Sign In
+1. User authenticates via Apple Sign In or Google Sign In (login is mandatory)
 2. Backend validates token with Apple/Google servers and creates/finds user in Turso DB
 3. JWT issued with 30-day expiration
 4. Frontend stores JWT in Expo SecureStore (encrypted)
 5. All API requests include JWT in Authorization header
 6. Backend validates JWT and checks subscription status per request
+7. On 401: frontend clears token only if it matches the current stored token (prevents cascade from concurrent requests)
 
 ### Frontend Structure
 - **`/frontend/app/`**: Expo Router file-based navigation
