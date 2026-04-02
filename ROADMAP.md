@@ -205,64 +205,15 @@
 
 ### 4.1 — Thumbs up/down sur chaque recommandation
 
-**Statut** : CONSOLIDÉ DANS LE MODE SWIPE (section 12.4 — SwipeActions)
-**Catégorie** : Premium
-**Priorité** : Haute
-
-- [ ] **Frontend — Boutons 👍/👎 dans MovieResults**
-  - Fichier : `frontend/components/MovieResults.tsx`
-  - Sous chaque card de résultat, ajouter 2 icônes : `thumbs-up-outline` et `thumbs-down-outline`
-  - Au tap : haptic + animation de remplissage + appel API
-  - Si 👎 : masquer le film de la liste avec animation de slide-out
-  - Si 👍 : ajouter à un signal positif
-
-- [ ] **Backend — Endpoint `POST /api/user/taste-profile/feedback`**
-  - Fichier : `backend/src/routes/user.ts`
-  - Body : `{ tmdb_id: number, feedback: 'positive' | 'negative', title: string, media_type: string }`
-  - Stocker en DB pour enrichir le profil de goûts
-  - Un 👎 doit influer sur les genres (si plusieurs 👎 sur le même genre → ajouter aux `disliked_genres`)
-  - Un 👍 doit influer positivement (ajouter aux `favorite_genres` si pattern détecté)
-
-- [ ] **Backend — Intégrer le feedback dans le prompt Gemini**
-  - Fichier : `backend/src/lib/gemini.ts`
-  - Ajouter au `UserContext` : `recentFeedback: { liked: string[], disliked: string[] }`
-  - Ajouter au prompt : "L'utilisateur a récemment aimé: X, Y et n'a pas aimé: Z"
-
-- [ ] **Frontend — Boutons 👍/👎 dans ForYouSection**
-  - Fichier : `frontend/components/ForYouSection.tsx`
-  - Même logique que MovieResults
+- [x] **Implémenté via Swipe Discovery** — Boutons Like/Dislike toggleables dans SwipeActions, `POST /api/feed/feedback` (like→rating 5, dislike→rating 1), toggle via `DELETE /api/user/taste-profile/rate`. Le taste profile est injecté dans le prompt Gemini via `UserContext.ratedMovies`.
 
 ### 4.2 — Bouton "Déjà vu"
 
-**Statut** : CONSOLIDÉ DANS LE MODE SWIPE (section 12.4 — SwipeActions, bouton "eye")
-**Catégorie** : Premium
-**Priorité** : Moyenne
-
-- [ ] **Frontend — Ajouter "Déjà vu" dans MovieResults**
-  - Fichier : `frontend/components/MovieResults.tsx`
-  - Bouton icône `eye` à côté de 👍/👎
-  - Au tap : appel `rateMovie` avec `rating: 0` (marque comme vu sans note)
-  - Masquer le film de la liste avec animation
-
-- [ ] **Frontend — Ajouter "Déjà vu" dans ForYouSection**
-  - Fichier : `frontend/components/ForYouSection.tsx`
-  - Même logique
-
-- [ ] **Backend — Exclure les films "déjà vus" des recommandations**
-  - Fichier : `backend/src/routes/discovery.ts`
-  - C'est DÉJÀ FAIT via `watchedIds = getWatchedTmdbIds(tasteProfile)` et `excludeIds`
-  - Vérifier que le `rateMovie` avec `rating: 0` ajoute bien le film à `watchedIds`
+- [x] **Implémenté via Swipe Discovery** — Bouton eye toggle dans SwipeActions, `rateMovie` rating 0 pour marquer vu, `deleteRating` pour démarquer. Films déjà vus exclus des recos via `getWatchedTmdbIds()`.
 
 ### 4.3 — "On affine tes goûts en temps réel" (indicateur visuel)
 
-**Statut** : CONSOLIDÉ DANS LE MODE SWIPE (toast après chaque like/dislike)
-**Catégorie** : Premium
-**Priorité** : Basse
-
-- [ ] **Frontend — Toast/banner après feedback**
-  - Créer un composant `TasteUpdatedToast.tsx`
-  - Après chaque 👍/👎/rating : afficher brièvement "Goûts mis à jour" avec animation de pulsation
-  - Style : toast en bas avec icône `brain` + texte `text-xs`
+- [x] **Implémenté via Swipe Discovery** — Toast bottom-center "Goûts mis à jour !" après chaque like/dislike, fond solide, auto-dismiss 1.8s.
 
 ---
 
@@ -272,18 +223,8 @@
 
 ### 5.1 — Affichage des plateformes sur les cards (partout)
 
-**Statut** : PARTIELLEMENT EXISTE (trending a les logos, movie-detail a StreamingSection, mais pas les résultats de recherche ni ForYou)
-**Catégorie** : Free
-**Priorité** : Haute
-
-- [ ] **Frontend — Ajouter les logos providers dans MovieResults**
-  - Fichier : `frontend/components/MovieResults.tsx`
-  - Sous chaque card : row de logos providers (max 4, 16x16px, `borderRadius: 4`)
-  - Les données `streamingProviders` sont DÉJÀ passées en props
-
-- [ ] **Frontend — Ajouter les logos providers dans ForYouSection**
-  - Fichier : `frontend/components/ForYouSection.tsx`
-  - Même traitement — les données `streamingProviders` sont DÉJÀ dans le state
+- [x] **Implémenté sur SwipeCard** — Logos providers (max 4) affichés à côté du badge type. Données déjà disponibles dans les props.
+- [ ] **Ajouter les logos providers dans MovieResults** (vue liste des résultats de recherche)
 
 ### 5.2 — "Disponible en ce moment" label
 
@@ -354,11 +295,7 @@
 
 ### 6.3 — "Top du moment pour TOI" (pas global)
 
-**Statut** : EXISTE DÉJÀ (c'est ForYouSection)
-**Catégorie** : Premium
-**Priorité** : Basse — déjà implémenté
-
-> La section "For You" sur la home utilise déjà Gemini AI + taste profile pour générer des recommandations personnalisées. C'est exactement "Top du moment pour TOI".
+- [x] **Implémenté via l'onglet "Pour vous"** — Premier tab de l'app, feed swipe avec recos IA personnalisées (premium) ou trending (free). Remplace l'ancienne ForYouSection.
 
 ---
 
