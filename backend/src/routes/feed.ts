@@ -46,19 +46,16 @@ async function buildAIFeed(
   page: number,
   size: number
 ): Promise<FeedResult | null> {
-  // 1. Fetch watchlist, search history, trending in parallel
   const [watchlist, recentSearchHistory, trendingItems] = await Promise.all([
     db.getWatchlist(userId),
     db.getSearchHistory(userId, 5),
     tmdb.getTrending(language).catch(() => []),
   ]);
 
-  // 2. Build exclusion set (watchlist + watched + excludeIds)
   const watchlistIds = new Set(watchlist.map((item) => item.tmdb_id));
   const watchedIds = getWatchedTmdbIds(tasteProfile);
   const allExcluded = new Set([...watchlistIds, ...watchedIds, ...excludeIds]);
 
-  // 3. Build userContext from tasteProfile
   const userContext: UserContext = {};
   if (tasteProfile.favorite_genres.length > 0)
     userContext.favoriteGenres = tasteProfile.favorite_genres;
@@ -75,7 +72,6 @@ async function buildAIFeed(
   if (recentSearchHistory.length > 0)
     userContext.recentSearches = recentSearchHistory.map((s) => s.query);
 
-  // 4. Determine content types from preferences
   const contentTypes: string[] = [];
   if (preferences.contentType === "all" || preferences.contentType === "movies")
     contentTypes.push("movies");
@@ -83,7 +79,6 @@ async function buildAIFeed(
     contentTypes.push("TV shows");
   if (contentTypes.length === 0) contentTypes.push("movies", "TV shows");
 
-  // 5. Call Gemini with synthetic query (page-varied themes)
   const themes = [
     "hidden gems and underrated titles",
     "critically acclaimed recent releases",
@@ -110,12 +105,10 @@ async function buildAIFeed(
     recentTitles.length > 0 ? recentTitles : undefined
   );
 
-  // 6. If fallback or empty recommendations → return null
   if (aiResult.isFallback || aiResult.recommendations.length === 0) {
     return null;
   }
 
-  // 7. Enrich with TMDB
   const includeMovies = contentTypes.includes("movies");
   const includeTvShows = contentTypes.includes("TV shows");
   const enriched = await tmdb.enrichRecommendations(
@@ -125,12 +118,10 @@ async function buildAIFeed(
     language
   );
 
-  // 8. If enrichment returns empty → return null
   if (enriched.length === 0) {
     return null;
   }
 
-  // 9. Attach AI reasons to items
   const reasonByTitle = new Map<string, string>();
   for (let i = 0; i < aiResult.recommendations.length; i++) {
     if (aiResult.reasons[i]) {
@@ -144,19 +135,16 @@ async function buildAIFeed(
     if (reason) item.reason = reason;
   }
 
-  // 10. Filter excluded items, slice to size
   const filtered = enriched.filter((item) => !allExcluded.has(item.tmdb_id));
   const items = filtered.slice(0, size);
 
-  // 11. If no items remain → return null
   if (items.length === 0) {
     return null;
   }
 
-  // 12. Fetch providers
   const rawProviders = await tmdb.getBatchWatchProviders(items, country);
 
-  // 13. Filter providers by user preferences (platforms, flatrate/rent/buy)
+  const platformSet = new Set(preferences.platforms);
   const providersMap: Record<number, StreamingProvider[]> = {};
   for (const [idStr, itemProviders] of Object.entries(rawProviders)) {
     let result = itemProviders;
@@ -169,21 +157,20 @@ async function buildAIFeed(
         return false;
       });
     }
-    if (preferences.platforms.length > 0) {
-      const pSet = new Set(preferences.platforms);
-      result = result.filter((p) => pSet.has(p.provider_id));
+    if (platformSet.size > 0) {
+      result = result.filter((p) => platformSet.has(p.provider_id));
     }
     if (result.length > 0) providersMap[Number(idStr)] = result;
   }
 
-  // 14. Compute matchScore for each item
   for (const item of items) {
     item.matchScore = computeMatchScore(item.genre_ids, item.vote_average, tasteProfile);
   }
 
-  // 15. Return { items, providers }
   return { items, providers: providersMap };
 }
+
+type TrendingFeedResult = [MovieResult[], Record<number, StreamingProvider[]>, boolean];
 
 /**
  * Build a paginated trending feed with providers (fallback for free / non-AI paths).
@@ -194,7 +181,7 @@ async function buildTrendingFeed(
   preferences: Awaited<ReturnType<typeof db.getUserPreferences>> | null,
   page: number,
   size: number
-): Promise<[MovieResult[], Record<number, StreamingProvider[]>, boolean]> {
+): Promise<TrendingFeedResult> {
   const trending = await tmdb.getTrending(language);
   const start = (page - 1) * size;
   const items: MovieResult[] = trending.slice(start, start + size).map((item) => ({

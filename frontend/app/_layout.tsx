@@ -33,10 +33,7 @@ Sentry.init({
   enableLogs: __DEV__,
   replaysSessionSampleRate: 0,
   replaysOnErrorSampleRate: 0,
-  integrations: [
-    navigationIntegration,
-    Sentry.feedbackIntegration(),
-  ],
+  integrations: [navigationIntegration, Sentry.feedbackIntegration()],
   beforeSend(event) {
     const message = event.exception?.values?.[0]?.value || '';
     if (message.includes('canceled the authorization attempt')) {
@@ -78,81 +75,75 @@ export default Sentry.wrap(function RootLayout() {
 
   return (
     <GestureHandlerRootView style={{ flex: 1 }}>
-    <ErrorBoundary>
-      <AptabaseProvider appKey='A-EU-9072861721'>
-      <QueryProvider>
-        <LanguageProvider>
-          <SubscriptionProvider>
-            <AuthProvider>
-            <SwipeDataProvider>
-              <Stack
-                screenOptions={{
-                  headerShown: false,
-                  gestureEnabled: true, // Enable swipe-back on all screens
-                  animation: 'slide_from_right', // iOS-native slide animation
-                }}
-              >
-                <Stack.Screen name='(tabs)' />
-                <Stack.Screen
-                  name='onboarding'
-                  options={{ gestureEnabled: false, animation: 'fade' }}
-                />
-                <Stack.Screen
-                  name='setup'
-                  options={{ gestureEnabled: false, animation: 'fade' }}
-                />
-                <Stack.Screen
-                  name='auth'
-                  options={{ gestureEnabled: false, animation: 'slide_from_bottom' }}
-                />
-                <Stack.Screen
-                  name='movie-detail'
-                  options={{
-                    gestureEnabled: true,
-                    animation: 'slide_from_right',
-                  }}
-                />
-                <Stack.Screen
-                  name='actor-detail'
-                  options={{
-                    gestureEnabled: true,
-                    animation: 'slide_from_right',
-                  }}
-                />
-                <Stack.Screen
-                  name='favorite-actors-list'
-                  options={{ headerShown: false }}
-                />
-                <Stack.Screen
-                  name='watched-list'
-                  options={{ headerShown: false }}
-                />
-                <Stack.Screen
-                  name='watchlist-full'
-                  options={{ headerShown: false }}
-                />
-                <Stack.Screen
-                  name='search-history'
-                  options={{ headerShown: false, animation: 'slide_from_right' }}
-                />
-                <Stack.Screen
-                  name='swipe-discovery'
-                  options={{
-                    gestureEnabled: false,
-                    animation: 'slide_from_bottom',
-                    headerShown: false,
-                  }}
-                />
-                <Stack.Screen name='+not-found' />
-              </Stack>
-              <StatusBar style='auto' />
-            </SwipeDataProvider>
-            </AuthProvider>
-          </SubscriptionProvider>
-        </LanguageProvider>
-      </QueryProvider>
-      </AptabaseProvider>
-    </ErrorBoundary>
+      <ErrorBoundary>
+        <AptabaseProvider appKey='A-EU-9072861721'>
+          <QueryProvider>
+            <LanguageProvider>
+              <SubscriptionProvider>
+                <AuthProvider>
+                  <SwipeDataProvider>
+                    <Stack
+                      screenOptions={{
+                        headerShown: false,
+                        gestureEnabled: true,
+                        animation: 'slide_from_right',
+                      }}
+                    >
+                      <Stack.Screen name='(tabs)' />
+                      <Stack.Screen
+                        name='onboarding'
+                        options={{ gestureEnabled: false, animation: 'fade' }}
+                      />
+                      <Stack.Screen
+                        name='setup'
+                        options={{ gestureEnabled: false, animation: 'fade' }}
+                      />
+                      <Stack.Screen
+                        name='auth'
+                        options={{
+                          gestureEnabled: false,
+                          animation: 'slide_from_bottom',
+                        }}
+                      />
+                      <Stack.Screen name='movie-detail' />
+                      <Stack.Screen name='actor-detail' />
+                      <Stack.Screen
+                        name='favorite-actors-list'
+                        options={{ headerShown: false }}
+                      />
+                      <Stack.Screen
+                        name='watched-list'
+                        options={{ headerShown: false }}
+                      />
+                      <Stack.Screen
+                        name='watchlist-full'
+                        options={{ headerShown: false }}
+                      />
+                      <Stack.Screen
+                        name='search-history'
+                        options={{
+                          headerShown: false,
+                          animation: 'slide_from_right',
+                        }}
+                      />
+                      <Stack.Screen
+                        name='swipe-discovery'
+                        options={{
+                          gestureEnabled: false,
+                          animation: 'slide_from_bottom',
+                          headerShown: false,
+                        }}
+                      />
+                      <Stack.Screen name='+not-found' />
+                    </Stack>
+                    <StatusBar style='auto' />
+                  </SwipeDataProvider>
+                </AuthProvider>
+              </SubscriptionProvider>
+            </LanguageProvider>
+          </QueryProvider>
+        </AptabaseProvider>
+      </ErrorBoundary>
     </GestureHandlerRootView>
   );
 });

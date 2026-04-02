@@ -24,6 +24,7 @@ import {
   trackSwipeSession,
   trackFeedPageLoad,
 } from '@/services/analytics';
+import { getLanguageForTMDB } from '@/constants/languages';
 
 const TAB_BAR_HEIGHT = Platform.OS === 'ios' ? 80 : 60;
 
@@ -46,25 +47,14 @@ export default function ForYouScreen() {
   const sessionStart = useRef(Date.now());
   const maxPageViewed = useRef(0);
 
-  const tmdbLanguage =
-    language === 'fr'
-      ? 'fr-FR'
-      : language === 'es'
-        ? 'es-ES'
-        : language === 'de'
-          ? 'de-DE'
-          : language === 'it'
-            ? 'it-IT'
-            : language === 'ja'
-              ? 'ja-JP'
-              : 'en-US';
+  const tmdbLanguage = getLanguageForTMDB(language);
 
   const fetchPage = useCallback(
     async (page: number, existingItems: MovieResult[]) => {
       if (isFetchingRef.current) return;
       isFetchingRef.current = true;
       try {
-        const exclude = existingItems.map((i) => i.tmdb_id);
+        const exclude = existingItems.map(i => i.tmdb_id);
         const res = await backendAPIService.getFeed({
           page,
           size: 10,
@@ -77,12 +67,12 @@ export default function ForYouScreen() {
             setItems(newItems);
             setProviders(res.data.providers || {});
           } else {
-            setItems((prev) => {
-              const existingIds = new Set(prev.map((i) => i.tmdb_id));
-              const unique = newItems.filter((i) => !existingIds.has(i.tmdb_id));
+            setItems(prev => {
+              const existingIds = new Set(prev.map(i => i.tmdb_id));
+              const unique = newItems.filter(i => !existingIds.has(i.tmdb_id));
               return [...prev, ...unique];
             });
-            setProviders((prev) => ({ ...prev, ...(res.data.providers || {}) }));
+            setProviders(prev => ({ ...prev, ...(res.data.providers || {}) }));
           }
           setHasMore(res.data.hasMore);
           pageRef.current = page;
@@ -139,7 +129,7 @@ export default function ForYouScreen() {
           animate={{ scale: 1.2, opacity: 1 }}
           transition={{ type: 'timing', duration: 1200, loop: true }}
         >
-          <Ionicons name="sparkles" size={40} color="#E50914" />
+          <Ionicons name='sparkles' size={40} color='#E50914' />
         </MotiView>
         <Text style={styles.loadingText}>{t('swipeDiscovery.loading')}</Text>
       </View>
@@ -149,11 +139,7 @@ export default function ForYouScreen() {
   if (error || items.length === 0) {
     return (
       <View style={styles.centerContainer}>
-        <Ionicons
-          name="film-outline"
-          size={48}
-          color="rgba(255,255,255,0.3)"
-        />
+        <Ionicons name='film-outline' size={48} color='rgba(255,255,255,0.3)' />
         <Text style={styles.emptyText}>{t('swipeDiscovery.emptyFeed')}</Text>
       </View>
     );
@@ -179,14 +165,10 @@ export default function ForYouScreen() {
         hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
       >
         <Ionicons
-          name="search"
+          name='search'
           size={24}
-          color="#fff"
-          style={{
-            textShadowColor: 'rgba(0,0,0,0.7)',
-            textShadowOffset: { width: 0, height: 1 },
-            textShadowRadius: 6,
-          }}
+          color='#fff'
+          style={styles.iconShadow}
         />
       </TouchableOpacity>
     </View>
@@ -226,5 +208,10 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     paddingHorizontal: 40,
     lineHeight: 22,
+  },
+  iconShadow: {
+    textShadowColor: 'rgba(0,0,0,0.7)',
+    textShadowOffset: { width: 0, height: 1 },
+    textShadowRadius: 6,
   },
 });

@@ -2,12 +2,7 @@ import { Ionicons } from '@expo/vector-icons';
 import { LinearGradient } from 'expo-linear-gradient';
 import PagerView from 'react-native-pager-view';
 import React, { useCallback, useRef, useState } from 'react';
-import {
-  StyleSheet,
-  Text,
-  TouchableOpacity,
-  View,
-} from 'react-native';
+import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { useRouter } from 'expo-router';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { useSubscription } from '@/contexts/RevenueCatContext';
@@ -77,32 +72,26 @@ export default function SwipeDiscoveryView({
     : items;
 
   // Build pages array — PagerView crashes on null/false children
-  const pages: React.ReactElement[] = displayItems.map((item, idx) => {
+  const pages: React.ReactElement[] = displayItems.map(item => {
     const itemProviders = providers[item.tmdb_id] || [];
     const itemCredits = credits[item.tmdb_id] || [];
     const itemCrew = crew[item.tmdb_id] || [];
     const itemDetailedInfo = detailedInfo[item.tmdb_id] || ({} as DetailedInfo);
 
     return (
-      <View
-        key={`card-${item.tmdb_id}-${idx}`}
-        style={styles.page}
-        collapsable={false}
-      >
-        <View style={{ flex: 1 }}>
-          <SwipeCard
-            item={item}
-            providers={itemProviders}
-            bottomInset={bottomInset}
-          />
-          <SwipeActions
-            item={item}
-            providers={itemProviders}
-            credits={itemCredits}
-            crew={itemCrew}
-            detailedInfo={itemDetailedInfo}
-          />
-        </View>
+      <View key={String(item.tmdb_id)} style={styles.page} collapsable={false}>
+        <SwipeCard
+          item={item}
+          providers={itemProviders}
+          bottomInset={bottomInset}
+        />
+        <SwipeActions
+          item={item}
+          providers={itemProviders}
+          credits={itemCredits}
+          crew={itemCrew}
+          detailedInfo={itemDetailedInfo}
+        />
       </View>
     );
   });
@@ -116,9 +105,7 @@ export default function SwipeDiscoveryView({
           style={styles.gatePage}
         >
           <Ionicons name='sparkles' size={64} color='#fbbf24' />
-          <Text style={styles.gateTitle}>
-            {t('swipeDiscovery.upgradeCTA')}
-          </Text>
+          <Text style={styles.gateTitle}>{t('swipeDiscovery.upgradeCTA')}</Text>
           <Text style={styles.gateSubtitle}>
             {t('swipeDiscovery.upgradeSubtitle')}
           </Text>
