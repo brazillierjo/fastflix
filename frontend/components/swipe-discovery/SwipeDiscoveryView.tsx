@@ -10,7 +10,6 @@ import SubscriptionModal from '@/components/SubscriptionModal';
 import SwipeCard from './SwipeCard';
 import SwipeActions from './SwipeActions';
 import SwipeHeader from './SwipeHeader';
-import SwipeLeftToDetail from './SwipeLeftToDetail';
 import type {
   MovieResult,
   StreamingProvider,
@@ -68,30 +67,6 @@ export default function SwipeDiscoveryView({
     router.back();
   }, [router]);
 
-  const navigateToDetail = useCallback(
-    (item: MovieResult) => {
-      const mediaType = item.media_type === 'tv' ? 'tv' : 'movie';
-      router.push({
-        pathname: '/movie-detail' as never,
-        params: {
-          tmdbId: String(item.tmdb_id),
-          mediaType,
-          title: item.title,
-          posterPath: item.poster_path || '',
-          voteAverage: String(item.vote_average || 0),
-          overview: item.overview || '',
-          providersJson: JSON.stringify(providers[item.tmdb_id] || []),
-          creditsJson: JSON.stringify(credits[item.tmdb_id] || []),
-          crewJson: JSON.stringify(crew[item.tmdb_id] || []),
-          detailedInfoJson: JSON.stringify(
-            detailedInfo[item.tmdb_id] || {}
-          ),
-        },
-      });
-    },
-    [providers, credits, crew, detailedInfo, router]
-  );
-
   const displayItems = showPremiumGate
     ? items.slice(0, FREE_SWIPE_LIMIT)
     : items;
@@ -104,20 +79,18 @@ export default function SwipeDiscoveryView({
 
     return (
       <View key={String(item.tmdb_id)} style={styles.page} collapsable={false}>
-        <SwipeLeftToDetail onSwipeLeft={() => navigateToDetail(item)}>
-          <SwipeCard
-            item={item}
-            providers={itemProviders}
-            bottomInset={bottomInset}
-          />
-          <SwipeActions
-            item={item}
-            providers={itemProviders}
-            credits={itemCredits}
-            crew={itemCrew}
-            detailedInfo={itemDetailedInfo}
-          />
-        </SwipeLeftToDetail>
+        <SwipeCard
+          item={item}
+          providers={itemProviders}
+          bottomInset={bottomInset}
+        />
+        <SwipeActions
+          item={item}
+          providers={itemProviders}
+          credits={itemCredits}
+          crew={itemCrew}
+          detailedInfo={itemDetailedInfo}
+        />
       </View>
     );
   });
