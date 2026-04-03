@@ -61,7 +61,7 @@ export default function SwipeCard({
     : null;
 
   const backdropUri = item.backdrop_path
-    ? `${TMDB_IMAGE_BASE}/w780${item.backdrop_path}`
+    ? `${TMDB_IMAGE_BASE}/w1280${item.backdrop_path}`
     : posterUri;
 
   const releaseYear = item.release_date
@@ -321,7 +321,7 @@ const styles = StyleSheet.create({
     color: '#fbbf24',
     fontSize: 13,
     fontWeight: '600',
-    flex: 1,
+    flexShrink: 1,
     lineHeight: 17,
   },
 

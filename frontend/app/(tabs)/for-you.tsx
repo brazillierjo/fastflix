@@ -135,9 +135,12 @@ export default function ForYouScreen() {
     }
   }, [feed, tmdbLanguage]);
 
-  // Fetch when auth is ready
+  // Fetch once when auth is ready — don't refetch on foreground resume
+  const hasFetchedRef = useRef(false);
   useEffect(() => {
     if (isAuthLoading || !isAuthenticated) return;
+    if (hasFetchedRef.current) return;
+    hasFetchedRef.current = true;
     trackScreenView('for_you');
     fetchFeed();
   }, [isAuthLoading, isAuthenticated, fetchFeed]);
