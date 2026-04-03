@@ -107,16 +107,16 @@ export default function ForYouScreen() {
         page: nextPage,
         size: 10,
         language: tmdbLanguage,
-        exclude: feed.items.map((i) => i.tmdb_id),
+        exclude: feed.items.map(i => i.tmdb_id),
       });
 
       if (res.success && res.data?.items?.length) {
-        const existingIds = new Set(feed.items.map((i) => i.tmdb_id));
+        const existingIds = new Set(feed.items.map(i => i.tmdb_id));
         const newItems = res.data.items.filter(
-          (i) => !existingIds.has(i.tmdb_id)
+          i => !existingIds.has(i.tmdb_id)
         );
 
-        setFeed((prev) => {
+        setFeed(prev => {
           if (prev.status !== 'ready') return prev;
           return {
             ...prev,
@@ -173,7 +173,7 @@ export default function ForYouScreen() {
 
   // ── Loading ──
   if (feed.status === 'loading' || isAuthLoading) {
-    return <CinematicLoader variant="fullscreen" />;
+    return <CinematicLoader variant='fullscreen' />;
   }
 
   // ── Error — show what failed + retry ──
@@ -220,7 +220,12 @@ export default function ForYouScreen() {
         activeOpacity={0.6}
         hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
       >
-        <Ionicons name='search' size={24} color='#fff' style={styles.iconShadow} />
+        <Ionicons
+          name='search'
+          size={24}
+          color='#fff'
+          style={styles.iconShadow}
+        />
       </TouchableOpacity>
     </View>
   );

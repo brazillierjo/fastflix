@@ -23,7 +23,7 @@ export default function CinematicLoader({
 
   useEffect(() => {
     const interval = setInterval(() => {
-      setTipIndex((prev) => (prev + 1) % TIPS.length);
+      setTipIndex(prev => (prev + 1) % TIPS.length);
     }, 4000);
     return () => clearInterval(interval);
   }, []);
@@ -47,7 +47,7 @@ export default function CinematicLoader({
 
       {/* Orbiting rings */}
       <View style={styles.orbContainer}>
-        {[0, 1, 2].map((i) => (
+        {[0, 1, 2].map(i => (
           <MotiView
             key={i}
             from={{ rotate: `${i * 120}deg`, opacity: 0 }}
@@ -83,14 +83,14 @@ export default function CinematicLoader({
             animate={{ scale: 1.15 }}
             transition={{ type: 'timing', duration: 1200, loop: true }}
           >
-            <Ionicons name="sparkles" size={28} color="#E50914" />
+            <Ionicons name='sparkles' size={28} color='#E50914' />
           </MotiView>
         </MotiView>
       </View>
 
       {/* Animated dots */}
       <View style={styles.dotsRow}>
-        {[0, 1, 2].map((i) => (
+        {[0, 1, 2].map(i => (
           <MotiView
             key={i}
             from={{ opacity: 0.2, scale: 0.6 }}

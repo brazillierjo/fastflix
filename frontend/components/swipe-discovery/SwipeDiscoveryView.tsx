@@ -71,7 +71,7 @@ export default function SwipeDiscoveryView({
     ? items.slice(0, FREE_SWIPE_LIMIT)
     : items;
 
-  const pages: React.ReactElement[] = displayItems.map((item) => {
+  const pages: React.ReactElement[] = displayItems.map(item => {
     const itemProviders = providers[item.tmdb_id] || [];
     const itemCredits = credits[item.tmdb_id] || [];
     const itemCrew = crew[item.tmdb_id] || [];
