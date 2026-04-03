@@ -1,5 +1,4 @@
 import { Ionicons } from '@expo/vector-icons';
-import { MotiView } from 'moti';
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import {
   Platform,
@@ -17,6 +16,7 @@ import {
   type MovieResult,
   type StreamingProvider,
 } from '@/services/backend-api.service';
+import CinematicLoader from '@/components/CinematicLoader';
 import SwipeDiscoveryView from '@/components/swipe-discovery/SwipeDiscoveryView';
 import {
   trackScreenView,
@@ -173,18 +173,7 @@ export default function ForYouScreen() {
 
   // ── Loading ──
   if (feed.status === 'loading' || isAuthLoading) {
-    return (
-      <View style={styles.center}>
-        <MotiView
-          from={{ scale: 0.8, opacity: 0.4 }}
-          animate={{ scale: 1.2, opacity: 1 }}
-          transition={{ type: 'timing', duration: 1200, loop: true }}
-        >
-          <Ionicons name='sparkles' size={40} color='#E50914' />
-        </MotiView>
-        <Text style={styles.loadingText}>{t('swipeDiscovery.loading')}</Text>
-      </View>
-    );
+    return <CinematicLoader variant="fullscreen" />;
   }
 
   // ── Error — show what failed + retry ──
@@ -254,12 +243,6 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     zIndex: 10,
-  },
-  loadingText: {
-    color: 'rgba(255,255,255,0.6)',
-    fontSize: 15,
-    fontWeight: '500',
-    marginTop: 8,
   },
   emptyText: {
     color: 'rgba(255,255,255,0.5)',
