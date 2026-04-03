@@ -60,15 +60,25 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     loadUser();
   }, []);
 
-  // Re-check auth status when app comes to foreground
-  // This catches cases where token was cleared due to 401 error
+  // Silently re-check auth when app comes to foreground
+  // If token was cleared (401), user will be logged out without a loading flash
   useEffect(() => {
     const subscription = AppState.addEventListener(
       'change',
-      (nextAppState: AppStateStatus) => {
+      async (nextAppState: AppStateStatus) => {
         if (nextAppState === 'active') {
-          // App came to foreground, check if user is still authenticated
-          loadUser();
+          const storedUser = await authService.getCurrentUser();
+          if (!storedUser) {
+            setUser(null);
+            return;
+          }
+          const freshUser = await authService.refreshUserData();
+          if (freshUser) {
+            setUser(freshUser);
+          } else {
+            const tokenExists = await authService.getAuthToken();
+            if (!tokenExists) setUser(null);
+          }
         }
       }
     );
