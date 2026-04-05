@@ -593,8 +593,8 @@ app.get("/for-you", authMiddleware, rateLimitMiddleware("ai"), async (c) => {
     const language = c.req.query("language") || "fr-FR";
     const country = c.req.query("country") || "FR";
 
-    // Check cache first (valid for 7 days)
-    const cached = await db.getForYouCache(userId, 7, language);
+    // Check cache first (valid for 1 day)
+    const cached = await db.getForYouCache(userId, 1, language);
     if (cached) {
       c.header("Cache-Control", "private, max-age=1800");
       return c.json({
@@ -686,7 +686,7 @@ app.get("/for-you", authMiddleware, rateLimitMiddleware("ai"), async (c) => {
       contentTypes,
       language,
       undefined,
-      20, // max recommendations
+      30, // max recommendations (request more to compensate for filtering)
       userContext,
       undefined, // no conversation history for for-you
       recentTitles.length > 0 ? recentTitles : undefined
@@ -741,8 +741,8 @@ app.get("/for-you", authMiddleware, rateLimitMiddleware("ai"), async (c) => {
     // Filter out already-watched and watchlisted items
     const filteredResults = enrichedResults.filter((item) => !excludeIds.has(item.tmdb_id));
 
-    // Take top 20
-    const top20 = filteredResults.slice(0, 20);
+    // Take top 25
+    const top20 = filteredResults.slice(0, 25);
 
     // Fetch streaming providers for all results in parallel
     const [rawProvidersMap] = await Promise.all([tmdb.getBatchWatchProviders(top20, country)]);

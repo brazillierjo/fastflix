@@ -149,6 +149,15 @@
         "description": "KI lernt deine Vorlieben"
       }
     },
+    "comparison": {
+      "title": "Kostenlos vs Pro",
+      "aiSearch": "KI-Suche",
+      "swipeDiscovery": "Swipe-Entdeckung",
+      "watchlist": "Merkliste",
+      "forYou": "Für dich Empfehlungen",
+      "history": "Suchverlauf",
+      "refine": "Ergebnisse verfeinern"
+    },
     "socialProof": "Von Filmliebhabern weltweit vertraut",
     "socialProofSub": "4,9 Sterne von unserer Community bewertet",
     "bestValue": "BESTER PREIS",

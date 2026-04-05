@@ -149,6 +149,15 @@
         "description": "AI learns your preferences over time"
       }
     },
+    "comparison": {
+      "title": "Free vs Pro",
+      "aiSearch": "AI Search",
+      "swipeDiscovery": "Swipe Discovery",
+      "watchlist": "Watchlist",
+      "forYou": "For You recommendations",
+      "history": "Search history",
+      "refine": "Refine results"
+    },
     "socialProof": "Trusted by movie lovers worldwide",
     "socialProofSub": "Rated 4.9 stars by our community",
     "bestValue": "BEST VALUE",

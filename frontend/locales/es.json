@@ -149,6 +149,15 @@
         "description": "La IA aprende tus preferencias"
       }
     },
+    "comparison": {
+      "title": "Gratis vs Pro",
+      "aiSearch": "Búsqueda IA",
+      "swipeDiscovery": "Descubrimiento por swipe",
+      "watchlist": "Lista de seguimiento",
+      "forYou": "Recomendaciones Para Ti",
+      "history": "Historial de búsqueda",
+      "refine": "Refinar resultados"
+    },
     "socialProof": "Adoptado por cinéfilos de todo el mundo",
     "socialProofSub": "Valorado con 4.9 estrellas por nuestra comunidad",
     "bestValue": "MEJOR PRECIO",
